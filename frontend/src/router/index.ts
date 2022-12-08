@@ -1,8 +1,10 @@
+import JwtService from "@/core/services/JwtService";
+import { useUserStore } from "@/stores/user.store";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [ 
+  routes: [
     {
       path: "/",
       redirect: "/scheduler",
@@ -25,8 +27,7 @@ const router = createRouter({
     {
       path: "/sign-in",
       name: "sign-in",
-      component: () =>
-        import("@/layouts/authentication/SignIn.vue"),
+      component: () => import("@/layouts/authentication/SignIn.vue"),
       meta: {
         pageTitle: "Sign In",
       },
@@ -61,32 +62,32 @@ const router = createRouter({
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   // current page view title
-//   document.title = `${to.meta.pageTitle} - ${process.env.VUE_APP_NAME}`;
+router.beforeEach((to, from, next) => {
+  // current page view title
+  document.title = `${to.meta.pageTitle} - ${import.meta.env.VITE_VUE_APP_NAME}`;
 
-//   // verify auth token before each page change
-//   store.dispatch(Actions.VERIFY_AUTH, { api_token: JwtService.getToken() });
+  const store = useUserStore();
 
-//   // before page access check if page requires authentication
-//   if (to.meta.middleware == "auth") {
-//     if (store.getters.isUserAuthenticated) {
-//       next();
-//     } else {
-//       next({ name: "sign-in" });
-//     }
-//   } else {
-//     next();
-//   }
+  // verify auth token before each page change
+  store.verifyAuth({ api_token: JwtService.getToken() });
 
-//   // Scroll page to top on every route change
-//   window.scrollTo({
-//     top: 0,
-//     left: 0,
-//     behavior: "smooth",
-//   });
-// });
+  // before page access check if page requires authentication
+  if (to.meta.middleware == "auth") {
+    if (store.isUserAuthenticated) {
+      next();
+    } else {
+      next({ name: "sign-in" });
+    }
+  } else {
+    next();
+  }
 
-
+  // Scroll page to top on every route change
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth",
+  });
+});
 
 export default router;

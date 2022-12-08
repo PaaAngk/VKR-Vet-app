@@ -41,4 +41,3 @@
     <!--end::Content-->
   </div>
 </template>
-

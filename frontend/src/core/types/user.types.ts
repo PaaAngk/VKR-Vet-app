@@ -1,17 +1,15 @@
-enum Role{
+export enum Role {
   Admin,
-  User
+  Doctor,
 }
 
 export interface User {
-  name: string;
-  role: Role;
-  api_token: string;
+  username: string;
+  // role: Role;
 }
 
 export interface UserAuthInfo {
-  errors: unknown;
+  errors: any;
   user: User;
   isAuthenticated: boolean;
 }
-

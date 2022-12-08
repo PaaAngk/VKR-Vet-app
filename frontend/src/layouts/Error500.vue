@@ -58,17 +58,14 @@ export default defineComponent({
     //   return store.getters.getThemeMode;
     // });
     // const bgImage = themeMode.value !== "dark" ? "bg7.jpg" : "bg7-dark.jpg";
-
     // onMounted(() => {
     //   LayoutService.emptyElementClassesAndAttributes(document.body);
-
     //   store.dispatch(Actions.ADD_BODY_CLASSNAME, "bg-body");
     //   store.dispatch(Actions.ADD_BODY_ATTRIBUTE, {
     //     qualifiedName: "style",
     //     value: `background-image: url("media/auth/${bgImage}")`,
     //   });
     // });
-
     // return {
     //   getIllustrationsPath,
     //   bgImage,

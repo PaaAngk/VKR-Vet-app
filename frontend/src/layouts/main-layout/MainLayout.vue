@@ -40,17 +40,14 @@ export default defineComponent({
   },
   setup() {
     // const route = useRoute();
-
     // onBeforeMount(() => {
     //   LayoutService.init();
     // });
-
     // onMounted(() => {
     //   nextTick(() => {
     //     reinitializeComponents();
     //   });
     // });
-
     // watch(
     //   () => route.path,
     //   () => {

@@ -1,0 +1,208 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  login String [unique, not null]
+  password String [not null]
+  fullName String [unique]
+  role Role [not null]
+}
+
+Table Employee {
+  id Int [pk, increment]
+  Reception Reception [not null]
+  Schedule Schedule [not null]
+  ReceptionRecord ReceptionRecord [not null]
+  fullName String [not null]
+  role Role [not null]
+}
+
+Table Client {
+  id String [pk]
+  pet Pet [not null]
+  receptionRecord ReceptionRecord [not null]
+  fullName String [not null]
+  telephoneNumber String [not null]
+  address String
+  createdAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (fullName, telephoneNumber) [unique]
+  }
+}
+
+Table Pet {
+  id String [pk]
+  client Client [not null]
+  clientId String [not null]
+  AnalyzesResearch AnalyzesResearch [not null]
+  Reception Reception [not null]
+  alias String [not null]
+  kind String
+  gender Boolean
+  breed String
+  DOB DateTime
+  nutrition String
+  color String
+  castration Boolean
+  notes String
+  diagnosis String
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table AnalyzesResearch {
+  id String [pk]
+  typeAnalyzesResearch TypeAnalyzesResearch [not null]
+  typeId Int [not null]
+  pet Pet [not null]
+  petId String [not null]
+  data String [not null]
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table TypeAnalyzesResearch {
+  id Int [pk, increment]
+  typeName String [not null]
+  AnalyzesResearch AnalyzesResearch [not null]
+}
+
+Table Reception {
+  id String [pk]
+  pet Pet [not null]
+  petId String [not null]
+  Employee Employee [not null]
+  employeeId Int [not null]
+  purpose ReceptionPurpose [not null]
+  purposeId Int [not null]
+  goodsList GoodsList [not null]
+  serviceList ServiceList [not null]
+  clinicalSigns String
+  anamnesis String
+  diagnosis String
+  assignment String
+  cost Float
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table ReceptionPurpose {
+  id Int [pk, increment]
+  reception Reception [not null]
+  receptionRecord ReceptionRecord [not null]
+  purposeName String [not null]
+}
+
+Table Goods {
+  id Int [pk, increment]
+  GoodsCategory GoodsCategory [not null]
+  categoryId Int [not null]
+  goodsList GoodsList [not null]
+  name String [not null]
+  measure String
+  quantity Float
+  price Float
+}
+
+Table GoodsCategory {
+  id Int [pk, increment]
+  goods Goods [not null]
+  categoryName String [not null]
+}
+
+Table GoodsList {
+  Reception Reception [not null]
+  receptionId String [not null]
+  Goods Goods [not null]
+  goodsId Int [not null]
+  quantity Float [not null]
+
+  indexes {
+    (receptionId, goodsId) [pk]
+  }
+}
+
+Table Service {
+  id Int [pk, increment]
+  ServiceType ServiceType [not null]
+  typeId Int [not null]
+  serviceList ServiceList [not null]
+  name String [not null]
+  price Float
+}
+
+Table ServiceType {
+  id Int [pk, increment]
+  service Service [not null]
+  typeName String [not null]
+}
+
+Table ServiceList {
+  Reception Reception [not null]
+  receptionId String [not null]
+  Service Service [not null]
+  serviceId Int [not null]
+  quantity Int [not null]
+
+  indexes {
+    (receptionId, serviceId) [pk]
+  }
+}
+
+Table Schedule {
+  id String [pk]
+  Employee Employee [not null]
+  employeeId Int [not null]
+  data DateTime [not null]
+  dayType Int [not null]
+}
+
+Table ReceptionRecord {
+  id String [pk]
+  Employee Employee
+  employeeId Int
+  ReceptionPurpose ReceptionPurpose
+  receptionPurposeId Int
+  Client Client
+  clientId String
+  dataTime DateTime [not null]
+  kindOfAnimal String
+}
+
+Enum Role {
+  ADMIN
+  DOCTOR
+  MANAGER
+}
+
+Ref: Pet.clientId > Client.id
+
+Ref: AnalyzesResearch.typeId > TypeAnalyzesResearch.id
+
+Ref: AnalyzesResearch.petId > Pet.id
+
+Ref: Reception.petId > Pet.id
+
+Ref: Reception.employeeId > Employee.id
+
+Ref: Reception.purposeId > ReceptionPurpose.id
+
+Ref: Goods.categoryId > GoodsCategory.id
+
+Ref: GoodsList.receptionId > Reception.id
+
+Ref: GoodsList.goodsId > Goods.id
+
+Ref: Service.typeId > ServiceType.id
+
+Ref: ServiceList.receptionId > Reception.id
+
+Ref: ServiceList.serviceId > Service.id
+
+Ref: Schedule.employeeId > Employee.id
+
+Ref: ReceptionRecord.employeeId > Employee.id
+
+Ref: ReceptionRecord.receptionPurposeId > ReceptionPurpose.id
+
+Ref: ReceptionRecord.clientId > Client.id

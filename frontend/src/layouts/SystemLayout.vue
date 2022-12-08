@@ -9,8 +9,6 @@ import { defineComponent, onMounted } from "vue";
 export default defineComponent({
   name: "system-layout",
   components: {},
-  setup() {
-
-  },
+  setup() {},
 });
 </script>

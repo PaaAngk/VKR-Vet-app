@@ -1,16 +1,32 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { User, UserAuthInfo } from "@/core/types/user.types";
+// import { User, UserAuthInfo } from "@/core/types/user.types";
 import JwtService from "@/core/services/JwtService";
 import ApiService from "@/core/services/ApiService";
 
+export enum Role {
+  Admin,
+  Doctor,
+}
+
+interface User {
+  username: string;
+  // role: Role;
+}
+
+interface UserAuthInfo {
+  errors: any;
+  user: User;
+  isAuthenticated: boolean;
+}
+
 export const useUserStore = defineStore("user", {
-  state: () : UserAuthInfo => {
+  state: (): UserAuthInfo => {
     return {
-      errors : {},
-      user : {} as User,
-      isAuthenticated : !!JwtService.getToken()
-    }
+      errors: {},
+      user: {} as User,
+      isAuthenticated: !!JwtService.getToken(),
+    };
   },
 
   getters: {
@@ -18,7 +34,7 @@ export const useUserStore = defineStore("user", {
      * Get current user object
      * @returns User
      */
-    currentUser(state) : User{
+    currentUser(state): User {
       return state.user;
     },
 
@@ -36,10 +52,9 @@ export const useUserStore = defineStore("user", {
      */
     getErrors() {
       return this.errors;
-    }
+    },
   },
   actions: {
-
     setAuth(user) {
       this.isAuthenticated = true;
       this.user = user;
@@ -55,37 +70,37 @@ export const useUserStore = defineStore("user", {
     },
 
     login(credentials) {
-      return ApiService.post("login", credentials)
+      console.log(credentials)
+      return ApiService.post("auth/login", credentials)
         .then(({ data }) => {
-          this.set_auth(data);
+          this.setAuth(data);
+          console.log(data);
         })
         .catch(({ response }) => {
           this.errors = response.data.errors;
+          console.log(response.data.errors);
         });
     },
 
     logout() {
-      this.purge_auth()
+      console.log('sdfsdf')
+      this.purgeAuth();
     },
 
-    VERIFY_AUTH(payload) {
+    verifyAuth(payload) {
       if (JwtService.getToken()) {
         ApiService.setHeader();
-        ApiService.post("verify_token", payload)
+        ApiService.get("profile", payload)
           .then(({ data }) => {
-            this.context.commit(Mutations.SET_AUTH, data);
+            this.setAuth(data);
           })
           .catch(({ response }) => {
-            this.context.commit(Mutations.SET_ERROR, response.data.errors);
-            this.context.commit(Mutations.PURGE_AUTH);
+            this.error(response.data.errors);
+            this.purgeAuth();
           });
       } else {
-        this.context.commit(Mutations.PURGE_AUTH);
+        this.purgeAuth();
       }
     },
-
-  }
-
-
-
+  },
 });
