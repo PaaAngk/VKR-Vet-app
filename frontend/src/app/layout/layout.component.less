@@ -1,0 +1,73 @@
+@import '~@taiga-ui/core/styles/taiga-ui-local';
+
+.layout {
+
+    > * {
+        position: relative;
+        display: flex;
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    router-outlet {
+
+        + * {
+            position: relative;
+            display: flex;
+            flex: 1 1 auto;
+            width: 100%;
+        }
+    }
+
+    .main-menu{
+        color: var(--tui-text-01-night)
+    }
+}
+
+
+.navbar { 
+    flex: 0 0 auto;
+    background-color: rgba(30, 41, 59);
+    .shadow(6);
+}
+
+.tui-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.nav-link, .nav-link_user {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 0;
+    font-size: 16px;
+    line-height: 18px;
+    list-style: none;
+    color:var(--tui-text-01-night); 
+    ._active{
+        color:var(--tui-text-01-night); 
+    }
+    :hover{
+        color:var(--tui-text-01-night); 
+    }
+}
+ 
+.icon {
+    margin-left: 0.25rem;
+ 
+    &_rotated {
+        transform: rotate(180deg);
+    }
+}   
+
+.footer {
+    flex: 0 0 auto;
+    .shadow(6);
+    display: block;
+    text-align: center;
+    padding: 1rem 0;
+    background-color: var(--tui-base-01);
+    
+}

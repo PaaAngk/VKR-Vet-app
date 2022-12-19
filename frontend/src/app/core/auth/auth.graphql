@@ -1,0 +1,18 @@
+query currentUserProfile {
+    me {
+        id
+        fullName
+        login
+    }
+}
+
+mutation login($data:LoginInput!) {
+  login(data:$data) {
+    accessToken
+    user {
+        id
+        login
+        fullName
+    }
+  }
+}

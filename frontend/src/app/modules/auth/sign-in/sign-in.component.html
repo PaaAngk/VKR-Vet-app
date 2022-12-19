@@ -1,0 +1,68 @@
+<div class="flex flex-col flex-auto h-full items-center justify-center sign-in h-screen">
+    <div class="w-auto py-8 px-4 p-12 rounded-2xl bg-white ">
+        <div class="w-80">
+
+            <!-- Title -->
+            <div class="mb-2 text-4xl font-extrabold tracking-tight leading-tight justify-center">Вход</div>
+
+            <tui-notification
+                class="tui-space_bottom-2"
+                *ngIf="errorAlertSubmitting"
+                status="error"
+                [hasIcon]="false"
+            >
+                Введен некорректный логин или пароль. 
+            </tui-notification>
+
+            <form class="b-form" [formGroup]="signInForm" (ngSubmit)="signIn()"> 
+                <div class="tui-form__row " >
+                    <div class="tui-space_bottom-5 ">
+                      <tui-input
+                        class=""
+                        formControlName="login"
+                        [tuiTextfieldCleaner]="true"
+                      >
+                          Введите логин&nbsp;
+                          <span class="tui-required"></span>
+                          <input
+                            tuiTextfield
+                            placeholder="Введите ваш логин"
+                          />
+                      </tui-input>
+                      <tui-error
+                        class="error-message"
+                        formControlName="login"
+                        [error]="[] | tuiFieldError | async"
+                      ></tui-error>
+                    </div>
+                    <tui-input-password
+                      ngDefaultControl
+                      formControlName="password"
+                            
+                      [tuiTextfieldCleaner]="true"
+                    >
+                        Введите пароль
+                        <span class="tui-required"></span>
+                    <input tuiTextfield placeholder="Введите ваш пароль"/> </tui-input-password>
+                    <tui-error
+                      class="error-message"
+                      formControlName="password"
+                      [error]="[] | tuiFieldError | async"
+                    ></tui-error>
+                    
+                    <div class="tui-form__buttons justify-center">
+                        <button
+                            tuiButton
+                            [disabled]="isSubmitting"
+                            size="l"
+                            type="submit"
+                            class="tui-form__button"
+                        >
+                            Войти
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

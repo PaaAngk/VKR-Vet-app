@@ -1,20 +1,20 @@
 mutation Admin {
-  login(data: { email: "bart@simpson.com", password: "secret42" }) {
+  login(data: { login: "ivan.ivanovich", password: "secret42" }) {
     ...AuthTokens
   }
 }
 
-mutation User {
-  login(data: { email: "lisa@simpson.com", password: "secret42" }) {
+mutation Doctor {
+  login(data: { login: "petr.petrovich", password: "secret42" }) {
     ...AuthTokens
   }
 }
 
-mutation AuthUser {
-  signup(data: { email: "bart@simpson.com", password: "secret42" }) {
-    ...AuthTokens
-  }
-}
+# mutation AuthUser {
+#   signup(data: { login: "bart@simpson.com", password: "secret42" }) {
+#     ...AuthTokens
+#   }
+# }
 
 mutation RefreshToken {
   refreshToken(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJja3lqdDZrdmkwMDIxcHdldmM0OW8zYTAyIiwiaWF0IjoxNjQ0ODMyNzYyLCJleHAiOjE2NDU0Mzc1NjJ9.eSD3zIsVBNS1pTRtYjjYrCWUYBcUL5ZeCpPTDXEc68Y") {
@@ -24,7 +24,7 @@ mutation RefreshToken {
 
 fragment UserData on User {
   id
-  email
+  login
 }
 
 fragment AuthTokens on Auth {

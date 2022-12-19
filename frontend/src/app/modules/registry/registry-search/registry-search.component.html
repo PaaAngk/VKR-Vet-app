@@ -1,0 +1,172 @@
+<div class="flex flex-row h-full w-full bg-white shadow-xl rounded-xl" *ngIf="!cardOpened">
+    <!-- tree menu -->
+    <div [ngClass]="'flex basis-1/5 flex-col w-60 h-full' + (menuSidebarVisible ? '' : ' hidden')">
+        <!-- Header -->
+        <div class="py-3 flex items-center justify-center bg-gray-100 border-b border-color">
+            <p class="tui-text_body-xl">Разделы реестра</p>
+        </div>
+
+        <!-- Tree view -->
+        <div class="h-full p-1">
+            <tui-tree
+                *ngFor="let item of menu.children"
+                [tuiTreeController]="false"
+                [value]="item"
+                [content]="content"
+                [childrenHandler]="handler"
+            ></tui-tree>
+            
+            <!-- Tree elements -->
+            <ng-template
+                #content
+                let-item
+                let-node="node"
+            >
+                <button
+                    tuiLink
+                    ngClass="hover:bg-gray-200 rounded-md"
+                    (click)="setParamsInURL(item.query)"
+                    [routerLink]="item.query"
+                >
+                    <p 
+                        [ngClass]="'px-1 my-0.5 rounded-md hover:bg-gray-200 ' + (registrySection==item.query ? 'bg-gray-100' : ' ')"
+                    >
+                        {{item.text}}
+                    </p>
+                </button>
+            </ng-template>
+        </div>
+    </div>
+
+    <div class="w-full basis-full block shadow-inner h-full p-2 border-r border-l border-color ">
+        <div tuiTextfieldSize="m" class="flex justify-between items-center h-full py-auto">
+            <button
+                tuiIconButton
+                size="xs"
+                type="button"
+                appearance="icon"
+                icon="tuiIconMenuLarge"
+                class="my-auto"
+                (click)="menuSidebarVisible = !menuSidebarVisible"
+            ></button>
+
+            <div class="flex space-x-2">
+                <tui-input
+                    class="w-44"
+                    [tuiTextfieldCleaner]="true"
+                    [(ngModel)]="search"
+                >
+                    Поиск в таблице
+                </tui-input>
+
+                <div *ngTemplateOutlet="columnEditorTemplate">
+                </div>
+
+                <button
+                    tuiButton
+                    icon="tuiIconUploadLarge"
+                    size="m"
+                >
+                    Выгрузка
+                </button>
+                
+                <button
+                    tuiButton
+                    icon="tuiIconPrintLarge"
+                    size="m"
+                >
+                    Печать
+                </button>
+                <button
+                    tuiButton
+                    size="m"
+                    type="button"
+                    (click)="toggleVisibilitySidebarFilter(true)"
+                >
+                    Filter
+                    <div *tuiSidebar="visibilitySidebarFilter; direction: 'right' autoWidth:true" class="w-96 h-full">
+                        <ng-container *ngTemplateOutlet="sidebarContent"></ng-container>
+                    </div>
+                    <ng-template #sidebarContent >
+                        <app-advanced-dynamic-filter class="w-full h-full" 
+                            [segmentForms]="advancedFilter$ | async" 
+                            (visibilitySidebarFilter)="toggleVisibilitySidebarFilter($event)" 
+                            (formValues)="formValue($event)"
+                        ></app-advanced-dynamic-filter>
+                    </ng-template>
+                </button>
+            </div>
+
+            <button
+                tuiButton
+                class=""
+                icon="tuiIconFilter"
+                size="m"
+                (click)="filterSideBarVisible = !filterSideBarVisible"
+            >
+                Фильтры
+            </button>
+        </div>
+    
+
+        <ng-container *ngIf="!riurs">
+            <div class="flex-none flex-col items-center text-center">
+                <div class="mt-4 text-2xl font-semibold">Выберите раздел реестра</div>
+            </div>
+        </ng-container>
+        
+        <ng-container *ngIf="riurs">
+            <advanced-table
+                    [DATA]="filteredRiurs"
+                    [tableColumns] = "tableColumns"
+                    rowActionIcon = "tuiIconExternal"
+                    sortByColumnKey = "DOB"
+                    [resizableColumn] = true
+                    [stickyColumn] = true
+                    [search] = 'search'
+                    (columnEditorEmiter) = 'setColumnEditorTemplate($event)'
+                    (rowAction) = "toCard($event)"
+                >
+            </advanced-table>
+        </ng-container>
+    </div>
+
+    <div [ngClass]="'flex-col basis-1/4 w-60 h-full overflow-y-auto ' + (filterSideBarVisible ? '' : ' hidden')">
+
+        <div class="flex justify-between items-center py-3 px-2 bg-gray-100 border-b border-color">                
+            <p class="tui-text_body-xl"><tui-svg src="tuiIconFilter"></tui-svg> Фильтры</p>
+            <button
+                tuiIconButton
+                size="xs"
+                type="button"
+                appearance="icon"
+                icon="tuiIconCloseLarge"                
+                (click)="filterSideBarVisible = !filterSideBarVisible"
+            ></button>
+        </div>
+
+
+        <form
+            [formGroup]="filterForm"
+            class="p-2 flex flex-col space-y-4 "
+            tuiTextfieldSize="l"
+        >
+            <tui-input-count
+                formControlName="age"
+                [tuiTextfieldCleaner]="true"
+            >
+                Минимальный возраст
+            </tui-input-count>
+
+        </form>
+    </div>
+
+</div>
+<div class="h-full w-full bg-white shadow-xl rounded-xl" *ngIf="cardOpened">
+    <registry-object-card class="h-full w-full" [object]="selectedItem" (onReturn)="onReturnClick()"></registry-object-card>
+</div>
+  
+
+<div *ngIf="payLoad" >
+    <strong>Saved the following values</strong><br>{{payLoad}}
+</div>

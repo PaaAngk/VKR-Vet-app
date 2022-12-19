@@ -1,0 +1,181 @@
+<div class="flex flex-row bg-white shadow-xl rounded-xl" *ngIf="true">
+
+    <div class="w-full basis-full block h-full p-2 border-r border-l border-color rounded-lg bg-white">
+        <div tuiTextfieldSize="m" class="flex justify-evenly items-center h-full py-auto">
+            <form [formGroup]="searchForm">
+                <tui-input
+                    class="lg:w-96 mr-5"
+                    tuiTextfieldIconLeft = 'tuiIconSearchLarge'
+                    [tuiTextfieldCleaner] = true
+                    tuiTextfieldSize = 'l'
+                    formControlName="search"
+                >
+                    Поиск клиента
+                    <input
+                        tuiTextfield
+                        placeholder ="Начните вводить ФИО или номер клиента"
+                    />    
+                </tui-input>
+            </form>
+
+            <button
+                tuiButton
+                (click)="showDialog(template)"
+                icon="tuiIconAddRowLarge"
+                size="l"
+            >
+            <p class="text-lg">
+                Добавить клиента</p>
+            </button>
+        </div>
+
+        <ng-container *ngIf="!data">
+            <div class="flex-none flex-col items-center text-center">
+                <div class="mt-4 text-2xl font-semibold">Выберите</div>
+            </div>
+        </ng-container>
+        
+        <ng-container *ngIf="data">
+            <div class="flex-none flex-col items-center text-center mb-3">
+                <div class="mt-4 text-2xl font-semibold">Ближайшие записи</div>
+            </div>
+            <table
+                class="w-full"
+                tuiTable
+                [columns]="columns"
+            >
+                <thead>
+                    <tr tuiThGroup>
+                        <th
+                            *tuiHead="'time'"
+                            class="w-24 "
+                            tuiTh
+                        >
+                            Время
+                        </th>
+                        <th
+                            *tuiHead="'fullName'"
+                            tuiTh
+                        >
+                            ФИО
+                        </th>
+                        <th
+                            *tuiHead="'telephone'"
+                            tuiTh
+                            [sorter]="null"
+                        >
+                            Телефон
+                        </th>
+                        <th
+                            *tuiHead="'pets'"
+                            tuiTh
+                            [sorter]="null"
+                        >
+                            Питомцы
+                        </th>
+                        <th
+                            *tuiHead="'actions'"
+                            tuiTh
+                            class="lg:w-64"
+                            [sorter]="null"
+                        ></th>
+                    </tr>
+                </thead>
+                <tbody
+                    *tuiLet="users | tuiTableSort as sortedUsers"
+                    tuiTbody
+                    [data]="sortedUsers"
+                >
+                    <tr
+                        *ngFor="let item of sortedUsers; let index = index"
+                        tuiTr
+                    >
+                        <td
+                            *tuiCell="'time'"
+                            tuiTd
+                        >
+                            {{ item.time }}
+                        </td>
+                        <td
+                            *tuiCell="'fullName'"
+                            tuiTd
+                        >
+                            {{ item.fullName }}
+                        </td>
+                        <td
+                            *tuiCell="'telephone'"
+                            tuiTd
+                        >
+                            {{ item.telephone }}
+                        </td>
+                        <td
+                            *tuiCell="'pets'"
+                            class="space-x-2"
+                            tuiTd
+                        >
+                            <tui-tag
+                                *ngFor="let tag of item.pets"
+                                size="m"
+                                [hoverable]="true"
+                                [value]="tag.alias"
+                                [autoColor]="true"
+                            ></tui-tag>
+                        </td>
+                        <td
+                            *tuiCell="'actions'"
+                            class="space-x-2"
+                            tuiTd
+                        >
+                            <button
+                                tuiIconButton
+                                appearance="flat"
+                                size="s"
+                                icon="tuiIconShowLarge"
+                                title="Перейти"
+                                shape="rounded"
+                            ></button>
+                            <button
+                                tuiButton
+                                size="s"
+                            >
+                                Просмотр
+                            </button>
+                            <button
+                                tuiButton
+                                size="s"
+                            >
+                                Изменить
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+        </table>
+        </ng-container>
+    </div>
+</div>
+<ng-template
+    #template
+    let-observer
+>
+    <p>You can show a dialog with template</p>
+    <p>
+        Your balance:
+        
+    </p>
+    <button
+        tuiButton
+        type="button"
+        size="m"
+        class="tui-space_right-3"
+    >
+        Withdraw&nbsp;
+    </button>
+    <button
+        tuiButton
+        type="button"
+        size="m"
+        (click)="observer.complete()"
+    > 
+        Cancel
+    </button>
+</ng-template>

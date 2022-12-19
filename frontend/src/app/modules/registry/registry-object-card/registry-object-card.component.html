@@ -1,0 +1,144 @@
+<ng-container *ngIf="!object">
+    <div class="flex justify-center items-center w-full h-full">
+        <div class="text-2xl font-semibold m-10">Не удалось загрузить данные, <a tuiLink> вернуться назад </a></div>
+        
+    </div>
+</ng-container>
+<div class="w-full h-full" *ngIf="object">
+    <div tuiTextfieldSize="m" class="flex p-2 space-x-2 border-b border-color">
+        <button
+            tuiIconButton
+            size="xs"
+            type="button"
+            appearance="icon"
+            icon="tuiIconArrowLeftLarge"
+            class="my-auto border-r border-color"
+            (click)="returnClick()"
+        ></button>
+        <button
+            tuiButton
+            icon="tuiIconEditLarge"
+            size="m"
+        >
+            Изменить
+        </button>
+        <button
+            tuiButton
+            icon="tuiIconSublevelLarge"
+            size="m"
+        >
+            Сохранить
+        </button>
+        <button
+            tuiButton
+            icon="tuiIconPrintLarge"
+            size="m"
+        >
+            Печать
+        </button>
+    </div>
+    <div class="flex flex-col justify-center items-center w-full">
+        <div class="items-center text-2xl">Карточка: <i class="uppercase">{{object.secondName}} {{object.firstName}} {{object.lastName}}</i></div>
+        <div class="items-center ">
+            <tui-tabs [(activeItemIndex)]="activeItemIndex">
+                <button
+                    tuiTab
+                    (click)="onClick('Main')"
+                >                    
+                    Основное
+                </button>
+                <button
+                    tuiTab
+                    (click)="onClick('Info')"
+                >          
+                    Информация
+                </button>
+                <button
+                    tuiTab
+                    (click)="onClick('Detail')"
+                >
+                    Детали
+                </button>
+            </tui-tabs>
+            
+        </div>
+    </div>
+    <div class="w-full h-full p-2">
+        <ng-container *ngIf="drawerComponent === 'Main'">
+            <form [formGroup]="testForm">
+                <div class="tui-row tui-row_sme">
+                    <div class="tui-col_6">
+                        <h3 class="tui-form__header tui-form__header_margin-top_none">Основное</h3>
+                        <div class="tui-form__row">
+                            <tui-input
+                                
+                                formControlName="nameValue"
+                                tuiHintContent="Подсказка"
+                            >
+                                Поле ввода 
+                                <span class="tui-required"></span>
+                            <input tuiTextfield placeholder="Ввести похожее значение"/> </tui-input>
+                            <tui-error
+                                formControlName="nameValue"
+                                [error]="[] | tuiFieldError | async"
+                            ></tui-error>
+                        </div>
+                        <div class="tui-form__row">
+                            <tui-input-date
+                                
+                                formControlName="periodValue"
+                            >
+                                Ввод даты
+                                <span class="tui-required"></span>
+                            <input tuiTextfield placeholder="Ввод даты"/> </tui-input-date>
+                            <tui-error
+                                formControlName="periodValue"
+                                [error]="[] | tuiFieldError | async"
+                            ></tui-error>
+                        </div>
+                    </div>
+                </div>
+            </form> 
+        </ng-container> 
+        <ng-container *ngIf="drawerComponent === 'Info'">
+            <h3 class="tui-form__header tui-form__header_margin-top_none">Информация</h3>
+            <p>ФИО: {{object.secondName}} {{object.firstName}} {{object.lastName}}</p>
+            <p>Дата рождения {{object.DOB}}</p>
+            <p>Место рождения {{object.placeBirth}}</p>
+            <p>Место проживания {{object.DOB}}</p>
+            <p>Возраст {{object.age}}</p>
+        </ng-container> 
+        <ng-container *ngIf="drawerComponent === 'Detail'">
+            <h3 class="tui-form__header tui-form__header_margin-top_none">Детали</h3>
+            <tui-input-files
+                *ngIf="!control.value"
+                accept="image/*"
+                [formControl]="control"
+                (reject)="onReject($event)"
+            ></tui-input-files>
+            
+            <tui-files class="tui-space_top-1">
+                <tui-file
+                    *ngIf="control.valueChanges | async as file"
+                    [file]="file"
+                    (removed)="removeFile()"
+                ></tui-file>
+            
+                <tui-file
+                    *ngIf="rejectedFiles$ | async as file"
+                    state="error"
+                    [file]="file"
+                    (removed)="clearRejected()"
+                ></tui-file>
+            </tui-files>
+        </ng-container>    
+    </div>
+    
+    
+    
+</div>
+
+
+
+  
+
