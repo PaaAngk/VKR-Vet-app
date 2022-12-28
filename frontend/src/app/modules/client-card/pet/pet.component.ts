@@ -1,0 +1,85 @@
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import {TuiDialogService} from '@taiga-ui/core';
+import {  Subject, takeUntil } from 'rxjs';
+import { AnalyzesResearch, Client, Pet, Reception } from 'src/graphql/generated';
+import { ClientCardService } from '../client-card.service';
+
+@Component({
+	selector: 'vet-crm-pet',
+	templateUrl: './pet.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class PetComponent implements OnDestroy{
+	private _unsubscribeAll: Subject<any> = new Subject<any>();
+
+	pet: Pet = {} as Pet;
+	receptions: Reception[] = [] as Reception[];
+	analyzesResearchs: AnalyzesResearch[] = [] as AnalyzesResearch[];
+	activeItemIndex = 1;
+	readonly receptionColumns = ['receptionPurpose', 'diagnosis', 'date', 'cost', 'actions'];
+	readonly analyzesColumns = ['type', 'date', 'actions']
+ 
+    constructor(
+        @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+        @Inject(Injector) private readonly injector: Injector,
+		private clientCardService: ClientCardService,
+		private _changeDetectorRef: ChangeDetectorRef,
+		private router: Router,
+    ) {
+		this.clientCardService.getPetDetail("clc3d28c90001u0eghoixfijs");
+
+		// Getting data 
+		this.clientCardService.getPet$
+		.pipe(takeUntil(this._unsubscribeAll))
+		.subscribe((pet: Pet) => {	
+			this.pet = pet;
+			this.receptions = pet.receptions || [] as Reception[];
+			this.analyzesResearchs = pet.analyzesResearchs || [] as AnalyzesResearch[];
+			console.log(pet);
+			this._changeDetectorRef.markForCheck();
+		});
+
+
+	}
+
+	ngOnDestroy(): void
+	{
+		// Unsubscribe from all subscriptions
+		this._unsubscribeAll.next(undefined);
+		this._unsubscribeAll.complete();
+	}
+
+	// -----------------------------------------------------------------------------------------------------
+	// @ Public methods
+	// -----------------------------------------------------------------------------------------------------
+   
+ 
+	setClient(clientId : string) {
+		this.clientCardService.setSelectedClient(clientId);
+		this.router.navigateByUrl('client-card/detail');
+	}
+
+
+}
+
+
+
+// users: readonly ClientTable[] = [
+// 	{
+// 		time: `10:15`,
+// 		fullName: `Иванов Иван Иванович`,
+// 		telephone: `89365147824`,
+// 		pets: [{alias:"Пэти", kind:"Кошка"}],
+// 	},
+// 	{
+// 		time: `11:30`,
+// 		fullName: `Сидоров Сидор Сидорович`,
+// 		telephone: `89365147824`,
+// 		pets: [
+// 			{alias:"Дог", kind:"Кошка"},
+// 			{alias:"Кэт", kind:"Собака"}
+// 		],
+// 	}
+// ];

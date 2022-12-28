@@ -1,0 +1,177 @@
+<form [formGroup]="addPetForm" class="space-y-4 justify-center">
+
+    <div class="tui-form__row tui-form__row_multi-fields">
+        <div class="tui-form__multi-field">
+            <tui-input
+                [tuiTextfieldCleaner] = true
+                formControlName="alias"
+            >
+                Кличка  
+            </tui-input>
+            <tui-error
+                formControlName="alias"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+
+        <div class="tui-form__multi-field">
+            <tui-combo-box
+                class="b-form"
+                formControlName="kind"
+            >
+                Вид питомца
+                <input
+                    tuiTextfield
+                    placeholder="Начните вводить название"
+                />
+                <tui-data-list-wrapper
+                    *tuiDataList
+                    [items]="petsKind | tuiFilterByInput"
+                ></tui-data-list-wrapper>
+            </tui-combo-box>
+
+            <tui-error
+                formControlName="kind"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+    </div>
+
+    <div class="tui-form__row tui-form__row_multi-fields">
+        <div class="tui-form__multi-field">
+            <tui-input formControlName="breed">
+                Порода 
+            </tui-input>
+            <tui-error
+                formControlName="breed"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+        <div class="tui-form__multi-field">
+            <tui-input
+                formControlName="color"
+            >
+                Окрас
+            </tui-input>
+            <tui-error
+                formControlName="color"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+    </div>
+    
+    <div class="tui-form__row">
+        <tui-input formControlName="nutrition">
+            Питание 
+        </tui-input>
+        <tui-error
+            formControlName="nutrition"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+    </div>
+
+
+
+    <div class="tui-form__row tui-form__row_multi-fields">
+        <div class="tui-form__multi-field">
+            <tui-input-date formControlName="DOB">Дата рождения</tui-input-date>
+            <tui-error
+                formControlName="DOB"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+
+        <div class="tui-form__multi-field">
+            <tui-input-number
+                formControlName="weight"
+                [postfix] = "'кг'"
+                [precision]="1"
+                [min]="0"
+                [max]="150"
+            >
+                Вес
+            </tui-input-number>
+            <tui-error
+                formControlName="weight"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+    </div>
+
+    <div class="tui-form__row tui-form__row_multi-fields">
+        <div class="tui-form__multi-field">
+            <h3 class="tui-form__header tui-form__header_margin-top_none tui-form__header_margin-bottom_none ml-2">Пол</h3>
+            <div
+                tuiGroup
+                orientation="vertical"
+                class="group w-full"
+                [collapsed]="true"
+            >
+                <tui-radio-block
+                    contentAlign="right"
+                    formControlName="gender"
+                    [item]="true"
+                >
+                    Мужской
+                </tui-radio-block>
+                <tui-radio-block
+                    contentAlign="right"
+                    formControlName="gender"
+                    [item]="false"
+                >
+                    Женский
+                </tui-radio-block>
+            </div>
+        </div>
+
+        <div class="tui-form__multi-field">
+            <h3 class="tui-form__header tui-form__header_margin-top_none tui-form__header_margin-bottom_none ml-2" >Кастрация</h3>
+            <div
+                tuiGroup
+                orientation="vertical"
+                class="group w-full"
+                [collapsed]="true"
+            >
+                
+                <tui-radio-block
+                    contentAlign="right"
+                    formControlName="castration"
+                    [item]="true"
+                >
+                    Есть
+                </tui-radio-block>
+                <tui-radio-block
+                    contentAlign="right"
+                    formControlName="castration"
+                    [item]="false"
+                >
+                    Нет
+                </tui-radio-block>
+            </div>
+        </div>
+    </div>
+
+    <div class="tui-form__row">
+        <tui-text-area
+            [tuiTextfieldCleaner] = true
+            formControlName="notes"
+        >
+            Особые отметки  
+        </tui-text-area>
+        <tui-error
+            formControlName="notes"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+    </div>
+
+    <button
+        tuiButton
+        type="button"
+        size="m"
+        [disabled]="!hasValue"
+        (click)="submit()"
+    >
+        Добавить
+    </button>
+
+</form>

@@ -1,0 +1,40 @@
+<form [formGroup]="searchForm" class="space-y-4 justify-center">
+    <tui-input
+        [tuiTextfieldCleaner] = true
+        formControlName="fullName"
+    >
+        ФИО  
+    </tui-input>
+    <tui-error
+        formControlName="fullName"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
+
+    <tui-input-phone formControlName="telephoneNumber">
+        Номер телефона 
+    </tui-input-phone>
+    <tui-error
+        formControlName="telephoneNumber"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
+
+    <tui-input
+        [tuiTextfieldCleaner] = true
+        formControlName="address"
+    >
+        Адрес  
+    </tui-input>
+
+    <button
+        tuiButton
+        type="button"
+        size="m"
+        [disabled]="!hasValue"
+        (click)="submit()"
+    >
+        Добавить
+    </button>
+
+</form>
+
+

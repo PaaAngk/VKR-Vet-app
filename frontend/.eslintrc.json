@@ -18,6 +18,7 @@
         ],
         "@typescript-eslint/no-explicit-any": ["off"],
         "@typescript-eslint/no-inferrable-types": "off",
+        "@nrwl/nx/enforce-module-boundaries": "off",
         "@typescript-eslint/ban-types": [
           "error",
           {

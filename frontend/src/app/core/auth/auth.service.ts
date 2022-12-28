@@ -103,23 +103,5 @@ export class AuthService
 			}),
 			take(1)
 		)
-		// .subscribe({
-		// 	next : (data) => {console.log(data.data?.login.accessToken)},
-		// 	error: (error)  => {console.log(error)}
-		// });
-		// return of([])
-		// return this.apiService.post(`/auth/sign-in`, formData)
-		// .pipe(
-		// 	map((token) => {
-		// 	if (token.length == 0) {
-		// 		return token;
-		// 	}
-		// 	else{
-		// 		this.setAuth(token.access_token);
-		// 	}
-		// 	return token;
-		// 	}),
-		// 	take(1)
-		// );
 	}
 }

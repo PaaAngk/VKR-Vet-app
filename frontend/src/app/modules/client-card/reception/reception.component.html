@@ -1,0 +1,276 @@
+<div class="flex flex-col space-y-3" *ngIf="true">
+
+    <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
+        <div tuiTextfieldSize="m" class="flex justify-between items-center h-full py-auto">
+            <div class="space-x-4">
+                <button
+                    tuiButton
+                    icon="tuiIconAddRowLarge"
+                    size="m"
+                >
+                    <p class="text-base">
+                        Добавить прием
+                    </p>
+                </button>
+                <button
+                    tuiButton
+                    icon="tuiIconAddRowLarge"
+                    size="m"
+                >
+                    <p class="text-base">
+                        Добавить анализы
+                    </p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full h-full rounded-lg bg-white shadow-md">
+        <tui-tabs [(activeItemIndex)]="activeItemIndex" class="mb-2">
+            <button
+                tuiTab
+            >
+                <p class="ml-4 mr-2">
+                    Основная информация
+                </p> 
+            </button>
+            <button
+                tuiTab
+            >
+                Лист назначения 
+            </button>
+            <button
+                tuiTab
+            >
+                Чек 
+            </button>
+        </tui-tabs>
+
+        <div class="p-2 overflow-auto max-w-full" [formGroup]="addPetForm">
+            <div class="space-y-4" *ngIf="activeItemIndex === 0">
+                <div class="tui-form__row tui-form__row_multi-fields">
+                    <div class="tui-form__multi-field">
+                        <tui-combo-box
+                            class="b-form"
+                            formControlName="purpose"
+                        >
+                            Цель визита
+                            <input
+                                tuiTextfield
+                                placeholder="Начните вводить цель визита"
+                            />
+                            <tui-data-list-wrapper
+                                *tuiDataList
+                                [items]="purposeList | tuiFilterByInput"
+                            ></tui-data-list-wrapper>
+                        </tui-combo-box>
+                        <tui-error
+                            formControlName="purpose"
+                            [error]="[] | tuiFieldError | async"
+                        ></tui-error>
+                    </div>
+            
+                    <div class="tui-form__multi-field">
+                        <tui-combo-box
+                            class="b-form"
+                            formControlName="employee"
+                        >
+                            Врач
+                            <input
+                                tuiTextfield
+                                placeholder="Начните вводить данные врача"
+                            />
+                            <tui-data-list-wrapper
+                                *tuiDataList
+                                [items]="employeeList | tuiFilterByInput"
+                            ></tui-data-list-wrapper>
+                        </tui-combo-box>
+                        <tui-error
+                            formControlName="employee"
+                            [error]="[] | tuiFieldError | async"
+                        ></tui-error>
+                    </div>
+                </div>
+
+                <div class="tui-form">
+                    <tui-input
+                        [tuiTextfieldCleaner] = true
+                        formControlName="anamnesis"
+                    >
+                        Анамнез  
+                    </tui-input>
+                    <tui-error
+                        formControlName="anamnesis"
+                        [error]="[] | tuiFieldError | async"
+                    ></tui-error>
+                </div>
+
+                <div class="tui-form">
+                    <tui-input
+                        [tuiTextfieldCleaner] = true
+                        formControlName="clinicalSigns"
+                        size = "l"
+                    >
+                        Клинические признаки  
+                    </tui-input>
+                    <tui-error
+                        formControlName="clinicalSigns"
+                        [error]="[] | tuiFieldError | async"
+                    ></tui-error>
+                </div>
+            </div>
+
+            <div class="space-y-4" *ngIf="activeItemIndex === 1">
+                <div class="tui-form">
+                    <tui-input
+                        [tuiTextfieldCleaner] = true
+                        formControlName="diagnosis"
+                        size = "l"
+                    >
+                        Диагноз  
+                    </tui-input>
+                    <tui-error
+                        formControlName="diagnosis"
+                        [error]="[] | tuiFieldError | async"
+                    ></tui-error>
+                </div>
+                <tui-editor
+                    exampleText="Example"
+                    formControlName="assignment"
+                    [exampleText]="'Введите рекомендации для клиента'"
+                    [tools] = "editorSettengs"
+                >
+                    Лист назначения
+                </tui-editor>
+                {{addPetForm.value.assignment}}
+            </div>
+
+            <div class="space-y-4" *ngIf="activeItemIndex === 2">
+
+                <tui-select
+                    class="b-form"
+                    formControlName="value"
+                >
+                    Select user
+                    <tui-data-list-wrapper
+                        *tuiDataList
+                        class="w-full"
+                        size="l"
+                        [items]="servicesList | tuiFilterByInput"
+                        [itemContent]="content"
+                    ></tui-data-list-wrapper>
+                </tui-select>
+                
+                <ng-template
+                    #content
+                    let-data
+                >
+                    <div class="flex flex-row justify-end w-full">
+                        <span>{{ data.name }}</span>
+                        <span>{{ data.price }}</span>
+                    </div>
+                </ng-template>
+
+                <tui-multi-select
+                    placeholder="Find by ..."
+                    class="b-form"
+                    [formControl]="testValue"
+                    [tuiTextfieldLabelOutside]="true"
+                    [expandable]="false"
+                >
+                    Rock Star Frontend Developers
+                    <tui-data-list-wrapper
+                        *tuiDataList
+                        [items]="servicesList | tuiHideSelected | tuiFilterByInput"
+                        [itemContent]="itemContent"
+                    ></tui-data-list-wrapper>
+                </tui-multi-select>
+                
+                <ng-template
+                    #itemContent
+                    let-data
+                >
+                    <div class="flex flex-row">
+                        <p>{{ data.name }}</p>
+                        {{ data.price }}
+                    </div>
+                </ng-template>
+
+
+
+
+                <table
+                    class="w-full"
+                    tuiTable
+                    [columns]="servicesColumns"
+                >
+                    <thead>
+                        <tr tuiThGroup>
+                            <th
+                                *tuiHead="'name'"       
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Услуга
+                            </th>
+                            <th
+                                *tuiHead="'price'"
+                                class="w-56"
+                                tuiTh
+                            >
+                                Цена 
+                            </th>                        
+                            <th
+                                *tuiHead="'actions'"
+                                tuiTh
+                                class="lg:w-32"
+                                [sorter]="null"
+                            >
+                                Количество
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody
+                        tuiTbody
+                        [data]="servicesList"
+                    >
+                        <tr
+                            *ngFor="let service of servicesList; let index = index"
+                            tuiTr
+                        >
+                            <td
+                                *tuiCell="'name'"
+                                tuiTd
+                            >
+                                {{ index+1 }}. <b>{{ service.name }}</b>
+                            </td>
+                            <td
+                                *tuiCell="'price'"
+                                tuiTd
+                            >
+                                {{ service.price }} ₽
+                            </td>
+                            <td
+                                *tuiCell="'actions'"
+                                class="space-x-2"
+                                tuiTd
+                            >
+                                <tui-input-count
+                                    formControlName="testValue1"
+                                    [min]="1"
+                                    [max]="200"
+                                >
+                                    Количество
+                                    <input
+                                        tuiTextfield
+                                        placeholder="Введите количество"
+                                    />
+                                </tui-input-count>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+    </div>
+</div>

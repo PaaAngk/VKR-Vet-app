@@ -1,0 +1,89 @@
+query GetClient($search:String!){
+  clientsWithSearch(search:$search){
+    id
+    fullName
+    telephoneNumber
+    pets{
+      id
+      alias
+    }
+  }
+}
+
+mutation CreateClient($data:CreateClientInput!) {
+  createClient(data:$data){
+    id
+	  fullName
+    telephoneNumber
+    address
+  }
+}
+
+query ClientDetail($clientId:String!){
+	clientDetail(clientId:$clientId){
+		id
+    fullName
+    address
+    telephoneNumber
+    pets{
+      id
+      alias
+      kind
+      gender
+      DOB
+      breed
+    }
+  }
+}
+
+mutation CreatePet($data:CreatePetInput!) {
+  createPet(data:$data){
+    id
+  }
+}
+
+query GetPetDetail($petId:String!){
+  pet(petId:$petId){
+    id
+    alias
+    DOB
+    alias
+    breed
+    castration
+    color
+    diagnosis
+    gender
+    kind
+    notes
+    nutrition
+    weight
+    receptions{
+      id
+      diagnosis
+      createdAt
+      cost
+      purpose{
+        purposeName
+      }
+    }
+    analyzesResearchs{
+      id
+      type{
+        typeName
+      }
+      createdAt
+    }
+  }
+}
+
+query GetAllService{
+  allServices{
+    id
+		name
+    price
+    type{
+      id
+      typeName
+    }
+  }
+}

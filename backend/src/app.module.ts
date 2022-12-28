@@ -12,14 +12,22 @@ import config from 'src/common/configs/config';
 import { loggingMiddleware } from 'src/common/middleware/logging.middleware';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GqlConfigService } from './gql-config.service';
+import { ClientModule } from './clients/clients.module';
+import { PetsModule } from './pets/pets.module';
+import { ReceptionModule } from './reception/reception.module';
+import AdminModule from './adminJS.module';
+import { AnalyzesResearchModule } from './analyzes-research/analyzes-research.module';
+import { ServiceModule } from './services/services.module';
+// import { AnalyzesResearchModule } from './analyzes-research/analyzes-research.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
+
     PrismaModule.forRoot({
       isGlobal: true,
       prismaServiceOptions: {
-        middlewares: [loggingMiddleware(new Logger('PrismaMiddleware'))], // configure your prisma middleware
+        middlewares: [loggingMiddleware(new Logger('PrismaMiddleware'))],
       },
     }),
 
@@ -28,9 +36,15 @@ import { GqlConfigService } from './gql-config.service';
       useClass: GqlConfigService,
     }),
 
+    AdminModule,
+
     AuthModule,
     UsersModule,
-    // PostsModule,
+    ClientModule,
+    PetsModule,
+    ReceptionModule,
+    AnalyzesResearchModule,
+    ServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

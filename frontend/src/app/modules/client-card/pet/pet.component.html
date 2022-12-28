@@ -1,0 +1,236 @@
+<div class="flex flex-col space-y-3" *ngIf="true">
+
+    <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
+        <div tuiTextfieldSize="m" class="flex justify-between items-center h-full py-auto">
+            <div>
+                <p class="text-base">
+                    <b class="mx-4 text-xl">{{ pet.alias }} </b> 
+                    Вид: <b class="mr-4">{{ pet.kind }}</b> 
+                    Дата рождения: <b class="mr-4">{{pet.DOB | date:'dd/MM/yyy' | checkNull}}</b>
+                    <!-- Диагноз: <b>{{pet.diagnosis| checkNull}}</b> -->
+                </p>
+            </div>
+
+            <div class="space-x-4">
+                <button
+                    tuiButton
+                    icon="tuiIconAddRowLarge"
+                    size="m"
+                >
+                    <p class="text-base">
+                        Добавить прием
+                    </p>
+                </button>
+                <button
+                    tuiButton
+                    icon="tuiIconAddRowLarge"
+                    size="m"
+                >
+                    <p class="text-base">
+                        Добавить анализы
+                    </p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full h-full rounded-lg bg-white shadow-md">
+        <tui-tabs [(activeItemIndex)]="activeItemIndex" class="mb-2">
+            <button
+                tuiTab
+            >
+                <p class="ml-4 mr-2">Данные питомца</p> 
+            </button>
+            <button
+                tuiTab
+            >
+                Приемы
+            </button>
+            <button
+                tuiTab
+            >
+                Анализы и исследования
+            </button>
+        </tui-tabs>
+
+        <div class="p-2 overflow-auto max-w-full">
+            <div class="text-2xl" *ngIf="activeItemIndex === 0">
+                <p> <b>Кличка: </b> {{ pet.alias }}</p>
+                <p> <b>Вид: </b> {{ pet.kind }}</p>
+                <p> <b>Порода: </b> {{ pet.breed  | checkNull }}</p>
+                <p> <b>Питание: </b> {{ pet.nutrition  | checkNull }}</p>
+                <p> <b>Вес: </b> {{ pet.weight  | checkNull }} Кг</p>
+                <p> <b>Дата рождения: </b> {{ pet.DOB | date:'dd/MM/yyy' | checkNull }}</p>
+                <p> <b>Окрас: </b> {{ pet.color  | checkNull }}</p>
+                <p> <b>Пол: </b> {{ pet.gender | formatPetGender }}</p>
+                <p> <b>Наличие кастрации: </b> {{ pet.castration  | checkNull }}</p>
+                <p> <b>Диагноз: </b> {{ pet.diagnosis  | checkNull }} </p>
+                <p> <b>Особые отметки: </b> {{ pet.notes  | checkNull }}</p>
+            </div>
+
+            <div class="" *ngIf="activeItemIndex === 1">
+                <table
+                    class="w-full"
+                    tuiTable
+                    [columns]="receptionColumns"
+                    *ngIf="pet"
+                >
+                    <thead>
+                        <tr tuiThGroup>
+                            <th
+                                *tuiHead="'receptionPurpose'"
+                                class="w-56"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Вид приема
+                            </th>
+                            <th
+                                *tuiHead="'diagnosis'"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Диагноз
+                            </th>
+                            <th
+                                *tuiHead="'date'"
+                                tuiTh
+                            >
+                                Дата
+                            </th>
+                            <th
+                                *tuiHead="'cost'"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Стоимость
+                            </th>
+                            <th
+                                *tuiHead="'actions'"
+                                tuiTh
+                                class="lg:w-32"
+                                [sorter]="null"
+                            >Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody
+                        tuiTbody
+                        [data]="receptions"
+                    >
+                        <tr
+                            *ngFor="let reception of receptions; let index = index"
+                            tuiTr
+                        >
+                            <td
+                                *tuiCell="'receptionPurpose'"
+                                tuiTd
+                            >
+                                <b>{{ reception.purpose.purposeName }}</b>
+                            </td>
+                            <td
+                                *tuiCell="'diagnosis'"
+                                tuiTd
+                            >
+                                {{ reception.diagnosis | checkNull}}
+                            </td>
+                            <td
+                                *tuiCell="'date'"
+                                tuiTd
+                            >
+                                {{ reception.createdAt | date:'dd/MM/yyy' | checkNull }}
+                            </td>
+                            <td
+                                *tuiCell="'cost'"
+                                tuiTd
+                            >
+                                {{ reception.cost | checkNull}} 
+                                <ng-container *ngIf="reception.cost">₽</ng-container>
+                            </td>
+                            <td
+                                *tuiCell="'actions'"
+                                class="space-x-2"
+                                tuiTd
+                            >
+                                <button
+                                    tuiButton
+                                    size="s"
+                                >
+                                    Просмотр
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+            </table>
+            </div>
+
+            <div class="" *ngIf="activeItemIndex === 2">
+                <table
+                    class="w-full"
+                    tuiTable
+                    [columns]="analyzesColumns"
+                    *ngIf="pet"
+                >
+                    <thead>
+                        <tr tuiThGroup>
+                            <th
+                                *tuiHead="'type'"
+                                class="w-56"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Вид
+                            </th>
+                            <th
+                                *tuiHead="'date'"
+                                tuiTh
+                            >
+                                Дата
+                            </th>                        
+                            <th
+                                *tuiHead="'actions'"
+                                tuiTh
+                                class="lg:w-32"
+                                [sorter]="null"
+                            >Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody
+                        tuiTbody
+                        [data]="analyzesResearchs"
+                    >
+                        <tr
+                            *ngFor="let analyzesResearch of analyzesResearchs; let index = index"
+                            tuiTr
+                        >
+                            <td
+                                *tuiCell="'type'"
+                                tuiTd
+                            >
+                                <b>{{ analyzesResearch.type.typeName }}</b>
+                            </td>
+                            <td
+                                *tuiCell="'date'"
+                                tuiTd
+                            >
+                                {{ analyzesResearch.createdAt | date:'dd/MM/yyy' | checkNull }}
+                            </td>
+                            <td
+                                *tuiCell="'actions'"
+                                class="space-x-2"
+                                tuiTd
+                            >
+                                <button
+                                    tuiButton
+                                    size="s"
+                                >
+                                    Просмотр
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>

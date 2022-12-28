@@ -2,6 +2,25 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddInServiceListInput {
+  quantity: Int!
+  receptionId: String!
+  serviceId: Int!
+}
+
+type AnalyzesResearch {
+  Pet: Pet
+  TypeAnalyzesResearch: TypeAnalyzesResearch
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  data: String
+  id: String!
+  petId: String
+  type: TypeAnalyzesResearch!
+  typeId: Int
+}
+
 type Auth {
   """JWT access token"""
   accessToken: JWT!
@@ -16,6 +35,122 @@ input ChangePasswordInput {
   oldPassword: String!
 }
 
+type Client {
+  address: String
+
+  """Client full name."""
+  fullName: String!
+  id: String!
+  pets: [Pet!]
+  telephoneNumber: String!
+}
+
+type ClientConnection {
+  edges: [ClientEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ClientEdge {
+  cursor: String!
+  node: Client!
+}
+
+input ClientOrder {
+  direction: OrderDirection!
+  field: ClientOrderField!
+}
+
+"""Properties by which client connections can be ordered."""
+enum ClientOrderField {
+  address
+  createdAt
+  fullName
+  id
+  telephoneNumber
+}
+
+input CreateAnalyzesResearchInput {
+  data: String
+  petId: String!
+  typeId: Int!
+}
+
+input CreateClientInput {
+  address: String
+  fullName: String!
+  telephoneNumber: String!
+}
+
+input CreatePetInput {
+  DOB: DateTime
+  alias: String!
+  breed: String
+  castration: Boolean
+  clientId: String!
+  color: String
+  diagnosis: String
+  gender: Boolean
+  kind: String
+  notes: String
+  nutrition: String
+  weight: Float
+}
+
+input CreateReceptionInput {
+  anamnesis: String
+  assignment: String
+  clinicalSigns: String
+  cost: Int
+  diagnosis: String
+  employeeId: Int!
+  petId: String!
+  purposeId: Int!
+}
+
+input CreateServiceInput {
+  name: String!
+  price: Int!
+  typeId: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Employee {
+  fullName: String!
+  id: Int!
+  receptions: [Reception!]
+  role: Role!
+}
+
+type Goods {
+  GoodsCategory: GoodsCategory
+  GoodsList: [GoodsList]!
+  categoryId: Int!
+  id: Int!
+  measure: String
+  name: String!
+  price: Float
+  quantity: Float
+}
+
+type GoodsCategory {
+  categoryName: String!
+  goods: [Goods!]
+  id: Int!
+}
+
+type GoodsList {
+  Goods: Goods
+  Reception: Reception
+  goodsId: Int!
+  quantity: Float!
+  receptionId: String!
+}
+
 """
 A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
 """
@@ -27,16 +162,104 @@ input LoginInput {
 }
 
 type Mutation {
+  addInServiceList(data: AddInServiceListInput!): ServiceList!
   changePassword(data: ChangePasswordInput!): User!
+  createAnalyzesResearch(data: CreateAnalyzesResearchInput!): AnalyzesResearch!
+  createClient(data: CreateClientInput!): Client!
+  createPet(data: CreatePetInput!): Pet!
+  createReception(data: CreateReceptionInput!): Reception!
+  createService(data: CreateServiceInput!): Service!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
   updateUser(data: UpdateUserInput!): User!
 }
 
+"""
+Possible directions in which to order a list of items when provided an `orderBy` argument.
+"""
+enum OrderDirection {
+  asc
+  desc
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type Pet {
+  DOB: String
+  alias: String!
+  analyzesResearchs: [AnalyzesResearch!]
+  breed: String
+  castration: String
+  client: Client
+  clientId: String
+  color: String
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  diagnosis: String
+  gender: String
+  id: String!
+  kind: String
+  notes: String
+  nutrition: String
+  receptions: [Reception!]
+  weight: Float
+}
+
 type Query {
+  allServiceLists: [ServiceList!]!
+  allServices: [Service!]!
+  analyzesResearch(analyzesResearchId: String!): AnalyzesResearch!
+  clientDetail(clientId: String!): Client!
+  clientsWithSearch(search: String!): [Client!]!
   hello(name: String!): String!
   helloWorld: String!
   me: User!
+  pet(petId: String!): Pet!
+  publishedClients(after: String, before: String, first: Int, last: Int, name: String, orderBy: ClientOrder, skip: Int, telephone: String): ClientConnection!
+  reception(receptionId: String!): Reception!
+}
+
+type Reception {
+  Employee: Employee
+  Pet: Pet
+  Purpose: ReceptionPurpose
+
+  """Анамнез"""
+  anamnesis: String
+
+  """Лист назначения"""
+  assignment: String
+
+  """Клинические признаки"""
+  clinicalSigns: String
+
+  """Посчитанная стоимость приема по усулгам и товарам"""
+  cost: Float
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+
+  """Диагноз"""
+  diagnosis: String
+  employeeId: Int
+  goodsList: [GoodsList!]
+  id: String!
+  petId: String
+  purpose: ReceptionPurpose!
+  purposeId: Int
+  serviceList: [ServiceList!]
+}
+
+type ReceptionPurpose {
+  id: Int
+  purposeName: String!
+  receptions: [Reception!]
 }
 
 """User role"""
@@ -46,12 +269,47 @@ enum Role {
   MANAGER
 }
 
+type Service {
+  ServiceList: [ServiceList!]
+  ServiceType: ServiceType
+  id: Int
+  name: String
+  price: Float
+  type: ServiceType!
+  typeId: Int
+}
+
+type ServiceList {
+  Reception: Reception
+  Service: Service
+  quantity: Int!
+  receptionId: String!
+  service: Service!
+  serviceId: Int!
+}
+
+type ServiceType {
+  id: Int!
+  service: [Service!]
+  typeName: String!
+}
+
+type Subscription {
+  clientCreated: Client!
+}
+
 type Token {
   """JWT access token"""
   accessToken: JWT!
 
   """JWT refresh token"""
   refreshToken: JWT!
+}
+
+type TypeAnalyzesResearch {
+  analyzesResearch: [AnalyzesResearch!]
+  id: Int
+  typeName: String
 }
 
 input UpdateUserInput {

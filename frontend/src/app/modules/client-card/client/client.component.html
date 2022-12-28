@@ -20,7 +20,7 @@
 
             <button
                 tuiButton
-                (click)="showDialog(template)"
+                (click)="showDialog()"
                 icon="tuiIconAddRowLarge"
                 size="l"
             >
@@ -29,15 +29,15 @@
             </button>
         </div>
 
-        <ng-container *ngIf="!data">
+        <ng-container *ngIf="!clients">
             <div class="flex-none flex-col items-center text-center">
                 <div class="mt-4 text-2xl font-semibold">Выберите</div>
             </div>
         </ng-container>
         
-        <ng-container *ngIf="data">
+        <ng-container *ngIf="clients">
             <div class="flex-none flex-col items-center text-center mb-3">
-                <div class="mt-4 text-2xl font-semibold">Ближайшие записи</div>
+                <div class="mt-4 text-2xl font-semibold">Клиенты (Ближайшие записи)</div>
             </div>
             <table
                 class="w-full"
@@ -82,31 +82,31 @@
                     </tr>
                 </thead>
                 <tbody
-                    *tuiLet="users | tuiTableSort as sortedUsers"
+                    *tuiLet="clients | tuiTableSort as sortedClients"
                     tuiTbody
-                    [data]="sortedUsers"
+                    [data]="sortedClients"
                 >
                     <tr
-                        *ngFor="let item of sortedUsers; let index = index"
+                        *ngFor="let client of sortedClients; let index = index"
                         tuiTr
                     >
                         <td
                             *tuiCell="'time'"
                             tuiTd
                         >
-                            {{ item.time }}
+                            {{ client.time }}
                         </td>
                         <td
                             *tuiCell="'fullName'"
                             tuiTd
                         >
-                            {{ item.fullName }}
+                            {{ client.client.fullName }}
                         </td>
                         <td
                             *tuiCell="'telephone'"
                             tuiTd
                         >
-                            {{ item.telephone }}
+                            {{ client.client.telephoneNumber | tuiFormatPhone }}
                         </td>
                         <td
                             *tuiCell="'pets'"
@@ -114,11 +114,12 @@
                             tuiTd
                         >
                             <tui-tag
-                                *ngFor="let tag of item.pets"
+                                *ngFor="let tag of client.client.pets"
                                 size="m"
                                 [hoverable]="true"
                                 [value]="tag.alias"
                                 [autoColor]="true"
+                                [tuiHint]="'Перейти к питомцу'"
                             ></tui-tag>
                         </td>
                         <td
@@ -127,21 +128,15 @@
                             tuiTd
                         >
                             <button
-                                tuiIconButton
-                                appearance="flat"
-                                size="s"
-                                icon="tuiIconShowLarge"
-                                title="Перейти"
-                                shape="rounded"
-                            ></button>
-                            <button
                                 tuiButton
                                 size="s"
+                                (click)="setClient(client.client.id)"
                             >
                                 Просмотр
                             </button>
                             <button
                                 tuiButton
+                                appearance="secondary-destructive"
                                 size="s"
                             >
                                 Изменить
@@ -153,29 +148,3 @@
         </ng-container>
     </div>
 </div>
-<ng-template
-    #template
-    let-observer
->
-    <p>You can show a dialog with template</p>
-    <p>
-        Your balance:
-        
-    </p>
-    <button
-        tuiButton
-        type="button"
-        size="m"
-        class="tui-space_right-3"
-    >
-        Withdraw&nbsp;
-    </button>
-    <button
-        tuiButton
-        type="button"
-        size="m"
-        (click)="observer.complete()"
-    > 
-        Cancel
-    </button>
-</ng-template>

@@ -15,7 +15,7 @@ Table Employee {
   Reception Reception [not null]
   Schedule Schedule [not null]
   ReceptionRecord ReceptionRecord [not null]
-  fullName String [not null]
+  fullName String [unique, not null]
   role Role [not null]
 }
 
@@ -39,7 +39,7 @@ Table Pet {
   clientId String [not null]
   AnalyzesResearch AnalyzesResearch [not null]
   Reception Reception [not null]
-  alias String [not null]
+  alias String [unique, not null]
   kind String
   gender Boolean
   breed String
@@ -49,6 +49,7 @@ Table Pet {
   castration Boolean
   notes String
   diagnosis String
+  weight Float
   createdAt DateTime [default: `now()`, not null]
 }
 
@@ -64,7 +65,7 @@ Table AnalyzesResearch {
 
 Table TypeAnalyzesResearch {
   id Int [pk, increment]
-  typeName String [not null]
+  typeName String [unique, not null]
   AnalyzesResearch AnalyzesResearch [not null]
 }
 

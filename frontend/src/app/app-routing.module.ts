@@ -53,7 +53,7 @@ const routes: Routes = [
     component  : LayoutComponent,
     children: [
         {path: 'home', loadChildren: () => import('./modules/landing/home/home.module').then(m => m.HomeModule)},
-        {path: 'medical-card', loadChildren: () => import('./modules/medical-card/medical-card.module').then(m => m.MedicalCardModule)},
+        {path: 'client-card', loadChildren: () => import('./modules/client-card/client-card.module').then(m => m.ClientCardModule)},
 
     //     // Registry
     //     {path: 'registry', loadChildren: () => import('./modules/registry/registry.module').then(m => m.RegistryModule)},

@@ -13,8 +13,29 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: any;
   /** A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction. */
   JWT: any;
+};
+
+export type AddInServiceListInput = {
+  quantity: Scalars['Int'];
+  receptionId: Scalars['String'];
+  serviceId: Scalars['Int'];
+};
+
+export type AnalyzesResearch = {
+  __typename?: 'AnalyzesResearch';
+  Pet?: Maybe<Pet>;
+  TypeAnalyzesResearch?: Maybe<TypeAnalyzesResearch>;
+  /** Identifies the date and time when the object was created. */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  data?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  petId?: Maybe<Scalars['String']>;
+  type: TypeAnalyzesResearch;
+  typeId?: Maybe<Scalars['Int']>;
 };
 
 export type Auth = {
@@ -31,6 +52,123 @@ export type ChangePasswordInput = {
   oldPassword: Scalars['String'];
 };
 
+export type Client = {
+  __typename?: 'Client';
+  address?: Maybe<Scalars['String']>;
+  /** Client full name. */
+  fullName: Scalars['String'];
+  id: Scalars['String'];
+  pets?: Maybe<Array<Pet>>;
+  telephoneNumber: Scalars['String'];
+};
+
+export type ClientConnection = {
+  __typename?: 'ClientConnection';
+  edges?: Maybe<Array<ClientEdge>>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type ClientEdge = {
+  __typename?: 'ClientEdge';
+  cursor: Scalars['String'];
+  node: Client;
+};
+
+export type ClientOrder = {
+  direction: OrderDirection;
+  field: ClientOrderField;
+};
+
+/** Properties by which client connections can be ordered. */
+export enum ClientOrderField {
+  Address = 'address',
+  CreatedAt = 'createdAt',
+  FullName = 'fullName',
+  Id = 'id',
+  TelephoneNumber = 'telephoneNumber'
+}
+
+export type CreateAnalyzesResearchInput = {
+  data?: InputMaybe<Scalars['String']>;
+  petId: Scalars['String'];
+  typeId: Scalars['Int'];
+};
+
+export type CreateClientInput = {
+  address?: InputMaybe<Scalars['String']>;
+  fullName: Scalars['String'];
+  telephoneNumber: Scalars['String'];
+};
+
+export type CreatePetInput = {
+  DOB?: InputMaybe<Scalars['DateTime']>;
+  alias: Scalars['String'];
+  breed?: InputMaybe<Scalars['String']>;
+  castration?: InputMaybe<Scalars['Boolean']>;
+  clientId: Scalars['String'];
+  color?: InputMaybe<Scalars['String']>;
+  diagnosis?: InputMaybe<Scalars['String']>;
+  gender?: InputMaybe<Scalars['Boolean']>;
+  kind?: InputMaybe<Scalars['String']>;
+  notes?: InputMaybe<Scalars['String']>;
+  nutrition?: InputMaybe<Scalars['String']>;
+  weight?: InputMaybe<Scalars['Float']>;
+};
+
+export type CreateReceptionInput = {
+  anamnesis?: InputMaybe<Scalars['String']>;
+  assignment?: InputMaybe<Scalars['String']>;
+  clinicalSigns?: InputMaybe<Scalars['String']>;
+  cost?: InputMaybe<Scalars['Int']>;
+  diagnosis?: InputMaybe<Scalars['String']>;
+  employeeId: Scalars['Int'];
+  petId: Scalars['String'];
+  purposeId: Scalars['Int'];
+};
+
+export type CreateServiceInput = {
+  name: Scalars['String'];
+  price: Scalars['Int'];
+  typeId: Scalars['Int'];
+};
+
+export type Employee = {
+  __typename?: 'Employee';
+  fullName: Scalars['String'];
+  id: Scalars['Int'];
+  receptions?: Maybe<Array<Reception>>;
+  role: Role;
+};
+
+export type Goods = {
+  __typename?: 'Goods';
+  GoodsCategory?: Maybe<GoodsCategory>;
+  GoodsList: Array<Maybe<GoodsList>>;
+  categoryId: Scalars['Int'];
+  id: Scalars['Int'];
+  measure?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  price?: Maybe<Scalars['Float']>;
+  quantity?: Maybe<Scalars['Float']>;
+};
+
+export type GoodsCategory = {
+  __typename?: 'GoodsCategory';
+  categoryName: Scalars['String'];
+  goods?: Maybe<Array<Goods>>;
+  id: Scalars['Int'];
+};
+
+export type GoodsList = {
+  __typename?: 'GoodsList';
+  Goods?: Maybe<Goods>;
+  Reception?: Maybe<Reception>;
+  goodsId: Scalars['Int'];
+  quantity: Scalars['Float'];
+  receptionId: Scalars['String'];
+};
+
 export type LoginInput = {
   login: Scalars['String'];
   password: Scalars['String'];
@@ -38,15 +176,51 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addInServiceList: ServiceList;
   changePassword: User;
+  createAnalyzesResearch: AnalyzesResearch;
+  createClient: Client;
+  createPet: Pet;
+  createReception: Reception;
+  createService: Service;
   login: Auth;
   refreshToken: Token;
   updateUser: User;
 };
 
 
+export type MutationAddInServiceListArgs = {
+  data: AddInServiceListInput;
+};
+
+
 export type MutationChangePasswordArgs = {
   data: ChangePasswordInput;
+};
+
+
+export type MutationCreateAnalyzesResearchArgs = {
+  data: CreateAnalyzesResearchInput;
+};
+
+
+export type MutationCreateClientArgs = {
+  data: CreateClientInput;
+};
+
+
+export type MutationCreatePetArgs = {
+  data: CreatePetInput;
+};
+
+
+export type MutationCreateReceptionArgs = {
+  data: CreateReceptionInput;
+};
+
+
+export type MutationCreateServiceArgs = {
+  data: CreateServiceInput;
 };
 
 
@@ -64,16 +238,130 @@ export type MutationUpdateUserArgs = {
   data: UpdateUserInput;
 };
 
+/** Possible directions in which to order a list of items when provided an `orderBy` argument. */
+export enum OrderDirection {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+};
+
+export type Pet = {
+  __typename?: 'Pet';
+  DOB?: Maybe<Scalars['String']>;
+  alias: Scalars['String'];
+  analyzesResearchs?: Maybe<Array<AnalyzesResearch>>;
+  breed?: Maybe<Scalars['String']>;
+  castration?: Maybe<Scalars['String']>;
+  client?: Maybe<Client>;
+  clientId?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was created. */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  diagnosis?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  kind?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  nutrition?: Maybe<Scalars['String']>;
+  receptions?: Maybe<Array<Reception>>;
+  weight?: Maybe<Scalars['Float']>;
+};
+
 export type Query = {
   __typename?: 'Query';
+  allServiceLists: Array<ServiceList>;
+  allServices: Array<Service>;
+  analyzesResearch: AnalyzesResearch;
+  clientDetail: Client;
+  clientsWithSearch: Array<Client>;
   hello: Scalars['String'];
   helloWorld: Scalars['String'];
   me: User;
+  pet: Pet;
+  publishedClients: ClientConnection;
+  reception: Reception;
+};
+
+
+export type QueryAnalyzesResearchArgs = {
+  analyzesResearchId: Scalars['String'];
+};
+
+
+export type QueryClientDetailArgs = {
+  clientId: Scalars['String'];
+};
+
+
+export type QueryClientsWithSearchArgs = {
+  search: Scalars['String'];
 };
 
 
 export type QueryHelloArgs = {
   name: Scalars['String'];
+};
+
+
+export type QueryPetArgs = {
+  petId: Scalars['String'];
+};
+
+
+export type QueryPublishedClientsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  name?: InputMaybe<Scalars['String']>;
+  orderBy?: InputMaybe<ClientOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+  telephone?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryReceptionArgs = {
+  receptionId: Scalars['String'];
+};
+
+export type Reception = {
+  __typename?: 'Reception';
+  Employee?: Maybe<Employee>;
+  Pet?: Maybe<Pet>;
+  Purpose?: Maybe<ReceptionPurpose>;
+  /** Анамнез */
+  anamnesis?: Maybe<Scalars['String']>;
+  /** Лист назначения */
+  assignment?: Maybe<Scalars['String']>;
+  /** Клинические признаки */
+  clinicalSigns?: Maybe<Scalars['String']>;
+  /** Посчитанная стоимость приема по усулгам и товарам */
+  cost?: Maybe<Scalars['Float']>;
+  /** Identifies the date and time when the object was created. */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  /** Диагноз */
+  diagnosis?: Maybe<Scalars['String']>;
+  employeeId?: Maybe<Scalars['Int']>;
+  goodsList?: Maybe<Array<GoodsList>>;
+  id: Scalars['String'];
+  petId?: Maybe<Scalars['String']>;
+  purpose: ReceptionPurpose;
+  purposeId?: Maybe<Scalars['Int']>;
+  serviceList?: Maybe<Array<ServiceList>>;
+};
+
+export type ReceptionPurpose = {
+  __typename?: 'ReceptionPurpose';
+  id?: Maybe<Scalars['Int']>;
+  purposeName: Scalars['String'];
+  receptions?: Maybe<Array<Reception>>;
 };
 
 /** User role */
@@ -83,12 +371,52 @@ export enum Role {
   Manager = 'MANAGER'
 }
 
+export type Service = {
+  __typename?: 'Service';
+  ServiceList?: Maybe<Array<ServiceList>>;
+  ServiceType?: Maybe<ServiceType>;
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  type: ServiceType;
+  typeId?: Maybe<Scalars['Int']>;
+};
+
+export type ServiceList = {
+  __typename?: 'ServiceList';
+  Reception?: Maybe<Reception>;
+  Service?: Maybe<Service>;
+  quantity: Scalars['Int'];
+  receptionId: Scalars['String'];
+  service: Service;
+  serviceId: Scalars['Int'];
+};
+
+export type ServiceType = {
+  __typename?: 'ServiceType';
+  id: Scalars['Int'];
+  service?: Maybe<Array<Service>>;
+  typeName: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  clientCreated: Client;
+};
+
 export type Token = {
   __typename?: 'Token';
   /** JWT access token */
   accessToken: Scalars['JWT'];
   /** JWT refresh token */
   refreshToken: Scalars['JWT'];
+};
+
+export type TypeAnalyzesResearch = {
+  __typename?: 'TypeAnalyzesResearch';
+  analyzesResearch?: Maybe<Array<AnalyzesResearch>>;
+  id?: Maybe<Scalars['Int']>;
+  typeName?: Maybe<Scalars['String']>;
 };
 
 export type UpdateUserInput = {
@@ -114,6 +442,46 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Auth', accessToken: any, user: { __typename?: 'User', id: number, login: string, fullName?: string | null } } };
+
+export type GetClientQueryVariables = Exact<{
+  search: Scalars['String'];
+}>;
+
+
+export type GetClientQuery = { __typename?: 'Query', clientsWithSearch: Array<{ __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string }> | null }> };
+
+export type CreateClientMutationVariables = Exact<{
+  data: CreateClientInput;
+}>;
+
+
+export type CreateClientMutation = { __typename?: 'Mutation', createClient: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, address?: string | null } };
+
+export type ClientDetailQueryVariables = Exact<{
+  clientId: Scalars['String'];
+}>;
+
+
+export type ClientDetailQuery = { __typename?: 'Query', clientDetail: { __typename?: 'Client', id: string, fullName: string, address?: string | null, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string, kind?: string | null, gender?: string | null, DOB?: string | null, breed?: string | null }> | null } };
+
+export type CreatePetMutationVariables = Exact<{
+  data: CreatePetInput;
+}>;
+
+
+export type CreatePetMutation = { __typename?: 'Mutation', createPet: { __typename?: 'Pet', id: string } };
+
+export type GetPetDetailQueryVariables = Exact<{
+  petId: Scalars['String'];
+}>;
+
+
+export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: string | null, color?: string | null, diagnosis?: string | null, gender?: string | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose: { __typename?: 'ReceptionPurpose', purposeName: string } }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
+
+export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllServiceQuery = { __typename?: 'Query', allServices: Array<{ __typename?: 'Service', id?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id: number, typeName: string } }> };
 
 export const CurrentUserProfileDocument = gql`
     query currentUserProfile {
@@ -153,6 +521,168 @@ export const LoginDocument = gql`
   })
   export class LoginGQL extends Apollo.Mutation<LoginMutation, LoginMutationVariables> {
     override document = LoginDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetClientDocument = gql`
+    query GetClient($search: String!) {
+  clientsWithSearch(search: $search) {
+    id
+    fullName
+    telephoneNumber
+    pets {
+      id
+      alias
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetClientGQL extends Apollo.Query<GetClientQuery, GetClientQueryVariables> {
+    override document = GetClientDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateClientDocument = gql`
+    mutation CreateClient($data: CreateClientInput!) {
+  createClient(data: $data) {
+    id
+    fullName
+    telephoneNumber
+    address
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateClientGQL extends Apollo.Mutation<CreateClientMutation, CreateClientMutationVariables> {
+    override document = CreateClientDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const ClientDetailDocument = gql`
+    query ClientDetail($clientId: String!) {
+  clientDetail(clientId: $clientId) {
+    id
+    fullName
+    address
+    telephoneNumber
+    pets {
+      id
+      alias
+      kind
+      gender
+      DOB
+      breed
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class ClientDetailGQL extends Apollo.Query<ClientDetailQuery, ClientDetailQueryVariables> {
+    override document = ClientDetailDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreatePetDocument = gql`
+    mutation CreatePet($data: CreatePetInput!) {
+  createPet(data: $data) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreatePetGQL extends Apollo.Mutation<CreatePetMutation, CreatePetMutationVariables> {
+    override document = CreatePetDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetPetDetailDocument = gql`
+    query GetPetDetail($petId: String!) {
+  pet(petId: $petId) {
+    id
+    alias
+    DOB
+    alias
+    breed
+    castration
+    color
+    diagnosis
+    gender
+    kind
+    notes
+    nutrition
+    weight
+    receptions {
+      id
+      diagnosis
+      createdAt
+      cost
+      purpose {
+        purposeName
+      }
+    }
+    analyzesResearchs {
+      id
+      type {
+        typeName
+      }
+      createdAt
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetPetDetailGQL extends Apollo.Query<GetPetDetailQuery, GetPetDetailQueryVariables> {
+    override document = GetPetDetailDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetAllServiceDocument = gql`
+    query GetAllService {
+  allServices {
+    id
+    name
+    price
+    type {
+      id
+      typeName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllServiceGQL extends Apollo.Query<GetAllServiceQuery, GetAllServiceQueryVariables> {
+    override document = GetAllServiceDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

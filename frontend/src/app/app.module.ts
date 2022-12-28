@@ -20,8 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { ApolloLink, InMemoryCache } from '@apollo/client/core';
-import { onError } from '@apollo/client/link/error';
-import { MedicalCardModule } from './modules/medical-card/medical-card.module';
+import { ClientCardModule } from './modules/client-card/client-card.module';
 import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
 
 @NgModule({
@@ -40,7 +39,7 @@ import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
     //Modules
     CoreModule,
     LayoutModule,
-    MedicalCardModule,
+    ClientCardModule,
 
 
     //TUI
