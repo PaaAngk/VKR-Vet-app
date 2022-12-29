@@ -19,12 +19,6 @@ export type Scalars = {
   JWT: any;
 };
 
-export type AddInServiceListInput = {
-  quantity: Scalars['Int'];
-  receptionId: Scalars['String'];
-  serviceId: Scalars['Int'];
-};
-
 export type AnalyzesResearch = {
   __typename?: 'AnalyzesResearch';
   Pet?: Maybe<Pet>;
@@ -133,6 +127,10 @@ export type CreateServiceInput = {
   typeId: Scalars['Int'];
 };
 
+export type CreateServiceTypeInput = {
+  typeName: Scalars['String'];
+};
+
 export type Employee = {
   __typename?: 'Employee';
   fullName: Scalars['String'];
@@ -176,7 +174,7 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addInServiceList: ServiceList;
+  addInServiceList: ServiceType;
   changePassword: User;
   createAnalyzesResearch: AnalyzesResearch;
   createClient: Client;
@@ -190,7 +188,7 @@ export type Mutation = {
 
 
 export type MutationAddInServiceListArgs = {
-  data: AddInServiceListInput;
+  data: CreateServiceTypeInput;
 };
 
 
@@ -276,7 +274,8 @@ export type Pet = {
 
 export type Query = {
   __typename?: 'Query';
-  allServiceLists: Array<ServiceList>;
+  allServiceList: Array<ServiceList>;
+  allServiceType: Array<ServiceType>;
   allServices: Array<Service>;
   analyzesResearch: AnalyzesResearch;
   clientDetail: Client;
@@ -374,7 +373,6 @@ export enum Role {
 export type Service = {
   __typename?: 'Service';
   ServiceList?: Maybe<Array<ServiceList>>;
-  ServiceType?: Maybe<ServiceType>;
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
@@ -394,9 +392,9 @@ export type ServiceList = {
 
 export type ServiceType = {
   __typename?: 'ServiceType';
-  id: Scalars['Int'];
+  id?: Maybe<Scalars['Int']>;
   service?: Maybe<Array<Service>>;
-  typeName: Scalars['String'];
+  typeName?: Maybe<Scalars['String']>;
 };
 
 export type Subscription = {
@@ -481,7 +479,12 @@ export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllServiceQuery = { __typename?: 'Query', allServices: Array<{ __typename?: 'Service', id?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id: number, typeName: string } }> };
+export type GetAllServiceQuery = { __typename?: 'Query', allServices: Array<{ __typename?: 'Service', id?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } }> };
+
+export type GetAllServiceTypeWithServiceNameQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllServiceTypeWithServiceNameQuery = { __typename?: 'Query', allServiceType: Array<{ __typename?: 'ServiceType', id?: number | null, typeName?: string | null, service?: Array<{ __typename?: 'Service', id?: number | null, name?: string | null, price?: number | null }> | null }> };
 
 export const CurrentUserProfileDocument = gql`
     query currentUserProfile {
@@ -683,6 +686,30 @@ export const GetAllServiceDocument = gql`
   })
   export class GetAllServiceGQL extends Apollo.Query<GetAllServiceQuery, GetAllServiceQueryVariables> {
     override document = GetAllServiceDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetAllServiceTypeWithServiceNameDocument = gql`
+    query GetAllServiceTypeWithServiceName {
+  allServiceType {
+    id
+    typeName
+    service {
+      id
+      name
+      price
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllServiceTypeWithServiceNameGQL extends Apollo.Query<GetAllServiceTypeWithServiceNameQuery, GetAllServiceTypeWithServiceNameQueryVariables> {
+    override document = GetAllServiceTypeWithServiceNameDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

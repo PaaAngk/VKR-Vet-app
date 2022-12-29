@@ -7,8 +7,8 @@ export class Service {
   @Field(() => Int)
   id?: number;
 
-  @Field(() => ServiceType)
-  ServiceType?: ServiceType;
+  @Field(() => ServiceType, { nullable: true })
+  type?: ServiceType;
 
   @Field(() => [ServiceList])
   ServiceList?: ServiceList[];

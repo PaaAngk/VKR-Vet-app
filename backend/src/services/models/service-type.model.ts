@@ -4,11 +4,11 @@ import { Service } from './service.model';
 @ObjectType()
 export class ServiceType {
   @Field(() => Int)
-  id: number;
+  id?: number;
 
   @Field(() => [Service])
   service?: Service[];
 
   @Field(() => String)
-  typeName: string;
+  typeName?: string;
 }

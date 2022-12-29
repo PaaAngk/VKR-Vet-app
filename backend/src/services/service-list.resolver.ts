@@ -30,7 +30,7 @@ export class ServiceListResolver {
   }
 
   @Query(() => [ServiceList])
-  async allServiceLists() {
+  async allServiceList() {
     return await this.prisma.serviceList.findMany();
   }
 

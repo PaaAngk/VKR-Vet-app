@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ClientCardRoutingModule } from './client-card-routing.module';
 import { ClientComponent } from './client/client.component';
 import { TuiComboBoxModule, TuiDataListWrapperModule, TuiFieldErrorPipeModule, TuiFilterByInputPipeModule, TuiInputCountModule, TuiInputDateModule, TuiInputModule, TuiInputNumberModule, TuiInputPhoneModule, TuiMultiSelectModule, TuiRadioBlockModule, TuiSelectModule, TuiTabsModule, TuiTagModule, TuiTextAreaModule } from '@taiga-ui/kit';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiAlertModule,
   TuiButtonModule,
@@ -20,7 +20,7 @@ import {
   TuiTextfieldControllerModule,
 } from '@taiga-ui/core';
 import { TuiTableModule } from '@taiga-ui/addon-table';
-import { TuiLetModule } from '@taiga-ui/cdk';
+import { TuiFilterPipeModule, TuiLetModule } from '@taiga-ui/cdk';
 
 import { AddClientComponent } from './dialog/add-client/add-client.component';
 import { ClientDetailComponent } from './client/client-detail/client-detail.component';
@@ -30,6 +30,7 @@ import { CheckNullPipe } from 'src/app/shared/pipes/check-null.pipe';
 import { PetComponent } from './pet/pet.component';
 import { ReceptionComponent } from './reception/reception.component';
 import { TuiEditorModule } from '@taiga-ui/addon-editor';
+import { CheckboxListComponent } from './reception/checkbox-list/checkbox-list.component';
 
 @NgModule({
   declarations: [
@@ -41,13 +42,15 @@ import { TuiEditorModule } from '@taiga-ui/addon-editor';
     CheckNullPipe,
     PetComponent,
     ReceptionComponent,
+    CheckboxListComponent,
   ],
   imports: [
     CommonModule,
     ClientCardRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
 
     TuiInputModule,
-    ReactiveFormsModule,
     TuiButtonModule,
     TuiPrimitiveTextfieldModule,
     TuiSvgModule,
@@ -77,7 +80,7 @@ import { TuiEditorModule } from '@taiga-ui/addon-editor';
     TuiEditorModule,
     TuiInputCountModule,
     TuiSelectModule,
-    
+    TuiFilterPipeModule,
   ],
 })
 export class ClientCardModule {}

@@ -87,3 +87,15 @@ query GetAllService{
     }
   }
 }
+
+query GetAllServiceTypeWithServiceName{
+  allServiceType{
+    id
+    typeName
+    service{
+      id
+      name
+      price
+    }
+  }
+}

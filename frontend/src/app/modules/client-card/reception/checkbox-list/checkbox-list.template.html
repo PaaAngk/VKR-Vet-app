@@ -1,0 +1,36 @@
+<tui-primitive-textfield
+    #input
+    tuiTextfieldIconLeft="tuiIconSearchLarge"
+    class="tui-space_all-2"
+    [tuiTextfieldLabelOutside]="true"
+    [(value)]="value"
+    (keydown.arrowDown.prevent)="onArrowDown(list, $event)"
+>
+    Поиск
+</tui-primitive-textfield>
+<hr />
+<tui-data-list
+    #list
+    emptyContent="No results found"
+    (keydown)="onKeyDown($event.key, input.nativeFocusableElement)"
+>
+    <ng-container *ngFor="let item of items">
+        <tui-opt-group
+            *tuiLet="item.items | tuiFilter : matcher : value as filtered"
+            [label]="item.typeName"
+        >
+            <tui-opt-group
+                *ngIf="filtered.length"
+                tuiMultiSelectGroup
+            >
+                <button
+                    *ngFor="let item of filtered"
+                    tuiOption
+                    [value]="item"
+                >
+                    {{ item.name}} - {{ item.price }} ₽
+                </button>
+            </tui-opt-group>
+        </tui-opt-group>
+    </ng-container>
+</tui-data-list>

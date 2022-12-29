@@ -1,9 +1,13 @@
 import { Controller, Get, Param } from '@nestjs/common';
+import { PrismaService } from 'nestjs-prisma';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private prisma: PrismaService
+  ) {}
 
   @Get()
   getHello(): string {
@@ -13,5 +17,10 @@ export class AppController {
   @Get('hello/:name')
   getHelloName(@Param('name') name: string): string {
     return this.appService.getHelloName(name);
+  }
+
+  @Get('servicesByType')
+  async getServicesByType() {
+    return await this.prisma.service.findMany();
   }
 }

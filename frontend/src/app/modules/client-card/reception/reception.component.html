@@ -46,8 +46,8 @@
             </button>
         </tui-tabs>
 
-        <div class="p-2 overflow-auto max-w-full" [formGroup]="addPetForm">
-            <div class="space-y-4" *ngIf="activeItemIndex === 0">
+        <div class="p-2 overflow-auto max-w-full" >
+            <div class="space-y-4" [formGroup]="addPetForm" *ngIf="activeItemIndex === 0">
                 <div class="tui-form__row tui-form__row_multi-fields">
                     <div class="tui-form__multi-field">
                         <tui-combo-box
@@ -120,7 +120,7 @@
                 </div>
             </div>
 
-            <div class="space-y-4" *ngIf="activeItemIndex === 1">
+            <div class="space-y-4" [formGroup]="addPetForm" *ngIf="activeItemIndex === 1">
                 <div class="tui-form">
                     <tui-input
                         [tuiTextfieldCleaner] = true
@@ -148,56 +148,19 @@
             <div class="space-y-4" *ngIf="activeItemIndex === 2">
 
                 <tui-select
-                    class="b-form"
-                    formControlName="value"
+                    class="control"
+                    [identityMatcher]="identityMatcher"
+                    [valueContent]="valueContent"
+                    [(ngModel)]="value"
+                    [tuiTextfieldCleaner]="true"
                 >
-                    Select user
-                    <tui-data-list-wrapper
+                    Выбор услуги
+                    <checkbox-list
                         *tuiDataList
-                        class="w-full"
-                        size="l"
-                        [items]="servicesList | tuiFilterByInput"
-                        [itemContent]="content"
-                    ></tui-data-list-wrapper>
+                        [items]="servicesList"
+                    ></checkbox-list>
                 </tui-select>
-                
-                <ng-template
-                    #content
-                    let-data
-                >
-                    <div class="flex flex-row justify-end w-full">
-                        <span>{{ data.name }}</span>
-                        <span>{{ data.price }}</span>
-                    </div>
-                </ng-template>
-
-                <tui-multi-select
-                    placeholder="Find by ..."
-                    class="b-form"
-                    [formControl]="testValue"
-                    [tuiTextfieldLabelOutside]="true"
-                    [expandable]="false"
-                >
-                    Rock Star Frontend Developers
-                    <tui-data-list-wrapper
-                        *tuiDataList
-                        [items]="servicesList | tuiHideSelected | tuiFilterByInput"
-                        [itemContent]="itemContent"
-                    ></tui-data-list-wrapper>
-                </tui-multi-select>
-                
-                <ng-template
-                    #itemContent
-                    let-data
-                >
-                    <div class="flex flex-row">
-                        <p>{{ data.name }}</p>
-                        {{ data.price }}
-                    </div>
-                </ng-template>
-
-
-
+            
 
                 <table
                     class="w-full"
@@ -232,10 +195,10 @@
                     </thead>
                     <tbody
                         tuiTbody
-                        [data]="servicesList"
+                        [data]="selectedServices"
                     >
                         <tr
-                            *ngFor="let service of servicesList; let index = index"
+                            *ngFor="let service of selectedServices; let index = index"
                             tuiTr
                         >
                             <td
@@ -256,9 +219,9 @@
                                 tuiTd
                             >
                                 <tui-input-count
-                                    formControlName="testValue1"
+                                    [(ngModel)] = "service.quantity"
                                     [min]="1"
-                                    [max]="200"
+                                    [max]="50"
                                 >
                                     Количество
                                     <input
@@ -270,7 +233,103 @@
                         </tr>
                     </tbody>
                 </table>
+
+                {{selectedServices | json}}
             </div>
         </div> 
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+ <!-- <tui-multi-select
+    placeholder="Find by ..."
+    class="b-form"
+    [formControl]="testValue"
+    [tuiTextfieldLabelOutside]="true"
+    [expandable]="false"
+>
+    Rock Star Frontend Developers
+    <tui-data-list-wrapper
+        *tuiDataList
+        [items]="servicesList | tuiHideSelected | tuiFilterByInput"
+        [itemContent]="itemContent"
+    ></tui-data-list-wrapper>
+</tui-multi-select>
+
+<ng-template
+    #itemContent
+    let-data
+>
+    <div class="flex flex-row">
+        <p>{{ data.name }}</p>
+        {{ data.price }}
+    </div>
+</ng-template> -->
+<!-- <tui-multi-select
+    *tuiLet="servicesList$ | async as serviceListItems"
+    class="b-form"
+    [formControl]="control"
+    [tuiTextfieldLabelOutside]="true"
+    (searchChange)="onSearch($event)"
+>
+    <tui-data-list-wrapper
+        *tuiDataList
+        tuiMultiSelectGroup
+        [items]="serviceListItems"
+        [itemContent]="(stringify$ | async)!"
+    ></tui-data-list-wrapper>
+</tui-multi-select> -->
+
+
+<!-- <tui-multi-select
+    *tuiLet="servicesList$ | async as serviceListItems"
+    placeholder="Find by ..."
+    [formControl]="control"
+    [tuiTextfieldLabelOutside]="true"
+    [expandable]="false"
+    (searchChange)="onSearch($event)"
+    [valueContent] = "content"
+>
+    Rock Star Frontend Developers
+    <tui-data-list-wrapper
+        *tuiDataList
+        [items]="serviceListItems | tuiHideSelected"
+        [itemContent]="itemContent"
+    ></tui-data-list-wrapper>
+</tui-multi-select>
+
+<ng-template
+    #itemContent
+    let-data
+>
+    <div class="template">
+        {{ data }}
+    </div>
+</ng-template>
+
+
+<tui-multi-select
+    [editable]="true"
+    [formControl]="control"
+    [tuiTextfieldCleaner]="true"
+    [expandable]="true"
+    [valueContent] = "content"
+    (searchChange)="onSearch1($event)"
+>
+    Employees
+    <tui-data-list-wrapper
+        *tuiDataList
+        tuiMultiSelectGroup
+        [items]="servicesList"
+    ></tui-data-list-wrapper>
+</tui-multi-select>
+    -->

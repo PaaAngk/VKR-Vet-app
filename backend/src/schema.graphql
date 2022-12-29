@@ -2,12 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input AddInServiceListInput {
-  quantity: Int!
-  receptionId: String!
-  serviceId: Int!
-}
-
 type AnalyzesResearch {
   Pet: Pet
   TypeAnalyzesResearch: TypeAnalyzesResearch
@@ -114,6 +108,10 @@ input CreateServiceInput {
   typeId: Int!
 }
 
+input CreateServiceTypeInput {
+  typeName: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -162,7 +160,7 @@ input LoginInput {
 }
 
 type Mutation {
-  addInServiceList(data: AddInServiceListInput!): ServiceList!
+  addInServiceList(data: CreateServiceTypeInput!): ServiceType!
   changePassword(data: ChangePasswordInput!): User!
   createAnalyzesResearch(data: CreateAnalyzesResearchInput!): AnalyzesResearch!
   createClient(data: CreateClientInput!): Client!
@@ -212,7 +210,8 @@ type Pet {
 }
 
 type Query {
-  allServiceLists: [ServiceList!]!
+  allServiceList: [ServiceList!]!
+  allServiceType: [ServiceType!]!
   allServices: [Service!]!
   analyzesResearch(analyzesResearchId: String!): AnalyzesResearch!
   clientDetail(clientId: String!): Client!
@@ -271,7 +270,6 @@ enum Role {
 
 type Service {
   ServiceList: [ServiceList!]
-  ServiceType: ServiceType
   id: Int
   name: String
   price: Float
@@ -289,9 +287,9 @@ type ServiceList {
 }
 
 type ServiceType {
-  id: Int!
+  id: Int
   service: [Service!]
-  typeName: String!
+  typeName: String
 }
 
 type Subscription {
