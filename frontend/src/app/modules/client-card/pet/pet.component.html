@@ -54,7 +54,7 @@
         </tui-tabs>
 
         <div class="p-2 overflow-auto max-w-full">
-            <div class="text-2xl" *ngIf="activeItemIndex === 0">
+            <div class="text-xl" *ngIf="activeItemIndex === 0">
                 <p> <b>Кличка: </b> {{ pet.alias }}</p>
                 <p> <b>Вид: </b> {{ pet.kind }}</p>
                 <p> <b>Порода: </b> {{ pet.breed  | checkNull }}</p>
@@ -160,7 +160,7 @@
                             </td>
                         </tr>
                     </tbody>
-            </table>
+                </table>
             </div>
 
             <div class="" *ngIf="activeItemIndex === 2">

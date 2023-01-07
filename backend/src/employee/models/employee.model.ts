@@ -1,4 +1,4 @@
-import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Role } from '@prisma/client';
 import { Reception } from 'src/reception/models/reception.model';
 
@@ -14,5 +14,5 @@ export class Employee {
   fullName: string;
 
   @Field(() => Role)
-  role: Role;
+  role?: Role;
 }

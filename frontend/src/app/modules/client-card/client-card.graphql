@@ -99,3 +99,43 @@ query GetAllServiceTypeWithServiceName{
     }
   }
 }
+
+query GetAllGoodsCategoryWithGoods{
+  allGoodsCategory{
+    categoryName
+    goods{
+      id
+      name
+      price
+      measure
+      quantity
+    }
+  }
+}
+
+query GetAllEmployees{
+  allEmployees{
+    id
+    fullName
+  }
+}
+
+query GetAllReceptionPurpose{
+  allReceptionPurpose{
+    id
+    purposeName
+  }
+}
+
+mutation CreateReception($data:CreateReceptionInput!) {
+  createReception(data:$data){
+    anamnesis
+    assignment
+    clinicalSigns
+    cost
+    diagnosis
+    employeeId
+    petId
+    purposeId
+  }
+}

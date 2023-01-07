@@ -4,7 +4,7 @@ import { Goods } from './goods.model';
 @ObjectType()
 export class GoodsCategory {
   @Field(() => Int)
-  id: number;
+  id?: number;
 
   @Field(() => [Goods])
   goods?: Goods[];

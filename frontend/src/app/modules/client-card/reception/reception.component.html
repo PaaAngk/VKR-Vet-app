@@ -1,27 +1,107 @@
 <div class="flex flex-col space-y-3" *ngIf="true">
 
     <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
-        <div tuiTextfieldSize="m" class="flex justify-between items-center h-full py-auto">
-            <div class="space-x-4">
-                <button
-                    tuiButton
-                    icon="tuiIconAddRowLarge"
-                    size="m"
+        <div tuiTextfieldSize="m" class="flex flex-row justify-around items-center h-full py-auto">
+            <div class="space-x-2">   
+                <tui-hosted-dropdown
+                    [content]="dropdownAssignment"
+                    [(open)]="openAssignment"
                 >
-                    <p class="text-base">
-                        Добавить прием
-                    </p>
-                </button>
-                <button
-                    tuiButton
-                    icon="tuiIconAddRowLarge"
-                    size="m"
+                    <div tuiGroup>
+                        <button
+                            tuiButton
+                            type="button"
+                            size="m"
+                            class="tui-group__auto-width-item"
+                        >
+                            Печать листа назначения
+                        </button>
+                        <button
+                            tuiIconButton
+                            type="button"
+                            tuiHostedDropdownHost
+                            title="Menu"
+                            size="m"
+                            class="tui-group__auto-width-item"
+                            [iconRight]="icon" 
+                        ></button>
+                        <ng-template #icon>
+                            <tui-svg
+                                src="tuiIconChevronDown"
+                                class="icon"
+                                [class.icon_rotated]="openAssignment"
+                            ></tui-svg>
+                        </ng-template>
+                        <ng-template
+                            #dropdownAssignment
+                            let-activeZone
+                        >
+                            <tui-data-list>
+                                <button
+                                    tuiOption
+                                    (click)="onClick()"
+                                >
+                                    Скачать файл
+                                </button>
+                            </tui-data-list>
+                        </ng-template>
+                    </div>
+                </tui-hosted-dropdown>
+                <tui-hosted-dropdown
+                    [content]="dropdownCheck"
+                    [(open)]="openCheck"
                 >
-                    <p class="text-base">
-                        Добавить анализы
-                    </p>
-                </button>
+                    <div tuiGroup>
+                        <button
+                            tuiButton
+                            type="button"
+                            size="m"
+                            class="tui-group__auto-width-item"
+                        >
+                            Печать чека
+                        </button>
+                        <button
+                            tuiIconButton
+                            type="button"
+                            tuiHostedDropdownHost
+                            title="Menu"
+                            size="m"
+                            class="tui-group__auto-width-item"
+                            [iconRight]="icon"
+                        ></button>
+                        <ng-template #iconCheck>
+                            <tui-svg
+                                src="tuiIconChevronDown"
+                                class="icon"
+                                [class.icon_rotated]="openCheck"
+                            ></tui-svg>
+                        </ng-template>
+                        <ng-template
+                            #dropdownCheck
+                            let-activeZone
+                        >
+                            <tui-data-list>
+                                <button
+                                    tuiOption
+                                    (click)="onClick()"
+                                >
+                                    Скачать файл
+                                </button>
+                            </tui-data-list>
+                        </ng-template>
+                    </div>
+                </tui-hosted-dropdown>
             </div>
+
+            <button
+                tuiButton
+                size="m"
+                (click)="submitReception()"
+            >
+                <p class="text-base">
+                    Закончить прием
+                </p>
+            </button>
         </div>
     </div>
 
@@ -47,23 +127,31 @@
         </tui-tabs>
 
         <div class="p-2 overflow-auto max-w-full" >
-            <div class="space-y-4" [formGroup]="addPetForm" *ngIf="activeItemIndex === 0">
+            <!-- Main information -->
+            <div class="space-y-4" [formGroup]="addReceptionForm" *ngIf="activeItemIndex === 0">
                 <div class="tui-form__row tui-form__row_multi-fields">
                     <div class="tui-form__multi-field">
-                        <tui-combo-box
-                            class="b-form"
+                        <tui-select
+                            [tuiTextfieldLabelOutside]="true"
+                            [valueContent]="purposeList ? stringifyPurposeList(purposeList) : loading"
                             formControlName="purpose"
                         >
                             Цель визита
-                            <input
-                                tuiTextfield
-                                placeholder="Начните вводить цель визита"
-                            />
-                            <tui-data-list-wrapper
-                                *tuiDataList
-                                [items]="purposeList | tuiFilterByInput"
-                            ></tui-data-list-wrapper>
-                        </tui-combo-box>
+                            <ng-template tuiDataList>
+                                <tui-data-list *ngIf="purposeList; else loading">
+                                    <button
+                                        *ngFor="let item of purposeList"
+                                        tuiOption
+                                        [value]="item.id"
+                                    >
+                                        {{ item.purposeName }}
+                                    </button>
+                                </tui-data-list>
+                            </ng-template>
+                            <ng-template #loading>
+                                <tui-loader class="tui-space_vertical-3 loader"></tui-loader>
+                            </ng-template>
+                        </tui-select>
                         <tui-error
                             formControlName="purpose"
                             [error]="[] | tuiFieldError | async"
@@ -71,20 +159,27 @@
                     </div>
             
                     <div class="tui-form__multi-field">
-                        <tui-combo-box
-                            class="b-form"
+                        <tui-select
+                            [tuiTextfieldLabelOutside]="true"
+                            [valueContent]="employeeList ? stringifyEmployeeList(employeeList) : loading"
                             formControlName="employee"
                         >
-                            Врач
-                            <input
-                                tuiTextfield
-                                placeholder="Начните вводить данные врача"
-                            />
-                            <tui-data-list-wrapper
-                                *tuiDataList
-                                [items]="employeeList | tuiFilterByInput"
-                            ></tui-data-list-wrapper>
-                        </tui-combo-box>
+                            Цель визита
+                            <ng-template tuiDataList>
+                                <tui-data-list *ngIf="employeeList; else loading">
+                                    <button
+                                        *ngFor="let item of employeeList"
+                                        tuiOption
+                                        [value]="item.id"
+                                    >
+                                        {{ item.fullName }}
+                                    </button>
+                                </tui-data-list>
+                            </ng-template>
+                            <ng-template #loading>
+                                <tui-loader class="tui-space_vertical-3 loader"></tui-loader>
+                            </ng-template>
+                        </tui-select>
                         <tui-error
                             formControlName="employee"
                             [error]="[] | tuiFieldError | async"
@@ -120,7 +215,8 @@
                 </div>
             </div>
 
-            <div class="space-y-4" [formGroup]="addPetForm" *ngIf="activeItemIndex === 1">
+            <!-- Assignment -->
+            <div class="space-y-4" [formGroup]="addReceptionForm" *ngIf="activeItemIndex === 1">
                 <div class="tui-form">
                     <tui-input
                         [tuiTextfieldCleaner] = true
@@ -142,194 +238,252 @@
                 >
                     Лист назначения
                 </tui-editor>
-                {{addPetForm.value.assignment}}
             </div>
 
-            <div class="space-y-4" *ngIf="activeItemIndex === 2">
-
-                <tui-select
-                    class="control"
-                    [identityMatcher]="identityMatcher"
-                    [valueContent]="valueContent"
-                    [(ngModel)]="value"
-                    [tuiTextfieldCleaner]="true"
-                >
-                    Выбор услуги
-                    <checkbox-list
-                        *tuiDataList
-                        [items]="servicesList"
-                    ></checkbox-list>
-                </tui-select>
-            
-
-                <table
-                    class="w-full"
-                    tuiTable
-                    [columns]="servicesColumns"
-                >
-                    <thead>
-                        <tr tuiThGroup>
-                            <th
-                                *tuiHead="'name'"       
-                                tuiTh
-                                [sorter]="null"
-                            >
-                                Услуга
-                            </th>
-                            <th
-                                *tuiHead="'price'"
-                                class="w-56"
-                                tuiTh
-                            >
-                                Цена 
-                            </th>                        
-                            <th
-                                *tuiHead="'actions'"
-                                tuiTh
-                                class="lg:w-32"
-                                [sorter]="null"
-                            >
-                                Количество
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody
-                        tuiTbody
-                        [data]="selectedServices"
-                    >
-                        <tr
-                            *ngFor="let service of selectedServices; let index = index"
-                            tuiTr
+            <!-- Check -->
+            <div class="w-full pb-2" *ngIf="activeItemIndex === 2">
+                
+                <div class="flex flex-row space-x-4">
+                    <!-- Service Input -->
+                    <div class="space-y-4 w-full">
+                        <tui-select
+                            class="control"
+                            [identityMatcher]="identityMatcher"
+                            [valueContent]="valueContentService"
+                            [(ngModel)]="selectServiceInput"
                         >
-                            <td
-                                *tuiCell="'name'"
-                                tuiTd
-                            >
-                                {{ index+1 }}. <b>{{ service.name }}</b>
-                            </td>
-                            <td
-                                *tuiCell="'price'"
-                                tuiTd
-                            >
-                                {{ service.price }} ₽
-                            </td>
-                            <td
-                                *tuiCell="'actions'"
-                                class="space-x-2"
-                                tuiTd
-                            >
-                                <tui-input-count
-                                    [(ngModel)] = "service.quantity"
-                                    [min]="1"
-                                    [max]="50"
-                                >
-                                    Количество
-                                    <input
-                                        tuiTextfield
-                                        placeholder="Введите количество"
-                                    />
-                                </tui-input-count>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            Выбор услуги
+                            <checkbox-list
+                                *tuiDataList
+                                [items]="servicesList"
+                            ></checkbox-list>
+                        </tui-select>
+                    
 
-                {{selectedServices | json}}
+                        <table
+                            class="w-full"
+                            tuiTable
+                            [columns]="servicesColumns"
+                            *ngIf="selectServiceInput.length > 0"
+                        >
+                            <thead>
+                                <tr tuiThGroup>
+                                    <th
+                                        *tuiHead="'name'"       
+                                        tuiTh
+                                        [sorter]="null"
+                                    >
+                                        Услуга
+                                    </th>
+                                    <th
+                                        *tuiHead="'price'"
+                                        class="lg:w-20"
+                                        tuiTh
+                                        [sorter]="null"
+                                    >
+                                        Стоимость 
+                                    </th>     
+                                    <th
+                                        *tuiHead="'quantity'"
+                                        tuiTh
+                                        class="lg:w-24"
+                                        [sorter]="null"
+                                    >
+                                        Количество
+                                    </th>            
+                                    <th
+                                        *tuiHead="'actions'"
+                                        tuiTh
+                                        class="lg:w-14"
+                                        [sorter]="null"
+                                    >
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody
+                                tuiTbody
+                                [data]="selectedServices"
+                            >
+                                <tr
+                                    *ngFor="let service of selectedServices; let index = index"
+                                    tuiTr
+                                >
+                                    <td
+                                        *tuiCell="'name'"
+                                        tuiTd
+                                    >
+                                        {{ index+1 }}. <b>{{ service.name }}</b>
+                                    </td>
+                                    <td
+                                        *tuiCell="'price'"
+                                        tuiTd
+                                    >
+                                        {{ service.price }} ₽
+                                    </td>
+                                    <td
+                                        *tuiCell="'quantity'"
+                                        tuiTd
+                                    >
+                                        <div>
+                                            <tui-input-count
+                                                [(ngModel)] = "service.quantity"
+                                                [min]="1"
+                                                [max]="10"
+                                            >
+                                                Количество
+                                            </tui-input-count>
+                                        </div>
+                                    </td>
+                                    <td
+                                        *tuiCell="'actions'"
+                                        tuiTd
+                                    >
+                                        <button
+                                            tuiIconButton
+                                            appearance="secondary-destructive"
+                                            size="s"
+                                            icon="tuiIconTrash"
+                                            title="Remove"
+                                            shape="rounded"
+                                            class="remove"
+                                            (click) = "deleteService(service)"
+                                        ></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3
+                            *ngIf="selectServiceInput.length === 0"
+                            class="text-xl font-bold text-center"
+                        >
+                            Выберите услугу!
+                        </h3>
+                    </div>
+
+                    <!-- Goods input -->
+                    <div class="space-y-4 w-full">
+                        <tui-select
+                            class="control"
+                            [identityMatcher]="identityMatcher"
+                            [valueContent]="valueContentGoods"
+                            [(ngModel)]="selectGoodsInput"
+                        >
+                            Выбор товара
+                            <checkbox-list
+                                *tuiDataList
+                                [items]="goodsList"
+                            ></checkbox-list>
+                        </tui-select>         
+
+                        <table
+                            class="w-full"
+                            tuiTable
+                            [columns]="servicesColumns"
+                            *ngIf="selectGoodsInput.length > 0"
+                        >
+                            <thead>
+                                <tr tuiThGroup>
+                                    <th
+                                        *tuiHead="'name'"       
+                                        tuiTh
+                                        [sorter]="null"
+                                    >
+                                        Услуга
+                                    </th>
+                                    <th
+                                        *tuiHead="'price'"
+                                        class="lg:w-20"
+                                        [sorter]="null"
+                                        tuiTh
+                                    >
+                                        Цена 
+                                    </th>     
+                                    <th
+                                        *tuiHead="'quantity'"
+                                        tuiTh
+                                        [sorter]="null"
+                                        class="lg:w-24"
+                                    >
+                                        Количество
+                                    </th>            
+                                    <th
+                                        *tuiHead="'actions'"
+                                        tuiTh
+                                        class="lg:w-14"
+                                        [sorter]="null"
+                                    >
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody
+                                tuiTbody
+                                [data]="selectedGoods"
+                            >
+                                <tr
+                                    *ngFor="let goods of selectedGoods; let index = index"
+                                    tuiTr
+                                >
+                                    <td
+                                        *tuiCell="'name'"
+                                        tuiTd
+                                    >
+                                        {{ index+1 }}. <b>{{ goods.name }}</b>
+                                    </td>
+                                    <td
+                                        *tuiCell="'price'"
+                                        tuiTd
+                                    >
+                                        {{ goods.price }} ₽
+                                    </td>
+                                    <td
+                                        *tuiCell="'quantity'"
+                                        tuiTd
+                                    >
+                                        <tui-input-number
+                                            [(ngModel)] = "goods.quantity"
+                                            [min]="1"
+                                            [max]="50"
+                                            [precision]="1"
+                                        >
+                                            Количество
+                                            <input
+                                                tuiTextfield
+                                                placeholder="Введите количество"
+                                            />
+                                        </tui-input-number>
+                                    </td>
+                                    <td
+                                        *tuiCell="'actions'"
+                                        tuiTd
+                                    >
+                                        <button
+                                            tuiIconButton
+                                            appearance="secondary-destructive"
+                                            size="s"
+                                            icon="tuiIconTrash"
+                                            title="Remove"
+                                            shape="rounded"
+                                            class="remove"
+                                            (click) = "deleteGoods(goods)"
+                                        ></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 
+                            *ngIf="selectGoodsInput.length === 0"
+                            class="text-xl font-bold text-center"
+                        >
+                            Выберите товар!
+                        </h3>
+                        <!-- {{selectedServices | json}} -->
+                    </div>
+                </div>
+
+                <div class="text-center" *ngIf="selectedServices.length !== 0 || selectedGoods.length !== 0">
+                    <h1 class="tui-text_h4">Итог: {{check}}</h1>
+                </div>
             </div>
         </div> 
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
- <!-- <tui-multi-select
-    placeholder="Find by ..."
-    class="b-form"
-    [formControl]="testValue"
-    [tuiTextfieldLabelOutside]="true"
-    [expandable]="false"
->
-    Rock Star Frontend Developers
-    <tui-data-list-wrapper
-        *tuiDataList
-        [items]="servicesList | tuiHideSelected | tuiFilterByInput"
-        [itemContent]="itemContent"
-    ></tui-data-list-wrapper>
-</tui-multi-select>
-
-<ng-template
-    #itemContent
-    let-data
->
-    <div class="flex flex-row">
-        <p>{{ data.name }}</p>
-        {{ data.price }}
-    </div>
-</ng-template> -->
-<!-- <tui-multi-select
-    *tuiLet="servicesList$ | async as serviceListItems"
-    class="b-form"
-    [formControl]="control"
-    [tuiTextfieldLabelOutside]="true"
-    (searchChange)="onSearch($event)"
->
-    <tui-data-list-wrapper
-        *tuiDataList
-        tuiMultiSelectGroup
-        [items]="serviceListItems"
-        [itemContent]="(stringify$ | async)!"
-    ></tui-data-list-wrapper>
-</tui-multi-select> -->
-
-
-<!-- <tui-multi-select
-    *tuiLet="servicesList$ | async as serviceListItems"
-    placeholder="Find by ..."
-    [formControl]="control"
-    [tuiTextfieldLabelOutside]="true"
-    [expandable]="false"
-    (searchChange)="onSearch($event)"
-    [valueContent] = "content"
->
-    Rock Star Frontend Developers
-    <tui-data-list-wrapper
-        *tuiDataList
-        [items]="serviceListItems | tuiHideSelected"
-        [itemContent]="itemContent"
-    ></tui-data-list-wrapper>
-</tui-multi-select>
-
-<ng-template
-    #itemContent
-    let-data
->
-    <div class="template">
-        {{ data }}
-    </div>
-</ng-template>
-
-
-<tui-multi-select
-    [editable]="true"
-    [formControl]="control"
-    [tuiTextfieldCleaner]="true"
-    [expandable]="true"
-    [valueContent] = "content"
-    (searchChange)="onSearch1($event)"
->
-    Employees
-    <tui-data-list-wrapper
-        *tuiDataList
-        tuiMultiSelectGroup
-        [items]="servicesList"
-    ></tui-data-list-wrapper>
-</tui-multi-select>
-    -->

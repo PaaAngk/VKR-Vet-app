@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { tuiWatch } from '@taiga-ui/cdk';
 import {TuiDialogService} from '@taiga-ui/core';
 import {  Subject, takeUntil } from 'rxjs';
-import { AnalyzesResearch, Client, Pet, Reception } from 'src/graphql/generated';
+import { TableColumn } from 'src/app/core';
+import { AnalyzesResearch, Client, Maybe, Pet, Reception } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
 
 @Component({
@@ -13,6 +15,26 @@ import { ClientCardService } from '../client-card.service';
 })
 export class PetComponent implements OnDestroy{
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
+
+	readonly tableColumns: TableColumn[] = [
+        {
+            name: 'Вид приема',
+            dataKey: 'receptionPurpose'
+        },
+        {
+            name: 'Диагноз',
+            dataKey: 'diagnosis'
+        },
+        {
+            name: 'Дата',
+            dataKey: 'date'
+        },
+        {
+            name: 'Стоимость',
+            dataKey: 'cost'
+        }
+    ];
+
 
 	pet: Pet = {} as Pet;
 	receptions: Reception[] = [] as Reception[];
@@ -32,16 +54,12 @@ export class PetComponent implements OnDestroy{
 
 		// Getting data 
 		this.clientCardService.getPet$
-		.pipe(takeUntil(this._unsubscribeAll))
+		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
 		.subscribe((pet: Pet) => {	
 			this.pet = pet;
 			this.receptions = pet.receptions || [] as Reception[];
 			this.analyzesResearchs = pet.analyzesResearchs || [] as AnalyzesResearch[];
-			console.log(pet);
-			this._changeDetectorRef.markForCheck();
 		});
-
-
 	}
 
 	ngOnDestroy(): void

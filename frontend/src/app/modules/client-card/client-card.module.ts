@@ -14,7 +14,9 @@ import {
   TuiFormatPhonePipeModule,
   TuiGroupModule,
   TuiHintModule,
+  TuiHostedDropdownModule,
   TuiLinkModule,
+  TuiLoaderModule,
   TuiPrimitiveTextfieldModule,
   TuiSvgModule,
   TuiTextfieldControllerModule,
@@ -31,6 +33,7 @@ import { PetComponent } from './pet/pet.component';
 import { ReceptionComponent } from './reception/reception.component';
 import { TuiEditorModule } from '@taiga-ui/addon-editor';
 import { CheckboxListComponent } from './reception/checkbox-list/checkbox-list.component';
+import { AdvancedTableModule } from 'src/app/shared/components/advanced-table';
 
 @NgModule({
   declarations: [
@@ -49,6 +52,7 @@ import { CheckboxListComponent } from './reception/checkbox-list/checkbox-list.c
     ClientCardRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    AdvancedTableModule,
 
     TuiInputModule,
     TuiButtonModule,
@@ -81,6 +85,8 @@ import { CheckboxListComponent } from './reception/checkbox-list/checkbox-list.c
     TuiInputCountModule,
     TuiSelectModule,
     TuiFilterPipeModule,
+    TuiLoaderModule,
+    TuiHostedDropdownModule,
   ],
 })
 export class ClientCardModule {}

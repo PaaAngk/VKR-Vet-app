@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, Observable } from "rxjs";
-import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, GetClientGQL, GetPetDetailGQL, Pet } from "src/graphql/generated";
+import { BehaviorSubject, map, Observable, take } from "rxjs";
+import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, ReceptionPurpose, ServiceType } from "src/graphql/generated";
 
 
 @Injectable({
@@ -11,6 +11,12 @@ export class ClientCardService
     private _clientsData: BehaviorSubject<Client[]> = new BehaviorSubject([] as Client[]);
     private _currentClient: BehaviorSubject<Client> = new BehaviorSubject<Client>({} as Client);
     private _currentPet: BehaviorSubject<Pet> = new BehaviorSubject<Pet>({} as Pet);
+    
+    private _serviceTypesList : BehaviorSubject<Array<ServiceType>> = new BehaviorSubject([] as ServiceType[]);
+	private _goodsCategoriesList : BehaviorSubject<Array<GoodsCategory>> = new BehaviorSubject([] as GoodsCategory[]);
+    private _employeesList : BehaviorSubject<Array<Employee>> = new BehaviorSubject([] as Employee[]);
+    private _receptionPurposesList : BehaviorSubject<Array<ReceptionPurpose>> = new BehaviorSubject([] as ReceptionPurpose[]);
+
 
     constructor(
         private getClientGQL: GetClientGQL,
@@ -18,8 +24,15 @@ export class ClientCardService
         private clientDetailGQL: ClientDetailGQL,
         private createPetGQL: CreatePetGQL,
         private getPetDetailGQL: GetPetDetailGQL,
+        private getAllServiceTypeWithServiceNameGQL: GetAllServiceTypeWithServiceNameGQL,
+		private getAllGoodsCategoryWithGoodsGQL : GetAllGoodsCategoryWithGoodsGQL,
+        private getAllEmployeesGQL : GetAllEmployeesGQL,
+        private getAllReceptionPurposeGQL: GetAllReceptionPurposeGQL
     ){
-
+        this.getAllServiceType();
+        this.getAllGoodsCategory();
+        this.getAllEmployees();
+        this.getAllReceptionPurpose();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -66,6 +79,22 @@ export class ClientCardService
     get getPet$(): Observable<Pet>
     {
         return this._currentPet.asObservable();
+    }
+
+    get getServiceTypes$() : Observable<Array<ServiceType>>{
+        return this._serviceTypesList.asObservable();
+    }
+
+    get getGoodsCategories$() : Observable<Array<GoodsCategory>>{
+        return this._goodsCategoriesList.asObservable();
+    }
+
+    get getAllEmployees$() : Observable<Array<Employee>>{
+        return this._employeesList.asObservable();
+    }
+
+    get getAllReceptionPurpose$() : Observable<Array<ReceptionPurpose>>{
+        return this._receptionPurposesList.asObservable();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -167,22 +196,68 @@ export class ClientCardService
         });
     }
 
-    // /**
-    //  * Get all services names and prices
-    //  * @petId id of pet
-    //  */
-    // getAllServices(): void
-    // {
-    //     this.getAllServiceGQL.watch()
-    //     .valueChanges
-    //     .subscribe({
-    //         next : (data) => {
+    /**
+     * Get all service in its category
+     */
+    getAllServiceType(): void
+    {
+        this.getAllServiceTypeWithServiceNameGQL.watch().valueChanges
+		.pipe(take(1))
+		.subscribe({
+			next : (data) => {
+                this._serviceTypesList.next(data.data.allServiceType.map(item => renameKeys(item, { service: "items" })));
+            },  
+		});
+    }
 
-    //         },
-    //         error: (error)  => {
-    //             console.log(error)
-    //         }
-    //     });
-    // }
+    /**
+     * Get all service in its category
+     */
+    getAllGoodsCategory(): void
+    {
+        this.getAllGoodsCategoryWithGoodsGQL.watch().valueChanges
+		.pipe(take(1))
+		.subscribe({
+			next : (data) => {
+                this._goodsCategoriesList.next(data.data.allGoodsCategory
+                .map(item => renameKeys(renameKeys(item, { goods: "items" }), { categoryName: "typeName" })));
+            },
+		});
+    }
 
+    /**
+     * Get all employees
+     */
+    getAllEmployees(): void
+    {
+        this.getAllEmployeesGQL.watch().valueChanges
+		.pipe(take(1))
+		.subscribe({
+			next : (data) => {
+                this._employeesList.next(data.data.allEmployees)
+            },
+		});
+    }
+
+    /**
+     * Get all purpose of reception
+     */
+    getAllReceptionPurpose(): void
+    {
+        this.getAllReceptionPurposeGQL.watch().valueChanges
+		.pipe(take(1))
+		.subscribe({
+			next : (data) => {
+                this._receptionPurposesList.next(data.data.allReceptionPurpose)
+            },
+		});
+    }
+}
+
+function renameKeys(obj: { [x: string]: any; }, newKeys: { [x: string]: string; }) {
+	const keyValues = Object.keys(obj).map(key => {
+		const newKey = newKeys[key] || key;
+		return { [newKey]: obj[key] };
+	});
+	return Object.assign({}, ...keyValues);
 }

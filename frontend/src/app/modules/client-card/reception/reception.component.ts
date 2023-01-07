@@ -1,18 +1,26 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApolloQueryResult, Observable } from '@apollo/client';
 import { defaultEditorExtensions, TuiEditorTool, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-editor';
-import { TuiContextWithImplicit, TuiHandler, TuiIdentityMatcher, tuiIsNumber, tuiPure, TuiStringHandler, TUI_DEFAULT_MATCHER } from '@taiga-ui/cdk';
+import { TuiContextWithImplicit, TuiIdentityMatcher, tuiPure, TuiStringHandler } from '@taiga-ui/cdk';
 import { TuiDialogService } from '@taiga-ui/core';
-import { tuiItemsHandlersProvider } from '@taiga-ui/kit';
-import { map, of, startWith, Subject, switchMap, take, takeUntil } from 'rxjs';
-import { GetAllServiceTypeWithServiceNameGQL, Pet, Service, ServiceType } from 'src/graphql/generated';
+import { Subject, take, takeUntil } from 'rxjs';
+import { CreateReceptionGQL, Employee,  Pet, ReceptionPurpose } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
+import {TuiHostedDropdownComponent} from '@taiga-ui/core';
+import { TUI_ARROW } from '@taiga-ui/kit';
 
 interface SelectedService{
 	readonly id: number;
     readonly name: string;
+    readonly price: number;
+	quantity: number;
+}
+
+interface SelectedGoods{
+	readonly id: number;
+    readonly name: string;
+	readonly measure: string;
     readonly price: number;
 	quantity: number;
 }
@@ -31,30 +39,38 @@ interface SelectedService{
 export class ReceptionComponent implements OnDestroy, OnInit {
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+	/** Interface */
+	activeItemIndex = 1;
+	@ViewChild(TuiHostedDropdownComponent)
+    component?: TuiHostedDropdownComponent;
+	// open for print buttons
+	openAssignment = false;
+	openCheck = false;
+
 	pet: Pet = {} as Pet;
-	activeItemIndex = 2;
 	readonly receptionColumns = ['receptionPurpose', 'diagnosis', 'date', 'cost', 'actions'];
-	readonly servicesColumns = ['name', 'price', 'actions'];
-	employeeList = ['item1', 'item2', 'item3'];
-	purposeList = ['item11', 'item22', 'item33'];
+	readonly servicesColumns = ['name', 'price', 'quantity', 'actions'];
+	employeeList : Array<Employee> = [];
+	purposeList : Array<ReceptionPurpose> = [];
+
 	servicesList : Array<any> = []; // any for work with universal component by her interface
 	selectedServices : SelectedService[] = [];
+	selectServiceInput : SelectedService[] = [];
+	goodsList : Array<any> = []; // any for work with universal component by her interface
+	selectedGoods : SelectedGoods[] = [];
+	selectGoodsInput : SelectedGoods[] = [];
 
 	editorSettengs: ReadonlyArray<TuiEditorTool> = [TuiEditorTool.Undo, TuiEditorTool.Bold, TuiEditorTool.Italic, TuiEditorTool.Underline, TuiEditorTool.List,
 		TuiEditorTool.Color, TuiEditorTool.Size, TuiEditorTool.Sup, TuiEditorTool.Sub, TuiEditorTool.HR, TuiEditorTool.Link, TuiEditorTool.Hilite]
 	
-	readonly addPetForm = new FormGroup({
-        employee: new FormControl(null),
-        purpose: new FormControl('', [Validators.required, Validators.minLength(2)]),
-        anamnesis: new FormControl(null),
-		clinicalSigns: new FormControl(null),
-		diagnosis: new FormControl(null),
-		assignment: new FormControl(null),
-		testValue1: new FormControl(null),
-		value: new FormControl(null),
+	readonly addReceptionForm = new FormGroup({
+        employee: new FormControl(null, [Validators.required, Validators.minLength(2)]),
+        purpose: new FormControl(null, [Validators.required, Validators.minLength(2)]),
+        anamnesis: new FormControl(''),
+		clinicalSigns: new FormControl(''),
+		diagnosis: new FormControl(''),
+		assignment: new FormControl(''),
 	});
-
-	value = [];
 
     constructor(
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
@@ -62,18 +78,33 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		private router: Router,
-		private getAllServiceTypeWithServiceNameGQL: GetAllServiceTypeWithServiceNameGQL,
+		private createReceptionGQL : CreateReceptionGQL,
     ) {
 	}
 
 	ngOnInit(): void {
-		this.getAllServiceTypeWithServiceNameGQL.watch().valueChanges
-		.pipe(take(1))
-		.subscribe({
-			next : (data) => {
-                this.servicesList = data.data.allServiceType.map(item => renameKeys(item, { service: "items" })) as Array<ServiceType>;
-				this._changeDetectorRef.markForCheck();
-            },
+		this.clientCardService.getServiceTypes$
+		.pipe(takeUntil(this._unsubscribeAll))
+		.subscribe(data => {
+			this.servicesList = data;
+		});
+
+		this.clientCardService.getGoodsCategories$
+		.pipe(takeUntil(this._unsubscribeAll))
+		.subscribe(data => {
+			this.goodsList = data;
+		});
+
+		this.clientCardService.getAllEmployees$
+		.pipe(takeUntil(this._unsubscribeAll))
+		.subscribe(data => {
+			this.employeeList = data;
+		});
+
+		this.clientCardService.getAllReceptionPurpose$
+		.pipe(takeUntil(this._unsubscribeAll))
+		.subscribe(data => {
+			this.purposeList = data;
 		});
 	}
 
@@ -88,7 +119,18 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
    
- 
+	get check(): number {
+		return Object.keys(this.selectedGoods).reduce( (sum, currentValue)=> {
+			const result : number = sum + (this.selectedGoods[parseInt(currentValue)].price * this.selectedGoods[parseInt(currentValue)].quantity)
+			return result
+		}, 0) 
+		+ 
+		Object.keys(this.selectedServices).reduce( (sum, currentValue)=> {
+			const result : number = sum + (this.selectedServices[parseInt(currentValue)].price * this.selectedServices[parseInt(currentValue)].quantity)
+			return result
+		}, 0)
+	}
+
 	setClient(clientId : string) {
 		this.clientCardService.setSelectedClient(clientId);
 		this.router.navigateByUrl('client-card/detail');
@@ -97,7 +139,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	readonly identityMatcher: TuiIdentityMatcher<readonly string[]> = (items1, items2) =>
 	items1.length === items2.length && items1.every(item => items2.includes(item));
 
-	readonly valueContent: TuiStringHandler<TuiContextWithImplicit<readonly any[]>> =
+	readonly valueContentService: TuiStringHandler<TuiContextWithImplicit<readonly any[]>> =
 		({$implicit}) => {
 			this.selectService([...$implicit]);
 			if (!$implicit.length) {
@@ -106,84 +148,86 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 			return `Выбрано: ${$implicit.length}`;
 		};
 
-		//Сделать добавление в массив только нового поступившего элемента с сохранением уже находящихс таких же массивов
+	readonly valueContentGoods: TuiStringHandler<TuiContextWithImplicit<readonly any[]>> =
+		({$implicit}) => {
+			this.selectGoods([...$implicit]);
+			if (!$implicit.length) {
+				return `Ничего не выбрано`;
+			}
+			return `Выбрано: ${$implicit.length}`;
+		};
+
+	// Adding into table selected service data from input
 	selectService(service: any[]){
-		this.selectedServices = service.map(item => ({...item, quantity : 1})) as SelectedService[];
+		this.selectedServices = this.selectedServices.filter(item => service.some(s => s.id == item.id));
+		const added_item = service.filter(item => !this.selectedServices.some(s => s.id == item.id));
+		if(added_item.length > 0){
+			this.selectedServices.push( {...added_item[0], quantity : 1} );
+		}
 		this._changeDetectorRef.detectChanges();
 	}
 
-	onValueChange<K extends keyof SelectedService>(
-        value: SelectedService[K],
-        key: K,
-        current: SelectedService,
-        data: readonly SelectedService[],
-    ): void {
-        const updated = {...current, [key]: value};
-		console.log(data + " " + updated)
- 
-        // this.pythons =
-        //     data === this.pythons
-        //         ? this.pythons.map(item => (item === current ? updated : item))
-        //         : this.pythons;
- 
-        // this.starwars =
-        //     data === this.starwars
-        //         ? this.starwars.map(item => (item === current ? updated : item))
-        //         : this.starwars;
+	// Adding into table selected goods data from input
+	selectGoods(goods: any[]){
+		this.selectedGoods = this.selectedGoods.filter(item => goods.some(s => s.id == item.id));
+		const added_item = goods.filter(item => !this.selectedGoods.some(s => s.id == item.id));
+		if(added_item.length > 0){
+			this.selectedGoods.push( {...added_item[0], quantity : 1} );
+		}
+		this._changeDetectorRef.detectChanges();
+	}
+
+	deleteService(service: SelectedService){
+		this.selectServiceInput = this.selectServiceInput.filter(item => item.id !== service.id);
+		this.selectedServices = this.selectedServices.filter(item => item.id !== service.id);
+		this._changeDetectorRef.detectChanges();
+	}
+
+	deleteGoods(goods: SelectedGoods){
+		this.selectGoodsInput = this.selectGoodsInput.filter(item => item.id !== goods.id);
+		this.selectedGoods = this.selectedGoods.filter(item => item.id !== goods.id);
+		this._changeDetectorRef.detectChanges();
+	}
+
+	@tuiPure
+    stringifyEmployeeList (items: readonly Employee[] ): TuiStringHandler<TuiContextWithImplicit<number>> {
+        const map = new Map(items.map(({id, fullName}) => [id, fullName] as [number, string]));
+        return ({$implicit}: TuiContextWithImplicit<number>) => map.get($implicit) || ``;
     }
+
+	@tuiPure
+    stringifyPurposeList (items: readonly ReceptionPurpose[] ): TuiStringHandler<TuiContextWithImplicit<number>> {
+        const map = new Map(items.map(({id, purposeName}) => [id, purposeName] as [number, string]));
+        return ({$implicit}: TuiContextWithImplicit<number>) => map.get($implicit) || ``;
+    }
+
+	onClick(){
+		console.log("data")
+	}
+
+	submitReception(){
+		
+		if (this.addReceptionForm.status == "VALID"){
+			console.log(this.addReceptionForm.value);
+			
+			// this.clientCardService.getSelectedClient$.pipe(take(1)).subscribe({
+            //     next: (data) =>  this.addReceptionForm.value.clientId = data.id
+            // })
+
+            // this.createReceptionGQL.mutate({
+			// 	data: this.addReceptionForm.value as CreatePetInput
+			// })
+            // .subscribe({
+            //     next: () => { 
+            //         this.alertService.open("Питомец успешно добавлен!", {status: TuiNotification.Success}).subscribe();
+            //         this.context.completeWith(1); 
+            //     },
+            //     error: (error)  => 
+            //     {
+            //         this.alertService.open("Питомец уже добавлен", {status: TuiNotification.Error}).subscribe()
+            //         console.log(error)
+            //     }
+            // })
+		}
+	}
 }
-
-function renameKeys(obj: { [x: string]: any; }, newKeys: { [x: string]: string; }) {
-	const keyValues = Object.keys(obj).map(key => {
-		const newKey = newKeys[key] || key;
-		return { [newKey]: obj[key] };
-	});
-	return Object.assign({}, ...keyValues);
-}
-
-
-
-
-
-
-
-
-// readonly control = new FormControl([]);
-
-// 	private readonly searchServicesList$ = new Subject<string>();
-
-// 	readonly servicesList$ = this.searchServicesList$.pipe(
-//         startWith(``),
-// 		switchMap(search =>
-//             of(this.servicesList).pipe(
-//                 map(items =>
-//                     items
-// 					.filter(({name}) => TUI_DEFAULT_MATCHER(name, search))
-// 					.map(({id}) => id),
-//                 ),
-//             ),
-//         ),
-//         startWith(null),
-//     );
-
-
-// 	onSearch(search: string | null): void {
-// 		this.searchServicesList$.next(search || ``);
-//     }
-
-// 	get content(): string {
-//         return `Selected ${this.control.value?.length || 0} of ${this.servicesList.length}`;	
-//     }
-
-// 	/////////////////////////////////////////////
-// 	@tuiPure
-//     filter(search: string | null): readonly string[] {
-//         // return this.servicesList.filter(item => TUI_DEFAULT_MATCHER(item.name, search || ``));
-// 		return this.servicesList
-// 			.filter(({name}) => TUI_DEFAULT_MATCHER(name, search || ``))
-// 			.map(({name}) => name) as string[]
-//     }
-
-// 	onSearch1(search: string | null): void {
-// 		this.searchServicesList$.next(search || ``);
-//     }

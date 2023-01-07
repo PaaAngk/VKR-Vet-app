@@ -5,26 +5,26 @@ import { GoodsList } from './goods-list.model';
 @ObjectType()
 export class Goods {
   @Field(() => Int)
-  id: number;
+  id?: number;
 
-  @Field(() => GoodsCategory)
+  @Field(() => GoodsCategory, { nullable: true })
   category?: GoodsCategory;
 
-  @Field(() => [GoodsList], { nullable: 'items' })
-  GoodsList?: GoodsList[] | null;
+  @Field(() => [GoodsList])
+  GoodsList?: GoodsList[];
 
   @Field(() => Int)
-  categoryId: number;
+  categoryId?: number;
 
   @Field(() => String)
   name: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   measure?: string;
 
-  @Field(() => Float, { nullable: true })
+  @Field(() => Float)
   quantity?: number;
 
-  @Field(() => Float, { nullable: true })
+  @Field(() => Float)
   price?: number;
 }

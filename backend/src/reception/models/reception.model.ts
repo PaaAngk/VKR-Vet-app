@@ -1,6 +1,6 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { Employee } from 'src/common/models';
-import { GoodsList } from 'src/common/models/goods-list.model';
+import { GoodsList } from 'src/goods/models/goods-list.model';
 import { Pet } from 'src/pets/models/pet.model';
 import { ServiceList } from 'src/services/models/service-list.model';
 import { ReceptionPurpose } from './reception-purpose.model';

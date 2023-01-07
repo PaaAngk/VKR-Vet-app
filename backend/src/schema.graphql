@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddInGoodsListInput {
+  goodsId: Int!
+  quantity: Int!
+  receptionId: String!
+}
+
 type AnalyzesResearch {
   Pet: Pet
   TypeAnalyzesResearch: TypeAnalyzesResearch
@@ -76,6 +82,18 @@ input CreateClientInput {
   telephoneNumber: String!
 }
 
+input CreateGoodsCategoryInput {
+  categoryName: String!
+}
+
+input CreateGoodsInput {
+  categoryId: Int!
+  measure: String!
+  name: String!
+  price: Int!
+  quantity: Int!
+}
+
 input CreatePetInput {
   DOB: DateTime
   alias: String!
@@ -121,14 +139,14 @@ type Employee {
   fullName: String!
   id: Int!
   receptions: [Reception!]
-  role: Role!
+  role: Role
 }
 
 type Goods {
-  GoodsCategory: GoodsCategory
-  GoodsList: [GoodsList]!
-  categoryId: Int!
-  id: Int!
+  GoodsList: [GoodsList!]
+  category: GoodsCategory
+  categoryId: Int
+  id: Int
   measure: String
   name: String!
   price: Float
@@ -136,16 +154,17 @@ type Goods {
 }
 
 type GoodsCategory {
-  categoryName: String!
+  categoryName: String
   goods: [Goods!]
-  id: Int!
+  id: Int
 }
 
 type GoodsList {
   Goods: Goods
   Reception: Reception
+  goods: Goods!
   goodsId: Int!
-  quantity: Float!
+  quantity: Int!
   receptionId: String!
 }
 
@@ -160,10 +179,13 @@ input LoginInput {
 }
 
 type Mutation {
+  addInGoodsList(data: AddInGoodsListInput!): GoodsList!
   addInServiceList(data: CreateServiceTypeInput!): ServiceType!
   changePassword(data: ChangePasswordInput!): User!
   createAnalyzesResearch(data: CreateAnalyzesResearchInput!): AnalyzesResearch!
   createClient(data: CreateClientInput!): Client!
+  createGoods(data: CreateGoodsInput!): Goods!
+  createGoodsCategory(data: CreateGoodsCategoryInput!): GoodsCategory!
   createPet(data: CreatePetInput!): Pet!
   createReception(data: CreateReceptionInput!): Reception!
   createService(data: CreateServiceInput!): Service!
@@ -210,6 +232,11 @@ type Pet {
 }
 
 type Query {
+  allEmployees: [Employee!]!
+  allGoods: [Goods!]!
+  allGoodsCategory: [GoodsCategory!]!
+  allGoodsList: [GoodsList!]!
+  allReceptionPurpose: [ReceptionPurpose!]!
   allServiceList: [ServiceList!]!
   allServiceType: [ServiceType!]!
   allServices: [Service!]!

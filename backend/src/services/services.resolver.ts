@@ -12,7 +12,6 @@ import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { Service } from './models/service.model';
 import { CreateServiceInput } from './dto/CreateServiceInput';
 import { ServiceType } from './models/service-type.model';
-import { ServiceList } from './models/service-list.model';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Service)

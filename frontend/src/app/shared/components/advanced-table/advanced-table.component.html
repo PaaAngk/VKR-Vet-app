@@ -1,0 +1,144 @@
+<ng-template #columnEditor>
+    <tui-hosted-dropdown [content]="dropdown">
+        <button
+            tuiButton
+            size="m"
+            [iconRight]="arrow"
+        >
+            Колонки
+        </button>
+        <ng-template #dropdown>
+            <tui-reorder
+                class="columns"
+                [enabled]="enabled"
+                [(items)]="columnNames"
+                (enabledChange)="onEnabled($event)"
+            ></tui-reorder>
+        </ng-template>
+    </tui-hosted-dropdown>
+</ng-template>
+<!-- *ngIf=" (total$ | async) == 0" -->
+<ng-container *ngIf=" (total$ | async) === 0">
+    <div class="text-center my-auto h-full">
+        <div class="mt-4 text-2xl font-semibold my-auto h-96">Не удалось загрузить данные</div>
+    </div>
+</ng-container>
+<ng-container *ngIf="(data$ | async) as data">
+
+    <tui-loader
+        *ngIf="(total$ | async) !== 0"
+        [overlay]="true"
+        [showLoader]="!!(loading$ | async)"
+    >
+        <table
+            tuiTable
+            class="w-full h-full my-4"
+            [columns]="columnKeys"
+            [direction]="(direction$ | async) || 1"
+            [tuiSortBy]="sorter$ | async"
+            (tuiSortByChange)="sorter$.next($event!)"
+            (directionChange)="direction$.next($event)"
+        >
+            <thead tuiThead>
+                <tr tuiThGroup>
+                    <ng-container *ngIf="rowActionIcon || rowActionText">
+                        <th
+                            class="w-8"
+                            *tuiHead="'actions'"
+                            tuiTh
+                            [sorter]="null"
+                        ></th>
+                    </ng-container>
+
+                    <ng-container 
+                        *ngFor="let key of KEYS | keyvalue"
+                    >
+                        <th
+                            *tuiHead="key.value"
+                            tuiTh
+                            [resizable] = 'resizableColumn'
+                            [sticky] = 'stickyColumn'
+                        >
+                            {{key.key}}
+                        </th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody
+                tuiTbody
+                [data]="data"
+            >
+                <tr
+                    *tuiRow="let item of data"
+                    tuiTr
+                >
+                    <ng-container *ngIf="rowActionIcon">
+                        <td
+                            *tuiCell="'actions'"
+                            tuiTd
+                        >
+                            <button
+                                tuiIconButton
+                                appearance="flat"
+                                size="xs"
+                                [icon]="rowActionIcon"
+                                title="Перейти"
+                                shape="rounded"
+                                (click)="emitRowAction(item)"
+                            ></button>
+                        </td>
+                    </ng-container>
+
+                    <ng-container *ngIf="rowActionText">
+                        <td
+                            *tuiCell="'actions'"
+                            tuiTd
+                        >
+                            <button
+                                tuiButton
+                                type="button"
+                                appearance="flat"
+                                size="xs"
+                                [icon]="rowActionIcon"
+                                title="Перейти"
+                                (click)="emitRowAction(item)"
+                            >
+                                {{rowActionText}}
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <ng-container
+                        *ngFor="let key of KEYS | keyvalue"
+                    >
+                        <td
+                            *tuiCell="key.value"
+                            tuiTd
+                            [class.table-search-select]="isMatch(getTableCellByKey(item, key.value ))"
+                        >
+                            {{ getTableCellByKey(item, key.value ) }}
+                        </td>
+                    </ng-container>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td [colSpan]="columnKeys.length">
+                        <tui-table-pagination
+                            class="tui-space_top-2"
+                            [total]="(total$ | async) || 0"
+                            (pageChange)="onPage($event)"
+                            (sizeChange)="onSize($event)"
+                        ></tui-table-pagination>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </tui-loader>
+</ng-container>
+
+<ng-template #defaultTmpl>
+    <div class="text-center my-auto h-full">
+        <div class="mt-4 text-2xl font-semibold my-auto h-96">Не удалось загрузить данные</div>
+    </div>
+</ng-template>
