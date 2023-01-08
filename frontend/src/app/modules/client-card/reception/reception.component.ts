@@ -3,12 +3,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { defaultEditorExtensions, TuiEditorTool, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-editor';
 import { TuiContextWithImplicit, TuiIdentityMatcher, tuiPure, TuiStringHandler } from '@taiga-ui/cdk';
-import { TuiDialogService } from '@taiga-ui/core';
-import { Subject, take, takeUntil } from 'rxjs';
-import { CreateReceptionGQL, Employee,  Pet, ReceptionPurpose } from 'src/graphql/generated';
+import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
+import { Subject, takeUntil } from 'rxjs';
+import { CreateReceptionGQL, GoodsListReceptionInput, ServiceListReceptionInput, Employee,  Pet, ReceptionPurpose, CreateReceptionInput } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
-import { TUI_ARROW } from '@taiga-ui/kit';
 
 interface SelectedService{
 	readonly id: number;
@@ -46,6 +45,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	// open for print buttons
 	openAssignment = false;
 	openCheck = false;
+	loading = false;
 
 	pet: Pet = {} as Pet;
 	readonly receptionColumns = ['receptionPurpose', 'diagnosis', 'date', 'cost', 'actions'];
@@ -64,16 +64,18 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		TuiEditorTool.Color, TuiEditorTool.Size, TuiEditorTool.Sup, TuiEditorTool.Sub, TuiEditorTool.HR, TuiEditorTool.Link, TuiEditorTool.Hilite]
 	
 	readonly addReceptionForm = new FormGroup({
-        employee: new FormControl(null, [Validators.required, Validators.minLength(2)]),
-        purpose: new FormControl(null, [Validators.required, Validators.minLength(2)]),
+        employeeId: new FormControl(null as unknown as number, [Validators.required]),
+        purposeId: new FormControl(null as unknown as number, [Validators.required]),
         anamnesis: new FormControl(''),
 		clinicalSigns: new FormControl(''),
 		diagnosis: new FormControl(''),
 		assignment: new FormControl(''),
+		petId: new FormControl(),
+		cost: new FormControl(),
 	});
 
     constructor(
-        @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
         @Inject(Injector) private readonly injector: Injector,
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
@@ -120,15 +122,17 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	// -----------------------------------------------------------------------------------------------------
    
 	get check(): number {
-		return Object.keys(this.selectedGoods).reduce( (sum, currentValue)=> {
+		const selectedGoods = Object.keys(this.selectedGoods).reduce( (sum, currentValue)=> {
 			const result : number = sum + (this.selectedGoods[parseInt(currentValue)].price * this.selectedGoods[parseInt(currentValue)].quantity)
 			return result
-		}, 0) 
-		+ 
-		Object.keys(this.selectedServices).reduce( (sum, currentValue)=> {
+		}, 0)
+
+		const selectedServices = Object.keys(this.selectedServices).reduce( (sum, currentValue)=> {
 			const result : number = sum + (this.selectedServices[parseInt(currentValue)].price * this.selectedServices[parseInt(currentValue)].quantity)
 			return result
 		}, 0)
+
+		return Math.round( (selectedGoods + selectedServices) * 100 ) / 100
 	}
 
 	setClient(clientId : string) {
@@ -205,29 +209,45 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		console.log("data")
 	}
 
-	submitReception(){
-		
-		if (this.addReceptionForm.status == "VALID"){
-			console.log(this.addReceptionForm.value);
-			
-			// this.clientCardService.getSelectedClient$.pipe(take(1)).subscribe({
-            //     next: (data) =>  this.addReceptionForm.value.clientId = data.id
-            // })
+	get hasValue(): boolean {
+        return this.addReceptionForm.status == "VALID" ? true : false;
+    }
 
-            // this.createReceptionGQL.mutate({
-			// 	data: this.addReceptionForm.value as CreatePetInput
-			// })
-            // .subscribe({
-            //     next: () => { 
-            //         this.alertService.open("Питомец успешно добавлен!", {status: TuiNotification.Success}).subscribe();
-            //         this.context.completeWith(1); 
-            //     },
-            //     error: (error)  => 
-            //     {
-            //         this.alertService.open("Питомец уже добавлен", {status: TuiNotification.Error}).subscribe()
-            //         console.log(error)
-            //     }
+	submitReception(){
+		if (this.addReceptionForm.status == "VALID"){
+			
+			// this.clientCardService.getPet$.pipe(take(1)).subscribe({
+            //     next: () =>  this.addReceptionForm.value.petId = "clc3d28c90001u0eghoixfijs"
             // })
+			this.addReceptionForm.value.petId = "clc3d28c90001u0eghoixfijs"
+
+			this.addReceptionForm.value.cost = this.check;
+			
+			const goodsListReceptionInput : GoodsListReceptionInput[] = this.selectedGoods.map( (goods : SelectedGoods) => (
+				{ goodsId : goods.id, quantity: goods.quantity} as GoodsListReceptionInput
+			))
+
+			const serviceListReceptionInput : ServiceListReceptionInput[] = this.selectedServices.map( (service : SelectedService) => (
+				{ serviceId : service.id, quantity: service.quantity} as ServiceListReceptionInput
+			))
+			this.loading = true;
+			// console.log({ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput });
+            this.createReceptionGQL.mutate({
+				data: { ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput } as CreateReceptionInput
+			})
+            .subscribe({
+                next: (data) => {
+					this.loading = false;
+                    this.alertService.open("Прием успешно добавлен!", {status: TuiNotification.Success}).subscribe();
+					console.log(data)
+					this._changeDetectorRef.markForCheck();
+                },
+                error: (error)  => 
+                {
+                    this.alertService.open("Прием уже добавлен", {status: TuiNotification.Error}).subscribe()
+                    console.log(error)
+                }
+            })
 		}
 	}
 }

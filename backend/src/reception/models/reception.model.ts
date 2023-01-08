@@ -28,11 +28,11 @@ export class Reception {
   @Field(() => Int)
   purposeId?: number;
 
-  @Field(() => [GoodsList])
-  goodsList?: GoodsList[] | null;
+  @Field(() => [GoodsList], { nullable: 'itemsAndList' })
+  goods?: GoodsList[] | null;
 
-  @Field(() => [ServiceList])
-  serviceList?: ServiceList[] | null;
+  @Field(() => [ServiceList], { nullable: 'itemsAndList' })
+  services?: ServiceList[] | null;
 
   @Field(() => String, { nullable: true, description: 'Клинические признаки' })
   clinicalSigns?: string;

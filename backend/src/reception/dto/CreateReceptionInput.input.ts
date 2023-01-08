@@ -1,32 +1,47 @@
-import { IsNotEmpty } from 'class-validator';
-import { InputType, Field } from '@nestjs/graphql';
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import { InputType, Field, Float } from '@nestjs/graphql';
+import { GoodsListReceptionInput } from './GoodsListReceptionInput.input';
+import { ServiceListReceptionInput } from './ServiceListReceptionInput.input';
 
 @InputType()
 export class CreateReceptionInput {
-  @Field()
+  @IsString()
+  @MinLength(3)
   @IsNotEmpty()
   petId: string;
 
-  @Field()
+  @IsInt()
   @IsNotEmpty()
   employeeId: number;
 
-  @Field()
+  @IsInt()
   @IsNotEmpty()
   purposeId: number;
 
-  @Field()
+  @IsString()
   clinicalSigns?: string;
 
-  @Field()
+  @IsString()
   anamnesis?: string;
 
-  @Field()
+  @IsString()
   diagnosis?: string;
 
-  @Field()
+  @IsString()
   assignment?: string;
 
-  @Field()
+  @Field(() => Float)
   cost?: number;
+
+  @IsArray()
+  goodsListReceptionInput?: GoodsListReceptionInput[];
+
+  @IsArray()
+  serviceListReceptionInput?: ServiceListReceptionInput[];
 }

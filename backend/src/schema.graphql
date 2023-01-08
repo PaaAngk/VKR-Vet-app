@@ -4,7 +4,7 @@
 
 input AddInGoodsListInput {
   goodsId: Int!
-  quantity: Int!
+  quantity: Float!
   receptionId: String!
 }
 
@@ -113,11 +113,13 @@ input CreateReceptionInput {
   anamnesis: String
   assignment: String
   clinicalSigns: String
-  cost: Int
+  cost: Float
   diagnosis: String
   employeeId: Int!
+  goodsListReceptionInput: [GoodsListReceptionInput!]
   petId: String!
   purposeId: Int!
+  serviceListReceptionInput: [ServiceListReceptionInput!]
 }
 
 input CreateServiceInput {
@@ -166,6 +168,11 @@ type GoodsList {
   goodsId: Int!
   quantity: Int!
   receptionId: String!
+}
+
+input GoodsListReceptionInput {
+  goodsId: Int!
+  quantity: Float!
 }
 
 """
@@ -274,12 +281,12 @@ type Reception {
   """Диагноз"""
   diagnosis: String
   employeeId: Int
-  goodsList: [GoodsList!]
+  goods: [GoodsList]
   id: String!
   petId: String
   purpose: ReceptionPurpose!
   purposeId: Int
-  serviceList: [ServiceList!]
+  services: [ServiceList]
 }
 
 type ReceptionPurpose {
@@ -310,6 +317,11 @@ type ServiceList {
   quantity: Int!
   receptionId: String!
   service: Service!
+  serviceId: Int!
+}
+
+input ServiceListReceptionInput {
+  quantity: Int!
   serviceId: Int!
 }
 

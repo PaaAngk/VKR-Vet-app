@@ -97,6 +97,8 @@
                 tuiButton
                 size="m"
                 (click)="submitReception()"
+                [disabled]="!hasValue"
+                [showLoader]="loading"
             >
                 <p class="text-base">
                     Закончить прием
@@ -126,7 +128,7 @@
             </button>
         </tui-tabs>
 
-        <div class="p-2 overflow-auto max-w-full" >
+        <tui-loader [overlay]="true" [showLoader] = "loading" class="p-2 overflow-auto max-w-full" >
             <!-- Main information -->
             <div class="space-y-4" [formGroup]="addReceptionForm" *ngIf="activeItemIndex === 0">
                 <div class="tui-form__row tui-form__row_multi-fields">
@@ -134,7 +136,7 @@
                         <tui-select
                             [tuiTextfieldLabelOutside]="true"
                             [valueContent]="purposeList ? stringifyPurposeList(purposeList) : loading"
-                            formControlName="purpose"
+                            formControlName="purposeId"
                         >
                             Цель визита
                             <ng-template tuiDataList>
@@ -153,7 +155,7 @@
                             </ng-template>
                         </tui-select>
                         <tui-error
-                            formControlName="purpose"
+                            formControlName="purposeId"
                             [error]="[] | tuiFieldError | async"
                         ></tui-error>
                     </div>
@@ -162,7 +164,7 @@
                         <tui-select
                             [tuiTextfieldLabelOutside]="true"
                             [valueContent]="employeeList ? stringifyEmployeeList(employeeList) : loading"
-                            formControlName="employee"
+                            formControlName="employeeId"
                         >
                             Цель визита
                             <ng-template tuiDataList>
@@ -181,7 +183,7 @@
                             </ng-template>
                         </tui-select>
                         <tui-error
-                            formControlName="employee"
+                            formControlName="employeeId"
                             [error]="[] | tuiFieldError | async"
                         ></tui-error>
                     </div>
@@ -243,7 +245,7 @@
             <!-- Check -->
             <div class="w-full pb-2" *ngIf="activeItemIndex === 2">
                 
-                <div class="flex flex-row space-x-4">
+                <div class="flex flex-row space-x-4 pb-2">
                     <!-- Service Input -->
                     <div class="space-y-4 w-full">
                         <tui-select
@@ -477,13 +479,13 @@
                             Выберите товар!
                         </h3>
                         <!-- {{selectedServices | json}} -->
-                    </div>
+                    </div>  
                 </div>
 
                 <div class="text-center" *ngIf="selectedServices.length !== 0 || selectedGoods.length !== 0">
                     <h1 class="tui-text_h4">Итог: {{check}}</h1>
                 </div>
             </div>
-        </div> 
+        </tui-loader> 
     </div>
 </div>

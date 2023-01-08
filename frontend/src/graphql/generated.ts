@@ -21,7 +21,7 @@ export type Scalars = {
 
 export type AddInGoodsListInput = {
   goodsId: Scalars['Int'];
-  quantity: Scalars['Int'];
+  quantity: Scalars['Float'];
   receptionId: Scalars['String'];
 };
 
@@ -132,11 +132,13 @@ export type CreateReceptionInput = {
   anamnesis?: InputMaybe<Scalars['String']>;
   assignment?: InputMaybe<Scalars['String']>;
   clinicalSigns?: InputMaybe<Scalars['String']>;
-  cost?: InputMaybe<Scalars['Int']>;
+  cost?: InputMaybe<Scalars['Float']>;
   diagnosis?: InputMaybe<Scalars['String']>;
   employeeId: Scalars['Int'];
+  goodsListReceptionInput?: InputMaybe<Array<GoodsListReceptionInput>>;
   petId: Scalars['String'];
   purposeId: Scalars['Int'];
+  serviceListReceptionInput?: InputMaybe<Array<ServiceListReceptionInput>>;
 };
 
 export type CreateServiceInput = {
@@ -184,6 +186,11 @@ export type GoodsList = {
   goodsId: Scalars['Int'];
   quantity: Scalars['Int'];
   receptionId: Scalars['String'];
+};
+
+export type GoodsListReceptionInput = {
+  goodsId: Scalars['Int'];
+  quantity: Scalars['Float'];
 };
 
 export type LoginInput = {
@@ -390,12 +397,12 @@ export type Reception = {
   /** Диагноз */
   diagnosis?: Maybe<Scalars['String']>;
   employeeId?: Maybe<Scalars['Int']>;
-  goodsList?: Maybe<Array<GoodsList>>;
+  goods?: Maybe<Array<Maybe<GoodsList>>>;
   id: Scalars['String'];
   petId?: Maybe<Scalars['String']>;
   purpose: ReceptionPurpose;
   purposeId?: Maybe<Scalars['Int']>;
-  serviceList?: Maybe<Array<ServiceList>>;
+  services?: Maybe<Array<Maybe<ServiceList>>>;
 };
 
 export type ReceptionPurpose = {
@@ -429,6 +436,11 @@ export type ServiceList = {
   quantity: Scalars['Int'];
   receptionId: Scalars['String'];
   service: Service;
+  serviceId: Scalars['Int'];
+};
+
+export type ServiceListReceptionInput = {
+  quantity: Scalars['Float'];
   serviceId: Scalars['Int'];
 };
 

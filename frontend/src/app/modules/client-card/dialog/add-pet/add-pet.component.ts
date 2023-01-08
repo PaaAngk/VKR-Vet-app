@@ -40,7 +40,6 @@ export class AddPetComponent {
 	});
 
     constructor(
-        @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
         @Inject(TuiAlertService) private readonly alertService: TuiAlertService,
         @Inject(POLYMORPHEUS_CONTEXT)
         private readonly context: TuiDialogContext<number, number>,

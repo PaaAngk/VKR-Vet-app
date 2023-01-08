@@ -13,17 +13,24 @@ import { ReceptionIdArgs } from './args/reception-id.args';
 import { Reception } from './models/reception.model';
 import { CreateReceptionInput } from './dto/CreateReceptionInput.input';
 import { ReceptionPurpose } from './models/reception-purpose.model';
-import { Service } from 'src/services/models/service.model';
 import { ServiceList } from 'src/services/models/service-list.model';
+import { GoodsList } from 'src/goods/models/goods-list.model';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Reception)
 export class ReceptionResolver {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Adding new reception with list of goods and services.
+   * Adding new reception id into goods and services array with they input class.
+   * @param data
+   * @returns new reception
+   */
   @Mutation(() => Reception)
   async createReception(@Args('data') data: CreateReceptionInput) {
-    const newReception = this.prisma.reception.create({
+    console.log(data);
+    const newReception = await this.prisma.reception.create({
       data: {
         petId: data.petId,
         employeeId: data.employeeId,
@@ -35,6 +42,30 @@ export class ReceptionResolver {
         cost: data.cost,
       },
     });
+
+    if (data.goodsListReceptionInput.length > 0) {
+      const addInGoodsListInput = data.goodsListReceptionInput.map((goods) => ({
+        ...goods,
+        receptionId: newReception.id,
+      }));
+
+      await this.prisma.goodsList.createMany({
+        data: addInGoodsListInput,
+      });
+    }
+
+    if (data.serviceListReceptionInput.length > 0) {
+      const addInServiceListInput = data.serviceListReceptionInput.map(
+        (service) => ({
+          ...service,
+          receptionId: newReception.id,
+        })
+      );
+
+      this.prisma.serviceList.createMany({
+        data: addInServiceListInput,
+      });
+    }
     return newReception;
   }
 
@@ -54,9 +85,16 @@ export class ReceptionResolver {
     });
   }
 
-  @ResolveField('serviceList', () => [ServiceList])
-  async serviceList(@Parent() reception: Reception) {
+  @ResolveField('services', () => [ServiceList])
+  async services(@Parent() reception: Reception) {
     return this.prisma.serviceList.findMany({
+      where: { receptionId: reception.id },
+    });
+  }
+
+  @ResolveField('goods', () => [GoodsList])
+  async goods(@Parent() reception: Reception) {
+    return this.prisma.goodsList.findMany({
       where: { receptionId: reception.id },
     });
   }
