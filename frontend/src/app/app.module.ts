@@ -19,9 +19,13 @@ import { CoreModule } from './core/core.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
-import { ApolloLink, InMemoryCache } from '@apollo/client/core';
+import { ApolloLink, InMemoryCache, split } from '@apollo/client/core';
 import { ClientCardModule } from './modules/client-card/client-card.module';
 import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
+import { WebSocketLink } from '@apollo/client/link/ws'
+import { getMainDefinition } from '@apollo/client/utilities';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
 
 @NgModule({
   declarations: [AppComponent],
@@ -79,14 +83,49 @@ import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
           return forward(operation);
         });
 
+        // Create a WebSocket link:
+        // const ws = new WebSocketLink({
+        //   uri: 'ws://localhost:3000/',
+        //   options: {
+        //     reconnect: true,
+        //     connectionParams: {
+        //       authToken: localStorage.getItem(localStorage.getItem('token') || ""),
+        //     }    
+        //   }
+        // })
+        const wsLink = new GraphQLWsLink(createClient({
+          url: 'ws://localhost:3000/graphql',
+          connectionParams: () => {
+            const token = localStorage.getItem('token') || null;
+            if (!token) {
+              return {};
+            }
+            return {
+              Authorization: `Bearer ${token}`,
+            };
+          },      
+        }));
+        
         // const error = onError(({ networkError }) => {
         //   if (networkError) {
         //     console.log("404" + networkError)
         //   }
         // })
 
-        const link = middleware.concat(http);
+        // const link = middleware.concat(http);
         // link = error.concat(http)
+        const link = middleware.concat( split(
+          ({ query }) => {
+            const definition = getMainDefinition(query);
+            return (
+              definition.kind === 'OperationDefinition' &&
+              definition.operation === 'subscription'
+            );
+          },
+          wsLink,
+          http
+        ))
+
 
         return {
           link,

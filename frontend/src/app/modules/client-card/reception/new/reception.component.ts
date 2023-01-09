@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { defaultEditorExtensions, TuiEditorTool, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-editor';
 import { TuiContextWithImplicit, TuiIdentityMatcher, tuiPure, TuiStringHandler } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { CreateReceptionGQL, GoodsListReceptionInput, ServiceListReceptionInput, Employee,  Pet, ReceptionPurpose, CreateReceptionInput } from 'src/graphql/generated';
-import { ClientCardService } from '../client-card.service';
+import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
+import { ButtonWithDropdown, ButtonWithDropdownItem } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
 
 interface SelectedService{
 	readonly id: number;
@@ -25,7 +26,7 @@ interface SelectedGoods{
 }
 
 @Component({
-	selector: 'vet-crm-reception',
+	selector: 'vet-crm-reception-new',
 	templateUrl: './reception.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [
@@ -43,8 +44,18 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	@ViewChild(TuiHostedDropdownComponent)
     component?: TuiHostedDropdownComponent;
 	// open for print buttons
-	openAssignment = false;
-	openCheck = false;
+	readonly assignmentPrintButtonData : ButtonWithDropdown = {
+		buttonName: 'Печать листа назначения',
+		dropdownItems : [
+			{name: "Скачать файл", event:"download"},
+		],
+	};
+	readonly checkPrintButtonData : ButtonWithDropdown = {
+		buttonName: 'Печать чека',
+		dropdownItems : [
+			{name: "Скачать файл", event:"download"},
+		],
+	};
 	loading = false;
 
 	pet: Pet = {} as Pet;
@@ -205,8 +216,11 @@ export class ReceptionComponent implements OnDestroy, OnInit {
         return ({$implicit}: TuiContextWithImplicit<number>) => map.get($implicit) || ``;
     }
 
-	onClick(){
+	assignmentPrint(){
 		console.log("data")
+	}
+	assignmentDownload($event : ButtonWithDropdownItem){
+		console.log($event)
 	}
 
 	get hasValue(): boolean {
@@ -216,20 +230,21 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	submitReception(){
 		if (this.addReceptionForm.status == "VALID"){
 			
-			// this.clientCardService.getPet$.pipe(take(1)).subscribe({
-            //     next: () =>  this.addReceptionForm.value.petId = "clc3d28c90001u0eghoixfijs"
-            // })
-			this.addReceptionForm.value.petId = "clc3d28c90001u0eghoixfijs"
+			this.clientCardService.getPet$.pipe(take(1)).subscribe({
+                next: (data) =>  this.addReceptionForm.value.petId = data.id
+            });
+			// this.addReceptionForm.value.petId = "clc3d28c90001u0eghoixfijs"
 
 			this.addReceptionForm.value.cost = this.check;
 			
 			const goodsListReceptionInput : GoodsListReceptionInput[] = this.selectedGoods.map( (goods : SelectedGoods) => (
 				{ goodsId : goods.id, quantity: goods.quantity} as GoodsListReceptionInput
-			))
+			));
 
 			const serviceListReceptionInput : ServiceListReceptionInput[] = this.selectedServices.map( (service : SelectedService) => (
 				{ serviceId : service.id, quantity: service.quantity} as ServiceListReceptionInput
-			))
+			));
+			
 			this.loading = true;
 			// console.log({ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput });
             this.createReceptionGQL.mutate({

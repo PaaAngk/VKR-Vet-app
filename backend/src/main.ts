@@ -10,11 +10,6 @@ import type {
   SwaggerConfig,
 } from 'src/common/configs/config.interface';
 
-import * as AdminJSPrisma from '@adminjs/prisma';
-import { PrismaClient } from '@prisma/client';
-import { DMMFClass } from '@prisma/client/runtime';
-import AdminJS from 'adminjs';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

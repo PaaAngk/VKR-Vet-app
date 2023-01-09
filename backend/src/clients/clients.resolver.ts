@@ -36,10 +36,7 @@ export class ClientsResolver {
   }
 
   @Mutation(() => Client)
-  async createClient(
-    @UserEntity() user: User,
-    @Args('data') data: CreateClientInput
-  ) {
+  async createClient(@Args('data') data: CreateClientInput) {
     const newClient = this.prisma.client.create({
       data: {
         fullName: data.fullName.trim(),

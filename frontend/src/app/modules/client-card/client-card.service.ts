@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, take } from "rxjs";
 import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, ReceptionPurpose, ServiceType } from "src/graphql/generated";
 
@@ -19,6 +20,7 @@ export class ClientCardService
 
 
     constructor(
+        private apollo: Apollo,
         private getClientGQL: GetClientGQL,
         private createClientGQL: CreateClientGQL,
         private clientDetailGQL: ClientDetailGQL,
@@ -157,13 +159,13 @@ export class ClientCardService
             data: data
         })
         .pipe(
-            map((data) => {
-                if (!data.data?.createClient) {
-                    return [] as unknown as Client;
+            map(( data ) => {
+                if (data.data?.createClient) {
+                    this._clientsData.next(this._clientsData.getValue().concat(data.data.createClient));
+                    return data.data.createClient;
                 }
-                this._clientsData.next(this._clientsData.getValue().concat(data.data.createClient))
-                return data.data.createClient;
-            }),
+                return {} as Client
+            })
         )
     }
 
@@ -174,7 +176,16 @@ export class ClientCardService
     {
         return this.createPetGQL.mutate({
             data: data
-        })
+        }).pipe(
+            map(( data ) => {
+                if (data.data?.createPet) {
+                    // eslint-disable-next-line prefer-const
+                    let newClientsPets = {...this._currentClient.getValue()}
+                    newClientsPets.pets = newClientsPets.pets?.concat(data.data.createPet)
+                    this._currentClient.next(newClientsPets);
+                }
+            })
+        )
     }
 
     /**
@@ -252,6 +263,8 @@ export class ClientCardService
             },
 		});
     }
+
+
 }
 
 function renameKeys(obj: { [x: string]: any; }, newKeys: { [x: string]: string; }) {

@@ -3,94 +3,13 @@
     <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
         <div tuiTextfieldSize="m" class="flex flex-row justify-around items-center h-full py-auto">
             <div class="space-x-2">   
-                <tui-hosted-dropdown
-                    [content]="dropdownAssignment"
-                    [(open)]="openAssignment"
-                >
-                    <div tuiGroup>
-                        <button
-                            tuiButton
-                            type="button"
-                            size="m"
-                            class="tui-group__auto-width-item"
-                        >
-                            Печать листа назначения
-                        </button>
-                        <button
-                            tuiIconButton
-                            type="button"
-                            tuiHostedDropdownHost
-                            title="Menu"
-                            size="m"
-                            class="tui-group__auto-width-item"
-                            [iconRight]="icon" 
-                        ></button>
-                        <ng-template #icon>
-                            <tui-svg
-                                src="tuiIconChevronDown"
-                                class="icon"
-                                [class.icon_rotated]="openAssignment"
-                            ></tui-svg>
-                        </ng-template>
-                        <ng-template
-                            #dropdownAssignment
-                            let-activeZone
-                        >
-                            <tui-data-list>
-                                <button
-                                    tuiOption
-                                    (click)="onClick()"
-                                >
-                                    Скачать файл
-                                </button>
-                            </tui-data-list>
-                        </ng-template>
-                    </div>
-                </tui-hosted-dropdown>
-                <tui-hosted-dropdown
-                    [content]="dropdownCheck"
-                    [(open)]="openCheck"
-                >
-                    <div tuiGroup>
-                        <button
-                            tuiButton
-                            type="button"
-                            size="m"
-                            class="tui-group__auto-width-item"
-                        >
-                            Печать чека
-                        </button>
-                        <button
-                            tuiIconButton
-                            type="button"
-                            tuiHostedDropdownHost
-                            title="Menu"
-                            size="m"
-                            class="tui-group__auto-width-item"
-                            [iconRight]="icon"
-                        ></button>
-                        <ng-template #iconCheck>
-                            <tui-svg
-                                src="tuiIconChevronDown"
-                                class="icon"
-                                [class.icon_rotated]="openCheck"
-                            ></tui-svg>
-                        </ng-template>
-                        <ng-template
-                            #dropdownCheck
-                            let-activeZone
-                        >
-                            <tui-data-list>
-                                <button
-                                    tuiOption
-                                    (click)="onClick()"
-                                >
-                                    Скачать файл
-                                </button>
-                            </tui-data-list>
-                        </ng-template>
-                    </div>
-                </tui-hosted-dropdown>
+                <button-with-dropdown
+                    [data]="assignmentPrintButtonData" 
+                    (buttonAction)="assignmentPrint()" 
+                    (dropdownAction)="assignmentDownload($event)"
+                ></button-with-dropdown>
+
+                <button-with-dropdown [data]="checkPrintButtonData"></button-with-dropdown>
             </div>
 
             <button

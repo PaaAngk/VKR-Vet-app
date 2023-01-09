@@ -440,7 +440,7 @@ export type ServiceList = {
 };
 
 export type ServiceListReceptionInput = {
-  quantity: Scalars['Float'];
+  quantity: Scalars['Int'];
   serviceId: Scalars['Int'];
 };
 
@@ -521,7 +521,7 @@ export type CreatePetMutationVariables = Exact<{
 }>;
 
 
-export type CreatePetMutation = { __typename?: 'Mutation', createPet: { __typename?: 'Pet', id: string } };
+export type CreatePetMutation = { __typename?: 'Mutation', createPet: { __typename?: 'Pet', id: string, alias: string, kind?: string | null, gender?: string | null, DOB?: string | null, breed?: string | null } };
 
 export type GetPetDetailQueryVariables = Exact<{
   petId: Scalars['String'];
@@ -683,6 +683,11 @@ export const CreatePetDocument = gql`
     mutation CreatePet($data: CreatePetInput!) {
   createPet(data: $data) {
     id
+    alias
+    kind
+    gender
+    DOB
+    breed
   }
 }
     `;

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { tuiWatch } from '@taiga-ui/cdk';
 import {TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
@@ -8,12 +9,10 @@ import { Client } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
 import { AddClientComponent } from '../dialog/add-client/add-client.component';
 
-
 interface ClientTable {
 	readonly time: string;
 	readonly client: Client;
 }
-
 
 @Component({
 	selector: 'vet-crm-client',
@@ -48,7 +47,7 @@ export class ClientComponent implements OnDestroy{
     ) {
 		// Getting data 
 		this.clientCardService.getclientsData$
-		.pipe(takeUntil(this._unsubscribeAll))
+		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
 		.subscribe((clients: Client[]) => {	
 			const time = '4:20';
 			this.clients = clients.map(client => {
@@ -57,7 +56,6 @@ export class ClientComponent implements OnDestroy{
 					client:client
 				} as ClientTable
 			})
-			this._changeDetectorRef.markForCheck();
 		});
 
 		this.searchForm.valueChanges
@@ -94,7 +92,7 @@ export class ClientComponent implements OnDestroy{
 
 	setClient(clientId : string) {
 		this.clientCardService.setSelectedClient(clientId);
-		this.router.navigateByUrl('client-card/detail');
+		this.router.navigateByUrl(`client-card/client/${clientId}`);
 	}
 
 

@@ -39,6 +39,11 @@ query ClientDetail($clientId:String!){
 mutation CreatePet($data:CreatePetInput!) {
   createPet(data:$data){
     id
+    alias
+    kind
+    gender
+    DOB
+    breed
   }
 }
 

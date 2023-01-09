@@ -16,7 +16,7 @@
                     tuiButton
                     icon="tuiIconAddRowLarge"
                     size="m"
-                    routerLink="/client-card/reception"
+                    routerLink="reception/new"
                 >
                     <p class="text-base">
                         Добавить прием
@@ -55,7 +55,8 @@
         </tui-tabs>
 
         <div class="p-2 overflow-auto max-w-full">
-            <div class="text-xl" *ngIf="activeItemIndex === 0">
+            <!-- Pet data -->
+            <div class="text-xl text-center space-y-1 divide-y divide-slate-300 py-0" *ngIf="activeItemIndex === 0">
                 <p> <b>Кличка: </b> {{ pet.alias }}</p>
                 <p> <b>Вид: </b> {{ pet.kind }}</p>
                 <p> <b>Порода: </b> {{ pet.breed  | checkNull }}</p>
@@ -69,12 +70,14 @@
                 <p> <b>Особые отметки: </b> {{ pet.notes  | checkNull }}</p>
             </div>
 
+            <!-- Reception -->
             <div class="" *ngIf="activeItemIndex === 1">
+
                 <table
-                    class="w-full"
+                    class="w-full tui-table"
                     tuiTable
                     [columns]="receptionColumns"
-                    *ngIf="pet"
+                    *ngIf="receptions.length !== 0"
                 >
                     <thead>
                         <tr tuiThGroup>
@@ -162,14 +165,22 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <h3
+                    *ngIf="receptions.length === 0"
+                    class="text-2xl py-2 font-bold text-center"
+                >
+                    Нет добавленных приемов
+                </h3>
             </div>
 
+            <!-- Analyzes -->
             <div class="" *ngIf="activeItemIndex === 2">
                 <table
                     class="w-full"
                     tuiTable
                     [columns]="analyzesColumns"
-                    *ngIf="pet"
+                    *ngIf="analyzesResearchs.length !== 0"
                 >
                     <thead>
                         <tr tuiThGroup>
@@ -230,6 +241,13 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <h3
+                    *ngIf="analyzesResearchs.length === 0"
+                    class="text-2xl py-2 font-bold text-center"
+                >
+                    Нет добавленных анализов и исследований
+                </h3>
             </div>
         </div>
         

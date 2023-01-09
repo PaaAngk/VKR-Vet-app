@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TuiDialogService } from '@taiga-ui/core';
 import { skip, Subject, takeUntil } from 'rxjs';
 import { Client, Pet } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { AddPetComponent } from '../../dialog/add-pet/add-pet.component';
+import { tuiWatch } from '@taiga-ui/cdk';
 
  
 
@@ -38,22 +39,22 @@ export class ClientDetailComponent implements OnDestroy{
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		private router: Router,
+		private activateRoute: ActivatedRoute,
     ) {
-		this.clientCardService.setSelectedClient("clbvruv0b0000u0lsdtg23k5t");
+		
+		activateRoute.params.subscribe(params=>this.clientCardService.setSelectedClient(params['id']));
+
 		// Getting data 
 		this.clientCardService.getSelectedClient$
-		.pipe(takeUntil(this._unsubscribeAll))
-		.pipe(skip(1))
+		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
 		.subscribe((client: Client) => {
 			this.client = client
 			this.pets = client.pets || []
-			this._changeDetectorRef.markForCheck();
 		});
 	}
 
 	ngOnDestroy(): void
 	{
-		// Unsubscribe from all subscriptions
 		this._unsubscribeAll.next(undefined);
 		this._unsubscribeAll.complete();
 	}
@@ -67,8 +68,8 @@ export class ClientDetailComponent implements OnDestroy{
     }
 
 	getPetDetail(petId: string){
-		this.clientCardService.setPet(petId);
-		this.router.navigateByUrl('client-card/pet');
+		// this.clientCardService.setPet(petId);
+		this.router.navigateByUrl(`client-card/pet/${petId}`);
 	}
 
 }

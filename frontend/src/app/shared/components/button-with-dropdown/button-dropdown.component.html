@@ -1,0 +1,47 @@
+<tui-hosted-dropdown
+    class="m-0 p-0 w-auto h-auto"
+    [content]="dropdown"
+    [(open)]="openDropdown"
+>
+    <div tuiGroup>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            class="tui-group__auto-width-item"
+            (click)="buttonClick()"
+        >
+            Печать листа назначения
+        </button>
+        <button
+            tuiIconButton
+            type="button"
+            tuiHostedDropdownHost
+            title="Menu"
+            size="m"
+            class="tui-group__auto-width-item"
+            [iconRight]="icon" 
+        ></button>
+        <ng-template #icon>
+            <tui-svg
+                src="tuiIconChevronDown"
+                class="icon"
+                [class.icon_rotated]="openDropdown"
+            ></tui-svg>
+        </ng-template>
+        <ng-template
+            #dropdown
+            let-activeZone
+        >
+            <tui-data-list>
+                <button
+                    tuiOption
+                    *ngFor="let item of data.dropdownItems"
+                    (click)="dropdownItemClick(item)"
+                >
+                    {{item.name}}
+                </button>
+            </tui-data-list>
+        </ng-template>
+    </div>
+</tui-hosted-dropdown>

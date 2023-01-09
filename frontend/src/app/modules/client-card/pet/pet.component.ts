@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { tuiWatch } from '@taiga-ui/cdk';
 import {TuiDialogService} from '@taiga-ui/core';
 import {  Subject, takeUntil } from 'rxjs';
@@ -49,10 +49,10 @@ export class PetComponent implements OnDestroy{
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		private router: Router,
+		private activateRoute: ActivatedRoute,
     ) {
-		this.clientCardService.getPetDetail("clc3d28c90001u0eghoixfijs");
+		this.activateRoute.params.subscribe(params=>this.clientCardService.getPetDetail(params['id']));
 
-		// Getting data 
 		this.clientCardService.getPet$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
 		.subscribe((pet: Pet) => {	
