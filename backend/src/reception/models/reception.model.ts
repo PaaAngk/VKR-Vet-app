@@ -14,10 +14,10 @@ export class Reception {
   Pet?: Pet;
 
   @Field(() => Employee)
-  Employee?: Employee;
+  employee?: Employee;
 
   @Field(() => ReceptionPurpose)
-  Purpose?: ReceptionPurpose;
+  purpose?: ReceptionPurpose;
 
   @Field(() => String)
   petId?: string;
@@ -29,10 +29,10 @@ export class Reception {
   purposeId?: number;
 
   @Field(() => [GoodsList], { nullable: 'itemsAndList' })
-  goods?: GoodsList[] | null;
+  goods?: GoodsList[];
 
   @Field(() => [ServiceList], { nullable: 'itemsAndList' })
-  services?: ServiceList[] | null;
+  services?: ServiceList[];
 
   @Field(() => String, { nullable: true, description: 'Клинические признаки' })
   clinicalSigns?: string;

@@ -21,7 +21,7 @@
     </div>
 
     <div class="w-full h-full rounded-lg bg-white shadow-md">
-        <tui-tabs [(activeItemIndex)]="activeItemIndex" class="mb-2">
+        <tui-tabs [(activeItemIndex)]="activeItemIndex">
             <button
                 tuiTab
             >
@@ -42,120 +42,122 @@
             </button>
         </tui-tabs>
 
-        <div class="p-2" *ngIf="activeItemIndex === 0">
-            <table
-                class="w-full"
-                tuiTable
-                [columns]="petsColumns"
-                *ngIf="pets"
-            >
-                <thead>
-                    <tr tuiThGroup>
-                        <th
-                            *tuiHead="'alias'"
-                            class="w-56"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Кличка
-                        </th>
-                        <th
-                            *tuiHead="'kind'"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Вид
-                        </th>
-                        <th
-                            *tuiHead="'gender'"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Пол
-                        </th>
-                        <th
-                            *tuiHead="'DOB'"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Дата рождения
-                        </th>
-                        <th
-                            *tuiHead="'breed'"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Порода
-                        </th>
-                        <th
-                            *tuiHead="'actions'"
-                            tuiTh
-                            class="lg:w-32"
-                            [sorter]="null"
-                        >Действия</th>
-                    </tr>
-                </thead>
-                <tbody
-                    tuiTbody
-                    [data]="pets"
+        <div class="p-2 shadow-inner">
+            <div *ngIf="activeItemIndex === 0">
+                <table
+                    class="w-full"
+                    tuiTable
+                    [columns]="petsColumns"
+                    *ngIf="pets"
                 >
-                    <tr
-                        *ngFor="let pet of pets; let index = index"
-                        tuiTr
-                    >
-                        <td
-                            *tuiCell="'alias'"
-                            tuiTd
-                        >
-                            <b>{{ pet.alias }}</b>
-                        </td>
-                        <td
-                            *tuiCell="'kind'"
-                            tuiTd
-                        >
-                            {{ pet.kind | checkNull}}
-                        </td>
-                        <td
-                            *tuiCell="'gender'"
-                            tuiTd
-                        >
-                            {{ pet.gender | formatPetGender }}
-                        </td>
-                        <td
-                            *tuiCell="'DOB'"
-                            tuiTd
-                        >
-                            {{ pet.DOB | date:'dd/MM/yyy' | checkNull}}
-                        </td>
-                        <td
-                            *tuiCell="'breed'"
-                            tuiTd
-                        >
-                            {{ pet.breed | checkNull}}
-                        <td
-                            *tuiCell="'actions'"
-                            class="space-x-2"
-                            tuiTd
-                            (click) = "getPetDetail(pet.id)"
-                        >
-                            <button
-                                tuiButton
-                                size="s"
+                    <thead>
+                        <tr tuiThGroup>
+                            <th
+                                *tuiHead="'alias'"
+                                class="w-56"
+                                tuiTh
+                                [sorter]="null"
                             >
-                                Просмотр
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-        </table>
-        </div>
+                                Кличка
+                            </th>
+                            <th
+                                *tuiHead="'kind'"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Вид
+                            </th>
+                            <th
+                                *tuiHead="'gender'"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Пол
+                            </th>
+                            <th
+                                *tuiHead="'DOB'"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Дата рождения
+                            </th>
+                            <th
+                                *tuiHead="'breed'"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Порода
+                            </th>
+                            <th
+                                *tuiHead="'actions'"
+                                tuiTh
+                                class="lg:w-32"
+                                [sorter]="null"
+                            >Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody
+                        tuiTbody
+                        [data]="pets"
+                    >
+                        <tr
+                            *ngFor="let pet of pets; let index = index"
+                            tuiTr
+                        >
+                            <td
+                                *tuiCell="'alias'"
+                                tuiTd
+                            >
+                                <b>{{ pet.alias }}</b>
+                            </td>
+                            <td
+                                *tuiCell="'kind'"
+                                tuiTd
+                            >
+                                {{ pet.kind | checkNull}}
+                            </td>
+                            <td
+                                *tuiCell="'gender'"
+                                tuiTd
+                            >
+                                {{ pet.gender | formatPetGender }}
+                            </td>
+                            <td
+                                *tuiCell="'DOB'"
+                                tuiTd
+                            >
+                                {{ pet.DOB | date:'dd/MM/yyy' | checkNull}}
+                            </td>
+                            <td
+                                *tuiCell="'breed'"
+                                tuiTd
+                            >
+                                {{ pet.breed | checkNull}}
+                            <td
+                                *tuiCell="'actions'"
+                                class="space-x-2"
+                                tuiTd
+                                (click) = "getPetDetail(pet.id)"
+                            >
+                                <button
+                                    tuiButton
+                                    size="s"
+                                >
+                                    Просмотр
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+            </table>
+            </div>
 
 
-        <div class="p-2" *ngIf="activeItemIndex === 1">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur labore ea maiores voluptas 
-                aspernatur omnis vitae consequuntur explicabo est ducimus 
-                cumque facilis tenetur, expedita sint ut, ratione dicta reprehenderit. In.
-            </p>
+            <div *ngIf="activeItemIndex === 1">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur labore ea maiores voluptas 
+                    aspernatur omnis vitae consequuntur explicabo est ducimus 
+                    cumque facilis tenetur, expedita sint ut, ratione dicta reprehenderit. In.
+                </p>
+            </div>
         </div>
         
     </div>

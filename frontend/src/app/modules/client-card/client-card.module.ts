@@ -35,6 +35,8 @@ import { TuiEditorModule } from '@taiga-ui/addon-editor';
 import { CheckboxListComponent } from './reception/checkbox-list/checkbox-list.component';
 import { AdvancedTableModule } from 'src/app/shared/components/advanced-table';
 import { ButtonWithDropdownModule } from 'src/app/shared/components/button-with-dropdown/button-dropdown.module';
+import { ReceptionViewComponent } from './reception/view/reception-view.component';
+import { ArrayToAnyArrayPipe } from 'src/app/shared/pipes/array-to-any-array.pipe';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,8 @@ import { ButtonWithDropdownModule } from 'src/app/shared/components/button-with-
     PetComponent,
     ReceptionComponent,
     CheckboxListComponent,
+    ReceptionViewComponent,
+    ArrayToAnyArrayPipe,
   ],
   imports: [
     CommonModule,

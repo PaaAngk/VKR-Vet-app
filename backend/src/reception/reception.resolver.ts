@@ -15,6 +15,7 @@ import { CreateReceptionInput } from './dto/CreateReceptionInput.input';
 import { ReceptionPurpose } from './models/reception-purpose.model';
 import { ServiceList } from 'src/services/models/service-list.model';
 import { GoodsList } from 'src/goods/models/goods-list.model';
+import { Employee } from 'src/common/models';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Reception)
@@ -82,6 +83,13 @@ export class ReceptionResolver {
   async purpose(@Parent() reception: Reception) {
     return this.prisma.receptionPurpose.findUnique({
       where: { id: reception.purposeId },
+    });
+  }
+
+  @ResolveField('employee', () => Employee)
+  async employee(@Parent() reception: Reception) {
+    return this.prisma.employee.findUnique({
+      where: { id: reception.employeeId },
     });
   }
 

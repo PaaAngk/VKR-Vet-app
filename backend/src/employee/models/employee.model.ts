@@ -5,7 +5,7 @@ import { Reception } from 'src/reception/models/reception.model';
 @ObjectType()
 export class Employee {
   @Field(() => Int)
-  id: number;
+  id?: number;
 
   @Field(() => [Reception])
   receptions?: Reception[] | null;

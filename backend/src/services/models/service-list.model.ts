@@ -11,11 +11,11 @@ export class ServiceList {
   Service?: Service;
 
   @Field(() => String)
-  receptionId: string;
+  receptionId?: string;
 
   @Field(() => Int)
-  serviceId: number;
+  serviceId?: number;
 
   @Field(() => Int)
-  quantity: number;
+  quantity?: number;
 }

@@ -62,10 +62,7 @@ export class ClientCardService
     /**
      * Getter for current selected client
      */
-    get getSelectedClient$(): Observable<Client>
-    {
-        return this._currentClient.asObservable();
-    }
+    get getSelectedClient$(): Observable<Client>{ return this._currentClient.asObservable(); }
 
     /**
      * Setter for current pet
@@ -78,10 +75,7 @@ export class ClientCardService
     /**
      * Getter for current selected client
      */
-    get getPet$(): Observable<Pet>
-    {
-        return this._currentPet.asObservable();
-    }
+    get getPet$(): Observable<Pet>{ return this._currentPet.asObservable(); }
 
     get getServiceTypes$() : Observable<Array<ServiceType>>{
         return this._serviceTypesList.asObservable();

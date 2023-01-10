@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ButtonWithDropdown, ButtonWithDropdownItem } from './buttonWithDropdown.interface';
 
 
-
 @Component({
   selector: 'button-with-dropdown',
   templateUrl: './button-dropdown.component.html',
@@ -24,7 +23,4 @@ export class ButtonDropdownComponent {
   dropdownItemClick(item : ButtonWithDropdownItem){
     this.dropdownAction.emit(item);
   }
-
-
-
 }

@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { defaultEditorExtensions, TuiEditorTool, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-editor';
 import { TuiContextWithImplicit, TuiIdentityMatcher, tuiPure, TuiStringHandler } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
-import { Subject, take, takeUntil } from 'rxjs';
-import { CreateReceptionGQL, GoodsListReceptionInput, ServiceListReceptionInput, Employee,  Pet, ReceptionPurpose, CreateReceptionInput } from 'src/graphql/generated';
+import { Subject, takeUntil } from 'rxjs';
+import { CreateReceptionGQL, GoodsListReceptionInput, ServiceListReceptionInput, Employee, ReceptionPurpose, CreateReceptionInput } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown, ButtonWithDropdownItem } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
@@ -40,7 +40,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
 
 	/** Interface */
-	activeItemIndex = 1;
+	activeItemIndex = 0;
 	@ViewChild(TuiHostedDropdownComponent)
     component?: TuiHostedDropdownComponent;
 	// open for print buttons
@@ -58,9 +58,8 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	};
 	loading = false;
 
-	pet: Pet = {} as Pet;
-	readonly receptionColumns = ['receptionPurpose', 'diagnosis', 'date', 'cost', 'actions'];
-	readonly servicesColumns = ['name', 'price', 'quantity', 'actions'];
+	petId = '';
+	readonly tablesColumns = ['name', 'price', 'quantity', 'actions'];
 	employeeList : Array<Employee> = [];
 	purposeList : Array<ReceptionPurpose> = [];
 
@@ -81,8 +80,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		clinicalSigns: new FormControl(''),
 		diagnosis: new FormControl(''),
 		assignment: new FormControl(''),
-		petId: new FormControl(),
-		cost: new FormControl(),
+		cost: new FormControl(0),
 	});
 
     constructor(
@@ -92,6 +90,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		private _changeDetectorRef: ChangeDetectorRef,
 		private router: Router,
 		private createReceptionGQL : CreateReceptionGQL,
+		private activateRoute: ActivatedRoute,
     ) {
 	}
 
@@ -119,6 +118,9 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		.subscribe(data => {
 			this.purposeList = data;
 		});
+
+		// Getting id pet from url for now reception
+		this.activateRoute.params.subscribe(params=> this.petId=params['id'] );
 	}
 
 	ngOnDestroy(): void
@@ -229,11 +231,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 
 	submitReception(){
 		if (this.addReceptionForm.status == "VALID"){
-			
-			this.clientCardService.getPet$.pipe(take(1)).subscribe({
-                next: (data) =>  this.addReceptionForm.value.petId = data.id
-            });
-			// this.addReceptionForm.value.petId = "clc3d28c90001u0eghoixfijs"
+			this.loading = true;
 
 			this.addReceptionForm.value.cost = this.check;
 			
@@ -245,24 +243,33 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 				{ serviceId : service.id, quantity: service.quantity} as ServiceListReceptionInput
 			));
 			
-			this.loading = true;
-			// console.log({ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput });
             this.createReceptionGQL.mutate({
-				data: { ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput } as CreateReceptionInput
+				data: { ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId } as CreateReceptionInput
 			})
             .subscribe({
                 next: (data) => {
 					this.loading = false;
-                    this.alertService.open("Прием успешно добавлен!", {status: TuiNotification.Success}).subscribe();
+                    this.alertService.open("", {
+						status: TuiNotification.Success, 
+						label:"Прием успешно добавлен!",
+						autoClose: 5000,
+					}).subscribe();
 					console.log(data)
 					this._changeDetectorRef.markForCheck();
                 },
                 error: (error)  => 
                 {
-                    this.alertService.open("Прием уже добавлен", {status: TuiNotification.Error}).subscribe()
+                    this.alertService.open(
+						"Проверьте правильность введенных данных", 
+						{
+							status: TuiNotification.Error, 
+							label: "Невозможно добавить прием!",
+							autoClose: 5000,
+						}).subscribe()
                     console.log(error)
                 }
             })
+			
 		}
 	}
 }

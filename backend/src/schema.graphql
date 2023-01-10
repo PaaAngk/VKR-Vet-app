@@ -139,7 +139,7 @@ scalar DateTime
 
 type Employee {
   fullName: String!
-  id: Int!
+  id: Int
   receptions: [Reception!]
   role: Role
 }
@@ -165,9 +165,9 @@ type GoodsList {
   Goods: Goods
   Reception: Reception
   goods: Goods!
-  goodsId: Int!
-  quantity: Int!
-  receptionId: String!
+  goodsId: Int
+  quantity: Float!
+  receptionId: String
 }
 
 input GoodsListReceptionInput {
@@ -259,9 +259,7 @@ type Query {
 }
 
 type Reception {
-  Employee: Employee
   Pet: Pet
-  Purpose: ReceptionPurpose
 
   """Анамнез"""
   anamnesis: String
@@ -280,11 +278,12 @@ type Reception {
 
   """Диагноз"""
   diagnosis: String
+  employee: Employee
   employeeId: Int
   goods: [GoodsList]
   id: String!
   petId: String
-  purpose: ReceptionPurpose!
+  purpose: ReceptionPurpose
   purposeId: Int
   services: [ServiceList]
 }
@@ -314,10 +313,10 @@ type Service {
 type ServiceList {
   Reception: Reception
   Service: Service
-  quantity: Int!
-  receptionId: String!
+  quantity: Int
+  receptionId: String
   service: Service!
-  serviceId: Int!
+  serviceId: Int
 }
 
 input ServiceListReceptionInput {

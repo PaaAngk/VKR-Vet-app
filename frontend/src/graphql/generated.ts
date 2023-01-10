@@ -154,7 +154,7 @@ export type CreateServiceTypeInput = {
 export type Employee = {
   __typename?: 'Employee';
   fullName: Scalars['String'];
-  id: Scalars['Int'];
+  id?: Maybe<Scalars['Int']>;
   receptions?: Maybe<Array<Reception>>;
   role?: Maybe<Role>;
 };
@@ -183,9 +183,9 @@ export type GoodsList = {
   Goods?: Maybe<Goods>;
   Reception?: Maybe<Reception>;
   goods: Goods;
-  goodsId: Scalars['Int'];
+  goodsId?: Maybe<Scalars['Int']>;
   quantity: Scalars['Int'];
-  receptionId: Scalars['String'];
+  receptionId?: Maybe<Scalars['String']>;
 };
 
 export type GoodsListReceptionInput = {
@@ -381,9 +381,7 @@ export type QueryReceptionArgs = {
 
 export type Reception = {
   __typename?: 'Reception';
-  Employee?: Maybe<Employee>;
   Pet?: Maybe<Pet>;
-  Purpose?: Maybe<ReceptionPurpose>;
   /** Анамнез */
   anamnesis?: Maybe<Scalars['String']>;
   /** Лист назначения */
@@ -396,11 +394,12 @@ export type Reception = {
   createdAt?: Maybe<Scalars['DateTime']>;
   /** Диагноз */
   diagnosis?: Maybe<Scalars['String']>;
+  employee?: Maybe<Employee>;
   employeeId?: Maybe<Scalars['Int']>;
   goods?: Maybe<Array<Maybe<GoodsList>>>;
   id: Scalars['String'];
   petId?: Maybe<Scalars['String']>;
-  purpose: ReceptionPurpose;
+  purpose?: Maybe<ReceptionPurpose>;
   purposeId?: Maybe<Scalars['Int']>;
   services?: Maybe<Array<Maybe<ServiceList>>>;
 };
@@ -433,10 +432,10 @@ export type ServiceList = {
   __typename?: 'ServiceList';
   Reception?: Maybe<Reception>;
   Service?: Maybe<Service>;
-  quantity: Scalars['Int'];
-  receptionId: Scalars['String'];
+  quantity?: Maybe<Scalars['Int']>;
+  receptionId?: Maybe<Scalars['String']>;
   service: Service;
-  serviceId: Scalars['Int'];
+  serviceId?: Maybe<Scalars['Int']>;
 };
 
 export type ServiceListReceptionInput = {
@@ -528,7 +527,7 @@ export type GetPetDetailQueryVariables = Exact<{
 }>;
 
 
-export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: string | null, color?: string | null, diagnosis?: string | null, gender?: string | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose: { __typename?: 'ReceptionPurpose', purposeName: string } }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
+export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: string | null, color?: string | null, diagnosis?: string | null, gender?: string | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
 
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -548,7 +547,7 @@ export type GetAllGoodsCategoryWithGoodsQuery = { __typename?: 'Query', allGoods
 export type GetAllEmployeesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllEmployeesQuery = { __typename?: 'Query', allEmployees: Array<{ __typename?: 'Employee', id: number, fullName: string }> };
+export type GetAllEmployeesQuery = { __typename?: 'Query', allEmployees: Array<{ __typename?: 'Employee', id?: number | null, fullName: string }> };
 
 export type GetAllReceptionPurposeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -561,6 +560,13 @@ export type CreateReceptionMutationVariables = Exact<{
 
 
 export type CreateReceptionMutation = { __typename?: 'Mutation', createReception: { __typename?: 'Reception', anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employeeId?: number | null, petId?: string | null, purposeId?: number | null } };
+
+export type GetReceptionQueryVariables = Exact<{
+  receptionId: Scalars['String'];
+}>;
+
+
+export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employee?: { __typename?: 'Employee', fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, measure?: string | null, price?: number | null } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', name?: string | null, price?: number | null } } | null> | null } };
 
 export const CurrentUserProfileDocument = gql`
     query currentUserProfile {
@@ -879,6 +885,50 @@ export const CreateReceptionDocument = gql`
   })
   export class CreateReceptionGQL extends Apollo.Mutation<CreateReceptionMutation, CreateReceptionMutationVariables> {
     override document = CreateReceptionDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetReceptionDocument = gql`
+    query GetReception($receptionId: String!) {
+  reception(receptionId: $receptionId) {
+    id
+    anamnesis
+    assignment
+    clinicalSigns
+    cost
+    diagnosis
+    employee {
+      fullName
+    }
+    purpose {
+      purposeName
+    }
+    goods {
+      quantity
+      goods {
+        name
+        measure
+        price
+      }
+    }
+    services {
+      quantity
+      service {
+        name
+        price
+      }
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetReceptionGQL extends Apollo.Query<GetReceptionQuery, GetReceptionQueryVariables> {
+    override document = GetReceptionDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

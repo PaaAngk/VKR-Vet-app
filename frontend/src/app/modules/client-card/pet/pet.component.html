@@ -1,7 +1,8 @@
-<div class="flex flex-col space-y-3" *ngIf="true">
+<div class="flex flex-col space-y-3 max-h-full p-0" *ngIf="true">
 
-    <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
-        <div tuiTextfieldSize="m" class="flex justify-between items-center h-full py-auto">
+    <!-- Header -->
+    <div class="p-2 rounded-lg bg-white shadow-md">
+        <div tuiTextfieldSize="m" class="flex justify-between items-center py-auto">
             <div>
                 <p class="text-base">
                     <b class="mx-4 text-xl">{{ pet.alias }} </b> 
@@ -35,8 +36,10 @@
         </div>
     </div>
 
-    <div class="w-full h-full rounded-lg bg-white shadow-md">
-        <tui-tabs [(activeItemIndex)]="activeItemIndex" class="mb-2">
+    <!-- Main part -->
+    <div class="rounded-lg bg-white shadow-md h-full"><!--min-h-full overflow-auto-->
+        <!-- Menu -->
+        <tui-tabs [(activeItemIndex)]="activeItemIndex" class="">
             <button
                 tuiTab
             >
@@ -54,7 +57,7 @@
             </button>
         </tui-tabs>
 
-        <div class="p-2 overflow-auto max-w-full">
+        <div class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'75vh'}">
             <!-- Pet data -->
             <div class="text-xl text-center space-y-1 divide-y divide-slate-300 py-0" *ngIf="activeItemIndex === 0">
                 <p> <b>Кличка: </b> {{ pet.alias }}</p>
@@ -71,10 +74,10 @@
             </div>
 
             <!-- Reception -->
-            <div class="" *ngIf="activeItemIndex === 1">
+            <div class="h-full" *ngIf="activeItemIndex === 1">
 
                 <table
-                    class="w-full tui-table"
+                    class="w-full"
                     tuiTable
                     [columns]="receptionColumns"
                     *ngIf="receptions.length !== 0"
@@ -129,7 +132,7 @@
                                 *tuiCell="'receptionPurpose'"
                                 tuiTd
                             >
-                                <b>{{ reception.purpose.purposeName }}</b>
+                                <b>{{ reception.purpose?.purposeName }}</b>
                             </td>
                             <td
                                 *tuiCell="'diagnosis'"
@@ -158,6 +161,7 @@
                                 <button
                                     tuiButton
                                     size="s"
+                                    [routerLink]="['reception', reception.id]"
                                 >
                                     Просмотр
                                 </button>
@@ -172,7 +176,9 @@
                 >
                     Нет добавленных приемов
                 </h3>
+                
             </div>
+            
 
             <!-- Analyzes -->
             <div class="" *ngIf="activeItemIndex === 2">

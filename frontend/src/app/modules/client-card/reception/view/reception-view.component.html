@@ -1,0 +1,256 @@
+<div class="flex flex-col space-y-3" *ngIf="true">
+
+    <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
+        <div tuiTextfieldSize="m" class="flex justify-center items-center h-full py-auto space-x-2">
+            <button-with-dropdown
+                [data]="assignmentPrintButtonData" 
+                (buttonAction)="assignmentPrint()" 
+                (dropdownAction)="assignmentDownload($event)"
+            ></button-with-dropdown>
+
+            <button-with-dropdown [data]="checkPrintButtonData"></button-with-dropdown>
+        </div>
+    </div>
+
+    <div class="w-full h-full rounded-lg bg-white shadow-md">
+        <tui-tabs [(activeItemIndex)]="activeItemIndex">
+            <button
+                tuiTab
+            >
+                <p class="ml-4 mr-2">
+                    Основная информация
+                </p> 
+            </button>
+            <button
+                tuiTab
+            >
+                Лист назначения 
+            </button>
+            <button
+                tuiTab
+            >
+                Чек 
+            </button>
+        </tui-tabs>
+
+        <tui-loader [overlay]="true" [showLoader] = "loading" class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'75vh'}">
+            <!-- Main information -->
+            <div class="space-y-4" *ngIf="activeItemIndex === 0">
+                <div class="tui-form__row tui-form__row_multi-fields">
+                    <div class="tui-form__multi-field">
+                        <tui-input
+                            [ngModel]="reception.purpose?.purposeName"
+                            [readOnly] = "true"
+                        >
+                            Цель визита
+                        </tui-input>
+                    </div>
+            
+                    <div class="tui-form__multi-field">
+                        <tui-input
+                            [ngModel]="reception.employee?.fullName"
+                            [readOnly] = "true"
+                        >
+                            Врач
+                        </tui-input>
+                    </div>
+                </div>
+
+                <div class="tui-form">
+                    <tui-input
+                        [ngModel]="reception.anamnesis"
+                        [readOnly] = "true"
+                    >
+                        Анамнез  
+                    </tui-input>
+                </div>
+
+                <div class="tui-form">
+                    <tui-input
+                        [ngModel]="reception.clinicalSigns"
+                        [readOnly] = "true"
+                    >
+                        Клинические признаки  
+                    </tui-input>
+                </div>
+            </div>
+
+            <!-- Assignment -->
+            <div class="space-y-4" *ngIf="activeItemIndex === 1">
+                <div class="tui-form">
+                    <tui-input
+                        [ngModel]="reception.diagnosis"
+                        [readOnly] = "true"
+                    >
+                        Диагноз  
+                    </tui-input>
+                </div>
+                <!-- <tui-text-area
+                    [ngModel]="reception.assignment"
+                    [readOnly] = "true"
+                    [innerHTML]="reception.assignment"
+                >
+                    Лист назначения
+                </tui-text-area> -->
+                <h3>Лист назначения:</h3>
+                
+                <div class="border-2 p-2 rounded-lg text-2xl" [innerHTML]="reception.assignment"></div>
+            </div>
+
+            <!-- Check -->
+            <div class="w-full pb-2" *ngIf="activeItemIndex === 2">
+                <div class="flex flex-row space-x-4 pb-2">
+                    <!-- Service list -->
+                    <div class="space-y-4 w-full">                  
+                        <table
+                            class="w-full"
+                            tuiTable
+                            [columns]="tablesColumns"
+                            *ngIf="reception.services!.length > 0"
+                        >
+                            <thead>
+                                <tr tuiThGroup>
+                                    <th
+                                        *tuiHead="'name'"       
+                                        tuiTh
+                                        [sorter]="null"
+                                    >
+                                        Услуга
+                                    </th>
+                                    <th
+                                        *tuiHead="'price'"
+                                        class="lg:w-20"
+                                        tuiTh
+                                        [sorter]="null"
+                                    >
+                                        Стоимость 
+                                    </th>     
+                                    <th
+                                        *tuiHead="'quantity'"
+                                        tuiTh
+                                        class="lg:w-24"
+                                        [sorter]="null"
+                                    >
+                                        Количество
+                                    </th>            
+                                </tr>
+                            </thead>
+                            <tbody
+                                tuiTbody
+                                [data]="reception.services | arrayToAnyArray"
+                            >
+                                <tr
+                                    *ngFor="let service of reception.services; let index = index"
+                                    tuiTr
+                                >
+                                    <td
+                                        *tuiCell="'name'"
+                                        tuiTd
+                                    >
+                                        {{ index+1 }}. <b>{{ service?.service?.name }}</b>
+                                    </td>
+                                    <td
+                                        *tuiCell="'price'"
+                                        tuiTd
+                                    >
+                                        {{ service?.service?.price }} ₽
+                                    </td>
+                                    <td
+                                        *tuiCell="'quantity'"
+                                        tuiTd
+                                    >
+                                        {{ service?.quantity }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3
+                            *ngIf="reception.services!.length === 0"
+                            class="text-xl font-bold text-center"
+                        >
+                            Нет оформленных услуг
+                        </h3>
+                    </div>
+
+                    <!-- Goods input -->
+                    <div class="space-y-4 w-full">
+                      
+                        <table
+                            class="w-full"
+                            tuiTable
+                            [columns]="tablesColumns"
+                            *ngIf="reception.goods!.length > 0"
+                        >
+                            <thead>
+                                <tr tuiThGroup>
+                                    <th
+                                        *tuiHead="'name'"       
+                                        tuiTh
+                                        [sorter]="null"
+                                    >
+                                        Товар
+                                    </th>
+                                    <th
+                                        *tuiHead="'price'"
+                                        class="lg:w-20"
+                                        [sorter]="null"
+                                        tuiTh
+                                    >
+                                        Цена 
+                                    </th>     
+                                    <th
+                                        *tuiHead="'quantity'"
+                                        tuiTh
+                                        [sorter]="null"
+                                        class="lg:w-24"
+                                    >
+                                        Количество
+                                    </th>            
+                                </tr>
+                            </thead>
+                            <tbody
+                                tuiTbody
+                                [data]="reception.goods | arrayToAnyArray"
+                            >
+                                <tr
+                                    *ngFor="let goods of reception.goods; let index = index"
+                                    tuiTr
+                                >
+                                    <td
+                                        *tuiCell="'name'"
+                                        tuiTd
+                                    >
+                                        {{ index+1 }}. <b>{{ goods?.goods?.name }}</b>
+                                    </td>
+                                    <td
+                                        *tuiCell="'price'"
+                                        tuiTd
+                                    >
+                                        {{ goods?.goods?.price }} ₽
+                                    </td>
+                                    <td
+                                        *tuiCell="'quantity'"
+                                        tuiTd
+                                    >
+                                        {{goods?.quantity}} {{goods?.goods?.measure}} 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 
+                            *ngIf="reception.goods!.length === 0"
+                            class="text-xl font-bold text-center"
+                        >
+                            Нет оформленных товаров
+                        </h3>
+                        <!-- {{selectedServices | json}} -->
+                    </div>
+                </div>
+
+                <div class="text-center" *ngIf="selectedServices.length !== 0 || selectedGoods.length !== 0">
+                    <h1 class="tui-text_h4">Итог: {{reception.cost}}</h1>
+                </div>
+            </div>
+        </tui-loader> 
+    </div>
+</div>

@@ -144,3 +144,36 @@ mutation CreateReception($data:CreateReceptionInput!) {
     purposeId
   }
 }
+
+query GetReception($receptionId:String!){
+	reception(receptionId:$receptionId){
+    id
+    anamnesis
+    assignment
+    clinicalSigns
+    cost
+    diagnosis
+    employee{
+      fullName
+    }
+    purpose{
+      purposeName
+    }
+    goods{
+      quantity
+      goods{
+        name
+        measure
+        price
+      }
+    }
+    services{
+      quantity
+      service{
+        name
+        price
+        
+      }
+    }
+  }
+}

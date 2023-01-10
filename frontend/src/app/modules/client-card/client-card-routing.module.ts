@@ -4,6 +4,7 @@ import { ClientDetailComponent } from './client/client-detail/client-detail.comp
 import { ClientComponent } from './client/client.component';
 import { PetComponent } from './pet/pet.component';
 import { ReceptionComponent } from './reception/new/reception.component';
+import { ReceptionViewComponent } from './reception/view/reception-view.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,14 @@ const routes: Routes = [
     },
     component: ReceptionComponent,
   },
+  {
+    path: 'pet/:id/reception/:id', 
+    data: {
+      title: 'Просмотр приема'
+    },
+    component: ReceptionViewComponent,
+  },
+  
 ];
 
 @NgModule({

@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { Reception } from 'src/reception/models/reception.model';
 import { Goods } from './goods.model';
 
@@ -11,11 +11,11 @@ export class GoodsList {
   Goods?: Goods;
 
   @Field(() => String)
-  receptionId: string;
+  receptionId?: string;
 
   @Field(() => Int)
-  goodsId: number;
+  goodsId?: number;
 
-  @Field(() => Int)
+  @Field(() => Float)
   quantity: number;
 }
