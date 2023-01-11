@@ -124,7 +124,7 @@ input CreateReceptionInput {
 
 input CreateServiceInput {
   name: String!
-  price: Int!
+  price: Float!
   typeId: Int!
 }
 
@@ -198,6 +198,7 @@ type Mutation {
   createService(data: CreateServiceInput!): Service!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
+  updateService(data: UpdateServiceInput!, serviceId: Int!): Service!
   updateUser(data: UpdateUserInput!): User!
 }
 
@@ -303,7 +304,7 @@ enum Role {
 
 type Service {
   ServiceList: [ServiceList!]
-  id: Int
+  id: Int!
   name: String
   price: Float
   type: ServiceType!
@@ -346,6 +347,11 @@ type TypeAnalyzesResearch {
   analyzesResearch: [AnalyzesResearch!]
   id: Int
   typeName: String
+}
+
+input UpdateServiceInput {
+  name: String!
+  price: Float!
 }
 
 input UpdateUserInput {

@@ -81,18 +81,6 @@ query GetPetDetail($petId:String!){
   }
 }
 
-query GetAllService{
-  allServices{
-    id
-		name
-    price
-    type{
-      id
-      typeName
-    }
-  }
-}
-
 query GetAllServiceTypeWithServiceName{
   allServiceType{
     id

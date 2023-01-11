@@ -56,7 +56,7 @@ model Pet {
   AnalyzesResearch AnalyzesResearch[]
   Reception        Reception[]
 
-  alias      String @unique
+  alias      String 
   kind       String?
   gender     Boolean?
   breed      String?
@@ -68,6 +68,8 @@ model Pet {
   diagnosis  String?
   weight     Float?
   createdAt  DateTime  @default(now())
+
+  @@unique([alias, kind, gender])
 }
 
 model AnalyzesResearch {
@@ -151,6 +153,8 @@ model Service {
 
   name  String
   price Float?
+
+  @@unique([name, typeId])
 }
 
 model ServiceType {

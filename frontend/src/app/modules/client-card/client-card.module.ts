@@ -37,6 +37,7 @@ import { AdvancedTableModule } from 'src/app/shared/components/advanced-table';
 import { ButtonWithDropdownModule } from 'src/app/shared/components/button-with-dropdown/button-dropdown.module';
 import { ReceptionViewComponent } from './reception/view/reception-view.component';
 import { ArrayToAnyArrayPipe } from 'src/app/shared/pipes/array-to-any-array.pipe';
+import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { ArrayToAnyArrayPipe } from 'src/app/shared/pipes/array-to-any-array.pip
     CheckboxListComponent,
     ReceptionViewComponent,
     ArrayToAnyArrayPipe,
+    SafeHtmlPipe,
   ],
   imports: [
     CommonModule,

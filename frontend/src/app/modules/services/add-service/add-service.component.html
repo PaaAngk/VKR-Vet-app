@@ -1,0 +1,64 @@
+<form [formGroup]="addServiceForm" class="space-y-4 justify-center">
+    <tui-input
+        [tuiTextfieldCleaner] = true
+        formControlName="name"
+    >
+        Наименование  
+    </tui-input>
+    <tui-error
+        formControlName="name"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
+
+    <tui-select
+        [valueContent]="serviceTypesList ? stringifyServiceTypeList(serviceTypesList) : loading"
+        formControlName="typeId"
+    >
+        Категория
+        <ng-template tuiDataList>
+            <tui-data-list *ngIf="serviceTypesList; else loading">
+                <button
+                    *ngFor="let item of serviceTypesList"
+                    tuiOption
+                    [value]="item.id"
+                >
+                    {{ item.typeName }}
+                </button>
+            </tui-data-list>
+        </ng-template>
+        <ng-template #loading>
+            <tui-loader class="tui-space_vertical-3 loader"></tui-loader>
+        </ng-template>
+    </tui-select>
+    <tui-error
+        formControlName="typeId"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
+
+    <tui-input-number
+        formControlName = "price"
+        [min]="0"
+        [max]="999999"
+        [precision]="1"
+        [tuiTextfieldPostfix] = "'₽'"
+    >
+        Цена 
+    </tui-input-number>
+    <tui-error
+        formControlName="price"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
+
+    <button
+        tuiButton
+        type="button"
+        size="m"
+        [disabled]="!hasValue"
+        (click)="submit()"
+    >
+        Добавить
+    </button>
+
+</form>
+
+

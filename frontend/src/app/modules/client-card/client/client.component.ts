@@ -26,6 +26,8 @@ export class ClientComponent implements OnDestroy{
 	clients : ClientTable[] = [] as ClientTable[];
 	readonly columns = [`time`, `fullName`, `telephone`, `pets`, `actions`];
 
+	loading = false;
+
 	readonly searchForm = new FormGroup({
 		search: new FormControl(''),
 	});
@@ -46,6 +48,7 @@ export class ClientComponent implements OnDestroy{
 		private router: Router,
     ) {
 		// Getting data 
+		this.loading = true;
 		this.clientCardService.getclientsData$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
 		.subscribe((clients: Client[]) => {	
@@ -56,6 +59,7 @@ export class ClientComponent implements OnDestroy{
 					client:client
 				} as ClientTable
 			})
+			this.loading = false;
 		});
 
 		this.searchForm.valueChanges

@@ -108,7 +108,6 @@
                             <th
                                 *tuiHead="'cost'"
                                 tuiTh
-                                [sorter]="null"
                             >
                                 Стоимость
                             </th>
@@ -121,11 +120,12 @@
                         </tr>
                     </thead>
                     <tbody
+                        *tuiLet="receptions | tuiTableSort as sortedReceptions"
                         tuiTbody
-                        [data]="receptions"
+                        [data]="sortedReceptions"
                     >
                         <tr
-                            *ngFor="let reception of receptions; let index = index"
+                            *ngFor="let reception of sortedReceptions; let index = index"
                             tuiTr
                         >
                             <td

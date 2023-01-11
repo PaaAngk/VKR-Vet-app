@@ -39,7 +39,7 @@ Table Pet {
   clientId String [not null]
   AnalyzesResearch AnalyzesResearch [not null]
   Reception Reception [not null]
-  alias String [unique, not null]
+  alias String [not null]
   kind String
   gender Boolean
   breed String
@@ -51,11 +51,15 @@ Table Pet {
   diagnosis String
   weight Float
   createdAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (alias, kind, gender) [unique]
+  }
 }
 
 Table AnalyzesResearch {
   id String [pk]
-  typeAnalyzesResearch TypeAnalyzesResearch [not null]
+  TypeAnalyzesResearch TypeAnalyzesResearch [not null]
   typeId Int [not null]
   pet Pet [not null]
   petId String [not null]
@@ -130,6 +134,10 @@ Table Service {
   serviceList ServiceList [not null]
   name String [not null]
   price Float
+
+  indexes {
+    (name, typeId) [unique]
+  }
 }
 
 Table ServiceType {

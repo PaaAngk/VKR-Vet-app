@@ -6,12 +6,14 @@ import {
   Args,
   ResolveField,
   Mutation,
+  Int,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { Service } from './models/service.model';
 import { CreateServiceInput } from './dto/CreateServiceInput';
 import { ServiceType } from './models/service-type.model';
+import { UpdateServiceInput } from './dto/UpdateServiceInput';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Service)
@@ -28,6 +30,19 @@ export class ServiceResolver {
       },
     });
     return newService;
+  }
+
+  @Mutation(() => Service)
+  async updateService(
+    @Args({ name: 'serviceId', type: () => Int }) serviceId: number,
+    @Args('data') newServiceData: UpdateServiceInput
+  ) {
+    return this.prisma.service.update({
+      data: newServiceData,
+      where: {
+        id: serviceId,
+      },
+    });
   }
 
   @Query(() => [Service])

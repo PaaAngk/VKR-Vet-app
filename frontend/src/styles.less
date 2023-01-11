@@ -1,10 +1,10 @@
 @import '~@taiga-ui/core/styles/taiga-ui-theme';
 @import '~@taiga-ui/core/styles/taiga-ui-fonts';
-@import '~@taiga-ui/styles/taiga-ui-global';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import '~@taiga-ui/styles/taiga-ui-global';
 
 /* You can add global styles to this file, and also import other style files */
 :root {
@@ -20,4 +20,54 @@
  
     // Selection
     --tui-selection: #f3fadc;
+}
+
+
+.view-assignment ul{
+    .tui-list();
+}
+
+.view-assignment ul li{
+    position: relative;
+    padding-left: 1.5rem;
+    word-wrap: break-word;
+    margin-top: 0.75rem;
+}
+
+.view-assignment ul li:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 100%;
+    background-color: var(--tui-primary);
+}
+
+.view-assignment ol{
+    .tui-list();
+    list-style: decimal;
+    padding: 1rem 0;
+    padding-left: 1rem;
+}
+
+
+.view-assignment ol li{
+    position: relative;
+    padding-left: 0.5rem;
+    word-wrap: break-word;
+    margin-top: 0.75rem;
+}
+
+.view-assignment ol li:first-child {
+    margin-top: 0;
+}
+
+.service-table__edit-select td{
+    background-color: var(--tui-secondary) !important;
+}
+
+.service-table__edit-select .edit{
+    background-color: var(--tui-secondary-hover) !important;
 }

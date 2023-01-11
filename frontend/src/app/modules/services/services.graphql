@@ -1,0 +1,44 @@
+query GetAllService{
+  allServices{
+    id
+		name
+    price
+    type{
+      id
+      typeName
+    }
+  }
+}
+mutation CreateService($data:CreateServiceInput!){
+  createService(data: $data){
+    id
+    name
+    price
+    type{
+      id
+      typeName
+    }
+  }
+}
+
+query GetAllServiceType{
+  allServiceType{
+    id
+    typeName
+  }
+}
+
+mutation UpdateService(
+  $serviceId:Int!,
+  $data:UpdateServiceInput!
+  ){
+    updateService(serviceId:$serviceId, data: $data){
+      id
+      name
+      price
+      type{
+        id
+        typeName
+      }
+    }
+  }

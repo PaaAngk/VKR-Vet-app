@@ -143,7 +143,7 @@ export type CreateReceptionInput = {
 
 export type CreateServiceInput = {
   name: Scalars['String'];
-  price: Scalars['Int'];
+  price: Scalars['Float'];
   typeId: Scalars['Int'];
 };
 
@@ -184,7 +184,7 @@ export type GoodsList = {
   Reception?: Maybe<Reception>;
   goods: Goods;
   goodsId?: Maybe<Scalars['Int']>;
-  quantity: Scalars['Int'];
+  quantity: Scalars['Float'];
   receptionId?: Maybe<Scalars['String']>;
 };
 
@@ -212,6 +212,7 @@ export type Mutation = {
   createService: Service;
   login: Auth;
   refreshToken: Token;
+  updateService: Service;
   updateUser: User;
 };
 
@@ -273,6 +274,12 @@ export type MutationLoginArgs = {
 
 export type MutationRefreshTokenArgs = {
   token: Scalars['JWT'];
+};
+
+
+export type MutationUpdateServiceArgs = {
+  data: UpdateServiceInput;
+  serviceId: Scalars['Int'];
 };
 
 
@@ -421,7 +428,7 @@ export enum Role {
 export type Service = {
   __typename?: 'Service';
   ServiceList?: Maybe<Array<ServiceList>>;
-  id?: Maybe<Scalars['Int']>;
+  id: Scalars['Int'];
   name?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
   type: ServiceType;
@@ -468,6 +475,11 @@ export type TypeAnalyzesResearch = {
   analyzesResearch?: Maybe<Array<AnalyzesResearch>>;
   id?: Maybe<Scalars['Int']>;
   typeName?: Maybe<Scalars['String']>;
+};
+
+export type UpdateServiceInput = {
+  name: Scalars['String'];
+  price: Scalars['Float'];
 };
 
 export type UpdateUserInput = {
@@ -529,15 +541,10 @@ export type GetPetDetailQueryVariables = Exact<{
 
 export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: string | null, color?: string | null, diagnosis?: string | null, gender?: string | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
 
-export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllServiceQuery = { __typename?: 'Query', allServices: Array<{ __typename?: 'Service', id?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } }> };
-
 export type GetAllServiceTypeWithServiceNameQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllServiceTypeWithServiceNameQuery = { __typename?: 'Query', allServiceType: Array<{ __typename?: 'ServiceType', id?: number | null, typeName?: string | null, service?: Array<{ __typename?: 'Service', id?: number | null, name?: string | null, price?: number | null }> | null }> };
+export type GetAllServiceTypeWithServiceNameQuery = { __typename?: 'Query', allServiceType: Array<{ __typename?: 'ServiceType', id?: number | null, typeName?: string | null, service?: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null }> | null }> };
 
 export type GetAllGoodsCategoryWithGoodsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -567,6 +574,31 @@ export type GetReceptionQueryVariables = Exact<{
 
 
 export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employee?: { __typename?: 'Employee', fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, measure?: string | null, price?: number | null } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', name?: string | null, price?: number | null } } | null> | null } };
+
+export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllServiceQuery = { __typename?: 'Query', allServices: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } }> };
+
+export type CreateServiceMutationVariables = Exact<{
+  data: CreateServiceInput;
+}>;
+
+
+export type CreateServiceMutation = { __typename?: 'Mutation', createService: { __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } } };
+
+export type GetAllServiceTypeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllServiceTypeQuery = { __typename?: 'Query', allServiceType: Array<{ __typename?: 'ServiceType', id?: number | null, typeName?: string | null }> };
+
+export type UpdateServiceMutationVariables = Exact<{
+  serviceId: Scalars['Int'];
+  data: UpdateServiceInput;
+}>;
+
+
+export type UpdateServiceMutation = { __typename?: 'Mutation', updateService: { __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } } };
 
 export const CurrentUserProfileDocument = gql`
     query currentUserProfile {
@@ -754,30 +786,6 @@ export const GetPetDetailDocument = gql`
       super(apollo);
     }
   }
-export const GetAllServiceDocument = gql`
-    query GetAllService {
-  allServices {
-    id
-    name
-    price
-    type {
-      id
-      typeName
-    }
-  }
-}
-    `;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class GetAllServiceGQL extends Apollo.Query<GetAllServiceQuery, GetAllServiceQueryVariables> {
-    override document = GetAllServiceDocument;
-    
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
 export const GetAllServiceTypeWithServiceNameDocument = gql`
     query GetAllServiceTypeWithServiceName {
   allServiceType {
@@ -929,6 +937,97 @@ export const GetReceptionDocument = gql`
   })
   export class GetReceptionGQL extends Apollo.Query<GetReceptionQuery, GetReceptionQueryVariables> {
     override document = GetReceptionDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetAllServiceDocument = gql`
+    query GetAllService {
+  allServices {
+    id
+    name
+    price
+    type {
+      id
+      typeName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllServiceGQL extends Apollo.Query<GetAllServiceQuery, GetAllServiceQueryVariables> {
+    override document = GetAllServiceDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateServiceDocument = gql`
+    mutation CreateService($data: CreateServiceInput!) {
+  createService(data: $data) {
+    id
+    name
+    price
+    type {
+      id
+      typeName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateServiceGQL extends Apollo.Mutation<CreateServiceMutation, CreateServiceMutationVariables> {
+    override document = CreateServiceDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetAllServiceTypeDocument = gql`
+    query GetAllServiceType {
+  allServiceType {
+    id
+    typeName
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllServiceTypeGQL extends Apollo.Query<GetAllServiceTypeQuery, GetAllServiceTypeQueryVariables> {
+    override document = GetAllServiceTypeDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateServiceDocument = gql`
+    mutation UpdateService($serviceId: Int!, $data: UpdateServiceInput!) {
+  updateService(serviceId: $serviceId, data: $data) {
+    id
+    name
+    price
+    type {
+      id
+      typeName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateServiceGQL extends Apollo.Mutation<UpdateServiceMutation, UpdateServiceMutationVariables> {
+    override document = UpdateServiceDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

@@ -2,11 +2,7 @@ import { IsNotEmpty } from 'class-validator';
 import { InputType, Field, Float } from '@nestjs/graphql';
 
 @InputType()
-export class CreateServiceInput {
-  @Field()
-  @IsNotEmpty()
-  typeId?: number;
-
+export class UpdateServiceInput {
   @Field()
   @IsNotEmpty()
   name?: string;

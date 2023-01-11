@@ -94,7 +94,7 @@
                 </tui-text-area> -->
                 <h3>Лист назначения:</h3>
                 
-                <div class="border-2 p-2 rounded-lg text-2xl" [innerHTML]="reception.assignment"></div>
+                <div class="border-2 p-2 rounded-lg text-2xl view-assignment"  [innerHTML]="reception.assignment | safeHtml"></div>
             </div>
 
             <!-- Check -->

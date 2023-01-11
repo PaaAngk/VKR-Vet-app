@@ -5,7 +5,7 @@ import { ServiceType } from './service-type.model';
 @ObjectType()
 export class Service {
   @Field(() => Int)
-  id?: number;
+  id: number;
 
   @Field(() => ServiceType, { nullable: true })
   type?: ServiceType;

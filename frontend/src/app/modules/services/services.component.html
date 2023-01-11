@@ -1,0 +1,167 @@
+<div class="w-full p-2 border-r border-l border-color rounded-lg bg-white max-h-full">
+    <div tuiTextfieldSize="m" [formGroup]="searchForm" class="flex w-full justify-evenly items-center py-1">
+        <tui-input
+            class="lg:w-2/5"
+            tuiTextfieldIconLeft = 'tuiIconSearchLarge'
+            [tuiTextfieldCleaner] = true
+            tuiTextfieldSize = 'l'
+            formControlName="search"
+        >
+            Поиск услуги
+            <input
+                tuiTextfield
+                placeholder ="Начните вводить наименование или категорию"
+            />    
+        </tui-input>
+
+        <button
+            tuiButton
+            (click)="showDialog()"
+            icon="tuiIconAddRowLarge"
+            size="l"
+        >
+        <p class="text-lg">
+            Добавить услуги</p>
+        </button>
+    </div>
+
+    <div class="p-2 h-full" ><!--tui-loader [overlay]="true" [showLoader] = "loading"-->
+        <div class="items-center text-center mb-3">
+            <div class="text-2xl font-semibold">Услуги</div>
+        </div>
+        <tui-loader 
+            [showLoader]="loading"
+            [overlay]="true"
+            class="flex flex-auto overflow-auto" 
+            [ngStyle]="{'max-height':'70vh'}"
+        >
+            <table
+                class="w-full pb-2"
+                tuiTable
+                [columns]="columns"
+                *ngIf="filterServices.length !== 0"
+            >
+                <thead>
+                    <tr tuiThGroup>
+                        <th
+                            *tuiHead="'name'"
+                            tuiTh
+                            [sorter]="null"
+                        >
+                            Наименование
+                        </th>
+                        <th
+                            *tuiHead="'typeName'"
+                            tuiTh
+                            [sorter]="categorySorter"
+                        >
+                            Категория
+                        </th>
+                        <th
+                            *tuiHead="'price'"
+                            tuiTh
+                            class="lg:w-20"
+                        >
+                            Цена
+                        </th>
+                        <th
+                            *tuiHead="'actions'"
+                            tuiTh
+                            class="lg:w-32"
+                            [sorter]="null"
+                        >
+                            Действия
+                        </th>
+                    </tr>
+                </thead>
+                <tbody
+                    *tuiLet="filterServices | tuiTableSort as sortedFilteredServices"
+                    tuiTbody
+                    [data]="sortedFilteredServices"
+                    
+                >
+                    <tr
+                        *ngFor="let service of sortedFilteredServices; let index = index"
+                        tuiTr
+                        [ngClass]="editedService.id === service.id ? 'service-table__edit-select' : ''"
+                    >
+                        <td
+                            *tuiCell="'name'"
+                            tuiTd
+                            class="edit"
+                        >
+                            <p *ngIf="editedService.id !== service.id">
+                                {{ service.name }}
+                            </p >
+                            <tui-input
+                                *ngIf="editedService.id === service.id"
+                                [ngModel] = "editedService.name"
+                            >
+                            </tui-input>
+                        </td>
+                        <td
+                            *tuiCell="'typeName'"
+                            tuiTd
+                        >
+                            {{ service.type.typeName }}
+                        </td>
+                        <td
+                            *tuiCell="'price'"
+                            tuiTd
+                            class="edit"
+                            [ngClass]="editedService.id === service.id ? 'shadow-inner' : ''"
+                        >
+                        <!-- <tui-error [error]="computedError"></tui-error> -->
+                            <tui-input-number
+                                [ngModel] = "editedService.price"
+                                (ngModelChange)="onValueChange($event, 'price')"
+                                [min]="1"
+                                [max]="99999"
+                                [precision]="1"
+                                [tuiTextfieldPostfix] = "'₽'"
+                                *ngIf="editedService.id === service.id"
+                            > 
+                            
+                            </tui-input-number>
+                            <p *ngIf="editedService.id !== service.id">
+                                {{ service.price }} ₽
+                            </p>
+                        </td>
+                        <td
+                            *tuiCell="'actions'"
+                            class="space-x-2"
+                            tuiTd
+                        >
+                            <button
+                                *ngIf="editedService.id !== service.id"
+                                tuiButton
+                                appearance="secondary-destructive"
+                                size="s"
+                                (click)="setEditableService(service)"
+                            >
+                                Изменить
+                            </button>
+                            <button
+                                *ngIf="editedService.id === service.id"
+                                tuiButton
+                                appearance="accent"
+                                size="s"
+                                (click)="saveEditService()"
+                            >
+                                Сохранить
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 
+                *ngIf="filterServices.length === 0"
+                class="text-xl font-bold text-center text-red-600"
+            >
+                Не удалось найти услугу!
+            </h3>
+        </tui-loader>
+        
+    </div>
+</div>
