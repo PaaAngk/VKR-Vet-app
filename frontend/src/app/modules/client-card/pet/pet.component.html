@@ -68,7 +68,8 @@
                 <p> <b>Дата рождения: </b> {{ pet.DOB | date:'dd/MM/yyy' | checkNull }}</p>
                 <p> <b>Окрас: </b> {{ pet.color  | checkNull }}</p>
                 <p> <b>Пол: </b> {{ pet.gender | formatPetGender }}</p>
-                <p> <b>Наличие кастрации: </b> {{ pet.castration  | checkNull }}</p>
+                <p *ngIf="pet.castration"> <b>Наличие кастрации: </b> Есть</p>
+                <p *ngIf="!pet.castration"> <b>Наличие кастрации: </b> Нет</p>
                 <p> <b>Диагноз: </b> {{ pet.diagnosis  | checkNull }} </p>
                 <p> <b>Особые отметки: </b> {{ pet.notes  | checkNull }}</p>
             </div>

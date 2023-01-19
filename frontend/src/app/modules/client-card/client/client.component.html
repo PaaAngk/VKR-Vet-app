@@ -113,6 +113,7 @@
                             class="space-x-2"
                             tuiTd
                         >
+                            <p *ngIf="client.client.pets.length === 0">Нет питомцев</p>
                             <tui-tag
                                 *ngFor="let tag of client.client.pets"
                                 size="m"

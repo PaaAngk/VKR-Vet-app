@@ -566,7 +566,7 @@ export type CreateReceptionMutationVariables = Exact<{
 }>;
 
 
-export type CreateReceptionMutation = { __typename?: 'Mutation', createReception: { __typename?: 'Reception', anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employeeId?: number | null, petId?: string | null, purposeId?: number | null } };
+export type CreateReceptionMutation = { __typename?: 'Mutation', createReception: { __typename?: 'Reception', anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employeeId?: number | null, petId?: string | null, purposeId?: number | null, id: string } };
 
 export type GetReceptionQueryVariables = Exact<{
   receptionId: Scalars['String'];
@@ -884,6 +884,7 @@ export const CreateReceptionDocument = gql`
     employeeId
     petId
     purposeId
+    id
   }
 }
     `;

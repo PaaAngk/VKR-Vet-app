@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { tuiWatch } from '@taiga-ui/cdk';
 import {TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
-import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { debounceTime, Subject, takeUntil, tap } from 'rxjs';
 import { Client } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
 import { AddClientComponent } from '../dialog/add-client/add-client.component';
@@ -63,7 +63,7 @@ export class ClientComponent implements OnDestroy{
 		});
 
 		this.searchForm.valueChanges
-		.pipe(takeUntil(this._unsubscribeAll))
+		.pipe(takeUntil(this._unsubscribeAll), tap({next: () => (this.loading= true, console.log("DSD"))}))
 		.pipe(debounceTime(1000))
 		.subscribe({
 			next: () => {this.clientCardService.getClientsData(String(this.searchForm.value.search))}
@@ -81,43 +81,13 @@ export class ClientComponent implements OnDestroy{
 	// -----------------------------------------------------------------------------------------------------
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
-   
- 
+
     showDialog(): void {
-        this.dialog.subscribe({
-            next: data => {
-                console.log(`Dialog emitted data = ${data}`);
-            },
-            complete: () => {
-                console.log(`Dialog closed`);
-            },
-        });
+        this.dialog.subscribe();
     }
 
 	setClient(clientId : string) {
 		this.clientCardService.setSelectedClient(clientId);
 		this.router.navigateByUrl(`client-card/client/${clientId}`);
 	}
-
-
 }
-
-
-
-// users: readonly ClientTable[] = [
-// 	{
-// 		time: `10:15`,
-// 		fullName: `Иванов Иван Иванович`,
-// 		telephone: `89365147824`,
-// 		pets: [{alias:"Пэти", kind:"Кошка"}],
-// 	},
-// 	{
-// 		time: `11:30`,
-// 		fullName: `Сидоров Сидор Сидорович`,
-// 		telephone: `89365147824`,
-// 		pets: [
-// 			{alias:"Дог", kind:"Кошка"},
-// 			{alias:"Кэт", kind:"Собака"}
-// 		],
-// 	}
-// ];

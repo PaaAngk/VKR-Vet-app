@@ -148,11 +148,6 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		return Math.round( (selectedGoods + selectedServices) * 100 ) / 100
 	}
 
-	setClient(clientId : string) {
-		this.clientCardService.setSelectedClient(clientId);
-		this.router.navigateByUrl('client-card/detail');
-	}
-
 	readonly identityMatcher: TuiIdentityMatcher<readonly string[]> = (items1, items2) =>
 	items1.length === items2.length && items1.every(item => items2.includes(item));
 
@@ -255,7 +250,8 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 						autoClose: 5000,
 					}).subscribe();
 					console.log(data)
-					this._changeDetectorRef.markForCheck();
+					console.log(this.router)
+					this.router.navigateByUrl(`/${data.data?.createReception.id}`)
                 },
                 error: (error)  => 
                 {

@@ -130,6 +130,7 @@ mutation CreateReception($data:CreateReceptionInput!) {
     employeeId
     petId
     purposeId
+    id
   }
 }
 
