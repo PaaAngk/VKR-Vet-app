@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TuiDialogService } from '@taiga-ui/core';
-import { skip, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { Client, Pet } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
@@ -50,6 +50,7 @@ export class ClientDetailComponent implements OnDestroy{
 		.subscribe((client: Client) => {
 			this.client = client
 			this.pets = client.pets || []
+			console.log(client);
 		});
 	}
 

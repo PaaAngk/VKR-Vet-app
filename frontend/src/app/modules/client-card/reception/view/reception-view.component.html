@@ -85,16 +85,17 @@
                         Диагноз  
                     </tui-input>
                 </div>
-                <!-- <tui-text-area
-                    [ngModel]="reception.assignment"
-                    [readOnly] = "true"
-                    [innerHTML]="reception.assignment"
-                >
-                    Лист назначения
-                </tui-text-area> -->
+
                 <h3>Лист назначения:</h3>
                 
-                <div class="border-2 p-2 rounded-lg text-2xl view-assignment"  [innerHTML]="reception.assignment | safeHtml"></div>
+                <div 
+                    class="border-2 p-2 rounded-lg text-2xl view-assignment" 
+                    *ngIf="reception.assignment && reception.assignment?.length !== 0" 
+                    [innerHTML]="reception.assignment | safeHtml"
+                ></div>
+                <div class="text-center" *ngIf="!reception.assignment">
+                    <h1 class="tui-text_h5 mb-2">Лист назначения не выписан</h1>
+                </div>
             </div>
 
             <!-- Check -->
@@ -247,7 +248,7 @@
                     </div>
                 </div>
 
-                <div class="text-center" *ngIf="selectedServices.length !== 0 || selectedGoods.length !== 0">
+                <div class="text-center" *ngIf="reception.services!.length !== 0 || reception.goods!.length !== 0">
                     <h1 class="tui-text_h4">Итог: {{reception.cost}}</h1>
                 </div>
             </div>

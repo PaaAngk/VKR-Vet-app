@@ -161,7 +161,6 @@ query GetReception($receptionId:String!){
       service{
         name
         price
-        
       }
     }
   }

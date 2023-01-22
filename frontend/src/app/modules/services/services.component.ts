@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { TuiValidationError, tuiWatch } from '@taiga-ui/cdk';
 import {TuiAlertService, TuiDialogService, TuiNotification} from '@taiga-ui/core';
@@ -53,17 +52,14 @@ export class ServicesComponent implements OnDestroy{
 		.subscribe((services: Service[]) => {	
 			this.loading = false;
 			this.services = services;
-			this.filterServices = services;
+			this.filterServices = this.setFilterServices(this.searchForm.value['search']);
 		});
 
 		this.searchForm.valueChanges
 		.pipe(takeUntil(this._unsubscribeAll))
 		.subscribe({
 			next: (data) => {
-				this.filterServices = this.services.filter((service:Service) =>{
-					return service.name?.toLowerCase().includes(data['search']?.trim().toLowerCase() || "") ||
-					service.type.typeName?.toLowerCase().includes(data['search']?.trim().toLowerCase() || "")
-				})
+				this.filterServices = this.setFilterServices(data['search']);
 			}
 		})
 	}
@@ -88,6 +84,13 @@ export class ServicesComponent implements OnDestroy{
     showDialog(): void {
         this.dialogAddPet.subscribe();
     }
+
+	setFilterServices(filterValue: string | null | undefined) : Service[]{
+		return this.services.filter((service:Service) =>{
+			return service.name?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "") ||
+			service.type.typeName?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "")
+		});
+	}
 
 	setEditableService(service:Service){
 		this.editedService = service;
@@ -117,7 +120,7 @@ export class ServicesComponent implements OnDestroy{
 					"", 
 					{
 						status: TuiNotification.Success, 
-						label:"Услуга добавлена",
+						label:"Услуга изменена",
 					}
 					).subscribe();
 					this.editedService = {} as Service;

@@ -48,7 +48,7 @@
                     class="w-full"
                     tuiTable
                     [columns]="petsColumns"
-                    *ngIf="pets"
+                    *ngIf="pets.length !== 0"
                 >
                     <thead>
                         <tr tuiThGroup>
@@ -148,7 +148,13 @@
                             </td>
                         </tr>
                     </tbody>
-            </table>
+                </table>
+                <h3 
+                    *ngIf="pets.length === 0"
+                    class="text-xl font-bold text-center my-2"
+                >
+                    Нет добавленных питомцев!
+                </h3>
             </div>
 
 

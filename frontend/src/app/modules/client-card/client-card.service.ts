@@ -169,7 +169,7 @@ export class ClientCardService
     createPet(data: CreatePetInput)
     {
         return this.createPetGQL.mutate({
-            data: data
+            data: data,
         }).pipe(
             map(( data ) => {
                 if (data.data?.createPet) {
@@ -178,6 +178,7 @@ export class ClientCardService
                     newClientsPets.pets = newClientsPets.pets?.concat(data.data.createPet)
                     this._currentClient.next(newClientsPets);
                 }
+                return data
             })
         )
     }

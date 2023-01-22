@@ -251,7 +251,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 					}).subscribe();
 					console.log(data)
 					console.log(this.router)
-					this.router.navigateByUrl(`/${data.data?.createReception.id}`)
+					this.router.navigate([`../${data.data?.createReception.id}`], {relativeTo: this.activateRoute})
                 },
                 error: (error)  => 
                 {

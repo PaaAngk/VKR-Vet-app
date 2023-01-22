@@ -63,7 +63,7 @@ export class ReceptionResolver {
         })
       );
 
-      this.prisma.serviceList.createMany({
+      await this.prisma.serviceList.createMany({
         data: addInServiceListInput,
       });
     }

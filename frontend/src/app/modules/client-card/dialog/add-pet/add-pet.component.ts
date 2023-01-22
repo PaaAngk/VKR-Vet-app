@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
+import {TuiAlertService, TuiDialogContext, TuiNotification} from '@taiga-ui/core';
 import { ClientCardService } from '../../client-card.service';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
 import { CreatePetInput } from 'src/graphql/generated';
 import { take } from 'rxjs';
+import { Router } from '@angular/router';
 
 const latinChars = /^[а-яА-Я ]+$/;
  
@@ -44,6 +45,7 @@ export class AddPetComponent {
         @Inject(POLYMORPHEUS_CONTEXT)
         private readonly context: TuiDialogContext<number, number>,
         private clientCardService: ClientCardService,
+        private router: Router,
     ) {}
 
     get hasValue(): boolean {
@@ -57,8 +59,9 @@ export class AddPetComponent {
             })
             this.clientCardService.createPet(this.addPetForm.value as CreatePetInput)
             .subscribe({
-                next: () => { 
-                    this.alertService.open("Питомец успешно добавлен!", {status: TuiNotification.Success}).subscribe();
+                next: (data) => { 
+                    this.alertService.open("", {status: TuiNotification.Success, label:"Питомец успешно добавлен!"}).subscribe();
+                    this.router.navigateByUrl(`client-card/pet/${data.data?.createPet.id}`)
                     this.context.completeWith(1); 
                 },
                 error: (error)  => 
