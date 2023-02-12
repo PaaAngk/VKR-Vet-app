@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, take } from "rxjs";
-import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, ReceptionPurpose, ServiceType } from "src/graphql/generated";
+import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, ReceptionPurpose, ServiceType, UpdateClientGQL, UpdateClientInput } from "src/graphql/generated";
 
 
 @Injectable({
@@ -29,7 +29,8 @@ export class ClientCardService
         private getAllServiceTypeWithServiceNameGQL: GetAllServiceTypeWithServiceNameGQL,
 		private getAllGoodsCategoryWithGoodsGQL : GetAllGoodsCategoryWithGoodsGQL,
         private getAllEmployeesGQL : GetAllEmployeesGQL,
-        private getAllReceptionPurposeGQL: GetAllReceptionPurposeGQL
+        private getAllReceptionPurposeGQL: GetAllReceptionPurposeGQL,
+        private updateClientGQL: UpdateClientGQL
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
@@ -257,6 +258,25 @@ export class ClientCardService
                 this._receptionPurposesList.next(data.data.allReceptionPurpose)
             },
 		});
+    }
+
+    /**
+     * Updating clients data 
+     */
+    updateClient(clientId:string, data:UpdateClientInput)
+    {
+        return this.updateClientGQL.mutate({
+            clientId: clientId,
+            data: data,
+        }).pipe(
+            map(( data ) => {
+                if (data.data?.updateClient) {
+                    this._currentClient.next(data.data.updateClient);
+                    return data.data.updateClient;
+                }
+                return data
+            })
+        )
     }
 
 

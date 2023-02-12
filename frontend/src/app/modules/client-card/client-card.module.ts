@@ -24,7 +24,7 @@ import {
 import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiFilterPipeModule, TuiLetModule } from '@taiga-ui/cdk';
 
-import { AddClientComponent } from './dialog/add-client/add-client.component';
+import { DialogClientComponent } from './dialog/client-dialog/client-dialog.component';
 import { ClientDetailComponent } from './client/client-detail/client-detail.component';
 import { AddPetComponent } from './dialog/add-pet/add-pet.component';
 import { FormatPetGenderPipe } from 'src/app/shared/pipes/format-pet-gender.pipe';
@@ -42,7 +42,7 @@ import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
 @NgModule({
   declarations: [
     ClientComponent, 
-    AddClientComponent,
+    DialogClientComponent,
     ClientDetailComponent,
     AddPetComponent,
     FormatPetGenderPipe,

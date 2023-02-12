@@ -7,6 +7,7 @@ import {
   ResolveField,
   Subscription,
   Mutation,
+  Int,
 } from '@nestjs/graphql';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { PubSub } from 'graphql-subscriptions';
@@ -22,6 +23,7 @@ import { CreateClientInput } from './dto/createClient.input';
 import { ClientSearchArgs } from './args/client-search.args';
 import { ClientIdArgs } from './args/client-id.args';
 import { Pet } from 'src/pets/models/pet.model';
+import { UpdateClientInput } from './dto/UpdateClientInput';
 
 const pubSub = new PubSub();
 
@@ -46,6 +48,30 @@ export class ClientsResolver {
     });
     pubSub.publish('clientCreated', { clientCreated: newClient });
     return newClient;
+  }
+
+  @Mutation(() => Client)
+  async updateClient(
+    @Args({ name: 'clientId', type: () => String }) clientId: string,
+    @Args('data') newClientData: UpdateClientInput
+  ) {
+    return this.prisma.client.update({
+      data: newClientData,
+      where: {
+        id: clientId,
+      },
+    });
+  }
+
+  @Mutation(() => Client)
+  async deleteClient(
+    @Args({ name: 'clientId', type: () => String }) clientId: string
+  ) {
+    return this.prisma.client.delete({
+      where: {
+        id: clientId,
+      },
+    });
   }
 
   @Query(() => ClientConnection)

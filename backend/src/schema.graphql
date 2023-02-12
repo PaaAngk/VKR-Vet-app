@@ -196,8 +196,10 @@ type Mutation {
   createPet(data: CreatePetInput!): Pet!
   createReception(data: CreateReceptionInput!): Reception!
   createService(data: CreateServiceInput!): Service!
+  deleteClient(clientId: String!): Client!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
+  updateClient(clientId: String!, data: UpdateClientInput!): Client!
   updateService(data: UpdateServiceInput!, serviceId: Int!): Service!
   updateUser(data: UpdateUserInput!): User!
 }
@@ -347,6 +349,12 @@ type TypeAnalyzesResearch {
   analyzesResearch: [AnalyzesResearch!]
   id: Int
   typeName: String
+}
+
+input UpdateClientInput {
+  address: String!
+  fullName: String!
+  telephoneNumber: String!
 }
 
 input UpdateServiceInput {

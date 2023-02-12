@@ -210,8 +210,10 @@ export type Mutation = {
   createPet: Pet;
   createReception: Reception;
   createService: Service;
+  deleteClient: Client;
   login: Auth;
   refreshToken: Token;
+  updateClient: Client;
   updateService: Service;
   updateUser: User;
 };
@@ -267,6 +269,11 @@ export type MutationCreateServiceArgs = {
 };
 
 
+export type MutationDeleteClientArgs = {
+  clientId: Scalars['String'];
+};
+
+
 export type MutationLoginArgs = {
   data: LoginInput;
 };
@@ -274,6 +281,12 @@ export type MutationLoginArgs = {
 
 export type MutationRefreshTokenArgs = {
   token: Scalars['JWT'];
+};
+
+
+export type MutationUpdateClientArgs = {
+  clientId: Scalars['String'];
+  data: UpdateClientInput;
 };
 
 
@@ -477,6 +490,12 @@ export type TypeAnalyzesResearch = {
   typeName?: Maybe<Scalars['String']>;
 };
 
+export type UpdateClientInput = {
+  address: Scalars['String'];
+  fullName: Scalars['String'];
+  telephoneNumber: Scalars['String'];
+};
+
 export type UpdateServiceInput = {
   name: Scalars['String'];
   price: Scalars['Float'];
@@ -574,6 +593,21 @@ export type GetReceptionQueryVariables = Exact<{
 
 
 export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employee?: { __typename?: 'Employee', fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, measure?: string | null, price?: number | null } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', name?: string | null, price?: number | null } } | null> | null } };
+
+export type UpdateClientMutationVariables = Exact<{
+  clientId: Scalars['String'];
+  data: UpdateClientInput;
+}>;
+
+
+export type UpdateClientMutation = { __typename?: 'Mutation', updateClient: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, address?: string | null } };
+
+export type DeleteClientMutationVariables = Exact<{
+  clientId: Scalars['String'];
+}>;
+
+
+export type DeleteClientMutation = { __typename?: 'Mutation', deleteClient: { __typename?: 'Client', id: string } };
 
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -938,6 +972,45 @@ export const GetReceptionDocument = gql`
   })
   export class GetReceptionGQL extends Apollo.Query<GetReceptionQuery, GetReceptionQueryVariables> {
     override document = GetReceptionDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateClientDocument = gql`
+    mutation UpdateClient($clientId: String!, $data: UpdateClientInput!) {
+  updateClient(clientId: $clientId, data: $data) {
+    id
+    fullName
+    telephoneNumber
+    address
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateClientGQL extends Apollo.Mutation<UpdateClientMutation, UpdateClientMutationVariables> {
+    override document = UpdateClientDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteClientDocument = gql`
+    mutation DeleteClient($clientId: String!) {
+  deleteClient(clientId: $clientId) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteClientGQL extends Apollo.Mutation<DeleteClientMutation, DeleteClientMutationVariables> {
+    override document = DeleteClientDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

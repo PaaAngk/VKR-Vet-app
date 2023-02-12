@@ -2,21 +2,48 @@
 
     <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
         <div tuiTextfieldSize="m" class="flex justify-between items-center h-full py-auto">
-            <div>
-                <p class="text-base"><b>{{client.fullName}}</b> | <b>{{client.telephoneNumber | tuiFormatPhone}}</b><br> 
-                Адрес: {{client.address}}</p>
+            <div class="flex flex-row space-x-10">
+                <div>
+                    <p class="text-base"><b>{{client.fullName}}</b> | <b>{{client.telephoneNumber | tuiFormatPhone}}</b><br> 
+                    Адрес: {{client.address}}</p>
+                </div>
+                <div
+                    tuiGroup
+                    class="group"
+                    [collapsed]="true"
+                >
+                    <button
+                        tuiButton
+                        type="button"
+                        appearance="secondary-destructive"
+                        size="m"
+                        (click)="showDialogEditClient()"
+                    >
+                        Изменить
+                    </button>
+                    <button
+                        tuiButton
+                        type="button"
+                        appearance="accent"
+                        size="m"
+                        (click)="deleteClient()"
+                    >
+                        Удалить
+                    </button>
+                </div>
             </div>
 
             <button
                 tuiButton
                 icon="tuiIconAddRowLarge"
                 size="m"
-                (click)="showDialog()"
+                (click)="showDialogAddPet()"
             >
                 <p class="text-base">
                     Добавить питомца
                 </p>
             </button>
+            
         </div>
     </div>
 

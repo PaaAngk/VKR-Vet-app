@@ -32,7 +32,8 @@
         [disabled]="!hasValue"
         (click)="submit()"
     >
-        Добавить
+        <p *ngIf="data === 'edit'">Изменить</p>
+        <p *ngIf="data === 'add'">Добавить</p>
     </button>
 
 </form>

@@ -7,7 +7,7 @@ import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { debounceTime, Subject, takeUntil, tap } from 'rxjs';
 import { Client } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
-import { AddClientComponent } from '../dialog/add-client/add-client.component';
+import { DialogClientComponent } from '../dialog/client-dialog/client-dialog.component';
 
 interface ClientTable {
 	readonly time: string;
@@ -33,8 +33,9 @@ export class ClientComponent implements OnDestroy{
 	});
 
 	private readonly dialog = this.dialogService.open<number>(
-        new PolymorpheusComponent(AddClientComponent, this.injector),
+        new PolymorpheusComponent(DialogClientComponent, this.injector),
         {
+			data: "add",
             dismissible: true,
             label: `Добавление клиента `,
         },
