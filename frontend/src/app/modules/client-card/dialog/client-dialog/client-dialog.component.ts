@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
-import { map } from 'rxjs';
 import { Client, CreateClientInput, UpdateClientInput } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 
@@ -48,7 +47,6 @@ export class DialogClientComponent {
                 }); 
                 this.clientsId = client.id
             });
-            console.log(this.searchForm)
         }
     }
 

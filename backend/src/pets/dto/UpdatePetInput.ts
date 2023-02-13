@@ -2,16 +2,13 @@ import { IsNotEmpty } from 'class-validator';
 import { InputType, Field, Float } from '@nestjs/graphql';
 
 @InputType()
-export class CreatePetInput {
-  @Field()
-  @IsNotEmpty()
-  clientId: string;
-
+export class UpdatePetInput {
   @Field()
   @IsNotEmpty()
   alias: string;
 
   @Field()
+  @IsNotEmpty()
   kind?: string;
 
   @Field()

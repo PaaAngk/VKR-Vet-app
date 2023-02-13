@@ -197,9 +197,11 @@ type Mutation {
   createReception(data: CreateReceptionInput!): Reception!
   createService(data: CreateServiceInput!): Service!
   deleteClient(clientId: String!): Client!
+  deletePet(petId: String!): Pet!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
   updateClient(clientId: String!, data: UpdateClientInput!): Client!
+  updatePet(data: UpdatePetInput!, petId: String!): Pet!
   updateService(data: UpdateServiceInput!, serviceId: Int!): Service!
   updateUser(data: UpdateUserInput!): User!
 }
@@ -224,7 +226,7 @@ type Pet {
   alias: String!
   analyzesResearchs: [AnalyzesResearch!]
   breed: String
-  castration: String
+  castration: Boolean
   client: Client
   clientId: String
   color: String
@@ -232,7 +234,7 @@ type Pet {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime
   diagnosis: String
-  gender: String
+  gender: Boolean
   id: String!
   kind: String
   notes: String
@@ -355,6 +357,20 @@ input UpdateClientInput {
   address: String!
   fullName: String!
   telephoneNumber: String!
+}
+
+input UpdatePetInput {
+  DOB: DateTime!
+  alias: String!
+  breed: String!
+  castration: Boolean!
+  color: String!
+  diagnosis: String!
+  gender: Boolean!
+  kind: String!
+  notes: String!
+  nutrition: String!
+  weight: Float!
 }
 
 input UpdateServiceInput {

@@ -26,7 +26,7 @@ export class Pet {
   @Field(() => String, { nullable: true })
   kind?: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Boolean, { nullable: true })
   gender?: boolean | null;
 
   @Field(() => String, { nullable: true })
@@ -41,7 +41,7 @@ export class Pet {
   @Field(() => String, { nullable: true })
   color?: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Boolean, { nullable: true })
   castration?: boolean | null;
 
   @Field(() => String, { nullable: true })

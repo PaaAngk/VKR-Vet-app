@@ -184,13 +184,13 @@ Enum Role {
   MANAGER
 }
 
-Ref: Pet.clientId > Client.id
+Ref: Pet.clientId > Client.id [delete: Cascade]
 
 Ref: AnalyzesResearch.typeId > TypeAnalyzesResearch.id
 
-Ref: AnalyzesResearch.petId > Pet.id
+Ref: AnalyzesResearch.petId > Pet.id [delete: Cascade]
 
-Ref: Reception.petId > Pet.id
+Ref: Reception.petId > Pet.id [delete: Cascade]
 
 Ref: Reception.employeeId > Employee.id
 
@@ -198,15 +198,15 @@ Ref: Reception.purposeId > ReceptionPurpose.id
 
 Ref: Goods.categoryId > GoodsCategory.id
 
-Ref: GoodsList.receptionId > Reception.id
+Ref: GoodsList.receptionId > Reception.id [delete: Cascade]
 
-Ref: GoodsList.goodsId > Goods.id
+Ref: GoodsList.goodsId > Goods.id [delete: Cascade]
 
 Ref: Service.typeId > ServiceType.id
 
-Ref: ServiceList.receptionId > Reception.id
+Ref: ServiceList.receptionId > Reception.id [delete: Cascade]
 
-Ref: ServiceList.serviceId > Service.id
+Ref: ServiceList.serviceId > Service.id [delete: Cascade]
 
 Ref: Schedule.employeeId > Employee.id
 

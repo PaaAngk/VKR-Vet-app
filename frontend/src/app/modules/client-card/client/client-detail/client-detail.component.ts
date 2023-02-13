@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TuiAlertService, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Client, DeleteClientGQL, Pet } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
-import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
-import { AddPetComponent } from '../../dialog/add-pet/add-pet.component';
+import {PolymorpheusComponent, PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { PetDialogComponent } from '../../dialog/add-pet/pet-dialog.component';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { DialogClientComponent } from '../../dialog/client-dialog/client-dialog.component';
 
@@ -24,7 +24,7 @@ export class ClientDetailComponent implements OnDestroy{
 	readonly petsColumns = ['alias', 'kind', 'gender', 'DOB', 'breed', 'actions']
 
 	private readonly dialogAddPet = this.dialogService.open<number>(
-        new PolymorpheusComponent(AddPetComponent, this.injector),
+        new PolymorpheusComponent(PetDialogComponent, this.injector),
         {
             dismissible: false,
             label: `Добавление питомца`,
@@ -85,18 +85,26 @@ export class ClientDetailComponent implements OnDestroy{
         this.dialogEditClient.pipe(takeUntil(this._unsubscribeAll)).subscribe();
     }
 
-	deleteClient():void{
-		this.deleteClientGQL.mutate({
-			clientId: this.client.id
-		}).subscribe({
-			next: () => this.alertService.open("", {status: TuiNotification.Success, label:"Клиент удален!"}).subscribe(),
-			error: (err) => {
-				console.log(err); 
-				this.alertService.open("Не удалось удалить клиента", {status: TuiNotification.Error, label:"Ошибка удаления"}).subscribe();
+	deleteClient(content: PolymorpheusContent<TuiDialogContext>):void{
+		const _unsubscribeDialog: Subject<any> = new Subject<any>();
+
+		this.dialogService.open(content,{label: 'Подтвердите удаление клиента:',size: 's'})
+		.pipe(takeUntil(_unsubscribeDialog))
+		.subscribe({
+			next: () =>{
+				this.clientCardService.deleteClient(this.client.id).subscribe({
+					next: () => {
+						this.alertService.open("", {status: TuiNotification.Success, label:"Клиент удален!"}).subscribe();
+						this.router.navigateByUrl(`client-card`);
+					},
+					error: (err) => {
+						console.log(err); 
+						this.alertService.open("Не удалось удалить клиента", {status: TuiNotification.Error, label:"Ошибка удаления"}).subscribe();
+					}
+				})
+				_unsubscribeDialog.next(undefined);
+				_unsubscribeDialog.complete();
 			}
-		})
+		});
 	}
 }
-
-
-//Сделать удаление каскад по данными клиента и обновление кеша клиентов

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, take } from "rxjs";
-import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, ReceptionPurpose, ServiceType, UpdateClientGQL, UpdateClientInput } from "src/graphql/generated";
+import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, ReceptionPurpose, ServiceType, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput } from "src/graphql/generated";
 
 
 @Injectable({
@@ -30,12 +30,16 @@ export class ClientCardService
 		private getAllGoodsCategoryWithGoodsGQL : GetAllGoodsCategoryWithGoodsGQL,
         private getAllEmployeesGQL : GetAllEmployeesGQL,
         private getAllReceptionPurposeGQL: GetAllReceptionPurposeGQL,
-        private updateClientGQL: UpdateClientGQL
+        private updateClientGQL: UpdateClientGQL,
+        private deleteClientGQL: DeleteClientGQL,
+        private updatePetGQL: UpdatePetGQL,
+        private deletePetGQL: DeletePetGQL,
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
         this.getAllEmployees();
         this.getAllReceptionPurpose();
+        this.getClientsData();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -47,7 +51,6 @@ export class ClientCardService
      */
     get getclientsData$(): Observable<Client[]>
     {
-        this.getClientsData();
         return this._clientsData.asObservable();
     }
 
@@ -196,6 +199,7 @@ export class ClientCardService
         .valueChanges.subscribe({
             next : (data) => {
                 this._currentPet.next(data.data.pet)
+                console.log(data.data.pet)
             },
             error: (error)  => {
                 console.log(error)
@@ -279,7 +283,62 @@ export class ClientCardService
         )
     }
 
+    /**
+     * Delete client 
+     */
+    deleteClient(clientId:string)
+    {
+        return this.deleteClientGQL.mutate({
+			clientId: clientId
+		}).pipe(
+            map(( data ) => {
+                if (data.data?.deleteClient) {
+                    this._clientsData.next(this._clientsData.getValue().filter( (item:Client) => item.id != clientId));
+                    return data.data.deleteClient;
+                }
+                return data
+            })
+        )
+    }
 
+    /**
+     * Updating clients data 
+     */
+    updatePet(petId:string, data:UpdatePetInput)
+    {
+        return this.updatePetGQL.mutate({
+            petId: petId,
+            data: data,
+        }).pipe(
+            map(( data ) => {
+                if (data.data?.updatePet) {
+                    this._currentPet.next(data.data.updatePet);
+                    return data.data.updatePet;
+                }
+                return data
+            })
+        )
+    }
+
+    /**
+     * Delete pet 
+     */
+    deletePet(petId:string)
+    {
+        return this.deletePetGQL.mutate({
+            petId: petId
+        }).pipe(
+            map(( data ) => {
+                if (data.data?.deletePet) {
+                    // eslint-disable-next-line prefer-const
+                    let newClientsPets = {...this._currentClient.getValue()}
+                    newClientsPets.pets = newClientsPets.pets?.filter( (pet:Pet) => pet.id != petId)
+                    this._currentClient.next(newClientsPets);
+                }
+                return data
+            })
+        )
+    }
 }
 
 function renameKeys(obj: { [x: string]: any; }, newKeys: { [x: string]: string; }) {

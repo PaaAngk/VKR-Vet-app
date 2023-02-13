@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tuiWatch } from '@taiga-ui/cdk';
-import {TuiDialogService} from '@taiga-ui/core';
+import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import {  Subject, takeUntil } from 'rxjs';
 import { TableColumn } from 'src/app/core';
-import { AnalyzesResearch, Client, Maybe, Pet, Reception } from 'src/graphql/generated';
+import { AnalyzesResearch, Pet, Reception } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
+import {PolymorpheusComponent, PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { PetDialogComponent } from '../dialog/add-pet/pet-dialog.component';
 
 @Component({
 	selector: 'vet-crm-pet',
@@ -35,6 +36,14 @@ export class PetComponent implements OnDestroy{
         }
     ];
 
+	private readonly dialogEditPet = this.dialogService.open<string>(
+        new PolymorpheusComponent(PetDialogComponent, this.injector),
+        {
+			data: "edit",
+            dismissible: true,
+            label: `Изменение данных питомца`,
+        },
+    );
 
 	pet: Pet = {} as Pet;
 	receptions: Reception[] = [] as Reception[];
@@ -46,6 +55,7 @@ export class PetComponent implements OnDestroy{
     constructor(
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
         @Inject(Injector) private readonly injector: Injector,
+		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		private router: Router,
@@ -73,31 +83,31 @@ export class PetComponent implements OnDestroy{
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
    
- 
-	setClient(clientId : string) {
-		this.clientCardService.setSelectedClient(clientId);
-		this.router.navigateByUrl('client-card/detail');
+
+	showDialogEditPet(){
+		this.dialogEditPet.pipe(takeUntil(this._unsubscribeAll)).subscribe();
 	}
 
+	deletePet(content: PolymorpheusContent<TuiDialogContext>):void{
+		const _unsubscribeDialog: Subject<any> = new Subject<any>();
 
+		this.dialogService.open(content,{label: 'Подтвердите удаление питомца:',size: 's'})
+		.pipe(takeUntil(_unsubscribeDialog))
+		.subscribe({
+			next: () =>{
+				this.clientCardService.deletePet(this.pet.id).subscribe({
+					next: () => {
+						this.alertService.open("", {status: TuiNotification.Success, label:"Питомец удален!"}).subscribe();
+						this.router.navigateByUrl(`client-card`);
+					},
+					error: (err) => {
+						console.log(err); 
+						this.alertService.open("Не удалось удалить питомца", {status: TuiNotification.Error, label:"Ошибка удаления"}).subscribe();
+					}
+				})
+				_unsubscribeDialog.next(undefined);
+				_unsubscribeDialog.complete();
+			}
+		});
+	}
 }
-
-
-
-// users: readonly ClientTable[] = [
-// 	{
-// 		time: `10:15`,
-// 		fullName: `Иванов Иван Иванович`,
-// 		telephone: `89365147824`,
-// 		pets: [{alias:"Пэти", kind:"Кошка"}],
-// 	},
-// 	{
-// 		time: `11:30`,
-// 		fullName: `Сидоров Сидор Сидорович`,
-// 		telephone: `89365147824`,
-// 		pets: [
-// 			{alias:"Дог", kind:"Кошка"},
-// 			{alias:"Кэт", kind:"Собака"}
-// 		],
-// 	}
-// ];

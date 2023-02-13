@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import {TuiAlertService, TuiDialogContext, TuiNotification} from '@taiga-ui/core';
 import { ClientCardService } from '../../client-card.service';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
-import { CreatePetInput } from 'src/graphql/generated';
+import { CreatePetInput, Pet } from 'src/graphql/generated';
 import { take } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -18,38 +18,65 @@ export function fullNameValidator(field: AbstractControl): Validators | null {
 }
 
 @Component({
-  selector: 'vet-crm-add-pet',
-  templateUrl: './add-pet.component.html',
+  selector: 'vet-crm-pet-dialog',
+  templateUrl: './pet-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddPetComponent {
+export class PetDialogComponent {
     petsKind = ["Кошка", "Собака", "Жираф"]
+    petId:string = '';
 	
 	readonly addPetForm = new FormGroup({
-        DOB: new FormControl(null),
+        DOB: new FormControl(null as unknown as String),
         alias: new FormControl('', [Validators.required, Validators.minLength(2)]),
-        breed: new FormControl(null),
-        castration: new FormControl(null),
-        color: new FormControl(null),
-        diagnosis: new FormControl(null),
-        gender: new FormControl(null),
-        kind: new FormControl(null, Validators.required),
-        notes: new FormControl(null),
-        nutrition: new FormControl(null),
-        weight: new FormControl(null),
+        breed: new FormControl(null as unknown as String),
+        castration: new FormControl(null as unknown as boolean),
+        color: new FormControl(null as unknown as String),
+        diagnosis: new FormControl(null as unknown as String),
+        gender: new FormControl(null as unknown as boolean),
+        kind: new FormControl(null as unknown as String, Validators.required),
+        notes: new FormControl(null as unknown as String),
+        nutrition: new FormControl(null as unknown as String),
+        weight: new FormControl(null as unknown as number),
         clientId: new FormControl(''),
 	});
 
     constructor(
         @Inject(TuiAlertService) private readonly alertService: TuiAlertService,
         @Inject(POLYMORPHEUS_CONTEXT)
-        private readonly context: TuiDialogContext<number, number>,
+        private readonly context: TuiDialogContext<any, string>,
         private clientCardService: ClientCardService,
         private router: Router,
-    ) {}
+    ) {
+        if(this.context.data == 'edit'){
+            this.clientCardService.getPet$
+            .subscribe((pet :Pet) => {
+                this.addPetForm.setValue({
+                    DOB: pet.DOB as String,
+                    alias: pet.alias,
+                    breed: pet.breed as String,
+                    castration: pet.castration as boolean,
+                    color: pet.color as String,
+                    diagnosis: pet.diagnosis as String, 
+                    gender: pet.gender as boolean,
+                    kind: pet.kind as String,
+                    notes: pet.notes as String,
+                    nutrition: pet.nutrition as String,
+                    weight: pet.weight as number,
+                    clientId: pet.id,
+                }); 
+                console.log(pet.castration)
+                this.petId = pet.id
+            });
+        }
+    }
 
     get hasValue(): boolean {
         return this.addPetForm.status == "VALID" ? true : false;
+    }
+
+    get data(): string {
+        return this.context.data;
     }
 
     submit(): void {

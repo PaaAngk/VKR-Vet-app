@@ -15,6 +15,7 @@ import { PetIdArgs } from './args/reception-id.args';
 import { Client } from 'src/clients/models/client.model';
 import { Reception } from 'src/reception/models/reception.model';
 import { AnalyzesResearch } from 'src/analyzes-research/models/analyzes-research.model';
+import { UpdatePetInput } from './dto/UpdatePetInput';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Pet)
@@ -28,18 +29,40 @@ export class PetsResolver {
         clientId: data.clientId,
         alias: data.alias.trim(),
         kind: data.kind?.trim() || null,
-        gender: data.gender || null,
+        gender: data.gender || false,
         breed: data.breed?.trim() || null,
         DOB: data.DOB || null,
         nutrition: data.nutrition?.trim() || null,
         color: data.color?.trim() || null,
-        castration: data.castration || null,
+        castration: data.castration || false,
         notes: data.notes?.trim() || null,
         diagnosis: data.diagnosis?.trim() || null,
         weight: data.weight,
       },
     });
     return newPet;
+  }
+
+  @Mutation(() => Pet)
+  async updatePet(
+    @Args({ name: 'petId', type: () => String }) petId: string,
+    @Args('data') newPetData: UpdatePetInput
+  ) {
+    return this.prisma.pet.update({
+      data: newPetData,
+      where: {
+        id: petId,
+      },
+    });
+  }
+
+  @Mutation(() => Pet)
+  async deletePet(@Args({ name: 'petId', type: () => String }) petId: string) {
+    return this.prisma.pet.delete({
+      where: {
+        id: petId,
+      },
+    });
   }
 
   @Query(() => Pet)

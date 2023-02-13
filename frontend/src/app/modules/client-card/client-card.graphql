@@ -169,14 +169,62 @@ query GetReception($receptionId:String!){
 mutation UpdateClient($clientId:String!, $data:UpdateClientInput!) {
   updateClient(clientId:$clientId, data:$data){
     id
-	  fullName
-    telephoneNumber
+    fullName
     address
+    telephoneNumber
+    pets{
+      id
+      alias
+      kind
+      gender
+      DOB
+      breed
+    }
   }
 }
 
 mutation DeleteClient($clientId:String!) {
   deleteClient(clientId:$clientId){
+    id
+  }
+}
+
+mutation UpdatePet($petId:String!, $data:UpdatePetInput!) {
+  updatePet(petId:$petId, data:$data){
+    id
+    alias
+    DOB
+    alias
+    breed
+    castration
+    color
+    diagnosis
+    gender
+    kind
+    notes
+    nutrition
+    weight
+    receptions{
+      id
+      diagnosis
+      createdAt
+      cost
+      purpose{
+        purposeName
+      }
+    }
+    analyzesResearchs{
+      id
+      type{
+        typeName
+      }
+      createdAt
+    }
+  }
+}
+
+mutation DeletePet($petId:String!) {
+  deletePet(petId:$petId){
     id
   }
 }

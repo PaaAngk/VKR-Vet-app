@@ -26,7 +26,7 @@ import { TuiFilterPipeModule, TuiLetModule } from '@taiga-ui/cdk';
 
 import { DialogClientComponent } from './dialog/client-dialog/client-dialog.component';
 import { ClientDetailComponent } from './client/client-detail/client-detail.component';
-import { AddPetComponent } from './dialog/add-pet/add-pet.component';
+import { PetDialogComponent } from './dialog/add-pet/pet-dialog.component';
 import { FormatPetGenderPipe } from 'src/app/shared/pipes/format-pet-gender.pipe';
 import { CheckNullPipe } from 'src/app/shared/pipes/check-null.pipe';
 import { PetComponent } from './pet/pet.component';
@@ -44,7 +44,7 @@ import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
     ClientComponent, 
     DialogClientComponent,
     ClientDetailComponent,
-    AddPetComponent,
+    PetDialogComponent,
     FormatPetGenderPipe,
     CheckNullPipe,
     PetComponent,

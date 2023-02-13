@@ -61,6 +61,7 @@ export class ClientComponent implements OnDestroy{
 				} as ClientTable
 			})
 			this.loading = false;
+			console.log(clients);
 		});
 
 		this.searchForm.valueChanges

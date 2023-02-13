@@ -5,7 +5,7 @@ import { Maybe } from 'graphql/jsutils/Maybe';
     name: 'formatPetGender'
 })
 export class FormatPetGenderPipe implements PipeTransform {
-    transform(value: Maybe<string>  | undefined): string {
+    transform(value: Maybe<boolean>  | undefined): string {
         if (value){
             return "Мужской"
         }
