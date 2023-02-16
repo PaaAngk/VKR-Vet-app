@@ -26,6 +26,7 @@ export class ClientDetailComponent implements OnDestroy{
 	private readonly dialogAddPet = this.dialogService.open<number>(
         new PolymorpheusComponent(PetDialogComponent, this.injector),
         {
+			data: "add",
             dismissible: false,
             label: `Добавление питомца`,
         },

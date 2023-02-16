@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { ClientCardRoutingModule } from './client-card-routing.module';
 import { ClientComponent } from './client/client.component';
@@ -96,5 +96,8 @@ import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
     TuiLoaderModule,
     TuiHostedDropdownModule,
   ],
+  providers:[
+    DatePipe,
+  ]
 })
 export class ClientCardModule {}

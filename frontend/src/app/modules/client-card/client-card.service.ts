@@ -181,6 +181,17 @@ export class ClientCardService
                     let newClientsPets = {...this._currentClient.getValue()}
                     newClientsPets.pets = newClientsPets.pets?.concat(data.data.createPet)
                     this._currentClient.next(newClientsPets);
+
+                    this.apollo.client.cache.modify({
+                        id: this.apollo.client.cache.identify({ __typename: 'Client', id: newClientsPets.id }),
+                        fields: {
+                            pets() {
+                                return newClientsPets.pets
+                            },
+                        },
+                    });
+
+                    this._clientsData.next(this._clientsData.getValue().filter((client: Client) => client.id != newClientsPets.id).concat(newClientsPets));
                 }
                 return data
             })
@@ -199,7 +210,6 @@ export class ClientCardService
         .valueChanges.subscribe({
             next : (data) => {
                 this._currentPet.next(data.data.pet)
-                console.log(data.data.pet)
             },
             error: (error)  => {
                 console.log(error)
@@ -327,18 +337,34 @@ export class ClientCardService
     {
         return this.deletePetGQL.mutate({
             petId: petId
-        }).pipe(
+        })
+        .pipe(
             map(( data ) => {
                 if (data.data?.deletePet) {
+                    // Set deleted pet in client data and update list of clients 
                     // eslint-disable-next-line prefer-const
                     let newClientsPets = {...this._currentClient.getValue()}
                     newClientsPets.pets = newClientsPets.pets?.filter( (pet:Pet) => pet.id != petId)
                     this._currentClient.next(newClientsPets);
+
+                    this.apollo.client.cache.modify({
+                        id: this.apollo.client.cache.identify({ __typename: 'Client', id: newClientsPets.id }),
+                        fields: {
+                            pets() {
+                                return newClientsPets.pets
+                            },
+                        },
+                    });
+
+                    const newClient = this._clientsData.getValue().filter((client: Client) => client.id != newClientsPets.id).concat(newClientsPets);
+                    this._clientsData.next(newClient);
                 }
                 return data
             })
         )
     }
+
+    // rediict when seleect not existing pet 
 }
 
 function renameKeys(obj: { [x: string]: any; }, newKeys: { [x: string]: string; }) {

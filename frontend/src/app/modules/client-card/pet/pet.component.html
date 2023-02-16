@@ -2,43 +2,44 @@
 
     <!-- Header -->
     <div class="p-2 rounded-lg bg-white shadow-md">
-        <div tuiTextfieldSize="m" class="flex justify-between items-center py-auto">
-            <div class="flex flex-row items-center">
-                <p class="text-base">
-                    <b class="mx-4 text-xl">{{ pet.alias }} </b> 
-                    Вид: <b class="mr-4">{{ pet.kind }}</b> 
-                    Дата рождения: <b class="mr-4">{{pet.DOB | date:'dd/MM/yyy' | checkNull}}</b>
-                </p>
-                <div
-                    tuiGroup
-                    class="group"
-                    [collapsed]="true"
-                >
-                    <button
-                        tuiButton
-                        type="button"
-                        appearance="secondary-destructive"
-                        size="m"
-                        (click)="showDialogEditPet()"
-                    >
-                        Изменить
-                    </button>
-                    <button
-                        tuiButton
-                        type="button"
-                        appearance="accent"
-                        size="m"
-                        (click)="deletePet(template)"
-                    >
-                        Удалить
-                    </button>
-                </div>
-            </div>
-
-            <div class="space-x-4">
+        <div tuiTextfieldSize="m" class="flex flex-row items-center gap-2">
+            <p class="text-base md:basis-3/6 basis-full">
+                <b class="mx-4 text-xl">{{ pet.alias }} </b> 
+                Вид: <b class="mr-4">{{ pet.kind }}</b> 
+                Дата рождения: <b class="mr-4">{{pet.DOB | date:'dd/MM/yyy' | checkNull}}</b>
+            </p>
+            <div
+                tuiGroup
+                class="group md:basis-1/6 basis-full"
+                [collapsed]="true"
+            >
                 <button
                     tuiButton
-                    icon="tuiIconAddRowLarge"
+                    type="button"
+                    appearance="secondary-destructive"
+                    size="m"
+                    (click)="showDialogEditPet()"
+                >
+                    Изменить
+                </button>
+                <button
+                    tuiButton
+                    type="button"
+                    appearance="accent"
+                    size="m"
+                    (click)="deletePet(template)"
+                >
+                    Удалить
+                </button>
+            </div>
+
+            <div 
+                tuiGroup
+                class="group md:basis-2/6 basis-full"
+            >
+                <button
+                    tuiButton
+                    icon="tuiIconClipboardLarge"
                     size="m"
                     routerLink="reception/new"
                 >
@@ -48,7 +49,7 @@
                 </button>
                 <button
                     tuiButton
-                    icon="tuiIconAddRowLarge"
+                    icon="tuiIconThermometerLarge"
                     size="m"
                 >
                     <p class="text-base">
@@ -60,7 +61,7 @@
     </div>
 
     <!-- Main part -->
-    <div class="rounded-lg bg-white shadow-md h-full"><!--min-h-full overflow-auto-->
+    <div class="rounded-lg bg-white shadow-md h-full">
         <!-- Menu -->
         <tui-tabs [(activeItemIndex)]="activeItemIndex" class="">
             <button
@@ -87,12 +88,11 @@
                 <p> <b>Вид: </b> {{ pet.kind }}</p>
                 <p> <b>Порода: </b> {{ pet.breed  | checkNull }}</p>
                 <p> <b>Питание: </b> {{ pet.nutrition  | checkNull }}</p>
-                <p> <b>Вес: </b> {{ pet.weight  | checkNull }} Кг</p>
+                <p> <b>Вес: </b> {{ pet.weight  | checkNull }} {{pet.weight ? "кг" : ""}}</p>
                 <p> <b>Дата рождения: </b> {{ pet.DOB | date:'dd/MM/yyy' | checkNull }}</p>
                 <p> <b>Окрас: </b> {{ pet.color  | checkNull }}</p>
                 <p> <b>Пол: </b> {{ pet.gender | formatPetGender }}</p>
-                <p *ngIf="pet.castration"> <b>Наличие кастрации: </b> Есть</p>
-                <p *ngIf="!pet.castration"> <b>Наличие кастрации: </b> Нет</p>
+                <p> <b>Наличие кастрации: </b> {{ pet.castration ? "Есть" : pet.castration === null ? "Нет данных" : "Нет"}}</p>
                 <p> <b>Диагноз: </b> {{ pet.diagnosis  | checkNull }} </p>
                 <p> <b>Особые отметки: </b> {{ pet.notes  | checkNull }}</p>
             </div>

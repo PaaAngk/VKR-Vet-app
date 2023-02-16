@@ -69,7 +69,7 @@
             </button>
         </tui-tabs>
 
-        <div class="p-2 shadow-inner">
+        <div class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'75vh'}">
             <div *ngIf="activeItemIndex === 0">
                 <table
                     class="w-full"
@@ -183,7 +183,6 @@
                     Нет добавленных питомцев!
                 </h3>
             </div>
-
 
             <div *ngIf="activeItemIndex === 1">
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur labore ea maiores voluptas 

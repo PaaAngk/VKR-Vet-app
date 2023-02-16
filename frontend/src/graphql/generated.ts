@@ -585,7 +585,7 @@ export type GetPetDetailQueryVariables = Exact<{
 }>;
 
 
-export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
+export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: string | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
 
 export type GetAllServiceTypeWithServiceNameQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -642,7 +642,7 @@ export type UpdatePetMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePetMutation = { __typename?: 'Mutation', updatePet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
+export type UpdatePetMutation = { __typename?: 'Mutation', updatePet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: string | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
 
 export type DeletePetMutationVariables = Exact<{
   petId: Scalars['String'];
@@ -832,6 +832,7 @@ export const GetPetDetailDocument = gql`
     notes
     nutrition
     weight
+    clientId
     receptions {
       id
       diagnosis
@@ -1082,6 +1083,7 @@ export const UpdatePetDocument = gql`
     notes
     nutrition
     weight
+    clientId
     receptions {
       id
       diagnosis

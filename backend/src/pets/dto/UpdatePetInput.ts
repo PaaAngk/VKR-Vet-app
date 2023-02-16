@@ -11,30 +11,33 @@ export class UpdatePetInput {
   @IsNotEmpty()
   kind?: string;
 
-  @Field()
+  @Field(() => Boolean, { nullable: true })
   gender?: boolean | null;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   breed?: string;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   DOB?: Date;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   nutrition?: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   color?: string;
 
-  @Field()
+  @Field(() => Boolean, { nullable: true })
   castration?: boolean | null;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   notes?: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   diagnosis?: string;
 
-  @Field(() => Float)
+  @Field(() => Float, { nullable: true })
   weight?: number;
+
+  @Field(() => String)
+  clientId?: string;
 }

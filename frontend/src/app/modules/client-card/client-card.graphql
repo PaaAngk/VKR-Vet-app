@@ -62,6 +62,7 @@ query GetPetDetail($petId:String!){
     notes
     nutrition
     weight
+    clientId
     receptions{
       id
       diagnosis
@@ -204,6 +205,7 @@ mutation UpdatePet($petId:String!, $data:UpdatePetInput!) {
     notes
     nutrition
     weight
+    clientId
     receptions{
       id
       diagnosis

@@ -3,9 +3,11 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import {TuiAlertService, TuiDialogContext, TuiNotification} from '@taiga-ui/core';
 import { ClientCardService } from '../../client-card.service';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
-import { CreatePetInput, Pet } from 'src/graphql/generated';
+import { CreatePetInput, Pet, UpdatePetInput } from 'src/graphql/generated';
 import { take } from 'rxjs';
 import { Router } from '@angular/router';
+import { TuiDay } from '@taiga-ui/cdk';
+import { DatePipe } from '@angular/common';
 
 const latinChars = /^[а-яА-Я ]+$/;
  
@@ -23,20 +25,21 @@ export function fullNameValidator(field: AbstractControl): Validators | null {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PetDialogComponent {
-    petsKind = ["Кошка", "Собака", "Жираф"]
-    petId:string = '';
-	
+    petsKind = ["Кошка", "Собака", "Жираф"];
+    petsNutrition = ["Промышленный корм", "Еще какой-то"]
+    petId: string = '';
+
 	readonly addPetForm = new FormGroup({
-        DOB: new FormControl(null as unknown as String),
+        DOB: new FormControl(),
         alias: new FormControl('', [Validators.required, Validators.minLength(2)]),
-        breed: new FormControl(null as unknown as String),
+        breed: new FormControl(null as unknown as string),
         castration: new FormControl(null as unknown as boolean),
-        color: new FormControl(null as unknown as String),
-        diagnosis: new FormControl(null as unknown as String),
+        color: new FormControl(null as unknown as string),
+        diagnosis: new FormControl(null as unknown as string),
         gender: new FormControl(null as unknown as boolean),
-        kind: new FormControl(null as unknown as String, Validators.required),
-        notes: new FormControl(null as unknown as String),
-        nutrition: new FormControl(null as unknown as String),
+        kind: new FormControl(null as unknown as string, Validators.required),
+        notes: new FormControl(null as unknown as string),
+        nutrition: new FormControl(null as unknown as string),
         weight: new FormControl(null as unknown as number),
         clientId: new FormControl(''),
 	});
@@ -47,25 +50,26 @@ export class PetDialogComponent {
         private readonly context: TuiDialogContext<any, string>,
         private clientCardService: ClientCardService,
         private router: Router,
+        private datePipe: DatePipe,
     ) {
+        
         if(this.context.data == 'edit'){
             this.clientCardService.getPet$
             .subscribe((pet :Pet) => {
                 this.addPetForm.setValue({
-                    DOB: pet.DOB as String,
+                    DOB: pet.DOB ? TuiDay.jsonParse( this.datePipe.transform(pet.DOB, 'yyyy-MM-dd') as string) : null,
                     alias: pet.alias,
-                    breed: pet.breed as String,
+                    breed: pet.breed as string,
                     castration: pet.castration as boolean,
-                    color: pet.color as String,
-                    diagnosis: pet.diagnosis as String, 
+                    color: pet.color as string,
+                    diagnosis: pet.diagnosis as string, 
                     gender: pet.gender as boolean,
-                    kind: pet.kind as String,
-                    notes: pet.notes as String,
-                    nutrition: pet.nutrition as String,
+                    kind: pet.kind as string,
+                    notes: pet.notes as string,
+                    nutrition: pet.nutrition as string,
                     weight: pet.weight as number,
-                    clientId: pet.id,
+                    clientId: pet.clientId as string,
                 }); 
-                console.log(pet.castration)
                 this.petId = pet.id
             });
         }
@@ -81,22 +85,40 @@ export class PetDialogComponent {
 
     submit(): void {
         if (this.addPetForm.status == "VALID") {
-            this.clientCardService.getSelectedClient$.pipe(take(1)).subscribe({
-                next: (data) =>  this.addPetForm.value.clientId = data.id
-            })
-            this.clientCardService.createPet(this.addPetForm.value as CreatePetInput)
-            .subscribe({
-                next: (data) => { 
-                    this.alertService.open("", {status: TuiNotification.Success, label:"Питомец успешно добавлен!"}).subscribe();
-                    this.router.navigateByUrl(`client-card/pet/${data.data?.createPet.id}`)
-                    this.context.completeWith(1); 
-                },
-                error: (error)  => 
-                {
-                    this.alertService.open("Питомец уже добавлен", {status: TuiNotification.Error}).subscribe()
-                    console.log(error)
-                }
-            })
+            if(this.context.data == 'add'){
+                this.clientCardService.getSelectedClient$.pipe(take(1)).subscribe({
+                    next: (data) =>  {
+                        this.addPetForm.value.clientId = data.id;
+
+                        this.clientCardService.createPet(this.addPetForm.value as CreatePetInput)
+                        .subscribe({
+                            next: (data) => { 
+                                this.alertService.open("", {status: TuiNotification.Success, label:"Питомец успешно добавлен!"}).subscribe();
+                                this.router.navigateByUrl(`client-card/pet/${data.data?.createPet.id}`)
+                                this.context.completeWith(1); 
+                            },
+                            error: (error)  => 
+                            {
+                                this.alertService.open("Питомец уже добавлен", {status: TuiNotification.Error}).subscribe()
+                                console.log(error)
+                            }
+                        })
+                    }
+                })
+            }
+            else if(this.context.data == 'edit'){
+                this.clientCardService.updatePet(this.petId,this.addPetForm.value as UpdatePetInput).subscribe({
+                    next: () => {
+                        this.alertService.open("", {status: TuiNotification.Success, label:"Данные успешно обновлены!"}).subscribe({});
+                        this.context.completeWith(1); 
+                    },
+                    error: (error)  => 
+                    {
+                        this.alertService.open("Питомец уже добавлен", {status: TuiNotification.Error}).subscribe();
+                        console.log(error)
+                    }
+                })
+            }
         }
     }
 

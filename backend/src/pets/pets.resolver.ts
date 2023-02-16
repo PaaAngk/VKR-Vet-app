@@ -29,12 +29,16 @@ export class PetsResolver {
         clientId: data.clientId,
         alias: data.alias.trim(),
         kind: data.kind?.trim() || null,
-        gender: data.gender || false,
+        gender: data.gender ? true : data.gender == null ? null : false,
         breed: data.breed?.trim() || null,
         DOB: data.DOB || null,
         nutrition: data.nutrition?.trim() || null,
         color: data.color?.trim() || null,
-        castration: data.castration || false,
+        castration: data.castration
+          ? true
+          : data.castration == null
+          ? null
+          : false,
         notes: data.notes?.trim() || null,
         diagnosis: data.diagnosis?.trim() || null,
         weight: data.weight,

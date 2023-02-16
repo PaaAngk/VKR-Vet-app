@@ -6,7 +6,7 @@ import { Maybe } from 'graphql/jsutils/Maybe';
 })
 export class CheckNullPipe implements PipeTransform {
     transform(value: Maybe<string>  | undefined | number): string {
-        if (value == null){
+        if (value == null || value == ""){
             return "Нет данных"
         }
         else {

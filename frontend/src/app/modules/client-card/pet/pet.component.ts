@@ -40,7 +40,7 @@ export class PetComponent implements OnDestroy{
         new PolymorpheusComponent(PetDialogComponent, this.injector),
         {
 			data: "edit",
-            dismissible: true,
+            dismissible: false,
             label: `Изменение данных питомца`,
         },
     );
@@ -98,7 +98,7 @@ export class PetComponent implements OnDestroy{
 				this.clientCardService.deletePet(this.pet.id).subscribe({
 					next: () => {
 						this.alertService.open("", {status: TuiNotification.Success, label:"Питомец удален!"}).subscribe();
-						this.router.navigateByUrl(`client-card`);
+						this.router.navigateByUrl(`client-card/client/${this.pet.clientId}`);
 					},
 					error: (err) => {
 						console.log(err); 

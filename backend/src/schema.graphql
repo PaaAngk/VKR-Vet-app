@@ -360,17 +360,18 @@ input UpdateClientInput {
 }
 
 input UpdatePetInput {
-  DOB: DateTime!
+  DOB: DateTime
   alias: String!
-  breed: String!
-  castration: Boolean!
-  color: String!
-  diagnosis: String!
-  gender: Boolean!
+  breed: String
+  castration: Boolean
+  clientId: String!
+  color: String
+  diagnosis: String
+  gender: Boolean
   kind: String!
-  notes: String!
-  nutrition: String!
-  weight: Float!
+  notes: String
+  nutrition: String
+  weight: Float
 }
 
 input UpdateServiceInput {
