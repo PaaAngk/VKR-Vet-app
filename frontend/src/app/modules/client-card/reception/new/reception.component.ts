@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { defaultEditorExtensions, TuiEditorTool, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-editor';
-import { TuiContextWithImplicit, TuiIdentityMatcher, tuiPure, TuiStringHandler } from '@taiga-ui/cdk';
+import { TuiContextWithImplicit, TuiIdentityMatcher, TuiStringHandler } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 import { Subject, takeUntil } from 'rxjs';
 import { CreateReceptionGQL, GoodsListReceptionInput, ServiceListReceptionInput, Employee, ReceptionPurpose, CreateReceptionInput } from 'src/graphql/generated';
@@ -74,24 +74,33 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		TuiEditorTool.Color, TuiEditorTool.Size, TuiEditorTool.Sup, TuiEditorTool.Sub, TuiEditorTool.HR, TuiEditorTool.Link, TuiEditorTool.Hilite]
 	
 	readonly addReceptionForm = new FormGroup({
-        employeeId: new FormControl(null as unknown as number, [Validators.required]),
-        purposeId: new FormControl(null as unknown as number, [Validators.required]),
+        employeeId: new FormControl(-1),
+        purposeId: new FormControl(-1),
         anamnesis: new FormControl(''),
 		clinicalSigns: new FormControl(''),
 		diagnosis: new FormControl(''),
 		assignment: new FormControl(''),
 		cost: new FormControl(0),
+		employeeInput: new FormControl(null as unknown as Employee, [Validators.required]),
+		visitPurposeInput: new FormControl(null as unknown as ReceptionPurpose, [Validators.required]),
 	});
+
 
     constructor(
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
         @Inject(Injector) private readonly injector: Injector,
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
-		private router: Router,
+		@Inject(Router) private readonly router: Router,
+		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
 		private createReceptionGQL : CreateReceptionGQL,
-		private activateRoute: ActivatedRoute,
     ) {
+		// this.addReceptionForm.valueChanges
+		// .subscribe({
+		// 	next: () => {
+				
+		// 	}
+		// })
 	}
 
 	ngOnInit(): void {
@@ -133,10 +142,34 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	// -----------------------------------------------------------------------------------------------------
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
+
+	change(event: any){
+		console.log(event)
+	}
    
 	get check(): number {
+		// При выборе флакона необходимо указывать количество использованных миллилитров, с условием: 
+		// при использовании 0.5 мл и меньше стоимость – половина стоимости за мл, 
+		// больше 0.5 мл – полная стоимость мл
 		const selectedGoods = Object.keys(this.selectedGoods).reduce( (sum, currentValue)=> {
-			const result : number = sum + (this.selectedGoods[parseInt(currentValue)].price * this.selectedGoods[parseInt(currentValue)].quantity)
+			const good = this.selectedGoods[parseInt(currentValue)];
+
+			let setQuantity = 0;
+			const mod = Math.round((good.quantity % 1) * 10)
+			switch (good.measure) {
+				case 'амп':
+				case 'мл':
+					if ( mod > 0 && mod < 5) setQuantity = Math.round(good.quantity) + 0.5 
+					else if(mod >= 5 && mod < 10) setQuantity = Math.round(good.quantity)
+					else setQuantity = good.quantity
+					break;
+			
+				default:
+					setQuantity = good.quantity
+					break;
+			}
+			
+			const result : number = sum + (good.price * setQuantity)
 			return result
 		}, 0)
 
@@ -201,17 +234,9 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		this._changeDetectorRef.detectChanges();
 	}
 
-	@tuiPure
-    stringifyEmployeeList (items: readonly Employee[] ): TuiStringHandler<TuiContextWithImplicit<number>> {
-        const map = new Map(items.map(({id, fullName}) => [id, fullName] as [number, string]));
-        return ({$implicit}: TuiContextWithImplicit<number>) => map.get($implicit) || ``;
-    }
+	readonly stringifyEmployeeList = (item: Employee): string => `${item.fullName}`;
 
-	@tuiPure
-    stringifyPurposeList (items: readonly ReceptionPurpose[] ): TuiStringHandler<TuiContextWithImplicit<number>> {
-        const map = new Map(items.map(({id, purposeName}) => [id, purposeName] as [number, string]));
-        return ({$implicit}: TuiContextWithImplicit<number>) => map.get($implicit) || ``;
-    }
+	readonly stringifyPurposeList = (item: ReceptionPurpose): string => `${item.purposeName}`;
 
 	assignmentPrint(){
 		console.log("data")
@@ -237,6 +262,12 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 			const serviceListReceptionInput : ServiceListReceptionInput[] = this.selectedServices.map( (service : SelectedService) => (
 				{ serviceId : service.id, quantity: service.quantity} as ServiceListReceptionInput
 			));
+
+			this.addReceptionForm.value.employeeId = this.addReceptionForm.value.employeeInput?.id
+			this.addReceptionForm.value.purposeId = this.addReceptionForm.value.visitPurposeInput?.id
+
+			delete this.addReceptionForm.value['employeeInput'];
+			delete this.addReceptionForm.value['visitPurposeInput'];
 			
             this.createReceptionGQL.mutate({
 				data: { ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId } as CreateReceptionInput
@@ -249,8 +280,6 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 						label:"Прием успешно добавлен!",
 						autoClose: 5000,
 					}).subscribe();
-					console.log(data)
-					console.log(this.router)
 					this.router.navigate([`../${data.data?.createReception.id}`], {relativeTo: this.activateRoute})
                 },
                 error: (error)  => 

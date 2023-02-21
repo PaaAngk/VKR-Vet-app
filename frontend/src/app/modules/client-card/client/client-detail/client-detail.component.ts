@@ -48,8 +48,8 @@ export class ClientDetailComponent implements OnDestroy{
 
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
-		private router: Router,
-		private activateRoute: ActivatedRoute,
+		@Inject(Router) private readonly router: Router,
+		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
 		private deleteClientGQL: DeleteClientGQL,
     ) {
 		

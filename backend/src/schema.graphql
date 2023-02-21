@@ -90,8 +90,8 @@ input CreateGoodsInput {
   categoryId: Int!
   measure: String!
   name: String!
-  price: Int!
-  quantity: Int!
+  price: Float!
+  quantity: Float!
 }
 
 input CreatePetInput {
@@ -146,9 +146,9 @@ type Employee {
 
 type Goods {
   GoodsList: [GoodsList!]
-  category: GoodsCategory
+  category: GoodsCategory!
   categoryId: Int
-  id: Int
+  id: Int!
   measure: String
   name: String!
   price: Float
@@ -197,10 +197,13 @@ type Mutation {
   createReception(data: CreateReceptionInput!): Reception!
   createService(data: CreateServiceInput!): Service!
   deleteClient(clientId: String!): Client!
+  deleteGoods(goodsId: Int!): Goods!
   deletePet(petId: String!): Pet!
+  deleteService(serviceId: Int!): Service!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
   updateClient(clientId: String!, data: UpdateClientInput!): Client!
+  updateGoods(data: UpdateGoodsInput!, goodsId: Int!): Goods!
   updatePet(data: UpdatePetInput!, petId: String!): Pet!
   updateService(data: UpdateServiceInput!, serviceId: Int!): Service!
   updateUser(data: UpdateUserInput!): User!
@@ -357,6 +360,12 @@ input UpdateClientInput {
   address: String!
   fullName: String!
   telephoneNumber: String!
+}
+
+input UpdateGoodsInput {
+  name: String!
+  price: Float!
+  quantity: Float!
 }
 
 input UpdatePetInput {

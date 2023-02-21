@@ -1,26 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ServicesRoutingModule } from './services-routing.module';
+import { GoodsRoutingModule } from './goods-routing.module';
 import { TuiComboBoxModule, TuiDataListWrapperModule, TuiFieldErrorPipeModule, TuiFilterByInputPipeModule, TuiInputModule, TuiInputNumberModule, TuiSelectModule, TuiStringifyContentPipeModule } from '@taiga-ui/kit';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ServicesComponent } from './services.component';
-import { TuiButtonModule, TuiDataListModule, TuiErrorModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { GoodsComponent } from './goods.component';
+import { TuiButtonModule, TuiDataListModule, TuiErrorModule, TuiGroupModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
-import { AddServiceComponent } from './add-service/add-service.component';
+import { AddGoodsComponent } from './add-good/add-good.component';
+import { GoodsService } from './goods.service';
 
 
 @NgModule({
   declarations: [
-    ServicesComponent,
-    AddServiceComponent,
+    GoodsComponent,
+    AddGoodsComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ServicesRoutingModule,
+    GoodsRoutingModule,
 
     //TUI
     TuiInputModule,
@@ -38,6 +39,8 @@ import { AddServiceComponent } from './add-service/add-service.component';
     TuiComboBoxModule,
     TuiFilterByInputPipeModule,
     TuiStringifyContentPipeModule,
-  ]
+    TuiGroupModule,
+  ],
+  providers: [GoodsService]
 })
-export class ServiceModule { }
+export class GoodsModule { }

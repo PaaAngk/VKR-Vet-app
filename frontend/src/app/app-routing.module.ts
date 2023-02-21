@@ -55,6 +55,7 @@ const routes: Routes = [
         {path: 'home', loadChildren: () => import('./modules/landing/home/home.module').then(m => m.HomeModule)},
         {path: 'client-card', loadChildren: () => import('./modules/client-card/client-card.module').then(m => m.ClientCardModule)},
         {path: 'services', loadChildren: () => import('./modules/services/services.module').then(m => m.ServiceModule)},
+        {path: 'goods', loadChildren: () => import('./modules/goods/goods.module').then(m => m.GoodsModule)},
 
     //     // Registry
     //     {path: 'registry', loadChildren: () => import('./modules/registry/registry.module').then(m => m.RegistryModule)},

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { TuiContextWithImplicit, tuiPure, TuiStringHandler, tuiWatch } from '@taiga-ui/cdk';
-import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
+import { tuiWatch } from '@taiga-ui/cdk';
+import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
 import { Subject, takeUntil } from 'rxjs';
 import { CreateServiceInput, ServiceType } from 'src/graphql/generated';
@@ -19,8 +19,9 @@ export class AddServiceComponent implements OnDestroy {
 	
 	readonly addServiceForm = new FormGroup({
 		name: new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(60)]),
-		typeId: new FormControl(null as unknown as number, [Validators.required]),
+		typeId: new FormControl(null as unknown as number),
 		price: new FormControl(0, [Validators.required]),
+        type: new FormControl(null as unknown as ServiceType, [Validators.required]),
 	});
 
     constructor(
@@ -54,14 +55,14 @@ export class AddServiceComponent implements OnDestroy {
         return this.context.data;
     }
 
-    @tuiPure
-    stringifyServiceTypeList (items: readonly ServiceType[] ): TuiStringHandler<TuiContextWithImplicit<number>> {
-        const map = new Map(items.map(({id, typeName}) => [id, typeName] as [number, string]));
-        return ({$implicit}: TuiContextWithImplicit<number>) => map.get($implicit) || ``;
-    }
+    readonly stringifyServices = (item: ServiceType): string => `${item.typeName}`;
+
 
     submit(): void {
         if (this.addServiceForm.status == "VALID") {
+            this.addServiceForm.value.typeId = this.addServiceForm.value.type?.id
+            delete this.addServiceForm.value.type
+
             this.servicesService.createService(this.addServiceForm.value as CreateServiceInput).subscribe({
                 next: () => { 
                     this.alertService.open(

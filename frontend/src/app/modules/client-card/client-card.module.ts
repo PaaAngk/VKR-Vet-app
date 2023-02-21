@@ -38,6 +38,7 @@ import { ButtonWithDropdownModule } from 'src/app/shared/components/button-with-
 import { ReceptionViewComponent } from './reception/view/reception-view.component';
 import { ArrayToAnyArrayPipe } from 'src/app/shared/pipes/array-to-any-array.pipe';
 import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
+import { TuiStringifyContentPipeModule } from '@taiga-ui/kit';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
     TuiFilterPipeModule,
     TuiLoaderModule,
     TuiHostedDropdownModule,
+    TuiStringifyContentPipeModule,
   ],
   providers:[
     DatePipe,

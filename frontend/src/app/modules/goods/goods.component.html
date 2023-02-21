@@ -7,7 +7,7 @@
             tuiTextfieldSize = 'l'
             formControlName="search"
         >
-            Поиск услуги
+            Поиск товаров
             <input
                 tuiTextfield
                 placeholder ="Начните вводить наименование или категорию"
@@ -21,13 +21,13 @@
             size="l"
         >
         <p class="text-lg">
-            Добавить услуги</p>
+            Добавить товар</p>
         </button>
     </div>
 
-    <div class="p-2 h-full" ><!--tui-loader [overlay]="true" [showLoader] = "loading"-->
+    <div class="p-2 h-full">
         <div class="items-center text-center mb-3">
-            <div class="text-2xl font-semibold">Услуги</div>
+            <div class="text-2xl font-semibold">Склад</div>
         </div>
         <tui-loader 
             [showLoader]="loading"
@@ -39,7 +39,7 @@
                 class="w-full pb-2"
                 tuiTable
                 [columns]="columns"
-                *ngIf="filterServices.length !== 0"
+                *ngIf="filteredGoods.length !== 0"
             >
                 <thead>
                     <tr tuiThGroup>
@@ -51,11 +51,18 @@
                             Наименование
                         </th>
                         <th
-                            *tuiHead="'typeName'"
+                            *tuiHead="'categoryName'"
                             tuiTh
                             [sorter]="categorySorter"
                         >
                             Категория
+                        </th>
+                        <th
+                            *tuiHead="'quantity'"
+                            tuiTh
+                            class="lg:w-20"
+                        >
+                            Количество
                         </th>
                         <th
                             *tuiHead="'price'"
@@ -75,56 +82,74 @@
                     </tr>
                 </thead>
                 <tbody
-                    *tuiLet="filterServices | tuiTableSort as sortedFilteredServices"
+                    *tuiLet="filteredGoods | tuiTableSort as sortedFilteredGoods"
                     tuiTbody
-                    [data]="sortedFilteredServices"
-                    
+                    [data]="sortedFilteredGoods"
                 >
                     <tr
-                        *ngFor="let service of sortedFilteredServices; let index = index"
+                        *ngFor="let goods of sortedFilteredGoods; let index = index"
                         tuiTr
-                        [ngClass]="editedService.id === service.id ? 'service-table__edit-select' : ''"
+                        [ngClass]="editedGoods.id === goods.id ? 'service-table__edit-select' : ''"
                     >
                         <td
                             *tuiCell="'name'"
                             tuiTd
                             class="edit"
                         >
-                            <p *ngIf="editedService.id !== service.id">
-                                {{ service.name }}
+                            <p *ngIf="editedGoods.id !== goods.id">
+                                {{ goods.name }}
                             </p >
                             <tui-input
-                                *ngIf="editedService.id === service.id"
-                                [ngModel] = "editedService.name"
+                                *ngIf="editedGoods.id === goods.id"
+                                [ngModel] = "editedGoods.name"
                             >
                             </tui-input>
                         </td>
                         <td
-                            *tuiCell="'typeName'"
+                            *tuiCell="'categoryName'"
                             tuiTd
                         >
-                            {{ service.type.typeName }}
+                            {{ goods.category.categoryName }}
+                        </td>
+                        <td
+                            *tuiCell="'quantity'"
+                            tuiTd
+                            class="edit"
+                            [ngClass]="editedGoods.id === goods.id ? 'shadow-inner' : ''"
+                        >
+                            <tui-input-number
+                                [ngModel] = "editedGoods.quantity"
+                                (ngModelChange)="onValueChange($event, 'quantity')"
+                                [min]="1"
+                                [max]="99999"
+                                [precision]="1"
+                                [tuiTextfieldPostfix] = "goods.measure"
+                                *ngIf="editedGoods.id === goods.id"
+                            ></tui-input-number>
+
+                            <p *ngIf="editedGoods.id !== goods.id">
+                                {{ goods.quantity }} {{goods.measure}}
+                            </p>
                         </td>
                         <td
                             *tuiCell="'price'"
                             tuiTd
                             class="edit"
-                            [ngClass]="editedService.id === service.id ? 'shadow-inner' : ''"
+                            [ngClass]="editedGoods.id === goods.id ? 'shadow-inner' : ''"
                         >
                         <!-- <tui-error [error]="computedError"></tui-error> -->
                             <tui-input-number
-                                [ngModel] = "editedService.price"
+                                [ngModel] = "editedGoods.price"
                                 (ngModelChange)="onValueChange($event, 'price')"
                                 [min]="1"
                                 [max]="99999"
                                 [precision]="1"
                                 [tuiTextfieldPostfix] = "'₽'"
-                                *ngIf="editedService.id === service.id"
-                            > 
-                            
-                            </tui-input-number>
-                            <p *ngIf="editedService.id !== service.id">
-                                {{ service.price }} ₽
+                                *ngIf="editedGoods.id === goods.id"
+                            > </tui-input-number>
+
+                            <p *ngIf="editedGoods.id !== goods.id">
+                                {{ goods.price }} ₽
                             </p>
                         </td>
                         <td
@@ -133,38 +158,38 @@
                             tuiTd
                         >
                             <button
-                                *ngIf="editedService.id !== service.id"
+                                *ngIf="editedGoods.id !== goods.id"
                                 tuiButton
                                 appearance="outline"
                                 size="s"
-                                (click)="setEditableService(service)"
+                                (click)="setEditableGoods(goods)"
                             >
                                 Изменить
                             </button>
                             <button
-                                *ngIf="editedService.id === service.id"
+                                *ngIf="editedGoods.id === goods.id"
                                 tuiButton
                                 appearance="accent"
                                 size="s"
-                                (click)="saveEditService()"
+                                (click)="updateGood()"
                             >
                                 Сохранить
                             </button>
                             <button
-                                *ngIf="editedService.id === service.id"
+                                *ngIf="editedGoods.id === goods.id"
                                 tuiButton
                                 appearance="outline"
                                 size="s"
-                                (click)="deleteEditService()"
+                                (click)="deleteEditableGoods()"
                             >
                                 Отмена
                             </button>
                             <button
-                                *ngIf="editedService.id !== service.id"
+                                *ngIf="editedGoods.id !== goods.id"
                                 tuiButton
                                 appearance="secondary-destructive"
                                 size="s"
-                                (click)="deleteService(service)"
+                                (click)="deleteGoods(goods)"
                             >
                                 Удалить
                             </button>
@@ -174,12 +199,11 @@
             </table>
             
             <h3 
-                *ngIf="filterServices.length === 0"
+                *ngIf="filteredGoods.length === 0"
                 class="text-xl font-bold text-center text-red-600"
             >
-                Не удалось найти услугу!
+                Не удалось найти товар!
             </h3>
-        </tui-loader>
-        
+        </tui-loader>    
     </div>
 </div>

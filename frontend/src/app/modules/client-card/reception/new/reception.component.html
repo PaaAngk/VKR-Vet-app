@@ -41,55 +41,47 @@
             <div class="space-y-4" [formGroup]="addReceptionForm" *ngIf="activeItemIndex === 0">
                 <div class="tui-form__row tui-form__row_multi-fields">
                     <div class="tui-form__multi-field">
-                        <tui-select
-                            [valueContent]="purposeList ? stringifyPurposeList(purposeList) : loading"
-                            formControlName="purposeId"
+                        <tui-combo-box
+                            class="b-form"
+                            [stringify]="stringifyPurposeList"
+                            formControlName="visitPurposeInput"
                         >
                             Цель визита
-                            <ng-template tuiDataList>
-                                <tui-data-list *ngIf="purposeList; else loading">
-                                    <button
-                                        *ngFor="let item of purposeList"
-                                        tuiOption
-                                        [value]="item.id"
-                                    >
-                                        {{ item.purposeName }}
-                                    </button>
-                                </tui-data-list>
-                            </ng-template>
-                            <ng-template #loading>
-                                <tui-loader class="tui-space_vertical-3 loader"></tui-loader>
-                            </ng-template>
-                        </tui-select>
+                            <input
+                                tuiTextfield
+                                placeholder="Начните вводить цель"
+                            />
+                            <tui-data-list-wrapper
+                                *tuiDataList
+                                [items]="purposeList | tuiFilterByInputWith : stringifyPurposeList"
+                                [itemContent]="stringifyPurposeList | tuiStringifyContent"
+                            ></tui-data-list-wrapper>
+                        </tui-combo-box>
                         <tui-error
-                            formControlName="purposeId"
+                            formControlName="visitPurposeInput"
                             [error]="[] | tuiFieldError | async"
                         ></tui-error>
                     </div>
             
                     <div class="tui-form__multi-field">
-                        <tui-select
-                            [valueContent]="employeeList ? stringifyEmployeeList(employeeList) : loading"
-                            formControlName="employeeId"
+                        <tui-combo-box
+                            class="b-form"
+                            [stringify]="stringifyEmployeeList"
+                            formControlName="employeeInput"
                         >
                             Врач
-                            <ng-template tuiDataList>
-                                <tui-data-list *ngIf="employeeList; else loading">
-                                    <button
-                                        *ngFor="let item of employeeList"
-                                        tuiOption
-                                        [value]="item.id"
-                                    >
-                                        {{ item.fullName }}
-                                    </button>
-                                </tui-data-list>
-                            </ng-template>
-                            <ng-template #loading>
-                                <tui-loader class="tui-space_vertical-3 loader"></tui-loader>
-                            </ng-template>
-                        </tui-select>
+                            <input
+                                tuiTextfield
+                                placeholder="Начните вводить ФИО"
+                            />
+                            <tui-data-list-wrapper
+                                *tuiDataList
+                                [items]="employeeList | tuiFilterByInputWith : stringifyEmployeeList"
+                                [itemContent]="stringifyEmployeeList | tuiStringifyContent"
+                            ></tui-data-list-wrapper>
+                        </tui-combo-box>
                         <tui-error
-                            formControlName="employeeId"
+                            formControlName="employeeInput"
                             [error]="[] | tuiFieldError | async"
                         ></tui-error>
                     </div>
@@ -393,29 +385,3 @@
         </tui-loader> 
     </div>
 </div>
-
-<!-- <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
-    <div tuiTextfieldSize="m" class="flex flex-row justify-around items-center h-full py-auto">
-        <div class="space-x-2">   
-            <button-with-dropdown
-                [data]="assignmentPrintButtonData" 
-                (buttonAction)="assignmentPrint()" 
-                (dropdownAction)="assignmentDownload($event)"
-            ></button-with-dropdown>
-
-            <button-with-dropdown [data]="checkPrintButtonData"></button-with-dropdown>
-        </div>
-
-        <button
-            tuiButton
-            size="m"
-            (click)="submitReception()"
-            [disabled]="!hasValue"
-            [showLoader]="loading"
-        >
-            <p class="text-base">
-                Закончить прием
-            </p>
-        </button>
-    </div>
-</div> -->

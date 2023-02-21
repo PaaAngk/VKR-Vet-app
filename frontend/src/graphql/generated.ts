@@ -109,8 +109,8 @@ export type CreateGoodsInput = {
   categoryId: Scalars['Int'];
   measure: Scalars['String'];
   name: Scalars['String'];
-  price: Scalars['Int'];
-  quantity: Scalars['Int'];
+  price: Scalars['Float'];
+  quantity: Scalars['Float'];
 };
 
 export type CreatePetInput = {
@@ -162,9 +162,9 @@ export type Employee = {
 export type Goods = {
   __typename?: 'Goods';
   GoodsList?: Maybe<Array<GoodsList>>;
-  category?: Maybe<GoodsCategory>;
+  category: GoodsCategory;
   categoryId?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
+  id: Scalars['Int'];
   measure?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   price?: Maybe<Scalars['Float']>;
@@ -211,10 +211,13 @@ export type Mutation = {
   createReception: Reception;
   createService: Service;
   deleteClient: Client;
+  deleteGoods: Goods;
   deletePet: Pet;
+  deleteService: Service;
   login: Auth;
   refreshToken: Token;
   updateClient: Client;
+  updateGoods: Goods;
   updatePet: Pet;
   updateService: Service;
   updateUser: User;
@@ -276,8 +279,18 @@ export type MutationDeleteClientArgs = {
 };
 
 
+export type MutationDeleteGoodsArgs = {
+  goodsId: Scalars['Int'];
+};
+
+
 export type MutationDeletePetArgs = {
   petId: Scalars['String'];
+};
+
+
+export type MutationDeleteServiceArgs = {
+  serviceId: Scalars['Int'];
 };
 
 
@@ -294,6 +307,12 @@ export type MutationRefreshTokenArgs = {
 export type MutationUpdateClientArgs = {
   clientId: Scalars['String'];
   data: UpdateClientInput;
+};
+
+
+export type MutationUpdateGoodsArgs = {
+  data: UpdateGoodsInput;
+  goodsId: Scalars['Int'];
 };
 
 
@@ -509,18 +528,25 @@ export type UpdateClientInput = {
   telephoneNumber: Scalars['String'];
 };
 
+export type UpdateGoodsInput = {
+  name: Scalars['String'];
+  price: Scalars['Float'];
+  quantity: Scalars['Float'];
+};
+
 export type UpdatePetInput = {
-  DOB: Scalars['DateTime'];
+  DOB?: InputMaybe<Scalars['DateTime']>;
   alias: Scalars['String'];
-  breed: Scalars['String'];
-  castration: Scalars['Boolean'];
-  color: Scalars['String'];
-  diagnosis: Scalars['String'];
-  gender: Scalars['Boolean'];
+  breed?: InputMaybe<Scalars['String']>;
+  castration?: InputMaybe<Scalars['Boolean']>;
+  clientId: Scalars['String'];
+  color?: InputMaybe<Scalars['String']>;
+  diagnosis?: InputMaybe<Scalars['String']>;
+  gender?: InputMaybe<Scalars['Boolean']>;
   kind: Scalars['String'];
-  notes: Scalars['String'];
-  nutrition: Scalars['String'];
-  weight: Scalars['Float'];
+  notes?: InputMaybe<Scalars['String']>;
+  nutrition?: InputMaybe<Scalars['String']>;
+  weight?: InputMaybe<Scalars['Float']>;
 };
 
 export type UpdateServiceInput = {
@@ -595,7 +621,7 @@ export type GetAllServiceTypeWithServiceNameQuery = { __typename?: 'Query', allS
 export type GetAllGoodsCategoryWithGoodsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllGoodsCategoryWithGoodsQuery = { __typename?: 'Query', allGoodsCategory: Array<{ __typename?: 'GoodsCategory', categoryName?: string | null, goods?: Array<{ __typename?: 'Goods', id?: number | null, name: string, price?: number | null, measure?: string | null, quantity?: number | null }> | null }> };
+export type GetAllGoodsCategoryWithGoodsQuery = { __typename?: 'Query', allGoodsCategory: Array<{ __typename?: 'GoodsCategory', categoryName?: string | null, goods?: Array<{ __typename?: 'Goods', id: number, name: string, price?: number | null, measure?: string | null, quantity?: number | null }> | null }> };
 
 export type GetAllEmployeesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -651,6 +677,38 @@ export type DeletePetMutationVariables = Exact<{
 
 export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'Pet', id: string } };
 
+export type GetAllGoodsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllGoodsQuery = { __typename?: 'Query', allGoods: Array<{ __typename?: 'Goods', id: number, name: string, measure?: string | null, quantity?: number | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null, categoryName?: string | null } }> };
+
+export type CreateGoodsMutationVariables = Exact<{
+  data: CreateGoodsInput;
+}>;
+
+
+export type CreateGoodsMutation = { __typename?: 'Mutation', createGoods: { __typename?: 'Goods', id: number, name: string, measure?: string | null, quantity?: number | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null, categoryName?: string | null } } };
+
+export type GetAllGoodsCategoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllGoodsCategoryQuery = { __typename?: 'Query', allGoodsCategory: Array<{ __typename?: 'GoodsCategory', id?: number | null, categoryName?: string | null }> };
+
+export type UpdateGoodsMutationVariables = Exact<{
+  goodsId: Scalars['Int'];
+  data: UpdateGoodsInput;
+}>;
+
+
+export type UpdateGoodsMutation = { __typename?: 'Mutation', updateGoods: { __typename?: 'Goods', id: number, name: string, measure?: string | null, quantity?: number | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null, categoryName?: string | null } } };
+
+export type DeleteGoodsMutationVariables = Exact<{
+  goodsId: Scalars['Int'];
+}>;
+
+
+export type DeleteGoodsMutation = { __typename?: 'Mutation', deleteGoods: { __typename?: 'Goods', id: number, name: string } };
+
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -675,6 +733,13 @@ export type UpdateServiceMutationVariables = Exact<{
 
 
 export type UpdateServiceMutation = { __typename?: 'Mutation', updateService: { __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } } };
+
+export type DeleteServiceMutationVariables = Exact<{
+  serviceId: Scalars['Int'];
+}>;
+
+
+export type DeleteServiceMutation = { __typename?: 'Mutation', deleteService: { __typename?: 'Service', id: number, name?: string | null } };
 
 export const CurrentUserProfileDocument = gql`
     query currentUserProfile {
@@ -1132,6 +1197,122 @@ export const DeletePetDocument = gql`
       super(apollo);
     }
   }
+export const GetAllGoodsDocument = gql`
+    query GetAllGoods {
+  allGoods {
+    id
+    name
+    measure
+    quantity
+    price
+    category {
+      id
+      categoryName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllGoodsGQL extends Apollo.Query<GetAllGoodsQuery, GetAllGoodsQueryVariables> {
+    override document = GetAllGoodsDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateGoodsDocument = gql`
+    mutation CreateGoods($data: CreateGoodsInput!) {
+  createGoods(data: $data) {
+    id
+    name
+    measure
+    quantity
+    price
+    category {
+      id
+      categoryName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateGoodsGQL extends Apollo.Mutation<CreateGoodsMutation, CreateGoodsMutationVariables> {
+    override document = CreateGoodsDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetAllGoodsCategoryDocument = gql`
+    query GetAllGoodsCategory {
+  allGoodsCategory {
+    id
+    categoryName
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllGoodsCategoryGQL extends Apollo.Query<GetAllGoodsCategoryQuery, GetAllGoodsCategoryQueryVariables> {
+    override document = GetAllGoodsCategoryDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateGoodsDocument = gql`
+    mutation UpdateGoods($goodsId: Int!, $data: UpdateGoodsInput!) {
+  updateGoods(goodsId: $goodsId, data: $data) {
+    id
+    name
+    measure
+    quantity
+    price
+    category {
+      id
+      categoryName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateGoodsGQL extends Apollo.Mutation<UpdateGoodsMutation, UpdateGoodsMutationVariables> {
+    override document = UpdateGoodsDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteGoodsDocument = gql`
+    mutation DeleteGoods($goodsId: Int!) {
+  deleteGoods(goodsId: $goodsId) {
+    id
+    name
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteGoodsGQL extends Apollo.Mutation<DeleteGoodsMutation, DeleteGoodsMutationVariables> {
+    override document = DeleteGoodsDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const GetAllServiceDocument = gql`
     query GetAllService {
   allServices {
@@ -1218,6 +1399,25 @@ export const UpdateServiceDocument = gql`
   })
   export class UpdateServiceGQL extends Apollo.Mutation<UpdateServiceMutation, UpdateServiceMutationVariables> {
     override document = UpdateServiceDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteServiceDocument = gql`
+    mutation DeleteService($serviceId: Int!) {
+  deleteService(serviceId: $serviceId) {
+    id
+    name
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteServiceGQL extends Apollo.Mutation<DeleteServiceMutation, DeleteServiceMutationVariables> {
+    override document = DeleteServiceDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

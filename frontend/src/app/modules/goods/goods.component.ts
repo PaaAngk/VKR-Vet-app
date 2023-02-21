@@ -5,24 +5,25 @@ import { TuiValidationError, tuiWatch } from '@taiga-ui/cdk';
 import {TuiAlertService, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { Subject, takeUntil } from 'rxjs';
-import { Service, UpdateServiceInput } from 'src/graphql/generated';
-import { AddServiceComponent } from './add-service/add-service.component';
-import { ServicesService } from './services.service';
+import { Goods, UpdateGoodsInput } from 'src/graphql/generated';
+import { AddGoodsComponent } from './add-good/add-good.component';
+import { GoodsService } from './goods.service';
 
 
 @Component({
-	selector: 'vet-crm-service',
-	templateUrl: './services.component.html',
+	selector: 'vet-crm-goods',
+	templateUrl: './goods.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ServicesComponent implements OnDestroy{
+export class GoodsComponent implements OnDestroy{
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-	services : Service[] = [] as Service[];
-	filterServices : Service[] = [] as Service[];
+	goods : Goods[] = [] as Goods[];
+	filteredGoods : Goods[] = [] as Goods[];
+	editedGoods: Goods = {} as Goods;
+	updateLoading = false;
 
-	editedService: Service = {} as Service;
-	readonly columns = [`name`, `typeName`, `price`, `actions`];
+	readonly columns = [`name`, `categoryName`, `quantity`, `price`, `actions`];
 
 	loading = false;
 
@@ -31,35 +32,35 @@ export class ServicesComponent implements OnDestroy{
 	});
 
 	private readonly dialogAddPet = this.dialogService.open<number>(
-        new PolymorpheusComponent(AddServiceComponent, this.injector),
+        new PolymorpheusComponent(AddGoodsComponent, this.injector),
         {
             dismissible: true,
-            label: `Добавление услуги`,
+            label: `Добавление товара`,
         },
     );
  
     constructor(
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
         @Inject(Injector) private readonly injector: Injector,
-		private servicesService: ServicesService,
+		private goodsService: GoodsService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
     ) {
 		// Getting data 
 		this.loading = true;
-		this.servicesService.getServices$
+		this.goodsService.getGoods$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
-		.subscribe((services: Service[]) => {	
+		.subscribe((goods: Goods[]) => {	
 			this.loading = false;
-			this.services = services;
-			this.filterServices = this.setFilterServices(this.searchForm.value['search']);
+			this.goods = goods;
+			this.filteredGoods = this.setFilteredGoods(this.searchForm.value['search']);
 		});
 
 		this.searchForm.valueChanges
 		.pipe(takeUntil(this._unsubscribeAll))
 		.subscribe({
 			next: (data) => {
-				this.filterServices = this.setFilterServices(data['search']);
+				this.filteredGoods = this.setFilteredGoods(data['search']);
 			}
 		})
 	}
@@ -78,49 +79,54 @@ export class ServicesComponent implements OnDestroy{
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
    
-	readonly categorySorter: TuiComparator<Service> = (a, b) =>
-        tuiDefaultSort(a.type.typeName, b.type.typeName);
+	readonly categorySorter: TuiComparator<Goods> = (a, b) =>
+        tuiDefaultSort(a.category.categoryName, b.category.categoryName);
  
     showDialog(): void {
         this.dialogAddPet.subscribe();
     }
 
-	setFilterServices(filterValue: string | null | undefined) : Service[]{
-		return this.services.filter((service:Service) =>{
-			return service.name?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "") ||
-			service.type.typeName?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "")
+	setFilteredGoods(filterValue: string | null | undefined) : Goods[]{
+		return this.goods.filter((goods:Goods) =>{
+			return goods.name?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "") ||
+			goods.category.categoryName?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "")
 		});
 	}
 
-	setEditableService(service:Service){
-		this.editedService = service;
+	setEditableGoods(goods:Goods){
+		this.editedGoods = goods;
 	}
 
+	deleteEditableGoods(){
+		this.editedGoods = {} as Goods;
+	}
 
-	onValueChange<K extends keyof Service>(
-        value: Service[K],
+	onValueChange<K extends keyof Goods>(
+        value: Goods[K],
         key: K,
     ): void {
-		this.editedService =  {...this.editedService, [key]: value};
+		this.editedGoods =  {...this.editedGoods, [key]: value};
     }
 
-	saveEditService(){
-		this.servicesService.updateService(
-			this.editedService.id, 
+	updateGood(){
+		this.updateLoading = true;
+		this.goodsService.updateGoods(
+			this.editedGoods.id, 
 			{ 
-				name: this.editedService.name, 
-				price: this.editedService.price 
-			} as UpdateServiceInput
+				name: this.editedGoods.name, 
+				price: this.editedGoods.price,
+				quantity: this.editedGoods.quantity
+			} as UpdateGoodsInput
 		).subscribe({
 			next: () => { 
 				this.alertService.open(
 					"", 
 					{
 						status: TuiNotification.Success, 
-						label:"Услуга изменена",
-					}
-					).subscribe();
-					this.editedService = {} as Service;
+						label:"Товар успешно изменен!",
+					}).subscribe();
+					this.editedGoods = {} as Goods;
+					this.updateLoading = false;
 			},
 			error: (error)  => 
 			{
@@ -137,23 +143,19 @@ export class ServicesComponent implements OnDestroy{
 		})
 	}	
 
-	deleteEditService(){
-		this.editedService = {} as Service;
-	}
-
-	deleteService(service : Service){
-		this.servicesService.deleteService(
-			service.id
+	deleteGoods(goods : Goods){
+		this.goodsService.deleteGoods(
+			goods.id
 		).subscribe({
 			next: () => { 
 				this.alertService.open(
-					service.name, 
+					goods.name, 
 					{
 						status: TuiNotification.Success, 
-						label:"Услуга успешно удалена",
+						label:"Товар успешно удален",
 					}
 					).subscribe();
-					this.editedService = {} as Service;
+					this.editedGoods = {} as Goods;
 			},
 			error: (error)  => 
 			{

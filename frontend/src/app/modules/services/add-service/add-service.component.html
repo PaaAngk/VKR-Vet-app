@@ -10,26 +10,22 @@
         [error]="[] | tuiFieldError | async"
     ></tui-error>
 
-    <tui-select
-        [valueContent]="serviceTypesList ? stringifyServiceTypeList(serviceTypesList) : loading"
-        formControlName="typeId"
+    <tui-combo-box
+        [stringify]="stringifyServices"
+        formControlName="type"
     >
         Категория
-        <ng-template tuiDataList>
-            <tui-data-list *ngIf="serviceTypesList; else loading">
-                <button
-                    *ngFor="let item of serviceTypesList"
-                    tuiOption
-                    [value]="item.id"
-                >
-                    {{ item.typeName }}
-                </button>
-            </tui-data-list>
-        </ng-template>
-        <ng-template #loading>
-            <tui-loader class="tui-space_vertical-3 loader"></tui-loader>
-        </ng-template>
-    </tui-select>
+        <input
+            tuiTextfield
+            placeholder="Начните вводить название"
+        />
+        <tui-data-list-wrapper
+            *tuiDataList
+            [items]="serviceTypesList | tuiFilterByInputWith : stringifyServices"
+            [itemContent]="stringifyServices | tuiStringifyContent"
+        ></tui-data-list-wrapper>
+    </tui-combo-box>
+
     <tui-error
         formControlName="typeId"
         [error]="[] | tuiFieldError | async"

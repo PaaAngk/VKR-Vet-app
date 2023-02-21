@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable } from "rxjs";
-import { CreateServiceGQL, CreateServiceInput, GetAllServiceGQL, GetAllServiceTypeGQL, Service, ServiceType, UpdateServiceGQL, UpdateServiceInput } from "src/graphql/generated";
+import { CreateServiceGQL, CreateServiceInput, DeleteServiceGQL, GetAllServiceGQL, GetAllServiceTypeGQL, Service, ServiceType, UpdateServiceGQL, UpdateServiceInput } from "src/graphql/generated";
 
 
 @Injectable({
@@ -19,6 +19,7 @@ export class ServicesService
         private createServiceGQL : CreateServiceGQL,
         private getAllServiceTypeGQL: GetAllServiceTypeGQL,
         private updateServiceGQL: UpdateServiceGQL,
+        private deleteServiceGQL: DeleteServiceGQL,
     ){
         this.getAllServices();
         this.getAllServiceTypes();
@@ -104,13 +105,11 @@ export class ServicesService
      * @returns Observable of updated service
      */
     updateService(id:number, newService : UpdateServiceInput){
-        console.log(newService)
         return this.updateServiceGQL.mutate({
             data: newService,
             serviceId: id
         }).pipe(
             map(( {data} ) => {
-                
                 if (data?.updateService) {
                     this._serviceList.next(
                         this._serviceList.getValue().map(val => {
@@ -118,7 +117,25 @@ export class ServicesService
                         })
                     );
                 }
-                console.log(this._serviceList.getValue())
+            })
+        )
+    }
+
+    /**
+     * Delete service and remove from list
+     * @param id id current service
+     * @returns Observable of updated service
+     */
+    deleteService(id:number){
+        return this.deleteServiceGQL.mutate({
+            serviceId: id
+        }).pipe(
+            map(( {data} ) => {
+                if (data?.deleteService) {
+                    this._serviceList.next(
+                        this._serviceList.getValue().filter((item: Service) => item.id != id)
+                    );
+                }
             })
         )
     }

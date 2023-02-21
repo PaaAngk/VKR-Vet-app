@@ -62,20 +62,20 @@
     
     <div class="tui-form__row">
         <tui-combo-box
-                class="b-form"
-                formControlName="nutrition"
-                [strict] = "false"
-            >
-                Питание
-                <input
-                    tuiTextfield
-                    placeholder="Выберите из списка или введите"
-                />
-                <tui-data-list-wrapper
-                    *tuiDataList
-                    [items]="petsNutrition | tuiFilterByInput"
-                ></tui-data-list-wrapper>
-            </tui-combo-box>
+            class="b-form"
+            formControlName="nutrition"
+            [strict] = "false"
+        >
+            Питание
+            <input
+                tuiTextfield
+                placeholder="Выберите из списка или введите"
+            />
+            <tui-data-list-wrapper
+                *tuiDataList
+                [items]="petsNutrition | tuiFilterByInput"
+            ></tui-data-list-wrapper>
+        </tui-combo-box>
         <tui-error
             formControlName="nutrition"
             [error]="[] | tuiFieldError | async"

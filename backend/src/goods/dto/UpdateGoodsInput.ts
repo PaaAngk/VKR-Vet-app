@@ -2,24 +2,16 @@ import { IsNotEmpty } from 'class-validator';
 import { InputType, Field, Float } from '@nestjs/graphql';
 
 @InputType()
-export class CreateGoodsInput {
-  @Field()
-  @IsNotEmpty()
-  categoryId?: number;
-
+export class UpdateGoodsInput {
   @Field()
   @IsNotEmpty()
   name?: string;
 
-  @Field()
+  @Field(() => Float)
   @IsNotEmpty()
-  measure?: string;
+  price?: number;
 
   @Field(() => Float)
   @IsNotEmpty()
   quantity?: number;
-
-  @Field(() => Float)
-  @IsNotEmpty()
-  price?: number;
 }

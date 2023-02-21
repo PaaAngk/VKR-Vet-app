@@ -56,10 +56,10 @@ export class PetComponent implements OnDestroy{
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
         @Inject(Injector) private readonly injector: Injector,
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
+		@Inject(Router) private readonly router: Router,
+		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
-		private router: Router,
-		private activateRoute: ActivatedRoute,
     ) {
 		this.activateRoute.params.subscribe(params=>this.clientCardService.getPetDetail(params['id']));
 

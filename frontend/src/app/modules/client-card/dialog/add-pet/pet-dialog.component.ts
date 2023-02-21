@@ -26,7 +26,7 @@ export function fullNameValidator(field: AbstractControl): Validators | null {
 })
 export class PetDialogComponent {
     petsKind = ["Кошка", "Собака", "Жираф"];
-    petsNutrition = ["Промышленный корм", "Еще какой-то"]
+    petsNutrition = ["Промышленный корм", "Натуральный корм", "Смешанный корм"];
     petId: string = '';
 
 	readonly addPetForm = new FormGroup({
@@ -49,7 +49,7 @@ export class PetDialogComponent {
         @Inject(POLYMORPHEUS_CONTEXT)
         private readonly context: TuiDialogContext<any, string>,
         private clientCardService: ClientCardService,
-        private router: Router,
+        @Inject(Router) private readonly router: Router,
         private datePipe: DatePipe,
     ) {
         

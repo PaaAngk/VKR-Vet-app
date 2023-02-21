@@ -31,14 +31,23 @@ query GetAllServiceType{
 mutation UpdateService(
   $serviceId:Int!,
   $data:UpdateServiceInput!
-  ){
-    updateService(serviceId:$serviceId, data: $data){
+){
+  updateService(serviceId:$serviceId, data: $data){
+    id
+    name
+    price
+    type{
       id
-      name
-      price
-      type{
-        id
-        typeName
-      }
+      typeName
     }
   }
+}
+
+mutation DeleteService(
+  $serviceId:Int!,
+){
+  deleteService(serviceId:$serviceId){
+    id
+    name
+  }
+}

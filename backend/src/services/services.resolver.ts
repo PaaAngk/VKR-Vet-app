@@ -45,6 +45,17 @@ export class ServiceResolver {
     });
   }
 
+  @Mutation(() => Service)
+  async deleteService(
+    @Args({ name: 'serviceId', type: () => Int }) serviceId: number
+  ) {
+    return this.prisma.service.delete({
+      where: {
+        id: serviceId,
+      },
+    });
+  }
+
   @Query(() => [Service])
   async allServices() {
     return await this.prisma.service.findMany();

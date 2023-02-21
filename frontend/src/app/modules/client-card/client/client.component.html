@@ -77,7 +77,7 @@
                         <th
                             *tuiHead="'pets'"
                             tuiTh
-                            class="w-1/3"
+                            class="w-64"
                             [sorter]="null"
                         >
                             Питомцы
@@ -119,10 +119,9 @@
                         </td>
                         <td
                             *tuiCell="'pets'"
-                            class="w-1/3"
                             tuiTd
                         >
-                            <div class="w-full overflow-x-auto whitespace-nowrap space-x-1">
+                            <div class="w-96 overflow-x-auto whitespace-nowrap space-x-1">
                                 <p *ngIf="!client.client.pets || client.client.pets.length === 0">Нет питомцев</p>
                                 <tui-tag
                                     *ngFor="let tag of client.client.pets"

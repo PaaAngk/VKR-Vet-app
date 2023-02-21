@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { tuiWatch } from '@taiga-ui/cdk';
 import {TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
@@ -46,7 +46,8 @@ export class ClientComponent implements OnDestroy{
         @Inject(Injector) private readonly injector: Injector,
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
-		private router: Router,
+		@Inject(Router) private readonly router: Router,
+		@Inject(ActivatedRoute) private readonly activatedRoute: ActivatedRoute,
     ) {
 		// Getting data 
 		this.loading = true;
@@ -61,20 +62,36 @@ export class ClientComponent implements OnDestroy{
 				} as ClientTable
 			})
 			this.loading = false;
-			console.log(clients);
 		});
+		
+		// Поиск из ссылки
+		if(this.activatedRoute.snapshot.queryParams['search']){
+			this.searchForm.setValue({
+				search: this.activatedRoute.snapshot.queryParams['search']
+			})
+			this.clientCardService.getClientsData(String(this.searchForm.value.search));
+		}
 
+		// Поиск по вводу в поле
 		this.searchForm.valueChanges
-		.pipe(takeUntil(this._unsubscribeAll), tap({next: () => (this.loading= true, console.log("DSD"))}))
+		.pipe(takeUntil(this._unsubscribeAll), tap({next: () => this.loading= true}))
 		.pipe(debounceTime(1000))
 		.subscribe({
-			next: () => {this.clientCardService.getClientsData(String(this.searchForm.value.search))}
+			next: () => {
+				console.log(this.searchForm.value)
+				this.clientCardService.getClientsData(String(this.searchForm.value.search));
+				this.router.navigate([], 
+				{
+					relativeTo: this.activatedRoute,
+					queryParams: { search: this.searchForm.value.search },
+					queryParamsHandling: 'merge'
+				});
+			}
 		})
 	}
 
 	ngOnDestroy(): void
 	{
-		console.log("DEstroy")
 		// Unsubscribe from all subscriptions
 		this._unsubscribeAll.next(undefined);
 		this._unsubscribeAll.complete();

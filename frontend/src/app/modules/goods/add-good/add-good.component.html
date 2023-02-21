@@ -1,0 +1,99 @@
+<form [formGroup]="addGoodsForm" class="space-y-4 justify-center input-wrapper">
+    <tui-input
+        [tuiTextfieldCleaner] = true
+        formControlName="name"
+    >
+        Наименование  
+    </tui-input>
+    <tui-error
+        formControlName="name"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
+
+    <tui-combo-box
+        [stringify]="stringifyCategory"
+        formControlName="category"
+    >
+        Категория
+        <input
+            tuiTextfield
+            placeholder="Начните вводить категорию"
+        />
+        <tui-data-list-wrapper
+            *tuiDataList
+            [items]="goodsCategoryList | tuiFilterByInputWith : stringifyCategory"
+            [itemContent]="stringifyCategory | tuiStringifyContent"
+        ></tui-data-list-wrapper>
+    </tui-combo-box>
+    
+    <tui-error
+        formControlName="category"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
+
+    <tui-input-number
+        formControlName = "price"
+        [min]="0"
+        [max]="999999"
+        [precision]="1"
+        [tuiTextfieldPostfix] = "'₽'"
+    >
+        Цена 
+    </tui-input-number>
+    <tui-error
+        formControlName="price"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
+
+    <div 
+        tuiGroup
+        [collapsed]="true"
+        class="group"
+    >
+        <div>
+            <tui-input-number
+                formControlName = "quantity"
+                [min]="0"
+                [max]="999999"
+                [precision]="1"
+                [tuiTextfieldPostfix] = "'₽'"
+            >
+                Количество 
+            </tui-input-number>
+            <tui-error
+                formControlName="quantity"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+
+        <div>
+            <tui-select
+                formControlName="measure"
+            >
+                Измерение
+                <tui-data-list-wrapper
+                    *tuiDataList
+                    [items]="measure"
+                ></tui-data-list-wrapper>
+            </tui-select>
+            <tui-error
+                formControlName="measure"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+    </div>
+
+
+    <button
+        tuiButton
+        type="button"
+        size="m"
+        [disabled]="!hasValue"
+        (click)="submit()"
+        [showLoader]="submitLoader"
+    >
+        Добавить
+    </button>
+</form>
+
+

@@ -5,7 +5,7 @@ import { GoodsList } from './goods-list.model';
 @ObjectType()
 export class Goods {
   @Field(() => Int)
-  id?: number;
+  id: number;
 
   @Field(() => GoodsCategory, { nullable: true })
   category?: GoodsCategory;
