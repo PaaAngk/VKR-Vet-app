@@ -18,7 +18,7 @@ export class AddGoodsComponent implements OnDestroy {
     goodsCategoryList : GoodsCategory[] = [];
     submitLoader= false;
 
-    measure = ['Мл', 'Амп', "Шт"]
+    measure = ['Ампул', 'Доз', 'Мл', 'Флакон', 'Штук', 'Таблетка'];
 	
 	readonly addGoodsForm = new FormGroup({
 		name: new FormControl(null as unknown as string, [Validators.required, Validators.minLength(2), Validators.maxLength(60)]),

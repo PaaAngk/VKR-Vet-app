@@ -7,7 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GoodsComponent } from './goods.component';
 import { TuiButtonModule, TuiDataListModule, TuiErrorModule, TuiGroupModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiTableModule } from '@taiga-ui/addon-table';
-import { TuiLetModule } from '@taiga-ui/cdk';
+import { TuiLetModule, TuiValidatorModule } from '@taiga-ui/cdk';
 import { AddGoodsComponent } from './add-good/add-good.component';
 import { GoodsService } from './goods.service';
 
@@ -40,6 +40,7 @@ import { GoodsService } from './goods.service';
     TuiFilterByInputPipeModule,
     TuiStringifyContentPipeModule,
     TuiGroupModule,
+    TuiValidatorModule,
   ],
   providers: [GoodsService]
 })

@@ -56,8 +56,8 @@
                 [min]="0"
                 [max]="999999"
                 [precision]="1"
-                [tuiTextfieldPostfix] = "'₽'"
-            >
+                class="tui-group__inherit-item"
+             >
                 Количество 
             </tui-input-number>
             <tui-error
@@ -69,6 +69,7 @@
         <div>
             <tui-select
                 formControlName="measure"
+                class="tui-group__inherit-item"
             >
                 Измерение
                 <tui-data-list-wrapper

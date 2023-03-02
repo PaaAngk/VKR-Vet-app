@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector
 import { FormControl, FormGroup } from '@angular/forms';
 import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { TuiValidationError, tuiWatch } from '@taiga-ui/cdk';
-import {TuiAlertService, TuiDialogService, TuiNotification} from '@taiga-ui/core';
-import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
+import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
+import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { Subject, takeUntil } from 'rxjs';
 import { Service, UpdateServiceInput } from 'src/graphql/generated';
 import { AddServiceComponent } from './add-service/add-service.component';
@@ -141,32 +141,45 @@ export class ServicesComponent implements OnDestroy{
 		this.editedService = {} as Service;
 	}
 
-	deleteService(service : Service){
-		this.servicesService.deleteService(
-			service.id
-		).subscribe({
-			next: () => { 
-				this.alertService.open(
-					service.name, 
-					{
-						status: TuiNotification.Success, 
-						label:"Услуга успешно удалена",
-					}
-					).subscribe();
-					this.editedService = {} as Service;
-			},
-			error: (error)  => 
-			{
-				this.alertService.open(
-					"Обратитесь к администратору", 
-					{
-						status: TuiNotification.Error, 
-						label:"Ошибка удаления услуги",
-						autoClose: 5000,
-					}
-					).subscribe()
-				console.log(error)
-			}
+	deleteService(service : Service, content: PolymorpheusContent<TuiDialogContext>){
+		const _unsubscribeDialog: Subject<any> = new Subject<any>();
+
+		this.dialogService.open(content,{
+			label: 'Подтвердите удаление товара - '+ service.name,
+			size: 's',
 		})
+		.pipe(takeUntil(_unsubscribeDialog))
+		.subscribe({
+			next: () =>{
+				this.servicesService.deleteService(
+					service.id
+				).subscribe({
+					next: () => { 
+						this.alertService.open(
+							service.name, 
+							{
+								status: TuiNotification.Success, 
+								label:"Услуга успешно удалена",
+							}
+							).subscribe();
+							this.editedService = {} as Service;
+					},
+					error: (error)  => 
+					{
+						this.alertService.open(
+							"Обратитесь к администратору", 
+							{
+								status: TuiNotification.Error, 
+								label:"Ошибка удаления услуги",
+								autoClose: 5000,
+							}
+							).subscribe()
+						console.log(error)
+					}
+				})
+				_unsubscribeDialog.next(undefined);
+				_unsubscribeDialog.complete();
+			}
+		});
 	}
 }

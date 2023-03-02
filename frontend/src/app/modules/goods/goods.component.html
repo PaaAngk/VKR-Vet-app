@@ -41,6 +41,17 @@
                 [columns]="columns"
                 *ngIf="filteredGoods.length !== 0"
             >
+            <!-- <tui-select
+                *ngIf="editedGoods.id === goods.id"
+                [ngModel] = "editedGoods.category"
+                [ngModelOptions]="options"
+                (ngModelChange)="onValueChange($event, 'category')"
+            >
+                <tui-data-list-wrapper
+                    *tuiDataList
+                    [items]="unitsMeasure"
+                ></tui-data-list-wrapper>
+            </tui-select> -->
                 <thead>
                     <tr tuiThGroup>
                         <th
@@ -55,15 +66,15 @@
                             tuiTh
                             [sorter]="categorySorter"
                         >
-                            Категория
+                            Группа
                         </th>
                         <th
                             *tuiHead="'quantity'"
                             tuiTh
                             class="lg:w-20"
                         >
-                            Количество
-                        </th>
+                            Остаток
+                        </th>       
                         <th
                             *tuiHead="'price'"
                             tuiTh
@@ -74,7 +85,7 @@
                         <th
                             *tuiHead="'actions'"
                             tuiTh
-                            class="lg:w-52"
+                            class="lg:w-64"
                             [sorter]="null"
                         >
                             Действия
@@ -102,6 +113,8 @@
                             <tui-input
                                 *ngIf="editedGoods.id === goods.id"
                                 [ngModel] = "editedGoods.name"
+                                (ngModelChange)="onValueChange($event, 'name')"
+                                [tuiValidator]="stringValue"
                             >
                             </tui-input>
                         </td>
@@ -120,11 +133,12 @@
                             <tui-input-number
                                 [ngModel] = "editedGoods.quantity"
                                 (ngModelChange)="onValueChange($event, 'quantity')"
-                                [min]="1"
+                                [min]="0"
                                 [max]="99999"
                                 [precision]="1"
                                 [tuiTextfieldPostfix] = "goods.measure"
                                 *ngIf="editedGoods.id === goods.id"
+                                [tuiValidator]="notNullValidator"
                             ></tui-input-number>
 
                             <p *ngIf="editedGoods.id !== goods.id">
@@ -137,15 +151,15 @@
                             class="edit"
                             [ngClass]="editedGoods.id === goods.id ? 'shadow-inner' : ''"
                         >
-                        <!-- <tui-error [error]="computedError"></tui-error> -->
                             <tui-input-number
                                 [ngModel] = "editedGoods.price"
                                 (ngModelChange)="onValueChange($event, 'price')"
-                                [min]="1"
+                                [min]="0"
                                 [max]="99999"
                                 [precision]="1"
                                 [tuiTextfieldPostfix] = "'₽'"
                                 *ngIf="editedGoods.id === goods.id"
+                                [tuiValidator]="notNullValidator"
                             > </tui-input-number>
 
                             <p *ngIf="editedGoods.id !== goods.id">
@@ -154,50 +168,73 @@
                         </td>
                         <td
                             *tuiCell="'actions'"
-                            class="space-x-2"
                             tuiTd
                         >
-                            <button
-                                *ngIf="editedGoods.id !== goods.id"
-                                tuiButton
-                                appearance="outline"
-                                size="s"
-                                (click)="setEditableGoods(goods)"
+                            <div 
+                                *ngIf="editedGoods.id !== goods.id" 
+                                class="space-x-2 flex flex-row"
                             >
-                                Изменить
-                            </button>
-                            <button
-                                *ngIf="editedGoods.id === goods.id"
-                                tuiButton
-                                appearance="accent"
-                                size="s"
-                                (click)="updateGood()"
-                            >
-                                Сохранить
-                            </button>
-                            <button
-                                *ngIf="editedGoods.id === goods.id"
-                                tuiButton
-                                appearance="outline"
-                                size="s"
-                                (click)="deleteEditableGoods()"
-                            >
-                                Отмена
-                            </button>
-                            <button
-                                *ngIf="editedGoods.id !== goods.id"
-                                tuiButton
-                                appearance="secondary-destructive"
-                                size="s"
-                                (click)="deleteGoods(goods)"
-                            >
-                                Удалить
-                            </button>
+                                <div
+                                    tuiGroup
+                                    class="group"
+                                >
+                                    <button
+                                        tuiButton
+                                        size="s"
+                                        (click)="editQuantity('Приход',editQuantityDialog,goods)"
+                                    >
+                                        Приход
+                                    </button>
+                                    <button
+                                        tuiButton
+                                        size="s"
+                                        (click)="editQuantity('Списание',editQuantityDialog,goods)"
+                                    >
+                                        Списание
+                                    </button>
+                                </div>
+                                <button
+                                    tuiIconButton
+                                    type="button"
+                                    appearance="outline"
+                                    size="s"
+                                    icon = "tuiIconEdit"
+                                    (click)="setEditableGoods(goods)"
+                                >
+                                </button>
+                                <button
+                                    tuiIconButton
+                                    type="button"
+                                    appearance="secondary-destructive"
+                                    size="s"
+                                    icon="tuiIconTrash"
+                                    (click)="deleteGoods(goods, deleteConfirmDialog)"
+                                >
+                                </button>
+                            </div>
+                            <div *ngIf="editedGoods.id === goods.id" class="space-x-2"> 
+                                <button
+                                    tuiButton
+                                    appearance="accent"
+                                    size="s"
+                                    (click)="updateGood()"
+                                >
+                                    Сохранить
+                                </button>
+
+                                <button
+                                    tuiButton
+                                    appearance="outline"
+                                    size="s"
+                                    (click)="deleteEditableGoods()"
+                                >
+                                    Отмена
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            
             <h3 
                 *ngIf="filteredGoods.length === 0"
                 class="text-xl font-bold text-center text-red-600"
@@ -207,3 +244,65 @@
         </tui-loader>    
     </div>
 </div>
+
+<!-- Delete confirmation-->
+<ng-template
+    #deleteConfirmDialog
+    let-observer
+>
+    <div class="flex justify-around">
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            appearance="accent"
+            class="bg-slate-500"
+            (click)="observer.next()"
+        >
+            Удалить
+        </button>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            (click)="observer.complete()"
+        >
+            Отмена
+        </button>
+    </div>
+</ng-template>
+
+<!-- edit quantity-->
+<ng-template
+    #editQuantityDialog
+    let-observer
+>
+    <div class="flex flex-col justify-around space-y-2">
+        <tui-input
+            [ngModel] = "editQuantityGoods.quantity"
+            [readOnly] = "true"
+            [tuiTextfieldPostfix]="editQuantityGoods.measure!"
+        >
+            Текущий остаток
+        </tui-input>
+        <tui-input-number
+            [ngModel] = "newQuantity"
+            (ngModelChange)="editQuantityValueChange($event)"
+            [min]="0"
+            [max]="9999"
+            [precision]="1"
+            [tuiValidator]="notNullValidator"
+            [tuiTextfieldPostfix]="editQuantityGoods.measure!"
+        >
+            Ввод количества
+        </tui-input-number>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            (click)="observer.next()"
+        >
+            Обновить остаток
+        </button>
+    </div>
+</ng-template>

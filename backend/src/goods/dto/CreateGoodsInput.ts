@@ -23,3 +23,11 @@ export class CreateGoodsInput {
   @IsNotEmpty()
   price?: number;
 }
+// enum Measure {
+// Амп,
+// Доза,
+// Мл,
+// Флакон,
+// Шт,
+// Таб,
+// }

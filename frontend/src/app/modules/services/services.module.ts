@@ -9,12 +9,14 @@ import { TuiButtonModule, TuiDataListModule, TuiErrorModule, TuiLoaderModule, Tu
 import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { AddServiceComponent } from './add-service/add-service.component';
+import { DeleteConfirmComponent } from 'src/app/shared/components/dialog/delete-confirm/delete-confirm.component';
 
 
 @NgModule({
   declarations: [
     ServicesComponent,
     AddServiceComponent,
+    DeleteConfirmComponent,
   ],
   imports: [
     CommonModule,

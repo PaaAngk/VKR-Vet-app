@@ -73,6 +73,7 @@ export class GoodsService
      * @returns Observable of updated g oods
      */
     updateGoods(id:number, newGoods : UpdateGoodsInput){
+        console.log(newGoods)
         return this.updateGoodsGQL.mutate({
             data: newGoods,
             goodsId: id
