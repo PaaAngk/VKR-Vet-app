@@ -15,7 +15,7 @@
                     <button
                         tuiButton
                         type="button"
-                        appearance="secondary-destructive"
+                        appearance="outline"
                         size="m"
                         (click)="showDialogEditClient()"
                     >
@@ -118,7 +118,7 @@
                             <th
                                 *tuiHead="'actions'"
                                 tuiTh
-                                class="lg:w-32"
+                                class="lg:w-60"
                                 [sorter]="null"
                             >Действия</th>
                         </tr>
@@ -162,13 +162,36 @@
                                 {{ pet.breed | checkNull}}
                             <td
                                 *tuiCell="'actions'"
-                                class="space-x-2"
+                                class="space-x-2 flex items-center"
                                 tuiTd
-                                (click) = "getPetDetail(pet.id)"
                             >
+                                
+                                <div
+                                    tuiGroup
+                                    class="group lg:w-72 md:w-32"
+                                    [collapsed]="true"
+                                >
+                                    <button
+                                        tuiButton
+                                        appearance="outline"
+                                        size="s"
+                                        [routerLink]="'/client-card/pet/' + pet.id + '/reception/new'"
+                                    >
+                                        Добавить прием
+                                    </button>
+                                    <button
+                                        tuiButton
+                                        appearance="outline"
+                                        size="s"
+                                        [routerLink]="'/client-card/pet/' + pet.id + '/analyzes/new'"
+                                    >
+                                        Добавить анализ
+                                    </button>
+                                </div>
                                 <button
                                     tuiButton
                                     size="s"
+                                    (click) = "getPetDetail(pet.id)"
                                 >
                                     Просмотр
                                 </button>

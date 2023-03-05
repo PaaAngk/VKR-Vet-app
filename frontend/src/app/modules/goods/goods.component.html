@@ -41,17 +41,6 @@
                 [columns]="columns"
                 *ngIf="filteredGoods.length !== 0"
             >
-            <!-- <tui-select
-                *ngIf="editedGoods.id === goods.id"
-                [ngModel] = "editedGoods.category"
-                [ngModelOptions]="options"
-                (ngModelChange)="onValueChange($event, 'category')"
-            >
-                <tui-data-list-wrapper
-                    *tuiDataList
-                    [items]="unitsMeasure"
-                ></tui-data-list-wrapper>
-            </tui-select> -->
                 <thead>
                     <tr tuiThGroup>
                         <th
@@ -200,6 +189,7 @@
                                     size="s"
                                     icon = "tuiIconEdit"
                                     (click)="setEditableGoods(goods)"
+                                    [tuiHint]="'Изменить'"
                                 >
                                 </button>
                                 <button
@@ -209,6 +199,7 @@
                                     size="s"
                                     icon="tuiIconTrash"
                                     (click)="deleteGoods(goods, deleteConfirmDialog)"
+                                    [tuiHint]="'Удалить'"
                                 >
                                 </button>
                             </div>

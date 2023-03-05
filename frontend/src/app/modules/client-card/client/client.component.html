@@ -77,7 +77,6 @@
                         <th
                             *tuiHead="'pets'"
                             tuiTh
-                            class="w-64"
                             [sorter]="null"
                         >
                             Питомцы
@@ -120,9 +119,10 @@
                         <td
                             *tuiCell="'pets'"
                             tuiTd
+                            class="flex items-center justify-between"
                         >
-                            <div class="w-96 overflow-x-auto whitespace-nowrap space-x-1">
-                                <p *ngIf="!client.client.pets || client.client.pets.length === 0">Нет питомцев</p>
+                            <div class="overflow-x-auto whitespace-nowrap space-x-1 mr-2 lg:w-96 md:w-32" >
+                                <span *ngIf="!client.client.pets || client.client.pets.length === 0">Нет питомцев</span>
                                 <tui-tag
                                     *ngFor="let tag of client.client.pets"
                                     size="m"
@@ -130,9 +130,16 @@
                                     [value]="tag.alias"
                                     [autoColor]="true"
                                     [routerLink]="['pet', tag.id]"
-                                    [tuiHint]="'Перейти к питомцу'"
+                                    [tuiHint]="'Перейти к питомцу ' + tag.alias"
                                 ></tui-tag>
                             </div>
+                            <button
+                                tuiButton
+                                size="xs"
+                                (click)="newPet(client.client.id)"
+                            >
+                                Добавить
+                            </button>
                         </td>
                         <td
                             *tuiCell="'actions'"

@@ -143,25 +143,38 @@ query GetReception($receptionId:String!){
     clinicalSigns
     cost
     diagnosis
+    petId
     employee{
+      id
       fullName
     }
     purpose{
+      id
       purposeName
     }
     goods{
       quantity
       goods{
         name
+        id
+        categoryId
         measure
         price
+        category{
+          id
+        }
       }
     }
     services{
       quantity
       service{
+        id
+        typeId
         name
         price
+        type{
+          id
+        }
       }
     }
   }
@@ -228,5 +241,17 @@ mutation UpdatePet($petId:String!, $data:UpdatePetInput!) {
 mutation DeletePet($petId:String!) {
   deletePet(petId:$petId){
     id
+  }
+}
+
+mutation UpdateReception($data: UpdateReceptionInput!, $receptionId:String!){
+	updateReception(data: $data, receptionId:$receptionId){
+    id
+    diagnosis
+    createdAt
+    cost
+    purpose{
+      purposeName
+    }
   }
 }

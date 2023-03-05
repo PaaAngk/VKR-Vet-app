@@ -21,7 +21,7 @@ export class ClientDetailComponent implements OnDestroy{
 	client = {} as Client;
 	pets = [] as Pet[];
 	activeItemIndex = 0;
-	readonly petsColumns = ['alias', 'kind', 'gender', 'DOB', 'breed', 'actions']
+	readonly petsColumns = ['alias', 'kind', 'gender', 'DOB', 'breed', 'actions'];
 
 	private readonly dialogAddPet = this.dialogService.open<number>(
         new PolymorpheusComponent(PetDialogComponent, this.injector),
@@ -29,6 +29,7 @@ export class ClientDetailComponent implements OnDestroy{
 			data: "add",
             dismissible: false,
             label: `Добавление питомца`,
+			
         },
     );
 
@@ -55,6 +56,12 @@ export class ClientDetailComponent implements OnDestroy{
 		
 		activateRoute.params.subscribe(params=>this.clientCardService.setSelectedClient(params['id']));
 
+		activateRoute.queryParams.subscribe(
+            (queryParam: any) => {
+                if(queryParam['addPet']) this.showDialogAddPet()
+            }
+        );
+
 		// Getting clients data 
 		this.clientCardService.getSelectedClient$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
@@ -75,7 +82,9 @@ export class ClientDetailComponent implements OnDestroy{
 	// -----------------------------------------------------------------------------------------------------
    
 	showDialogAddPet(): void {
-        this.dialogAddPet.pipe(takeUntil(this._unsubscribeAll)).subscribe();
+        this.dialogAddPet
+			.pipe(takeUntil(this._unsubscribeAll))
+			.subscribe({ complete: () => this.router.navigate([]) });
     }
 
 	getPetDetail(petId: string){

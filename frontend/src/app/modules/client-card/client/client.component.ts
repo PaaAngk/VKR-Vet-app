@@ -105,8 +105,15 @@ export class ClientComponent implements OnDestroy{
         this.dialog.subscribe();
     }
 
+	// Open client detail
 	setClient(clientId : string) {
 		this.clientCardService.setSelectedClient(clientId);
 		this.router.navigateByUrl(`client-card/client/${clientId}`);
+	}
+
+	//Set query for open dialog with pet adding 
+	newPet(clientId : string) {
+		this.clientCardService.setSelectedClient(clientId);
+		this.router.navigate([`client-card/client/${clientId}`], {queryParams:{'addPet':'dialog'}});
 	}
 }

@@ -5,7 +5,7 @@ import { GoodsRoutingModule } from './goods-routing.module';
 import { TuiComboBoxModule, TuiDataListWrapperModule, TuiFieldErrorPipeModule, TuiFilterByInputPipeModule, TuiInputModule, TuiInputNumberModule, TuiSelectModule, TuiStringifyContentPipeModule } from '@taiga-ui/kit';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GoodsComponent } from './goods.component';
-import { TuiButtonModule, TuiDataListModule, TuiErrorModule, TuiGroupModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiDataListModule, TuiErrorModule, TuiGroupModule, TuiHintModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiLetModule, TuiValidatorModule } from '@taiga-ui/cdk';
 import { AddGoodsComponent } from './add-good/add-good.component';
@@ -41,6 +41,7 @@ import { GoodsService } from './goods.service';
     TuiStringifyContentPipeModule,
     TuiGroupModule,
     TuiValidatorModule,
+    TuiHintModule,
   ],
   providers: [GoodsService]
 })

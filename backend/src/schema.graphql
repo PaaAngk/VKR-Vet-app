@@ -205,6 +205,7 @@ type Mutation {
   updateClient(clientId: String!, data: UpdateClientInput!): Client!
   updateGoods(data: UpdateGoodsInput!, goodsId: Int!): Goods!
   updatePet(data: UpdatePetInput!, petId: String!): Pet!
+  updateReception(data: UpdateReceptionInput!, receptionId: String!): Reception!
   updateService(data: UpdateServiceInput!, serviceId: Int!): Service!
   updateUser(data: UpdateUserInput!): User!
 }
@@ -381,6 +382,18 @@ input UpdatePetInput {
   notes: String
   nutrition: String
   weight: Float
+}
+
+input UpdateReceptionInput {
+  anamnesis: String
+  assignment: String
+  clinicalSigns: String
+  cost: Float
+  diagnosis: String
+  employeeId: Int!
+  goodsListReceptionInput: [GoodsListReceptionInput!]
+  purposeId: Int!
+  serviceListReceptionInput: [ServiceListReceptionInput!]
 }
 
 input UpdateServiceInput {

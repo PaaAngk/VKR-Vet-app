@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ClientDetailComponent } from './client/client-detail/client-detail.component';
 import { ClientComponent } from './client/client.component';
 import { PetComponent } from './pet/pet.component';
-import { ReceptionComponent } from './reception/new/reception.component';
+import { ReceptionComponent } from './reception/new-and-edit/reception.component';
 import { ReceptionViewComponent } from './reception/view/reception-view.component';
 
 const routes: Routes = [
@@ -32,6 +32,13 @@ const routes: Routes = [
     path: 'pet/:id/reception/new', 
     data: {
       title: 'Добавление приема'
+    },
+    component: ReceptionComponent,
+  },
+  {
+    path: 'pet/:id/reception/:id/edit', 
+    data: {
+      title: 'Изменение приема'
     },
     component: ReceptionComponent,
   },

@@ -23,6 +23,7 @@
                 </button>
             </div>
             <button
+                *ngIf="!editMode"
                 tuiButton
                 size="m"
                 class="mr-2"
@@ -32,6 +33,19 @@
             >
                 <p class="text-base">
                     Закончить прием
+                </p>
+            </button>
+            <button
+                *ngIf="editMode"
+                tuiButton
+                size="m"
+                class="mr-2"
+                (click)="submitReception()"
+                [disabled]="!hasValue"
+                [showLoader]="loading"
+            >
+                <p class="text-base">
+                    Изменить прием
                 </p>
             </button>
         </tui-tabs>

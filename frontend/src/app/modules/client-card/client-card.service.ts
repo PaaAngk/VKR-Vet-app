@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, take } from "rxjs";
-import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, ReceptionPurpose, ServiceType, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput } from "src/graphql/generated";
+import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
 
 
 @Injectable({
@@ -34,6 +34,7 @@ export class ClientCardService
         private deleteClientGQL: DeleteClientGQL,
         private updatePetGQL: UpdatePetGQL,
         private deletePetGQL: DeletePetGQL,
+        private updateReceptionGQL: UpdateReceptionGQL,
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
@@ -146,7 +147,6 @@ export class ClientCardService
             }
         });
     }
-
 
     /**
      * Creating client by its data 
@@ -331,7 +331,7 @@ export class ClientCardService
     }
 
     /**
-     * Delete pet 
+     * Delete pet // rediict when seleect not existing pet 
      */
     deletePet(petId:string)
     {
@@ -364,7 +364,31 @@ export class ClientCardService
         )
     }
 
-    // rediict when seleect not existing pet 
+    /**
+     * Updating receptions  
+     */
+    updateReception(receptionId:string, data:UpdateReceptionInput)
+    {
+        return this.updateReceptionGQL.mutate({
+            receptionId: receptionId,
+            data: data,
+        }).pipe(
+            map(( {data} ) => {
+                if (data?.updateReception) {
+
+                    // eslint-disable-next-line prefer-const
+                    let newPetReception = {...this._currentPet.getValue()}
+                    newPetReception.receptions = newPetReception
+                        .receptions?.filter( (reception: Reception) => reception.id != data?.updateReception.id )
+                        .concat(data?.updateReception)
+                    
+                    this._currentPet.next(newPetReception);
+                    return data.updateReception;
+                }
+                return data
+            })
+        )
+    }
 }
 
 function renameKeys(obj: { [x: string]: any; }, newKeys: { [x: string]: string; }) {

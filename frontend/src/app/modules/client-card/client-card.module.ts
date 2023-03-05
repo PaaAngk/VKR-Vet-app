@@ -30,7 +30,7 @@ import { PetDialogComponent } from './dialog/add-pet/pet-dialog.component';
 import { FormatPetGenderPipe } from 'src/app/shared/pipes/format-pet-gender.pipe';
 import { CheckNullPipe } from 'src/app/shared/pipes/check-null.pipe';
 import { PetComponent } from './pet/pet.component';
-import { ReceptionComponent } from './reception/new/reception.component';
+import { ReceptionComponent } from './reception/new-and-edit/reception.component';
 import { TuiEditorModule } from '@taiga-ui/addon-editor';
 import { CheckboxListComponent } from './reception/checkbox-list/checkbox-list.component';
 import { AdvancedTableModule } from 'src/app/shared/components/advanced-table';

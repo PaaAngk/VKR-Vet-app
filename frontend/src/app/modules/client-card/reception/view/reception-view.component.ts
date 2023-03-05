@@ -9,6 +9,7 @@ import { GetReceptionGQL, Reception } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown, ButtonWithDropdownItem } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
+import { Location } from '@angular/common';
 
 interface SelectedService{
 	readonly id: number;
@@ -68,8 +69,8 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 
 	
 	readonly addReceptionForm = new FormGroup({
-        employee: new FormControl("sada", [Validators.required]),
-        purpose: new FormControl("sdsadsa", [Validators.required]),
+        employee: new FormControl("", [Validators.required]),
+        purpose: new FormControl("", [Validators.required]),
         anamnesis: new FormControl(''),
 		clinicalSigns: new FormControl(''),
 		diagnosis: new FormControl(''),
@@ -101,7 +102,6 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 			.subscribe( ({data, loading}) => {
 				this.loading = loading;
 				this.reception = data.reception as Reception
-				console.log(data)
 			});
 		})
 		

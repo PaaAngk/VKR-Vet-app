@@ -69,11 +69,4 @@ export class GoodsResolver {
       where: { id: goods.categoryId },
     });
   }
-
-  // @ResolveField('services', () => [ServiceList])
-  // async serviceLists(@Parent() service: Service) {
-  //   return this.prisma.serviceList.findMany({
-  //     where: { serviceId: service.id },
-  //   });
-  // }
 }

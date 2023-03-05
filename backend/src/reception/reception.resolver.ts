@@ -16,6 +16,7 @@ import { ReceptionPurpose } from './models/reception-purpose.model';
 import { ServiceList } from 'src/services/models/service-list.model';
 import { GoodsList } from 'src/goods/models/goods-list.model';
 import { Employee } from 'src/common/models';
+import { UpdateReceptionInput } from './dto/UpdateReceptionInput.input';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Reception)
@@ -30,7 +31,6 @@ export class ReceptionResolver {
    */
   @Mutation(() => Reception)
   async createReception(@Args('data') data: CreateReceptionInput) {
-    console.log(data);
     const newReception = await this.prisma.reception.create({
       data: {
         petId: data.petId,
@@ -64,6 +64,59 @@ export class ReceptionResolver {
       );
 
       await this.prisma.serviceList.createMany({
+        data: addInServiceListInput,
+      });
+    }
+    return newReception;
+  }
+
+  /**
+   * update reception with list of goods and services.
+   * update reception id into goods and services array with they input class.
+   * @param data
+   * @returns new reception
+   */
+  @Mutation(() => Reception)
+  async updateReception(
+    @Args({ name: 'receptionId', type: () => String }) receptionId: string,
+    @Args('data') newReceptionData: UpdateReceptionInput
+  ) {
+    const newReception = await this.prisma.reception.update({
+      data: newReceptionData,
+      where: {
+        id: receptionId,
+      },
+    });
+
+    if (newReceptionData.goodsListReceptionInput.length > 0) {
+      await this.prisma.goodsList.deleteMany({
+        where: { receptionId: receptionId },
+      });
+
+      const addInGoodsListInput = newReceptionData.goodsListReceptionInput.map(
+        (goods) => ({
+          ...goods,
+          receptionId: newReception.id,
+        })
+      );
+
+      this.prisma.goodsList.createMany({
+        data: addInGoodsListInput,
+      });
+    }
+
+    if (newReceptionData.serviceListReceptionInput.length > 0) {
+      await this.prisma.serviceList.deleteMany({
+        where: { receptionId: receptionId },
+      });
+
+      const addInServiceListInput =
+        newReceptionData.serviceListReceptionInput.map((service) => ({
+          ...service,
+          receptionId: newReception.id,
+        }));
+
+      this.prisma.serviceList.createMany({
         data: addInServiceListInput,
       });
     }

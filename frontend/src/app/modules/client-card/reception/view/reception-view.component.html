@@ -1,7 +1,16 @@
 <div class="flex flex-col space-y-3" *ngIf="true">
 
-    <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
-        <div tuiTextfieldSize="m" class="flex justify-center items-center h-full py-auto space-x-2">
+    <div class="w-full h-full flex rounded-lg items-center justify-between bg-white shadow-md">
+        <button
+            tuiButton
+            icon = 'tuiIconArrowLeftLarge'
+            appearance="textfield"
+            [routerLink]="'/client-card/pet/'+ reception.petId"
+        >
+            К питомцу
+        </button>
+
+        <div tuiTextfieldSize="m" class="flex items-center justify-center h-full py-auto space-x-2 w-full">
             <button-with-dropdown
                 [data]="assignmentPrintButtonData" 
                 (buttonAction)="assignmentPrint()" 
@@ -10,6 +19,17 @@
 
             <button-with-dropdown [data]="checkPrintButtonData"></button-with-dropdown>
         </div>
+
+        <button
+            tuiButton
+            icon = 'tuiIconEditLarge'
+            appearance="outline"
+            size="m"
+            class="mr-2"
+            routerLink="edit"
+        >
+            Изменить
+        </button>
     </div>
 
     <div class="w-full h-full rounded-lg bg-white shadow-md">

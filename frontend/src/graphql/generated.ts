@@ -219,6 +219,7 @@ export type Mutation = {
   updateClient: Client;
   updateGoods: Goods;
   updatePet: Pet;
+  updateReception: Reception;
   updateService: Service;
   updateUser: User;
 };
@@ -319,6 +320,12 @@ export type MutationUpdateGoodsArgs = {
 export type MutationUpdatePetArgs = {
   data: UpdatePetInput;
   petId: Scalars['String'];
+};
+
+
+export type MutationUpdateReceptionArgs = {
+  data: UpdateReceptionInput;
+  receptionId: Scalars['String'];
 };
 
 
@@ -549,6 +556,18 @@ export type UpdatePetInput = {
   weight?: InputMaybe<Scalars['Float']>;
 };
 
+export type UpdateReceptionInput = {
+  anamnesis?: InputMaybe<Scalars['String']>;
+  assignment?: InputMaybe<Scalars['String']>;
+  clinicalSigns?: InputMaybe<Scalars['String']>;
+  cost?: InputMaybe<Scalars['Float']>;
+  diagnosis?: InputMaybe<Scalars['String']>;
+  employeeId: Scalars['Int'];
+  goodsListReceptionInput?: InputMaybe<Array<GoodsListReceptionInput>>;
+  purposeId: Scalars['Int'];
+  serviceListReceptionInput?: InputMaybe<Array<ServiceListReceptionInput>>;
+};
+
 export type UpdateServiceInput = {
   name: Scalars['String'];
   price: Scalars['Float'];
@@ -645,7 +664,7 @@ export type GetReceptionQueryVariables = Exact<{
 }>;
 
 
-export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employee?: { __typename?: 'Employee', fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, measure?: string | null, price?: number | null } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', name?: string | null, price?: number | null } } | null> | null } };
+export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, petId?: string | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, id: number, categoryId?: number | null, measure?: string | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null } } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', id: number, typeId?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null } } } | null> | null } };
 
 export type UpdateClientMutationVariables = Exact<{
   clientId: Scalars['String'];
@@ -676,6 +695,14 @@ export type DeletePetMutationVariables = Exact<{
 
 
 export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'Pet', id: string } };
+
+export type UpdateReceptionMutationVariables = Exact<{
+  data: UpdateReceptionInput;
+  receptionId: Scalars['String'];
+}>;
+
+
+export type UpdateReceptionMutation = { __typename?: 'Mutation', updateReception: { __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null } };
 
 export type GetAllGoodsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1050,25 +1077,38 @@ export const GetReceptionDocument = gql`
     clinicalSigns
     cost
     diagnosis
+    petId
     employee {
+      id
       fullName
     }
     purpose {
+      id
       purposeName
     }
     goods {
       quantity
       goods {
         name
+        id
+        categoryId
         measure
         price
+        category {
+          id
+        }
       }
     }
     services {
       quantity
       service {
+        id
+        typeId
         name
         price
+        type {
+          id
+        }
       }
     }
   }
@@ -1192,6 +1232,30 @@ export const DeletePetDocument = gql`
   })
   export class DeletePetGQL extends Apollo.Mutation<DeletePetMutation, DeletePetMutationVariables> {
     override document = DeletePetDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateReceptionDocument = gql`
+    mutation UpdateReception($data: UpdateReceptionInput!, $receptionId: String!) {
+  updateReception(data: $data, receptionId: $receptionId) {
+    id
+    diagnosis
+    createdAt
+    cost
+    purpose {
+      purposeName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateReceptionGQL extends Apollo.Mutation<UpdateReceptionMutation, UpdateReceptionMutationVariables> {
+    override document = UpdateReceptionDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);
