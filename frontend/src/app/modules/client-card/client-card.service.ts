@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, take } from "rxjs";
-import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
-
+import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
 
 @Injectable({
     providedIn: 'root'
@@ -12,12 +11,11 @@ export class ClientCardService
     private _clientsData: BehaviorSubject<Client[]> = new BehaviorSubject([] as Client[]);
     private _currentClient: BehaviorSubject<Client> = new BehaviorSubject<Client>({} as Client);
     private _currentPet: BehaviorSubject<Pet> = new BehaviorSubject<Pet>({} as Pet);
-    
+
     private _serviceTypesList : BehaviorSubject<Array<ServiceType>> = new BehaviorSubject([] as ServiceType[]);
 	private _goodsCategoriesList : BehaviorSubject<Array<GoodsCategory>> = new BehaviorSubject([] as GoodsCategory[]);
     private _employeesList : BehaviorSubject<Array<Employee>> = new BehaviorSubject([] as Employee[]);
     private _receptionPurposesList : BehaviorSubject<Array<ReceptionPurpose>> = new BehaviorSubject([] as ReceptionPurpose[]);
-
 
     constructor(
         private apollo: Apollo,
@@ -35,6 +33,7 @@ export class ClientCardService
         private updatePetGQL: UpdatePetGQL,
         private deletePetGQL: DeletePetGQL,
         private updateReceptionGQL: UpdateReceptionGQL,
+        private createReceptionGQL: CreateReceptionGQL,
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
@@ -99,7 +98,7 @@ export class ClientCardService
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
+    // @ API methods
     // -----------------------------------------------------------------------------------------------------
 
     /**
@@ -331,7 +330,7 @@ export class ClientCardService
     }
 
     /**
-     * Delete pet // rediict when seleect not existing pet 
+     * Delete pet  rediict when seleect not existing pet 
      */
     deletePet(petId:string)
     {
@@ -365,6 +364,35 @@ export class ClientCardService
     }
 
     /**
+     * Create reception  
+     */
+    createReception(newData:CreateReceptionInput)
+    {
+        return this.createReceptionGQL.mutate({
+            data: newData,
+        }).pipe(
+            map(( {data} ) => {
+                if (data?.createReception) {
+                    // eslint-disable-next-line prefer-const
+                    let newPetReception = {...this._currentPet.getValue()}
+                    newPetReception.receptions = newPetReception.receptions?.concat(data?.createReception)
+
+                    this.apollo.client.cache.modify({
+                        id: this.apollo.client.cache.identify({ __typename: 'Pet', id: newData.petId }),
+                        fields: {
+                            receptions() {
+                                return newPetReception.receptions
+                            },
+                        },
+                    });
+                    return data;
+                }
+                return data
+            })
+        )
+    }
+
+    /**
      * Updating receptions  
      */
     updateReception(receptionId:string, data:UpdateReceptionInput)
@@ -378,16 +406,40 @@ export class ClientCardService
 
                     // eslint-disable-next-line prefer-const
                     let newPetReception = {...this._currentPet.getValue()}
-                    newPetReception.receptions = newPetReception
+                    newPetReception.receptions = newPetReception 
                         .receptions?.filter( (reception: Reception) => reception.id != data?.updateReception.id )
                         .concat(data?.updateReception)
                     
                     this._currentPet.next(newPetReception);
-                    return data.updateReception;
+
+                    //Delete reception from cache for fetch in reception view
+                    this.apollo.client.cache.evict({id:this.apollo.client.cache.identify({ __typename: 'Reception', id: receptionId })})                    
+                    return data;
                 }
                 return data
             })
         )
+    }
+
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * При выборе препарата необходимо указывать количество использованных миллилитров, с условием: 
+	 * при использовании 0.5 мл и меньше стоимость – половина стоимости за мл, 
+	 * больше 0.5 мл – полная стоимость мл( мл, таблетки, ампулы)
+     * @param good 
+     */
+    calculateGoodsQuantity(quantity: number ){
+        let setQuantity = 0;
+        const mod = Math.round((quantity||0 % 1) * 10)
+        if ( mod > 0 && mod < 5) setQuantity = Math.round(quantity||0) + 0.5 
+        else if(mod >= 5 && mod < 10) setQuantity = Math.round(quantity||0)
+        else setQuantity = quantity as number;
+
+        return setQuantity
     }
 }
 

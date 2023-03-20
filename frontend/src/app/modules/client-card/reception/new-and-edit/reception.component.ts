@@ -5,7 +5,7 @@ import { defaultEditorExtensions, TuiEditorTool, TUI_EDITOR_EXTENSIONS } from '@
 import { TuiContextWithImplicit, TuiIdentityMatcher, TuiStringHandler, tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 import { Subject, takeUntil } from 'rxjs';
-import { CreateReceptionGQL, GoodsListReceptionInput, ServiceListReceptionInput, Employee, ReceptionPurpose, CreateReceptionInput, GetReceptionGQL, Reception, UpdateReceptionInput } from 'src/graphql/generated';
+import { GoodsListReceptionInput, ServiceListReceptionInput, Employee, ReceptionPurpose, CreateReceptionInput, GetReceptionGQL, Reception, UpdateReceptionInput } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown, ButtonWithDropdownItem } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
@@ -42,6 +42,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	/** Interface */
 	editMode = false;
 	receptionId = '';
+	petId = '';
 
 	activeItemIndex = 0;
 	@ViewChild(TuiHostedDropdownComponent)
@@ -60,8 +61,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		],
 	};
 	loading = false;
-
-	petId = '';
+	
 	readonly tablesColumns = ['name', 'price', 'quantity', 'actions'];
 	employeeList : Array<Employee> = [];
 	purposeList : Array<ReceptionPurpose> = [];
@@ -84,6 +84,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		diagnosis: new FormControl(''),
 		assignment: new FormControl(''),
 		cost: new FormControl(0),
+		discount: new FormControl(0),
 		employeeInput: new FormControl(null as unknown as Employee, [Validators.required]),
 		visitPurposeInput: new FormControl(null as unknown as ReceptionPurpose, [Validators.required]),
 	});
@@ -95,11 +96,8 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		private _changeDetectorRef: ChangeDetectorRef,
 		@Inject(Router) private readonly router: Router,
 		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
-		private createReceptionGQL : CreateReceptionGQL,
 		private getReceptionGQL : GetReceptionGQL,
-    ) {
-		
-	}
+    ) {}
 
 	ngOnInit(): void {
 		this.clientCardService.getServiceTypes$
@@ -136,8 +134,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 			this.getReceptionGQL
 			.watch({
 				receptionId: this.receptionId
-			})
-			.valueChanges
+			}).valueChanges
 			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
 			.subscribe( ({data, loading}) => {
 				this.loading = loading;
@@ -151,6 +148,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 					diagnosis: reception.diagnosis as string,
 					assignment: reception.assignment as string,
 					cost: reception.cost as number,
+					discount:reception.discount as number || 0,
 					employeeInput: reception.employee as Employee,
 					visitPurposeInput: reception.purpose as ReceptionPurpose,
 				});
@@ -175,37 +173,24 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	// -----------------------------------------------------------------------------------------------------
    
 	get check(): number {
-		// При выборе флакона необходимо указывать количество использованных миллилитров, с условием: 
-		// при использовании 0.5 мл и меньше стоимость – половина стоимости за мл, 
-		// больше 0.5 мл – полная стоимость мл
-		const selectedGoods = Object.keys(this.selectedGoods).reduce( (sum, currentValue)=> {
+		const discount = this.addReceptionForm.value.discount || 0
+		
+		const goods = Object.keys(this.selectedGoods).reduce( (sum, currentValue)=> {
 			const good = this.selectedGoods[parseInt(currentValue)];
-
-			let setQuantity = 0;
-			const mod = Math.round((good.quantity % 1) * 10)
-			switch (good.measure) {
-				case 'амп':
-				case 'мл':
-					if ( mod > 0 && mod < 5) setQuantity = Math.round(good.quantity) + 0.5 
-					else if(mod >= 5 && mod < 10) setQuantity = Math.round(good.quantity)
-					else setQuantity = good.quantity
-					break;
-			
-				default:
-					setQuantity = good.quantity
-					break;
-			}
-			
+			const setQuantity = this.clientCardService.calculateGoodsQuantity(good.quantity)
 			const result : number = sum + (good.price * setQuantity)
+			
 			return result
 		}, 0)
 
-		const selectedServices = Object.keys(this.selectedServices).reduce( (sum, currentValue)=> {
+		const services = Object.keys(this.selectedServices).reduce( (sum, currentValue)=> {
 			const result : number = sum + (this.selectedServices[parseInt(currentValue)].price * this.selectedServices[parseInt(currentValue)].quantity)
 			return result
 		}, 0)
+		
+		const discountResult = ((goods + services) / 100) * (100 - discount)
 
-		return Math.round( (selectedGoods + selectedServices) * 100 ) / 100
+		return Math.round( discountResult * 100 ) / 100
 	}
 
 	readonly identityMatcher: TuiIdentityMatcher<readonly string[]> = (items1, items2) =>
@@ -301,9 +286,9 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	}
 
 	createReception(goodsListReceptionInput: GoodsListReceptionInput[], serviceListReceptionInput: ServiceListReceptionInput[]){
-		this.createReceptionGQL.mutate({
-			data: { ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId } as CreateReceptionInput
-		})
+		this.clientCardService.createReception(
+			{ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId } as CreateReceptionInput
+		)
 		.subscribe({
 			next: (data) => {
 				this.loading = false;
@@ -312,7 +297,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 					label:"Прием успешно добавлен!",
 					autoClose: 5000,
 				}).subscribe();
-				this.router.navigate([`../${data.data?.createReception.id}`], {relativeTo: this.activateRoute})
+				this.router.navigate([`../${data?.createReception.id}`], {relativeTo: this.activateRoute})
 			},
 			error: (error)  => 
 			{
@@ -329,6 +314,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	}
 
 	editReception(goodsListReceptionInput: GoodsListReceptionInput[], serviceListReceptionInput: ServiceListReceptionInput[]){
+		console.log({ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput } as UpdateReceptionInput)
 		this.clientCardService.updateReception(
 			this.receptionId,
 			{ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput } as UpdateReceptionInput
@@ -336,12 +322,12 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 			next: (data) => {
 				this.loading = false;
 				console.log(data)
-				// this.alertService.open("", {
-				// 	status: TuiNotification.Success, 
-				// 	label:"Прием успешно добавлен!",
-				// 	autoClose: 5000,
-				// }).subscribe();
-				// this.router.navigate([`../${data.data?.createReception.id}`], {relativeTo: this.activateRoute})
+				this.alertService.open("", {
+					status: TuiNotification.Success, 
+					label:"Прием успешно изменен!",
+					autoClose: 5000,
+				}).subscribe();
+				this.router.navigate([`/client-card/pet/${this.petId}/reception/${this.receptionId}`], {relativeTo: this.activateRoute})
 			},
 			error: (error)  => 
 			{

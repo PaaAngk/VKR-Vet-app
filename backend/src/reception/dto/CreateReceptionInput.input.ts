@@ -5,7 +5,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { InputType, Field, Float } from '@nestjs/graphql';
+import { InputType, Field, Float, Int } from '@nestjs/graphql';
 import { GoodsListReceptionInput } from './GoodsListReceptionInput.input';
 import { ServiceListReceptionInput } from './ServiceListReceptionInput.input';
 
@@ -38,6 +38,9 @@ export class CreateReceptionInput {
 
   @Field(() => Float)
   cost?: number;
+
+  @Field(() => Int)
+  discount?: number;
 
   @IsArray()
   goodsListReceptionInput?: GoodsListReceptionInput[];

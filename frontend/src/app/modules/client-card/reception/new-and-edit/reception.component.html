@@ -59,6 +59,7 @@
                             class="b-form"
                             [stringify]="stringifyPurposeList"
                             formControlName="visitPurposeInput"
+                            [tuiTextfieldCleaner]="true"
                         >
                             Цель визита
                             <input
@@ -82,6 +83,7 @@
                             class="b-form"
                             [stringify]="stringifyEmployeeList"
                             formControlName="employeeInput"
+                            [tuiTextfieldCleaner]="true"
                         >
                             Врач
                             <input
@@ -103,7 +105,7 @@
 
                 <div class="tui-form">
                     <tui-input
-                        [tuiTextfieldCleaner] = true
+                        [tuiTextfieldCleaner]="true"
                         formControlName="anamnesis"
                     >
                         Анамнез  
@@ -237,6 +239,8 @@
                                     <td
                                         *tuiCell="'quantity'"
                                         tuiTd
+                                        class="shadow-inner"
+                                        style="background-color: var(--tui-base-02) !important;"
                                     >
                                         <div>
                                             <tui-input-count
@@ -352,6 +356,8 @@
                                     <td
                                         *tuiCell="'quantity'"
                                         tuiTd
+                                        class="shadow-inner"
+                                        style="background-color: var(--tui-base-02) !important;"
                                     >
                                         <tui-input-number
                                             [(ngModel)] = "goods.quantity"
@@ -392,8 +398,15 @@
                     </div>
                 </div>
 
-                <div class="text-center" *ngIf="selectedServices.length !== 0 || selectedGoods.length !== 0">
-                    <h1 class="tui-text_h4">Итог: {{check}}</h1>
+                <div class="text-center flex justify-evenly items-center" [formGroup]="addReceptionForm" *ngIf="selectedServices.length !== 0 || selectedGoods.length !== 0">
+                    <tui-input-slider
+                        formControlName="discount"
+                        [min]="0"
+                        [max]="100"
+                        [quantum]="1"
+                        class="w-60"
+                    >Скидка</tui-input-slider>
+                    <h1 class="tui-text_h4 w-56">Итог: {{check}}</h1>
                 </div>
             </div>
         </tui-loader> 

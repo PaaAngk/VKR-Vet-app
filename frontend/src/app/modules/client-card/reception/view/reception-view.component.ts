@@ -5,11 +5,12 @@ import { defaultEditorExtensions, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-
 import { tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService } from '@taiga-ui/core';
 import { Subject, takeUntil } from 'rxjs';
-import { GetReceptionGQL, Reception } from 'src/graphql/generated';
+import { Client, GetReceptionGQL, Reception } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown, ButtonWithDropdownItem } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
 import { Location } from '@angular/common';
+import { DocumentGenerateService } from '../../document-generate.service';
 
 interface SelectedService{
 	readonly id: number;
@@ -61,6 +62,7 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 
 	readonly tablesColumns = ['name', 'price', 'quantity'];
 	reception : Reception = {} as Reception;
+	client = {} as Client;
 
 	selectedServices : SelectedService[] = [];
 	selectServiceInput : SelectedService[] = [];
@@ -87,15 +89,15 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 		private router: Router,
 		private getReceptionGQL : GetReceptionGQL,
 		private activateRoute: ActivatedRoute,
-    ) {
-	}
+		private documentGenerateService: DocumentGenerateService,
+    ){}
 
 	ngOnInit(): void {
 		this.loading = true;
 		this.activateRoute.params.subscribe(params => {
 			this.getReceptionGQL
 			.watch({
-				receptionId:params['id']
+				receptionId:params['id'],
 			})
 			.valueChanges
 			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
@@ -103,8 +105,7 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 				this.loading = loading;
 				this.reception = data.reception as Reception
 			});
-		})
-		
+		});
 	}
 
 	ngOnDestroy(): void
@@ -128,6 +129,13 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 		console.log("data")
 	}
 	assignmentDownload($event : ButtonWithDropdownItem){
+		console.log($event)
+	}	
+
+	checkPrint(){
+		this.documentGenerateService.checkGenerate(this.reception, 'docx')
+	}
+	checkDownload($event : ButtonWithDropdownItem){
 		console.log($event)
 	}	
 }

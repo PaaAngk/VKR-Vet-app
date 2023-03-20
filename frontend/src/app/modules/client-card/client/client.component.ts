@@ -54,7 +54,7 @@ export class ClientComponent implements OnDestroy{
 		this.clientCardService.getclientsData$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
 		.subscribe((clients: Client[]) => {	
-			const time = '4:20';
+			const time = '13:20';
 			this.clients = clients.map(client => {
 				return {
 					time:time,

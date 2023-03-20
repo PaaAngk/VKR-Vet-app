@@ -52,7 +52,7 @@ export class PetsResolver {
     @Args({ name: 'petId', type: () => String }) petId: string,
     @Args('data') newPetData: UpdatePetInput
   ) {
-    return this.prisma.pet.update({
+    return await this.prisma.pet.update({
       data: newPetData,
       where: {
         id: petId,

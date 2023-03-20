@@ -3,7 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 
 import { ClientCardRoutingModule } from './client-card-routing.module';
 import { ClientComponent } from './client/client.component';
-import { TuiComboBoxModule, TuiDataListWrapperModule, TuiFieldErrorPipeModule, TuiFilterByInputPipeModule, TuiInputCountModule, TuiInputDateModule, TuiInputModule, TuiInputNumberModule, TuiInputPhoneModule, TuiMultiSelectModule, TuiRadioBlockModule, TuiSelectModule, TuiTabsModule, TuiTagModule, TuiTextAreaModule } from '@taiga-ui/kit';
+import { TuiComboBoxModule, TuiDataListWrapperModule, TuiFieldErrorPipeModule, TuiFilterByInputPipeModule, TuiInputCountModule, TuiInputDateModule, TuiInputModule, TuiInputNumberModule, TuiInputPhoneModule, TuiInputSliderModule, TuiMultiSelectModule, TuiRadioBlockModule, TuiSelectModule, TuiTabsModule, TuiTagModule, TuiTextAreaModule } from '@taiga-ui/kit';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiAlertModule,
@@ -39,6 +39,7 @@ import { ReceptionViewComponent } from './reception/view/reception-view.componen
 import { ArrayToAnyArrayPipe } from 'src/app/shared/pipes/array-to-any-array.pipe';
 import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
 import { TuiStringifyContentPipeModule } from '@taiga-ui/kit';
+import { DocumentGenerateService } from './document-generate.service';
 
 @NgModule({
   declarations: [
@@ -92,6 +93,7 @@ import { TuiStringifyContentPipeModule } from '@taiga-ui/kit';
     TuiFormatPhonePipeModule,
     TuiEditorModule,
     TuiInputCountModule,
+    TuiInputSliderModule,
     TuiSelectModule,
     TuiFilterPipeModule,
     TuiLoaderModule,
@@ -100,6 +102,8 @@ import { TuiStringifyContentPipeModule } from '@taiga-ui/kit';
   ],
   providers:[
     DatePipe,
+    DocumentGenerateService,
+    CheckNullPipe,
   ]
 })
 export class ClientCardModule {}

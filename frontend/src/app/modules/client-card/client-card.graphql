@@ -131,6 +131,7 @@ mutation CreateReception($data:CreateReceptionInput!) {
     employeeId
     petId
     purposeId
+    discount
     id
   }
 }
@@ -144,6 +145,16 @@ query GetReception($receptionId:String!){
     cost
     diagnosis
     petId
+    discount
+    pet{
+      alias
+      id
+      client{
+        id
+        fullName
+        telephoneNumber
+      }
+    }
     employee{
       id
       fullName
@@ -247,11 +258,5 @@ mutation DeletePet($petId:String!) {
 mutation UpdateReception($data: UpdateReceptionInput!, $receptionId:String!){
 	updateReception(data: $data, receptionId:$receptionId){
     id
-    diagnosis
-    createdAt
-    cost
-    purpose{
-      purposeName
-    }
   }
 }

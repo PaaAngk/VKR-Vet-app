@@ -134,6 +134,7 @@ export type CreateReceptionInput = {
   clinicalSigns?: InputMaybe<Scalars['String']>;
   cost?: InputMaybe<Scalars['Float']>;
   diagnosis?: InputMaybe<Scalars['String']>;
+  discount?: InputMaybe<Scalars['Int']>;
   employeeId: Scalars['Int'];
   goodsListReceptionInput?: InputMaybe<Array<GoodsListReceptionInput>>;
   petId: Scalars['String'];
@@ -440,7 +441,6 @@ export type QueryReceptionArgs = {
 
 export type Reception = {
   __typename?: 'Reception';
-  Pet?: Maybe<Pet>;
   /** Анамнез */
   anamnesis?: Maybe<Scalars['String']>;
   /** Лист назначения */
@@ -453,10 +453,13 @@ export type Reception = {
   createdAt?: Maybe<Scalars['DateTime']>;
   /** Диагноз */
   diagnosis?: Maybe<Scalars['String']>;
+  /** Скидка на прием */
+  discount?: Maybe<Scalars['Int']>;
   employee?: Maybe<Employee>;
   employeeId?: Maybe<Scalars['Int']>;
   goods?: Maybe<Array<Maybe<GoodsList>>>;
   id: Scalars['String'];
+  pet?: Maybe<Pet>;
   petId?: Maybe<Scalars['String']>;
   purpose?: Maybe<ReceptionPurpose>;
   purposeId?: Maybe<Scalars['Int']>;
@@ -562,6 +565,7 @@ export type UpdateReceptionInput = {
   clinicalSigns?: InputMaybe<Scalars['String']>;
   cost?: InputMaybe<Scalars['Float']>;
   diagnosis?: InputMaybe<Scalars['String']>;
+  discount?: InputMaybe<Scalars['Int']>;
   employeeId: Scalars['Int'];
   goodsListReceptionInput?: InputMaybe<Array<GoodsListReceptionInput>>;
   purposeId: Scalars['Int'];
@@ -657,14 +661,14 @@ export type CreateReceptionMutationVariables = Exact<{
 }>;
 
 
-export type CreateReceptionMutation = { __typename?: 'Mutation', createReception: { __typename?: 'Reception', anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employeeId?: number | null, petId?: string | null, purposeId?: number | null, id: string } };
+export type CreateReceptionMutation = { __typename?: 'Mutation', createReception: { __typename?: 'Reception', anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employeeId?: number | null, petId?: string | null, purposeId?: number | null, discount?: number | null, id: string } };
 
 export type GetReceptionQueryVariables = Exact<{
   receptionId: Scalars['String'];
 }>;
 
 
-export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, petId?: string | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, id: number, categoryId?: number | null, measure?: string | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null } } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', id: number, typeId?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null } } } | null> | null } };
+export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, petId?: string | null, discount?: number | null, pet?: { __typename?: 'Pet', alias: string, id: string, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, id: number, categoryId?: number | null, measure?: string | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null } } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', id: number, typeId?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null } } } | null> | null } };
 
 export type UpdateClientMutationVariables = Exact<{
   clientId: Scalars['String'];
@@ -702,7 +706,7 @@ export type UpdateReceptionMutationVariables = Exact<{
 }>;
 
 
-export type UpdateReceptionMutation = { __typename?: 'Mutation', updateReception: { __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null } };
+export type UpdateReceptionMutation = { __typename?: 'Mutation', updateReception: { __typename?: 'Reception', id: string } };
 
 export type GetAllGoodsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1053,6 +1057,7 @@ export const CreateReceptionDocument = gql`
     employeeId
     petId
     purposeId
+    discount
     id
   }
 }
@@ -1078,6 +1083,16 @@ export const GetReceptionDocument = gql`
     cost
     diagnosis
     petId
+    discount
+    pet {
+      alias
+      id
+      client {
+        id
+        fullName
+        telephoneNumber
+      }
+    }
     employee {
       id
       fullName
@@ -1241,12 +1256,6 @@ export const UpdateReceptionDocument = gql`
     mutation UpdateReception($data: UpdateReceptionInput!, $receptionId: String!) {
   updateReception(data: $data, receptionId: $receptionId) {
     id
-    diagnosis
-    createdAt
-    cost
-    purpose {
-      purposeName
-    }
   }
 }
     `;

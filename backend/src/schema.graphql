@@ -115,6 +115,7 @@ input CreateReceptionInput {
   clinicalSigns: String
   cost: Float
   diagnosis: String
+  discount: Int
   employeeId: Int!
   goodsListReceptionInput: [GoodsListReceptionInput!]
   petId: String!
@@ -268,8 +269,6 @@ type Query {
 }
 
 type Reception {
-  Pet: Pet
-
   """Анамнез"""
   anamnesis: String
 
@@ -287,10 +286,14 @@ type Reception {
 
   """Диагноз"""
   diagnosis: String
+
+  """Скидка на прием"""
+  discount: Int
   employee: Employee
   employeeId: Int
   goods: [GoodsList]
   id: String!
+  pet: Pet
   petId: String
   purpose: ReceptionPurpose
   purposeId: Int
@@ -390,6 +393,7 @@ input UpdateReceptionInput {
   clinicalSigns: String
   cost: Float
   diagnosis: String
+  discount: Int
   employeeId: Int!
   goodsListReceptionInput: [GoodsListReceptionInput!]
   purposeId: Int!

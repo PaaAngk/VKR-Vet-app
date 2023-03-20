@@ -10,8 +10,8 @@ export class Reception {
   @Field(() => String)
   id: string;
 
-  @Field(() => Pet)
-  Pet?: Pet;
+  @Field(() => Pet, { nullable: true })
+  pet?: Pet;
 
   @Field(() => Employee)
   employee?: Employee;
@@ -51,6 +51,9 @@ export class Reception {
     description: 'Посчитанная стоимость приема по усулгам и товарам',
   })
   cost?: number;
+
+  @Field(() => Int, { nullable: true, description: 'Скидка на прием' })
+  discount?: number;
 
   @Field({
     description: 'Identifies the date and time when the object was created.',

@@ -1,11 +1,5 @@
-import {
-  IsArray,
-  IsInt,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-} from 'class-validator';
-import { InputType, Field, Float } from '@nestjs/graphql';
+import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
+import { InputType, Field, Float, Int } from '@nestjs/graphql';
 import { GoodsListReceptionInput } from './GoodsListReceptionInput.input';
 import { ServiceListReceptionInput } from './ServiceListReceptionInput.input';
 
@@ -19,20 +13,23 @@ export class UpdateReceptionInput {
   @IsNotEmpty()
   purposeId: number;
 
-  @IsString()
+  @Field(() => String, { nullable: true })
   clinicalSigns?: string;
 
-  @IsString()
+  @Field(() => String, { nullable: true })
   anamnesis?: string;
 
-  @IsString()
+  @Field(() => String, { nullable: true })
   diagnosis?: string;
 
-  @IsString()
+  @Field(() => String, { nullable: true })
   assignment?: string;
 
   @Field(() => Float)
   cost?: number;
+
+  @Field(() => Int)
+  discount?: number;
 
   @IsArray()
   goodsListReceptionInput?: GoodsListReceptionInput[];

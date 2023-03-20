@@ -8,6 +8,7 @@ import {PolymorpheusComponent, PolymorpheusContent} from '@tinkoff/ng-polymorphe
 import { PetDialogComponent } from '../../dialog/add-pet/pet-dialog.component';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { DialogClientComponent } from '../../dialog/client-dialog/client-dialog.component';
+import { DocumentGenerateService } from '../../document-generate.service';
 
 @Component({
 	selector: 'vet-crm-client-detail',
@@ -29,7 +30,6 @@ export class ClientDetailComponent implements OnDestroy{
 			data: "add",
             dismissible: false,
             label: `Добавление питомца`,
-			
         },
     );
 
@@ -51,7 +51,7 @@ export class ClientDetailComponent implements OnDestroy{
 		private _changeDetectorRef: ChangeDetectorRef,
 		@Inject(Router) private readonly router: Router,
 		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
-		private deleteClientGQL: DeleteClientGQL,
+		private documentGenerateService: DocumentGenerateService,
     ) {
 		
 		activateRoute.params.subscribe(params=>this.clientCardService.setSelectedClient(params['id']));
@@ -116,5 +116,9 @@ export class ClientDetailComponent implements OnDestroy{
 				_unsubscribeDialog.complete();
 			}
 		});
+	}
+
+	generateDoc(){
+		// this.documentGenerateService.receiptForManipulation()
 	}
 }

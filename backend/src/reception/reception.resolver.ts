@@ -17,6 +17,7 @@ import { ServiceList } from 'src/services/models/service-list.model';
 import { GoodsList } from 'src/goods/models/goods-list.model';
 import { Employee } from 'src/common/models';
 import { UpdateReceptionInput } from './dto/UpdateReceptionInput.input';
+import { Pet } from 'src/pets/models/pet.model';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Reception)
@@ -40,6 +41,7 @@ export class ReceptionResolver {
         anamnesis: data.anamnesis?.trim() || null,
         diagnosis: data.diagnosis?.trim() || null,
         assignment: data.assignment?.trim() || null,
+        discount: data.discount,
         cost: data.cost,
       },
     });
@@ -73,7 +75,8 @@ export class ReceptionResolver {
   /**
    * update reception with list of goods and services.
    * update reception id into goods and services array with they input class.
-   * @param data
+   * @param newReceptionData
+   * @param receptionId
    * @returns new reception
    */
   @Mutation(() => Reception)
@@ -82,7 +85,16 @@ export class ReceptionResolver {
     @Args('data') newReceptionData: UpdateReceptionInput
   ) {
     const newReception = await this.prisma.reception.update({
-      data: newReceptionData,
+      data: {
+        employeeId: newReceptionData.employeeId,
+        purposeId: newReceptionData.purposeId,
+        clinicalSigns: newReceptionData.clinicalSigns?.trim() || null,
+        anamnesis: newReceptionData.anamnesis?.trim() || null,
+        diagnosis: newReceptionData.diagnosis?.trim() || null,
+        assignment: newReceptionData.assignment?.trim() || null,
+        cost: newReceptionData.cost,
+        discount: newReceptionData.discount,
+      },
       where: {
         id: receptionId,
       },
@@ -100,7 +112,7 @@ export class ReceptionResolver {
         })
       );
 
-      this.prisma.goodsList.createMany({
+      await this.prisma.goodsList.createMany({
         data: addInGoodsListInput,
       });
     }
@@ -116,7 +128,7 @@ export class ReceptionResolver {
           receptionId: newReception.id,
         }));
 
-      this.prisma.serviceList.createMany({
+      await this.prisma.serviceList.createMany({
         data: addInServiceListInput,
       });
     }
@@ -157,6 +169,13 @@ export class ReceptionResolver {
   async goods(@Parent() reception: Reception) {
     return this.prisma.goodsList.findMany({
       where: { receptionId: reception.id },
+    });
+  }
+
+  @ResolveField('pet', () => Pet)
+  async pet(@Parent() reception: Reception) {
+    return this.prisma.pet.findUnique({
+      where: { id: reception.petId },
     });
   }
 }
