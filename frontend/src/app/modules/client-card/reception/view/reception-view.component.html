@@ -272,9 +272,9 @@
                     </div>
                 </div>
 
-                <div class="text-center flex justify-evenly items-center" *ngIf="reception.services!.length !== 0 || reception.goods!.length !== 0">
-                    <h1 class="tui-text_h5 w-60">Скидка: {{reception.discount}}</h1>
+                <div class="text-center flex flex-col items-center" *ngIf="reception.services!.length !== 0 || reception.goods!.length !== 0">
                     <h1 class="tui-text_h4 w-56 text-black">Итог: {{reception.cost}}</h1>
+                    <span class="tui-text_body-xl w-60">Скидка: {{reception.discount}} %</span>
                 </div>
             </div>
         </tui-loader> 

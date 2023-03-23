@@ -1,4 +1,5 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import { Max, Min } from 'class-validator';
 import { Employee } from 'src/common/models';
 import { GoodsList } from 'src/goods/models/goods-list.model';
 import { Pet } from 'src/pets/models/pet.model';
@@ -53,6 +54,8 @@ export class Reception {
   cost?: number;
 
   @Field(() => Int, { nullable: true, description: 'Скидка на прием' })
+  @Min(0)
+  @Max(100)
   discount?: number;
 
   @Field({

@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, Max, Min } from 'class-validator';
 import { InputType, Field, Float, Int } from '@nestjs/graphql';
 import { GoodsListReceptionInput } from './GoodsListReceptionInput.input';
 import { ServiceListReceptionInput } from './ServiceListReceptionInput.input';
@@ -29,6 +29,8 @@ export class UpdateReceptionInput {
   cost?: number;
 
   @Field(() => Int)
+  @Min(0)
+  @Max(100)
   discount?: number;
 
   @IsArray()

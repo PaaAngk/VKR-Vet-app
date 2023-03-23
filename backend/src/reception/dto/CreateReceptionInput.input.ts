@@ -3,6 +3,8 @@ import {
   IsInt,
   IsNotEmpty,
   IsString,
+  Max,
+  Min,
   MinLength,
 } from 'class-validator';
 import { InputType, Field, Float, Int } from '@nestjs/graphql';
@@ -40,6 +42,8 @@ export class CreateReceptionInput {
   cost?: number;
 
   @Field(() => Int)
+  @Min(0)
+  @Max(100)
   discount?: number;
 
   @IsArray()

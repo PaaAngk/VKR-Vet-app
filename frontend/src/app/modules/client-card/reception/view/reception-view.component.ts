@@ -126,7 +126,7 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 	}
 
 	assignmentPrint(){
-		console.log("data")
+		this.documentGenerateService.assignmentGenerate(this.reception, 'docx')
 	}
 	assignmentDownload($event : ButtonWithDropdownItem){
 		console.log($event)

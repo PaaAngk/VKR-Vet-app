@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@angular/core";
 import { TuiDay } from "@taiga-ui/cdk";
-import { AlignmentType, Document, HeadingLevel, IRunOptions, Packer, Paragraph, SectionType, SimpleField, SimpleMailMergeField, Table, TableCell, TableRow, TabStopPosition, TabStopType, TextRun } from "docx";
+import { AlignmentType, BorderStyle, Document, HeadingLevel, IRunOptions, Packer, Paragraph, SectionType, SimpleField, SimpleMailMergeField, Table, TableCell, TableRow, TabStopPosition, TabStopType, TextRun, WidthType } from "docx";
 import { saveAs } from 'file-saver';
 import { CheckNullPipe } from "src/app/shared/pipes/check-null.pipe";
 import { Reception } from "src/graphql/generated";
@@ -9,6 +9,17 @@ import { ClientCardService } from "./client-card.service";
 @Injectable()
 export class DocumentGenerateService
 {
+    pageMargins = {
+        page: {
+            margin: {
+                top: 567,
+                right: 567,
+                bottom: 1000,
+                left: 567,
+            }
+        }
+    }
+    
     constructor(
         @Inject(CheckNullPipe) private checkNullPipe: CheckNullPipe,
         private clientCardService: ClientCardService,
@@ -17,7 +28,61 @@ export class DocumentGenerateService
     //Генерация расписки на манипуляции, договора на стационар по данным клиента и договора на оказание платных услуг
     checkGenerate(data: Reception, docType: string){
         console.log(data)
-        const columnHeader = ['№ п/п', 'Вид услуги(препарата)', 'Кол-во', 'Цена за ед. (руб)', 'Стоимость всего (руб)'] 
+        
+        const firstRow = new TableRow({
+            children: [
+                new TableCell({
+                    width: {
+                        size: 600,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph('№ п/п')]
+                }),
+                new TableCell({
+                    width: {
+                        size: 10000,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph('Вид услуги(препарата)')]
+                }),
+                new TableCell({
+                    width: {
+                        size: 700,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph('Кол-во')]
+                }),
+                new TableCell({
+                    width: {
+                        size: 1000,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph('Цена за ед. (руб)')]
+                }),
+                new TableCell({
+                    width: {
+                        size: 1000,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph('Стоимость всего (руб)')]
+                })
+            ]
+        })
+
+        const noneLeftBottomBorder = {
+            left: {
+                style: BorderStyle.NIL,
+                size: 0,
+            },
+            bottom: {
+                style: BorderStyle.NIL,
+                size: 0,
+            },
+            right: {
+                style: BorderStyle.NIL,
+                size: 0,
+            }
+        }
 
         // Составление списков товаров и услуг
         const serviceTableList = data.services?.map((col) => (
@@ -34,36 +99,88 @@ export class DocumentGenerateService
             ))
 
         // Concate all array and set indexes without headers
-        const totalTableList = [].concat([columnHeader as never]).concat(serviceTableList as never).concat(goodsTableList as never).map((col: any[], i) => ( i == 0 ? col : [i].concat(col)))
-            
-        console.log(totalTableList)
+        const totalTableList = [].concat(serviceTableList as never)
+            .concat(goodsTableList as never).map((col: any[], i) => ([i+1].concat(col)) ) 
+
+        // Create table row 
+        let tableArr: TableRow[] = []
+        totalTableList.forEach((row) => {
+            const cols = row
+                .map((item) => {
+                    return new TableCell({
+                        children: [new Paragraph(`${item}`)]
+                    })
+                })
+            tableArr.push(this.createTableRow(cols as unknown as TableCell[]))
+        })
+
+        // Reception cost 
+        const checkSum = new TableRow({
+            children: [
+                new TableCell({
+                    width: {
+                        size: 600,
+                        type: WidthType.DXA,
+                    },
+                    borders: noneLeftBottomBorder,
+                    children: []
+                }),
+                new TableCell({
+                    width: {
+                        size: 10000,
+                        type: WidthType.DXA,
+                    },
+                    borders: noneLeftBottomBorder,
+                    children: []
+                }),
+                new TableCell({
+                    width: {
+                        size: 600,
+                        type: WidthType.DXA,
+                    },
+                    borders: noneLeftBottomBorder,
+                    children: []
+                }),
+                new TableCell({
+                    width: {
+                        size: 1000,
+                        type: WidthType.DXA,
+                    },
+                    borders: noneLeftBottomBorder,
+                    children: [new Paragraph({text:'Итог:', alignment: AlignmentType.END})]
+                }),
+                new TableCell({
+                    width: {
+                        size: 1000,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph(`${data.cost}`)]
+                })
+            ]
+        })
+
+        const textSize = 16
+
+        tableArr.unshift(firstRow)
+        tableArr = tableArr.concat(checkSum)
 
         const document = new Document({
             sections: [{
-                properties:{
-                    page: {
-                        margin: {
-                            top: 567,
-                            right: 567,
-                            bottom: 1000,
-                            left: 567,
-                        },
-                    },
-                },
+                properties: this.pageMargins,
                 children: [
                     new Paragraph({
                         alignment: AlignmentType.RIGHT,
                         children: [
                             new TextRun({
                                 text: `В соответствии с Постановлением Правительства РФ от 06.06.2008 г. №359`,
-                                size:16
+                                size:textSize
                             }),
                         ],
                     }),
 
-                    this.paragraphWithText('Индивидуальный предприниматель Тунгатарова Мария Канатбековна', 16),
-                    this.paragraphWithText('666829, Ирк. обл., г.Ангарск, 10 мкр., д.61', 16),
-                    this.paragraphWithText('ИНН 380103180995, ОГРНИП 321385000040130', 16),
+                    this.paragraphWithText('Индивидуальный предприниматель Тунгатарова Мария Канатбековна', textSize),
+                    this.paragraphWithText('666829, Ирк. обл., г.Ангарск, 10 мкр., д.61', textSize),
+                    this.paragraphWithText('ИНН 380103180995, ОГРНИП 321385000040130', textSize),
                     
                     new Paragraph({
                         text: "Квитанция-Договор № 21751 от " + TuiDay.currentLocal(),
@@ -73,7 +190,7 @@ export class DocumentGenerateService
                     }),
 
                     new Paragraph({
-                        spacing:{before:150, after:100},
+                        spacing:{before:150, after:150},
                         children: [
                             new TextRun({ text: `Потребитель (Ф.И.О): `,size:24, }),
                             new TextRun({ text: `${data.pet?.client?.fullName}`,size:24,underline: {},}),
@@ -83,33 +200,55 @@ export class DocumentGenerateService
                     }),
 
                     new Table({
-                        rows: [
-                            new TableRow({
-                                children: [
-                                    new TableCell({
-                                        children: [new Paragraph("Hello")],
-                                    }),
-                                    new TableCell({
-                                        children: [],
-                                    }),
-                                ],
-                            }),
-                            new TableRow({
-                                children: [
-                                    new TableCell({
-                                        children: [],
-                                    }),
-                                    new TableCell({
-                                        children: [new Paragraph("World")],
-                                    }),
-                                ],
-                            }),
+                        rows: tableArr,
+                    }),
+
+                    new Paragraph({
+                        spacing:{before:150, after:100},
+                        children: [
+                            new TextRun({ text:`Оплачено ${data.cost} ${data.discount ? 'с учётом '+data.discount+'% скидки': ''}`, size:18}),
                         ],
                     }),
+                    
+                    this.paragraphWithText('В случае прерывания лечения Исполнитель снимает с себя ответственность за здоровье животного. Так же в случае изменения схемы лечения в других клиниках претензии по качеству лечения не принимаются.', textSize),
+                    new Paragraph({
+                        spacing:{before:100 },
+                        children: [
+                            new TextRun({ text:'Вышеуказанные услуги, оказанные исполнителем выполнены надлежащим образом. Претензий со стороны потребителя не имеется _____________________', size:textSize}),
+                        ],
+                    }),
+                    new Paragraph({
+                        alignment: AlignmentType.END,
+                        children: [
+                            new TextRun({ text:'(подпись потребителя)', size:textSize}),
+                        ],
+                    }),
+                    new Paragraph({
+                        spacing:{before:200},
+                        children: [
+                            new TextRun({ text:'Получено лицом, ответственным за совершение операции и правильностью ее оформления: ', size:textSize }),
+                            new TextRun({ text:`${data.employee?.fullName}____________________`, size:textSize}),
+                        ],
+                    }),
+                    new Paragraph({
+                        alignment: AlignmentType.END,
+                        children: [
+                            new TextRun({ text:'(в/врач исполнителя, Ф.И.О., подпись)', size:textSize}),
+                        ],
+                    }),
+
+                    // Delimeter
+                    // new Paragraph({
+                    //     children: [
+                    //         new TextRun({
+                    //             text: `_______________________________________________________________________________________________________________________________________`,
+                    //             size:textSize
+                    //         }),
+                    //     ],
+                    // }),
                 ]
             }]
         });
-
 
         // Used to export the file into a .docx file
         Packer.toBlob(document).then((blob) => {
@@ -117,26 +256,110 @@ export class DocumentGenerateService
         });
     }
 
-    createTableRow(items : any[], row : number) {
-        // let tableCell : any[] = []
+    assignmentGenerate(data: Reception, docType: string){
+        console.log(data)
+        const textSize = 22
+        const document = new Document({
+            sections: [{
+                properties: this.pageMargins,
+                children: [
+                    this.paragraphWithText('Индивидуальный предприниматель Тунгатарова Мария Канатбековна', textSize),
+                    this.paragraphWithText('666829, Ирк. обл., г.Ангарск, 10 мкр., д.61', textSize),
+                    this.paragraphWithText('ИНН 380103180995, ОГРНИП 321385000040130', textSize),
+                    
+                    new Paragraph({
+                        text: "Лист назначений от " + TuiDay.currentLocal(),
+                        alignment:AlignmentType.CENTER,
+                        heading: HeadingLevel.HEADING_1,
+                        spacing:{before:200, after:200}
+                    }),
 
-        // tableCell = items.forEach( (item) => {
-        //     return new TableCell({
-        //         children: [new Paragraph("Hello")],
-        //     })
-        // });
-        
+                    new Paragraph({
+                        spacing:{after:150},
+                        children: [
+                            new TextRun({ text: `Информация по владельцу (Ф.И.О): `,size:textSize}),
+                            new TextRun({ text: `${data.pet?.client?.fullName}`,size:textSize}),
+                            new TextRun({ text: `\tТелефон: `, size:textSize, }),
+                            new TextRun({ text: `${this.checkNullPipe.transform(data.pet?.client?.telephoneNumber) } `, underline: {}, size:textSize }),
+                        ],
+                    }), 
 
-        return new TableRow({
-            children: [
-                new TableCell({
-                    children: [new Paragraph("Hello")],
-                }),
-                new TableCell({
-                    children: [],
-                }),
-            ],
+                    new Paragraph({
+                        spacing:{after:150},
+                        children: [
+                            new TextRun({ text: `Информация по питомцу: `, size:textSize}),
+                            new TextRun({ text: `Кличка: ${data.pet?.alias}`, size:textSize}),
+                            new TextRun({ text: `\tВид: ${this.checkNullPipe.transform(data.pet?.kind)}`, size:textSize, }),
+                            new TextRun({ text: `\tПол: ${data.pet?.gender == null ? 'Нет данных': (data.pet?.gender ? "Мужской":"Женский")} `, size:textSize }),
+                            new TextRun({ text: `\tДата рождения: ${this.checkNullPipe.transform(data.pet?.DOB)} `, size:textSize }),
+                        ],
+                    }), 
+
+                    this.paragraphWithText('Диагноз: '+ data.diagnosis, textSize),
+ 
+                    new Paragraph({
+                        spacing:{after:150},
+                        children: [
+                            new TextRun({ text:`Анамнез: ${data.anamnesis} `, size:textSize}),
+                        ],
+                    }),
+
+                    new Paragraph({
+                        text: "Рекомендации:",
+                        heading: HeadingLevel.HEADING_3,
+                        spacing:{ after:150}
+                    }),
+                    
+                    new Paragraph({
+                        spacing:{after:150},
+                        children: [
+                            new TextRun({ text:'Наблюдать за общим состоянием животного, клиническими симптомами, такими как (вялость, отказ от корма, не оформленный акт дефекации, повышение температуры (измеряется только ректально) и т.д). При наблюдении симптомов обратиться в клинику.', size:textSize, bold:true}),
+                        ],
+                    }),
+
+                    new Paragraph({
+                        spacing:{after:150},
+                        children: [
+                            new TextRun({ text:'Дегельментизировать животное 1 раз в 3 месяца или хотя бы 1 раз в 6 месяцев, ежегодно. Если у животного не наблюдается паразитов в кале, то через 7 - 14 дней животное можно вакцинировать.', size:textSize, bold:true}),
+                        ],
+                    }),
+
+                    new Paragraph({
+                        spacing:{after:150},
+                        children: [
+                            new TextRun({ text:'Мне, доступно объяснено лечение, план обследования, исход болезни и диагноз _________________', size:textSize, bold:true}),
+                        ],
+                    }),
+
+                    new Paragraph({
+                        children: [
+                            new TextRun({ text:'Я информирован(а) о возможных нежелательных реакциях, проявляющихся при применении медицинских и ветеринарных лекарственных препаратов для лечения животных. С планом лечения, рекомендуемой диагностикой ознакомлен(а) и даю своё согласие ________________', size:textSize, bold:true}),
+                        ],
+                    }),
+
+                ]
+            }]
         });
+
+        // Used to export the file into a .docx file
+        Packer.toBlob(document).then((blob) => {
+            saveAs(blob, 'assignment.docx');
+        });
+    }
+
+
+
+
+
+
+
+
+
+    // Send table cells array for contain in row
+    createTableRow(items :TableCell[] ) {
+        return new TableRow({
+            children: items
+        })
     }
     
     paragraphWithText(text:string, size: number = 28){
@@ -150,7 +373,7 @@ export class DocumentGenerateService
         })
     }
 
-    checkGenerate1(data: Reception, docType: string){
+    checkGenerate1(data: Reception){
         const PHONE_NUMBER = "07534563401";
         const PROFILE_URL = "https://www.linkedin.com/in/dolan1";
         const EMAIL = "docx@com";
