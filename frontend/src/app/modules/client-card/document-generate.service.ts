@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { TuiDay } from "@taiga-ui/cdk";
 import { AlignmentType, BorderStyle, Document, HeadingLevel, IRunOptions, Packer, Paragraph, SectionType, SimpleField, SimpleMailMergeField, Table, TableCell, TableRow, TabStopPosition, TabStopType, TextRun, WidthType } from "docx";
@@ -23,6 +24,7 @@ export class DocumentGenerateService
     constructor(
         @Inject(CheckNullPipe) private checkNullPipe: CheckNullPipe,
         private clientCardService: ClientCardService,
+        private http: HttpClient
     ) {}
 
     //Генерация расписки на манипуляции, договора на стационар по данным клиента и договора на оказание платных услуг
@@ -252,8 +254,24 @@ export class DocumentGenerateService
 
         // Used to export the file into a .docx file
         Packer.toBlob(document).then((blob) => {
-            saveAs(blob, 'check.docx');
+            // saveAs(blob, 'check.docx');
+            if(blob) {
+                const formData:FormData = new FormData();
+                formData.append('uploadFile', blob);
+                console.log(formData)
+                const headers = new HttpHeaders();
+                headers.append('Content-Type', 'multipart/form-data');
+                headers.append('Accept', '*/*');
+                const options = { headers: headers };
+                this.http.post(`http://localhost:3000/convert-docx-to-pdf`, formData, {headers})
+                    .subscribe({
+                        next: (data: any) => console.log(data),
+                        error: (error: any) => console.log(error),
+                    })
+            }
+        
         });
+
     }
 
     assignmentGenerate(data: Reception, docType: string){

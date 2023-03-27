@@ -40,6 +40,7 @@ import { ArrayToAnyArrayPipe } from 'src/app/shared/pipes/array-to-any-array.pip
 import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
 import { TuiStringifyContentPipeModule } from '@taiga-ui/kit';
 import { DocumentGenerateService } from './document-generate.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { DocumentGenerateService } from './document-generate.service';
     FormsModule,
     ReactiveFormsModule,
     AdvancedTableModule,
+    HttpClientModule,
     ButtonWithDropdownModule,
 
     TuiInputModule,

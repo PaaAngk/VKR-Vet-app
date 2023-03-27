@@ -314,7 +314,6 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	}
 
 	editReception(goodsListReceptionInput: GoodsListReceptionInput[], serviceListReceptionInput: ServiceListReceptionInput[]){
-		console.log({ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput } as UpdateReceptionInput)
 		this.clientCardService.updateReception(
 			this.receptionId,
 			{ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput } as UpdateReceptionInput
