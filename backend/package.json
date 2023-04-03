@@ -73,6 +73,7 @@
     "graphql-scalars": "1.17.0",
     "graphql-subscriptions": "2.0.0",
     "libreoffice-convert": "^1.4.1",
+    "nestjs-form-data": "^1.8.7",
     "nestjs-prisma": "0.17.0",
     "passport": "0.6.0",
     "passport-jwt": "4.0.0",

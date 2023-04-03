@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { tuiWatch } from '@taiga-ui/cdk';
 import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import {  Subject, takeUntil } from 'rxjs';
@@ -8,6 +9,7 @@ import { AnalyzesResearch, Pet, Reception } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
 import {PolymorpheusComponent, PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { PetDialogComponent } from '../dialog/add-pet/pet-dialog.component';
+import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 
 @Component({
 	selector: 'vet-crm-pet',
@@ -44,6 +46,8 @@ export class PetComponent implements OnDestroy{
             label: `Изменение данных питомца`,
         },
     );
+	
+	pageLoader = false;
 
 	pet: Pet = {} as Pet;
 	receptions: Reception[] = [] as Reception[];
@@ -51,6 +55,7 @@ export class PetComponent implements OnDestroy{
 	activeItemIndex = 1;
 	readonly receptionColumns = ['receptionPurpose', 'diagnosis', 'date', 'cost', 'actions'];
 	readonly analyzesColumns = ['type', 'date', 'actions']
+	readonly createdDateSorter: TuiComparator<Reception> = (a: Reception, b: Reception) => tuiDefaultSort(a.createdAt, b.createdAt)
  
     constructor(
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
@@ -60,15 +65,28 @@ export class PetComponent implements OnDestroy{
 		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
 		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
+		private location: Location,
     ) {
 		this.activateRoute.params.subscribe(params=>this.clientCardService.getPetDetail(params['id']));
-
+		this.pageLoader = true;
 		this.clientCardService.getPet$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
-		.subscribe((pet: Pet) => {	
-			this.pet = pet;
-			this.receptions = pet.receptions || [] as Reception[];
-			this.analyzesResearchs = pet.analyzesResearchs || [] as AnalyzesResearch[];
+		.subscribe({
+			next: (pet: Pet) => {	
+				if (Object.keys(pet).length !== 0){
+					this.pageLoader = false;
+				}
+				this.pet = pet
+				this.receptions = pet.receptions || [] as Reception[];//.sort((a, b) => ( new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() ) )
+				this.analyzesResearchs = pet.analyzesResearchs || [] as AnalyzesResearch[];
+			},
+			error: () => {
+				this.alertService.open(
+					"Не удалось загрузить данные питомца.", 
+					{status: TuiNotification.Error, label:"Питомца не существует", autoClose:8000}
+				).subscribe();
+				this.location.back();
+			}
 		});
 	}
 

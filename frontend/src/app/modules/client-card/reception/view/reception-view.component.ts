@@ -3,13 +3,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { defaultEditorExtensions, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-editor';
 import { tuiWatch } from '@taiga-ui/cdk';
-import { TuiAlertService } from '@taiga-ui/core';
+import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Client, GetReceptionGQL, Reception } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
-import { ButtonWithDropdown, ButtonWithDropdownItem } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
-import { Location } from '@angular/common';
+import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
 import { DocumentGenerateService } from '../../document-generate.service';
 
 interface SelectedService{
@@ -58,6 +57,9 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 			{name: "Скачать файл", event:"download"},
 		],
 	};
+	assignmentButtonLoader = false;
+	checkButtonLoader = false;
+
 	loading = false;
 
 	readonly tablesColumns = ['name', 'price', 'quantity'];
@@ -125,17 +127,41 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 		this.router.navigateByUrl('client-card/detail');
 	}
 
-	assignmentPrint(){
-		this.documentGenerateService.assignmentGenerate(this.reception, 'docx')
+	errInDocumentGeneration = () => {
+		this.alertService.open("Обратитесь к администратору или обновите страницу", 
+		{
+			status: TuiNotification.Error, 
+			label: "Ошибка генерации документа!",
+			autoClose: 5000,
+		}).subscribe()
 	}
-	assignmentDownload($event : ButtonWithDropdownItem){
-		console.log($event)
+
+	assignmentPrint(){
+		this.assignmentButtonLoader = true;
+		this.documentGenerateService.assignmentGenerate(this.reception, 'pdf').subscribe({
+			error: () => this.errInDocumentGeneration(),
+			complete: () => {this.assignmentButtonLoader = false, this._changeDetectorRef.markForCheck()}
+		})
+	}
+	assignmentDownload(){
+		this.assignmentButtonLoader = false;
+		this.documentGenerateService.assignmentGenerate(this.reception, 'docx').subscribe({
+			error: () => this.errInDocumentGeneration(),
+			complete: () => {this.assignmentButtonLoader = false, this._changeDetectorRef.markForCheck()}
+		})
 	}	
 
 	checkPrint(){
-		this.documentGenerateService.checkGenerate(this.reception, 'docx')
+		this.checkButtonLoader = true;
+		this.documentGenerateService.checkGeneratePdfOnServer(this.reception).subscribe({
+			next: () => {this.checkButtonLoader = false, this._changeDetectorRef.markForCheck()},
+			error: () => this.errInDocumentGeneration()
+		})
 	}
-	checkDownload($event : ButtonWithDropdownItem){
-		console.log($event)
+	checkDownload(){
+		this.documentGenerateService.checkGenerateWord(this.reception).subscribe({
+			error: () => this.errInDocumentGeneration(),
+			complete: () => {this.checkButtonLoader = false, this._changeDetectorRef.markForCheck()}
+		})
 	}	
 }

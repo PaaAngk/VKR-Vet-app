@@ -142,7 +142,7 @@ export class ClientCardService
                 this._currentClient.next(data.data.clientDetail)
             },
             error: (error)  => {
-                console.log(error)
+                this._currentClient.error(error)
             }
         });
     }
@@ -212,6 +212,7 @@ export class ClientCardService
             },
             error: (error)  => {
                 console.log(error)
+                this._currentPet.error(error)
             }
         });
     }

@@ -148,6 +148,9 @@ query GetReception($receptionId:String!){
     discount
     pet{
       alias
+      DOB
+      kind
+      gender
       id
       client{
         id

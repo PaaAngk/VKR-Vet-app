@@ -73,8 +73,8 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	selectedGoods : SelectedGoods[] = [];
 	selectGoodsInput : SelectedGoods[] = [];
 
-	editorSettengs: ReadonlyArray<TuiEditorTool> = [TuiEditorTool.Undo, TuiEditorTool.Bold, TuiEditorTool.Italic, TuiEditorTool.Underline, TuiEditorTool.List,
-		TuiEditorTool.Color, TuiEditorTool.Size, TuiEditorTool.Sup, TuiEditorTool.Sub, TuiEditorTool.HR, TuiEditorTool.Link, TuiEditorTool.Hilite]
+	editorSettengs: ReadonlyArray<TuiEditorTool> = [TuiEditorTool.Undo, TuiEditorTool.Bold, TuiEditorTool.Underline, TuiEditorTool.List,
+		TuiEditorTool.Color, TuiEditorTool.Size, TuiEditorTool.Sup, TuiEditorTool.Sub, TuiEditorTool.Hilite]
 	
 	readonly addReceptionForm = new FormGroup({
         employeeId: new FormControl(-1),
@@ -138,7 +138,6 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
 			.subscribe( ({data, loading}) => {
 				this.loading = loading;
-				console.log(data)
 				const reception : Reception = data.reception
 				this.addReceptionForm.setValue({
 					employeeId: -1,
@@ -318,9 +317,8 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 			this.receptionId,
 			{ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput } as UpdateReceptionInput
 		).subscribe({
-			next: (data) => {
+			next: () => {
 				this.loading = false;
-				console.log(data)
 				this.alertService.open("", {
 					status: TuiNotification.Success, 
 					label:"Прием успешно изменен!",

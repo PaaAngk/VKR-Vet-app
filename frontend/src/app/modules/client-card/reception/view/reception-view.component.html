@@ -13,14 +13,16 @@
         <div tuiTextfieldSize="m" class="flex items-center justify-center h-full py-auto space-x-2 w-full">
             <button-with-dropdown
                 [data]="assignmentPrintButtonData" 
+                [showLoader]="assignmentButtonLoader"
                 (buttonAction)="assignmentPrint()" 
-                (dropdownAction)="assignmentDownload($event)"
+                (dropdownAction)="assignmentDownload()"
             ></button-with-dropdown>
 
             <button-with-dropdown 
                 [data]="checkPrintButtonData" 
+                [showLoader]="checkButtonLoader"
                 (buttonAction)="checkPrint()" 
-                (dropdownAction)="checkDownload($event)"
+                (dropdownAction)="checkDownload()"
             ></button-with-dropdown>
         </div>
 
@@ -274,7 +276,7 @@
 
                 <div class="text-center flex flex-col items-center" *ngIf="reception.services!.length !== 0 || reception.goods!.length !== 0">
                     <h1 class="tui-text_h4 w-56 text-black">Итог: {{reception.cost}}</h1>
-                    <span class="tui-text_body-xl w-60">Скидка: {{reception.discount}} %</span>
+                    <span class="tui-text_body-xl w-60">Скидка: {{reception.discount ? reception.discount : 0}} %</span>
                 </div>
             </div>
         </tui-loader> 

@@ -1,6 +1,6 @@
 <div class="flex flex-col space-y-3" *ngIf="true">
 
-    <div class="w-full h-full p-2 rounded-lg bg-white shadow-md">
+    <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="w-full h-full p-2 rounded-lg bg-white shadow-md">
         <div tuiTextfieldSize="m" class="flex justify-between items-center h-full py-auto">
             <div class="flex flex-row space-x-10">
                 <div>
@@ -45,9 +45,9 @@
             </button>
             
         </div>
-    </div>
+    </tui-loader>
 
-    <div class="w-full h-full rounded-lg bg-white shadow-md">
+    <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="w-full h-full rounded-lg bg-white shadow-md">
         <tui-tabs [(activeItemIndex)]="activeItemIndex">
             <button
                 tuiTab
@@ -70,6 +70,7 @@
         </tui-tabs>
 
         <div class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'75vh'}">
+            <!-- Pets list -->
             <div *ngIf="activeItemIndex === 0">
                 <table
                     class="w-full"
@@ -207,12 +208,17 @@
                 </h3>
             </div>
 
+            <!-- Document generate -->
             <div *ngIf="activeItemIndex === 1">
-                <button tuiButton (click)="generateDoc()">Document Generate</button>
+                
+                <div class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Noteworthy technology acquisitions 2021</h5>
+                    <button tuiButton (click)="generateDoc()">Document Generate</button>
+                </div>
             </div>
         </div>
         
-    </div>
+    </tui-loader>
 </div>
 
 <ng-template

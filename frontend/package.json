@@ -34,6 +34,7 @@
     "file-saver": "^2.0.5",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.11.2",
+    "node-html-parser": "^6.1.5",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "underscore": "^1.13.6",

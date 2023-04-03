@@ -10,6 +10,7 @@
             size="m"
             class="tui-group__auto-width-item"
             (click)="buttonClick()"
+            [showLoader]="showLoader"
         >
             {{data.buttonName}}
         </button>
@@ -21,6 +22,7 @@
             size="m"
             class="tui-group__auto-width-item"
             [iconRight]="icon" 
+            [showLoader]="showLoader"
         ></button>
         <ng-template #icon>
             <tui-svg

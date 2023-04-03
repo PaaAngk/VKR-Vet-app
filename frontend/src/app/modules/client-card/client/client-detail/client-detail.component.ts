@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { Subject, takeUntil } from 'rxjs';
-import { Client, DeleteClientGQL, Pet } from 'src/graphql/generated';
+import { Client, Pet } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {PolymorpheusComponent, PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
 import { PetDialogComponent } from '../../dialog/add-pet/pet-dialog.component';
@@ -23,6 +24,7 @@ export class ClientDetailComponent implements OnDestroy{
 	pets = [] as Pet[];
 	activeItemIndex = 0;
 	readonly petsColumns = ['alias', 'kind', 'gender', 'DOB', 'breed', 'actions'];
+	pageLoader = false;
 
 	private readonly dialogAddPet = this.dialogService.open<number>(
         new PolymorpheusComponent(PetDialogComponent, this.injector),
@@ -52,7 +54,9 @@ export class ClientDetailComponent implements OnDestroy{
 		@Inject(Router) private readonly router: Router,
 		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
 		private documentGenerateService: DocumentGenerateService,
+		private location: Location,
     ) {
+		this.pageLoader = true;
 		
 		activateRoute.params.subscribe(params=>this.clientCardService.setSelectedClient(params['id']));
 
@@ -65,9 +69,21 @@ export class ClientDetailComponent implements OnDestroy{
 		// Getting clients data 
 		this.clientCardService.getSelectedClient$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
-		.subscribe((client: Client) => {
-			this.client = client
-			this.pets = client.pets || []
+		.subscribe({
+			next: (client: Client) => {
+				if (Object.keys(client).length !== 0){
+					this.pageLoader = false;
+				}
+				this.client = client
+				this.pets = client.pets || []
+			},
+			error: () => {
+				this.alertService.open(
+					"Не удалось загрузить данные питомца.", 
+					{status: TuiNotification.Error, label:"Питомца не существует", autoClose:8000}
+				).subscribe();
+				this.location.back();
+			}
 		});
 	}
 

@@ -1,7 +1,7 @@
 <div class="flex flex-col space-y-3 max-h-full p-0" *ngIf="true">
 
     <!-- Header -->
-    <div class="p-2 rounded-lg bg-white shadow-md">
+    <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="p-2 rounded-lg bg-white shadow-md" >
         <div tuiTextfieldSize="m" class="flex flex-row items-center gap-2">
             <p class="text-base md:basis-3/6 basis-full">
                 <b class="mx-4 text-xl">{{ pet.alias }} </b> 
@@ -58,10 +58,10 @@
                 </button>
             </div>
         </div>
-    </div>
+    </tui-loader>
 
     <!-- Main part -->
-    <div class="rounded-lg bg-white shadow-md h-full">
+    <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="rounded-lg bg-white shadow-md h-full">
         <!-- Menu -->
         <tui-tabs [(activeItemIndex)]="activeItemIndex" class="">
             <button
@@ -126,6 +126,8 @@
                             <th
                                 *tuiHead="'date'"
                                 tuiTh
+                                [sticky]="true"
+                                [sorter]="createdDateSorter"
                             >
                                 Дата
                             </th>
@@ -149,7 +151,7 @@
                         [data]="sortedReceptions"
                     >
                         <tr
-                            *ngFor="let reception of sortedReceptions; let index = index"
+                            *ngFor="let reception of sortedReceptions"
                             tuiTr
                         >
                             <td
@@ -195,15 +197,13 @@
                 </table>
 
                 <h3
-                    *ngIf="receptions.length === 0"
+                    *ngIf="receptions.length === 0 && !pageLoader"
                     class="text-2xl py-2 font-bold text-center"
                 >
                     Нет добавленных приемов
                 </h3>
-                
             </div>
             
-
             <!-- Analyzes -->
             <div class="" *ngIf="activeItemIndex === 2">
                 <table
@@ -281,7 +281,7 @@
             </div>
         </div>
         
-    </div>
+    </tui-loader>
 </div>
 
 

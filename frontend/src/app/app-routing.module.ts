@@ -57,15 +57,9 @@ const routes: Routes = [
         {path: 'services', loadChildren: () => import('./modules/services/services.module').then(m => m.ServiceModule)},
         {path: 'goods', loadChildren: () => import('./modules/goods/goods.module').then(m => m.GoodsModule)},
 
-    //     // Registry
-    //     {path: 'registry', loadChildren: () => import('./modules/registry/registry.module').then(m => m.RegistryModule)},
-
-    //     // User
-    //     {path: 'user', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule)},
-
-    //     // 404 & Catch all
-    //     {path: '404-not-found', pathMatch: 'full', component: Page404Component},
-    //     {path: '**', redirectTo: '404-not-found'}
+        // 404 & Catch all
+        {path: '404-not-found', pathMatch: 'full', component: Page404Component},
+        {path: '**', redirectTo: '404-not-found'}
     ]
   },
 

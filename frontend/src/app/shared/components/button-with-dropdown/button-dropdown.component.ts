@@ -10,6 +10,8 @@ export class ButtonDropdownComponent {
 
   @Input() data: ButtonWithDropdown = {} as ButtonWithDropdown;
 
+  @Input() showLoader: boolean = false;
+
   @Output() buttonAction: EventEmitter<any> = new EventEmitter<any>();
 
   @Output() dropdownAction: EventEmitter<any> = new EventEmitter<any>();

@@ -22,7 +22,6 @@ import { HttpLink } from 'apollo-angular/http';
 import { ApolloLink, InMemoryCache, split } from '@apollo/client/core';
 import { ClientCardModule } from './modules/client-card/client-card.module';
 import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
-import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
@@ -129,7 +128,7 @@ import { createClient } from 'graphql-ws';
 
         return {
           link,
-          cache: new InMemoryCache(),
+          cache: new InMemoryCache(),//{resultCaching:false}
         };
       },
       deps: [HttpLink],
