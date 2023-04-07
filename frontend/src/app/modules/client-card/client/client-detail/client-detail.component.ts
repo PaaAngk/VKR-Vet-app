@@ -10,6 +10,13 @@ import { PetDialogComponent } from '../../dialog/add-pet/pet-dialog.component';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { DialogClientComponent } from '../../dialog/client-dialog/client-dialog.component';
 import { DocumentGenerateService } from '../../document-generate.service';
+import { DropdownDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-dropdown';
+import { DateDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-date';
+import { DateRangeDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-dateRange';
+import { ComboboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-combobox';
+import { TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-textbox';
+import { CountboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-countbox';
+import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
 
 @Component({
 	selector: 'vet-crm-client-detail',
@@ -19,12 +26,126 @@ import { DocumentGenerateService } from '../../document-generate.service';
 })
 export class ClientDetailComponent implements OnDestroy{
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
+	segmentFilter: DynamicFilterBase<string|string[]|number> = 
+		{
+			title: "Main filter",
+			dynamicFilterInputs: [
+				new DateDynamicFilter({
+					key: 'dateSelector',
+					label: 'Date entering',
+					value: new Date(2011, 0, 1)
+				}),
+
+				new DateRangeDynamicFilter({
+					key: 'dateRangeSelector',
+					label: 'Date entering',
+				}),
+
+				new ComboboxDynamicFilter({
+					key: 'combobox',
+					label: 'Bravery Rating',
+					placeholder:"Enter value to checkbox",
+					options: [
+						"Solid",
+						"Great",
+						"Good",
+						"Unproven"
+					],
+					
+				}),
+	
+				new DropdownDynamicFilter({
+					key: 'dropdown',
+					label: 'Dropdown Exapmle',
+					placeholder:"Enter value to dropdown input",
+					options: [
+						"Solid",
+						"Great",
+						"Good",
+						"Unproven"
+					],
+					match: true,
+					
+				}),
+	
+				new TextboxDynamicFilter({
+					key: 'firstName',
+					label: 'First name',
+					value: 'Bombasto',
+					placeholder:"Enter first name into input",
+					required: true,
+					match: true,
+				}),
+	
+				new CountboxDynamicFilter({
+					key: 'counter',
+					label: 'Counter',
+					value: 0,
+					required: true,
+				}),
+				
+				// new DateDynamicFilter({
+				//   key: 'date',
+				//   label: 'Date entering',
+				// }),
+	
+				new TextboxDynamicFilter({
+					key: 'emailAddress',
+					label: 'Email',
+					type: 'email',
+					
+					minLength: 5
+				}),
+
+				new ComboboxDynamicFilter({
+					key: 'combobox123',
+					label: 'Bravery Rating',
+					placeholder:"Enter value to checkbox",
+					options: [
+						"Solid",
+						"Great",
+						"Good",
+						"Unproven"
+					],
+					
+				}),
+	
+				new DropdownDynamicFilter({
+					key: 'dropdown123',
+					label: 'Dropdown Exapmle',
+					placeholder:"Enter value to dropdown input",
+					options: [
+						"Solid",
+						"Great",
+						"Good",
+						"Unproven"
+					],
+					
+				}),
+	
+				new TextboxDynamicFilter({
+					key: 'firstName213',
+					label: 'First name',
+					value: 'Bombasto',
+					placeholder:"Enter first name into input",
+					required: true,
+				}),
+	
+				new CountboxDynamicFilter({
+					key: 'counter123',
+					label: 'Counter',
+					value: 0,
+					required: true,
+				}),
+			]
+		};
 
 	client = {} as Client;
 	pets = [] as Pet[];
 	activeItemIndex = 0;
 	readonly petsColumns = ['alias', 'kind', 'gender', 'DOB', 'breed', 'actions'];
 	pageLoader = false;
+	
 
 	private readonly dialogAddPet = this.dialogService.open<number>(
         new PolymorpheusComponent(PetDialogComponent, this.injector),
@@ -57,7 +178,7 @@ export class ClientDetailComponent implements OnDestroy{
 		private location: Location,
     ) {
 		this.pageLoader = true;
-		
+
 		activateRoute.params.subscribe(params=>this.clientCardService.setSelectedClient(params['id']));
 
 		activateRoute.queryParams.subscribe(

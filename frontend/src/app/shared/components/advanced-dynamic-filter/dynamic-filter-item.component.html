@@ -1,0 +1,107 @@
+<ng-container [formGroup]="form" >
+
+	<div 
+		[ngSwitch]="input.controlType" 
+		class="group mt-2 w-full"
+		tuiGroup
+		orientation="vertical"
+		[collapsed]="true"
+	>
+		<!-- Textbox input -->
+		<tui-input *ngSwitchCase="'textbox'" [formControlName]="input.key" >
+			<label [attr.for]="input.key">{{input.label}}</label>
+			<input
+				tuiTextfield
+				[id]="input.key"
+				[type]="input.type"
+				[placeholder]="input.placeholder"
+			/>
+		</tui-input>
+
+		<!-- Range count input -->
+		<tui-input-range
+			*ngSwitchCase="'inputRange'" 
+			tuiTextfield
+			[min]="input.inputRangeParameters['min']"
+			[max]="input.inputRangeParameters['max']"
+			[quantum]="input.inputRangeParameters['quantum']"
+			[steps]="input.inputRangeParameters['steps']"
+			[formControlName]="input.key"
+		>
+			<label [attr.for]="input.key">{{input.label}}</label>
+		</tui-input-range>
+
+		<!-- Countbox input -->
+		<tui-input-number *ngSwitchCase="'countbox'" [formControlName]="input.key" [id]="input.key" >
+			<label [attr.for]="input.key">{{input.label}}</label>
+		</tui-input-number>
+
+		<!-- Date range input -->
+		<tui-input-date-range
+			*ngSwitchCase="'dateRange'" 
+			[formControlName]="input.key" 
+		>
+			<label [attr.for]="input.key">{{input.label}}</label>
+			<input
+				tuiTextfield
+				[id]="input.key"
+				[type]="input.type"
+			/>
+		</tui-input-date-range>
+
+		<!-- Date input -->
+		<tui-input-date
+			*ngSwitchCase="'date'" 
+			[formControlName]="input.key" 
+		>
+			<label [attr.for]="input.key">{{input.label}}</label>
+		</tui-input-date>
+
+		<!-- Combobox input -->
+		<tui-combo-box
+			*ngSwitchCase="'combobox'"
+			[formControlName]="input.key" 
+			[id]="input.key"
+		>
+			{{input.label}}		
+			<input
+				tuiTextfield
+				[placeholder]="input.placeholder"
+			/>
+			<tui-data-list-wrapper
+				*tuiDataList
+				[items]="input.options | tuiFilterByInput"
+			></tui-data-list-wrapper>
+		</tui-combo-box>
+
+		<!-- Dropdown input -->
+		<tui-select
+			*ngSwitchCase="'dropdown'"
+			[formControlName]="input.key" 
+			[id]="input.key"
+		>
+			{{input.label}}		
+			<tui-data-list-wrapper
+				*tuiDataList
+				[items]="input.options"
+			></tui-data-list-wrapper>
+		</tui-select>
+
+
+		<tui-checkbox-block
+			*ngIf="input.match === true"
+			[formControlName]="input.key+'!!match'"
+			contentAlign="right"
+			size="s"
+		>
+			Точное соответствие
+		</tui-checkbox-block>
+	</div>
+
+	<tui-error
+		class="mt-0"
+		[formControlName]="input.key" 
+		[error]="[] | tuiFieldError | async"
+	></tui-error>
+
+</ng-container>

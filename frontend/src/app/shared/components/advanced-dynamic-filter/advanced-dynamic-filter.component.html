@@ -1,0 +1,39 @@
+<form (ngSubmit)="onSubmit()" class="flex flex-col rounded-lg bg-white h-full" [formGroup]="filtersForm" [tuiTextfieldCleaner]="true">
+	<div class="flex justify-between items-center p-2 border-b border-color">    
+		<button tuiButton type="submit" [disabled]="!filtersForm.valid">Print</button>
+	</div>
+
+	<div class="flex p-2 w-full overflow-y-auto ">
+		{{segmentForms.title}}
+		<ng-template class="h-full">
+			<ng-container *ngFor="let filter of segmentForms.dynamicFilterInputs" >
+				234
+				<dynamic-filter-item 
+					[input]="filter" 
+					[form]="filtersForm" 
+					class=""
+				></dynamic-filter-item>
+			</ng-container>
+		</ng-template>
+	</div>
+</form>
+{{segmentForms | json}}
+<!-- 
+	<div class="flex p-2 w-full overflow-y-auto ">
+		<tui-accordion class="w-full">
+			<tui-accordion-item *ngFor="let segmentForm of segmentForms">
+				{{segmentForm.title}}
+				<ng-template tuiAccordionItemContent class="h-full">
+					<ng-container *ngFor="let filter of segmentForm.dynamicFilterInputs" >
+						<dynamic-filter-item 
+							[input]="filter" 
+							[form]="filtersForm" 
+							class=""
+							
+						></dynamic-filter-item>
+					</ng-container>
+				</ng-template>
+			</tui-accordion-item>
+		</tui-accordion>
+	</div>
+ -->

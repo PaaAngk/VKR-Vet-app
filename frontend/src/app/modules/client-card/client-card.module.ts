@@ -41,6 +41,7 @@ import { SafeHtmlPipe } from 'src/app/shared/pipes/safe-html.pipe';
 import { TuiStringifyContentPipeModule } from '@taiga-ui/kit';
 import { DocumentGenerateService } from './document-generate.service';
 import { HttpClientModule } from '@angular/common/http';
+import { AdvancedDynamicFilterModule } from 'src/app/shared/components/advanced-dynamic-filter';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { HttpClientModule } from '@angular/common/http';
     AdvancedTableModule,
     HttpClientModule,
     ButtonWithDropdownModule,
+    AdvancedDynamicFilterModule,
 
     TuiInputModule,
     TuiButtonModule,
