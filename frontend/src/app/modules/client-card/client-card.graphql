@@ -63,6 +63,12 @@ query GetPetDetail($petId:String!){
     nutrition
     weight
     clientId
+    client{
+      id
+      fullName
+      telephoneNumber
+      address
+    }
     receptions{
       id
       diagnosis

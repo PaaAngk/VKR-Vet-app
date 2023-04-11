@@ -1,39 +1,32 @@
-<form (ngSubmit)="onSubmit()" class="flex flex-col rounded-lg bg-white h-full" [formGroup]="filtersForm" [tuiTextfieldCleaner]="true">
-	<div class="flex justify-between items-center p-2 border-b border-color">    
-		<button tuiButton type="submit" [disabled]="!filtersForm.valid">Print</button>
-	</div>
-
-	<div class="flex p-2 w-full overflow-y-auto ">
-		{{segmentForms.title}}
-		<ng-template class="h-full">
-			<ng-container *ngFor="let filter of segmentForms.dynamicFilterInputs" >
-				234
-				<dynamic-filter-item 
-					[input]="filter" 
-					[form]="filtersForm" 
-					class=""
-				></dynamic-filter-item>
-			</ng-container>
-		</ng-template>
+<form (ngSubmit)="onSubmit()" class="flex flex-col rounded-lg bg-white h-full items-center justify-center" [formGroup]="form" [tuiTextfieldCleaner]="true">
+	<div class="flex flex-col space-y-2 w-full overflow-y-auto h-full">
+		<!-- <p *ngIf="segmentForms.title">{{segmentForms.title}}</p> -->
+		<ng-container *ngFor="let filter of segmentForms.dynamicFilterInputs" >
+			<dynamic-filter-item 
+				[input]="filter" 
+				[form]="form" 
+				class=""
+			></dynamic-filter-item>
+		</ng-container>
+		<button tuiButton type="submit" [disabled]="!form.valid">Печать</button>
 	</div>
 </form>
-{{segmentForms | json}}
 <!-- 
-	<div class="flex p-2 w-full overflow-y-auto ">
-		<tui-accordion class="w-full">
-			<tui-accordion-item *ngFor="let segmentForm of segmentForms">
-				{{segmentForm.title}}
-				<ng-template tuiAccordionItemContent class="h-full">
-					<ng-container *ngFor="let filter of segmentForm.dynamicFilterInputs" >
-						<dynamic-filter-item 
-							[input]="filter" 
-							[form]="filtersForm" 
-							class=""
-							
-						></dynamic-filter-item>
-					</ng-container>
-				</ng-template>
-			</tui-accordion-item>
-		</tui-accordion>
-	</div>
+<div class="flex p-2 w-full overflow-y-auto ">
+	<tui-accordion class="w-full">
+		<tui-accordion-item *ngFor="let segmentForm of segmentForms">
+			{{segmentForm.title}}
+			<ng-template tuiAccordionItemContent class="h-full">
+				<ng-container *ngFor="let filter of segmentForm.dynamicFilterInputs" >
+					<dynamic-filter-item 
+						[input]="filter" 
+						[form]="form" 
+						class=""
+						
+					></dynamic-filter-item>
+				</ng-container>
+			</ng-template>
+		</tui-accordion-item>
+	</tui-accordion>
+</div>
  -->

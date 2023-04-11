@@ -192,7 +192,7 @@
                                 <button
                                     tuiButton
                                     size="s"
-                                    (click) = "getPetDetail(pet.id)"
+                                    (click) = "navigatePetDetail(pet.id)"
                                 >
                                     Просмотр
                                 </button>
@@ -215,15 +215,12 @@
                     <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Noteworthy technology acquisitions 2021</h5>
                     <button tuiButton (click)="generateDoc()">Document Generate</button>
                 </div>
-                <app-advanced-dynamic-filter
-                    [segmentForms] = "segmentFilter"
-                ></app-advanced-dynamic-filter>
             </div>
         </div>
-        
     </tui-loader>
 </div>
 
+<!-- Template dialog box for confirmation delete elements -->
 <ng-template
     #template
     let-observer
@@ -250,3 +247,4 @@
         </button>
     </div>
 </ng-template>
+

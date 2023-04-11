@@ -1,11 +1,9 @@
 import {
   Body,
   Controller,
-  Get,
   Header,
   HttpException,
   HttpStatus,
-  Param,
   Post,
   Res,
   UploadedFile,
@@ -20,8 +18,6 @@ import { firstValueFrom, Subject } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const libre = require('libreoffice-convert');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const carbone = require('carbone');
 
 @Controller('print')
 export class PrintController {
@@ -66,15 +62,35 @@ export class PrintController {
     let buf;
     if (data.t.length > 11) {
       buf = await this.printService.renderDocxToPdf(
-        './src/printed/files/check.docx',
+        './print-files/check.docx',
         data
       );
     } else {
       buf = await this.printService.renderDocxToPdf(
-        './src/printed/files/twoCheckOneList.docx',
+        './print-files/twoCheckOneList.docx',
         data
       );
     }
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=check.pdf`,
+      'Content-Length': buf.length,
+    });
+    res.json(buf);
+  }
+
+  @Header('Access-Control-Allow-Origin', 'http://localhost:4200')
+  @Post('generateDocument')
+  async generateDocumentByClientData(
+    @Body() data: any,
+    @Res({ passthrough: true }) res
+  ) {
+    console.log(data);
+    const buf = await this.printService.renderDocxToPdf(
+      './print-files/' + data.docName + '.docx',
+      data.data
+    );
+
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename=check.pdf`,

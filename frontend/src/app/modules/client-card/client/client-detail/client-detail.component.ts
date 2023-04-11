@@ -10,12 +10,7 @@ import { PetDialogComponent } from '../../dialog/add-pet/pet-dialog.component';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { DialogClientComponent } from '../../dialog/client-dialog/client-dialog.component';
 import { DocumentGenerateService } from '../../document-generate.service';
-import { DropdownDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-dropdown';
-import { DateDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-date';
-import { DateRangeDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-dateRange';
-import { ComboboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-combobox';
-import { TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-textbox';
-import { CountboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs/dynamic-filter-countbox';
+import { ComboboxDynamicFilter, CountboxDynamicFilter, DateDynamicFilter, DateRangeDynamicFilter, DropdownDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
 
 @Component({
@@ -26,9 +21,9 @@ import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-fi
 })
 export class ClientDetailComponent implements OnDestroy{
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
-	segmentFilter: DynamicFilterBase<string|string[]|number> = 
+	documentForm: DynamicFilterBase<string|string[]|number> = 
 		{
-			title: "Main filter",
+			title: "Assigment",
 			dynamicFilterInputs: [
 				new DateDynamicFilter({
 					key: 'dateSelector',
@@ -53,7 +48,7 @@ export class ClientDetailComponent implements OnDestroy{
 					],
 					
 				}),
-	
+
 				new DropdownDynamicFilter({
 					key: 'dropdown',
 					label: 'Dropdown Exapmle',
@@ -67,7 +62,7 @@ export class ClientDetailComponent implements OnDestroy{
 					match: true,
 					
 				}),
-	
+
 				new TextboxDynamicFilter({
 					key: 'firstName',
 					label: 'First name',
@@ -76,7 +71,7 @@ export class ClientDetailComponent implements OnDestroy{
 					required: true,
 					match: true,
 				}),
-	
+
 				new CountboxDynamicFilter({
 					key: 'counter',
 					label: 'Counter',
@@ -88,7 +83,7 @@ export class ClientDetailComponent implements OnDestroy{
 				//   key: 'date',
 				//   label: 'Date entering',
 				// }),
-	
+
 				new TextboxDynamicFilter({
 					key: 'emailAddress',
 					label: 'Email',
@@ -109,7 +104,7 @@ export class ClientDetailComponent implements OnDestroy{
 					],
 					
 				}),
-	
+
 				new DropdownDynamicFilter({
 					key: 'dropdown123',
 					label: 'Dropdown Exapmle',
@@ -122,7 +117,7 @@ export class ClientDetailComponent implements OnDestroy{
 					],
 					
 				}),
-	
+
 				new TextboxDynamicFilter({
 					key: 'firstName213',
 					label: 'First name',
@@ -130,7 +125,7 @@ export class ClientDetailComponent implements OnDestroy{
 					placeholder:"Enter first name into input",
 					required: true,
 				}),
-	
+
 				new CountboxDynamicFilter({
 					key: 'counter123',
 					label: 'Counter',
@@ -145,6 +140,8 @@ export class ClientDetailComponent implements OnDestroy{
 	activeItemIndex = 0;
 	readonly petsColumns = ['alias', 'kind', 'gender', 'DOB', 'breed', 'actions'];
 	pageLoader = false;
+
+	open =false;
 	
 
 	private readonly dialogAddPet = this.dialogService.open<number>(
@@ -224,7 +221,7 @@ export class ClientDetailComponent implements OnDestroy{
 			.subscribe({ complete: () => this.router.navigate([]) });
     }
 
-	getPetDetail(petId: string){
+	navigatePetDetail(petId: string){
 		this.router.navigateByUrl(`client-card/pet/${petId}`);
 	}
 
@@ -257,5 +254,11 @@ export class ClientDetailComponent implements OnDestroy{
 
 	generateDoc(){
 		// this.documentGenerateService.receiptForManipulation()
+		this.open = true;
 	}
+
+	printDocument(event: any){
+		console.log(event)
+	}
+
 }

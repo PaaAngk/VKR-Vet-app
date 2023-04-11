@@ -39,7 +39,7 @@
             >
                 <button
                     tuiButton
-                    icon="tuiIconFileLarge"
+                    icon="tuiIconClipboardLarge"
                     size="m"
                     routerLink="reception/new"
                 >
@@ -67,17 +67,38 @@
             <button
                 tuiTab
             >
-                <p class="ml-4 mr-2">Данные питомца</p> 
+                <tui-svg
+                    src="tuiIconFileTextLarge"
+                    class="ml-4 mr-2"
+                ></tui-svg>
+                <p>Данные питомца</p> 
             </button>
             <button
                 tuiTab
             >
+                <tui-svg
+                    src="tuiIconClipboardLarge"
+                    class="mr-2"
+                ></tui-svg>
                 Приемы
             </button>
             <button
                 tuiTab
             >
+                <tui-svg
+                    src="tuiIconThermometerLarge"
+                    class="mr-2"
+                ></tui-svg>
                 Анализы и исследования
+            </button>
+            <button
+                tuiTab
+            >
+                <tui-svg
+                    src="tuiIconFileLarge"
+                    class="mr-2"
+                ></tui-svg>
+                Документы
             </button>
         </tui-tabs>
 
@@ -126,7 +147,6 @@
                             <th
                                 *tuiHead="'date'"
                                 tuiTh
-                                [sticky]="true"
                                 [sorter]="createdDateSorter"
                             >
                                 Дата
@@ -203,7 +223,7 @@
                     Нет добавленных приемов
                 </h3>
             </div>
-            
+
             <!-- Analyzes -->
             <div class="" *ngIf="activeItemIndex === 2">
                 <table
@@ -279,12 +299,31 @@
                     Нет добавленных анализов и исследований
                 </h3>
             </div>
+
+             <!-- Document generate -->
+             <div *ngIf="activeItemIndex === 3" class="flex space-x-2">
+                <!-- <div class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Расписка ИП</h5>
+                    <button tuiButton size="m" (click)="generateDoc('Raspiska_ip')">Сгенерировать</button>
+                </div>
+                <div class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Эфтаназия</h5>
+                    <button tuiButton size="m" (click)="generateDoc('Eftanaziya')">Сгенерировать</button>
+                </div> -->
+                <div 
+                    class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center" 
+                    *ngFor="let item of listOfDocumentToGenerate"
+                >
+                    <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">{{ item.name }}</h4>
+                    <button tuiButton size="m" (click)="generateDoc(item.fileName)">Сгенерировать</button>
+                </div>
+                {{age}}
+            </div>
         </div>
-        
     </tui-loader>
 </div>
 
-
+<!-- Template dialog box for confirmation delete elements -->
 <ng-template
     #template
     let-observer
@@ -310,4 +349,17 @@
             Отмена
         </button>
     </div>
+</ng-template>
+
+
+<!-- Dialog box for print document -->
+<ng-template
+    let-observer
+    [tuiDialogOptions]="{label: documentForm.title, size: 's'}"
+    [(tuiDialog)]="open"
+>
+    <app-advanced-dynamic-form
+        [segmentForms] = "documentForm"
+        (formValues) = "dataFromDialog($event)"
+    ></app-advanced-dynamic-form>
 </ng-template>

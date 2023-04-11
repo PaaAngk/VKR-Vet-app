@@ -1,20 +1,20 @@
 import { DatePipe } from "@angular/common";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Inject, Injectable } from "@angular/core";
 import { TuiDay } from "@taiga-ui/cdk";
-import { AlignmentType, BorderStyle, Document, HeadingLevel, IRunOptions, Packer, Paragraph, ParagraphChild, SectionType, SimpleField, SimpleMailMergeField, Table, TableCell, TableRow, TabStopPosition, TabStopType, TextRun, UnderlineType, WidthType } from "docx";
+import { AlignmentType, BorderStyle, Document, HeadingLevel, Packer, Paragraph, ParagraphChild, Table, TableCell, TableRow, TextRun, UnderlineType, WidthType } from "docx";
 import { saveAs } from 'file-saver';
 import { CheckNullPipe } from "src/app/shared/pipes/check-null.pipe";
 import { Reception } from "src/graphql/generated";
 import { ClientCardService } from "./client-card.service";
 import { parse } from 'node-html-parser';
-import { FileChild } from "docx/build/file/file-child";
-import { map, Observable, of, Subject, throwError } from "rxjs";
+import { map, Observable, Subject, throwError } from "rxjs";
 
 interface parcedHtml {
     text: string,
     tag: string[]
 }
+
 
 @Injectable()
 export class DocumentGenerateService
@@ -346,7 +346,13 @@ export class DocumentGenerateService
             }
             return arr
         }
-        const parcedAssignment = parserFunc(parse(data.assignment as string), []).map( (item: any[]) => (flatingArray(item)) )
+
+        let parcedAssignment=[]
+
+        if (data.assignment){
+            parcedAssignment = parserFunc(parse(data.assignment as string), []).map( (item: any[]) => (flatingArray(item)) )
+        }
+
         
         const textRunFromHtmlTeg = (data: parcedHtml) =>{
             if (data.tag.includes('ul') && data.tag.includes('li')) 
@@ -519,7 +525,7 @@ export class DocumentGenerateService
                         returnResult.complete()
                     },
                     error: (error: any) => returnResult.error(throwError( () => new Error(`Error ${error}`) )),
-                })       
+                })
             })
         }
         
@@ -541,6 +547,29 @@ export class DocumentGenerateService
                     size:size,
                 }),
             ],
+        })
+    }
+    
+    generateDocumentByClientData(docName: string, data: any){
+        const sendingData = {
+            data: {
+                ...data, 
+                currentData: TuiDay.currentLocal(),
+                age: Math.abs(Date.now() - new Date(data.DOB).getTime())
+            }, 
+            docName: docName
+        }
+        const headers = new HttpHeaders();
+        headers.append('Accept', 'application/pdf');
+        const options = { headers: headers };
+        this.http.post(`http://localhost:3000/print/generateDocument`, sendingData, options)
+        .subscribe({
+            next: (buffer: any) => {
+                if(buffer) {
+                    const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
+                    window.open(fileURL);
+                }
+            }
         })
     }
 }
