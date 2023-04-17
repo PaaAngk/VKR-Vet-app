@@ -33,10 +33,10 @@
     </div>
 
     <div class="w-full h-full rounded-lg bg-white shadow-md">
-        <tui-loader [overlay]="true" [showLoader] = "loading" class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'75vh'}">
+        <tui-loader [overlay]="true" [showLoader] = "loading" class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'85vh'}">
             <app-advanced-dynamic-form
                 *ngIf="!loading"
-                [segmentForms] = "formData"
+                [segmentForms] = "dynamicFormData"
                 [twoColumns] = "true"
             ></app-advanced-dynamic-form>
         </tui-loader> 

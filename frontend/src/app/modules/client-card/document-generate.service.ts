@@ -15,6 +15,16 @@ interface parcedHtml {
     tag: string[]
 }
 
+export enum FileFormat{
+    'docx',
+    'pdf'
+}
+
+interface GenerateDocument{
+    docName: string, 
+    data: any, 
+    extension: FileFormat
+}
 
 @Injectable()
 export class DocumentGenerateService
@@ -550,13 +560,22 @@ export class DocumentGenerateService
         })
     }
     
-    generateDocumentByClientData(docName: string, data: any){
-        const sendingData = {
+    /**
+     * Generate documents by send data in needed format
+     * @param docName File name in backend part
+     * @param data Variable with data for insert in document 
+     * @param extension Extension of retutned file docx or pdf
+     */
+    generateDocumentByData(docName: string, data: any, extension: FileFormat){
+        const returnResult: Subject<Observable<Object>> = new Subject();
+
+        const sendingData: GenerateDocument = {
             data: {
                 ...data, 
                 currentDate: TuiDay.currentLocal(),
             }, 
-            docName: docName
+            docName: docName,
+            extension: extension
         }
         const headers = new HttpHeaders();
         headers.append('Accept', 'application/pdf');
@@ -565,11 +584,20 @@ export class DocumentGenerateService
         .subscribe({
             next: (buffer: any) => {
                 if(buffer) {
-                    const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
-                    window.open(fileURL);
+                    if(extension == FileFormat.pdf){
+                        const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
+                        window.open(fileURL);
+                    }
+                    if(extension == FileFormat.docx){                            
+                        const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}))
+                        window.saveAs(fileURL);
+                    }
+                    returnResult.complete()
                 }
-            }
+            },
+            error: (error: any) => returnResult.error(throwError( () => new Error(`Error ${error}`) )),
         })
+        return returnResult
     }
 }
 

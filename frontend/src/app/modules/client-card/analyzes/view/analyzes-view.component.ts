@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 import { Subject, take, takeUntil } from 'rxjs';
-import { Client, GetAllAnalyzeTypesGQL, GetAnalyzesResearchGQL, GetReceptionGQL, Reception } from 'src/graphql/generated';
+import { AnalyzesResearch, GetAllAnalyzeTypesGQL, GetAnalyzesResearchGQL } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
-import { DocumentGenerateService } from '../../document-generate.service';
-import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
+import { DocumentGenerateService, FileFormat } from '../../document-generate.service';
+import { DynamicFilterBase, DynamicFilterInput } from 'src/app/shared/components/advanced-dynamic-filter';
 import { AnalyzesList } from "../analyzeFormTemplates";
 import { AnalyzeType } from '../../models/analyzeType';
+import { AgeStringPipe } from 'src/app/shared/pipes';
 
 
 @Component({
@@ -33,9 +33,12 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 	};
 	printButtonLoader = false;
 
-	formData: DynamicFilterBase<any> = {} as DynamicFilterBase<any>;
+	dynamicFormData: DynamicFilterBase<any> = {} as DynamicFilterBase<any>;
 	analyzesList: AnalyzeType[] = AnalyzesList;
 	petId = '';
+	currentAnalyze: AnalyzeType = {} as AnalyzeType;
+	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
+
 
 	loading = false;
 
@@ -43,19 +46,18 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 
     constructor(
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
-        @Inject(Injector) private readonly injector: Injector,
-		private clientCardService: ClientCardService,
 		private _changeDetectorRef: ChangeDetectorRef,
-		private router: Router,
 		private getAnalyzesResearchGQL : GetAnalyzesResearchGQL,
 		private activateRoute: ActivatedRoute,
 		private documentGenerateService: DocumentGenerateService,
 		private getAllAnalyzeTypesGQL : GetAllAnalyzeTypesGQL,
+		private ageStringPipe: AgeStringPipe
     ){}
 
 	ngOnInit(): void {
 		this.loading = true;
-		//Getting analyze types 
+		//Getting analyze types, then Getting analyze and formating form for dynamic filter
+		//Search in array of analyzes and select needed with file name and needed form for selected analyze
 		this.getAllAnalyzeTypesGQL.watch().valueChanges
 			.pipe(take(1))
 			.subscribe( ({data}) => {
@@ -63,35 +65,38 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 				this.analyzesList.map((analyze: AnalyzeType) => 
 					analyze['id'] = data.allTypeAnalyzesResearch.find(obj => obj.typeName?.trim() == analyze.name.trim())?.id || -1
 				)
-			})
-
-
-		//Getting analyze and formating form for dynamic filter
-		this.activateRoute.params.subscribe(params => {
-			this.getAnalyzesResearchGQL
-			.watch({
-				analyzesResearchId:params['id'],
-			})
-			.valueChanges
-			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
-			.subscribe( ({data, loading}) => {
-				// this.reception = data.reception as Reception
-				const analyzeData = JSON.parse(data.analyzesResearch.data|| '');
-				const needAnalyze = this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)
-				const form = needAnalyze?.form.dynamicFilterInputs
-					.map((item: any) => {
-						item.readOnly = true
-						item.value = analyzeData[item.key] || null;
-						return item
+				
+				//Getting analyze and formating form for dynamic filter
+				this.activateRoute.params.subscribe(params => {
+					this.getAnalyzesResearchGQL
+					.watch({
+						analyzesResearchId:params['id'],
 					})
-				this.petId = data.analyzesResearch.pet?.id || ''
-				this.formData = {
-					title: needAnalyze?.name || '',
-					dynamicFilterInputs: form
-				}
-				this.loading = loading;
-			});
-		});
+					.valueChanges
+					.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
+					.subscribe( ({data, loading}) => {
+						// this.reception = data.reception as Reception
+						this.analyzeData = data.analyzesResearch
+						const parcedData = JSON.parse(data.analyzesResearch.data || '');
+						this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeType;
+						const form = this.currentAnalyze?.form.dynamicFilterInputs
+							.map((item: DynamicFilterInput<any>) => {
+								item.readOnly = true
+								item.value = parcedData[item.key] || null;
+								return item
+							})
+						this.petId = data.analyzesResearch.pet?.id || ''
+						this.dynamicFormData = {
+							title: this.currentAnalyze?.name || '',
+							dynamicFilterInputs: form
+						}
+						this.loading = loading;
+					});
+				});
+			})
+
+
+
 	}
 
 	ngOnDestroy(): void
@@ -99,6 +104,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 		// Unsubscribe from all subscriptions
 		this._unsubscribeAll.next(undefined);
 		this._unsubscribeAll.complete();
+		this.dynamicFormData = {} as DynamicFilterBase<any>;
 	}
 
 	// -----------------------------------------------------------------------------------------------------
@@ -115,9 +121,36 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 	}
 
 	printAnalyze(){
+		console.log(this.analyzeData)
 		this.printButtonLoader = true;
+		this.documentGenerateService.generateDocumentByData(
+			this.currentAnalyze.typeName, 
+			{
+				...this.analyzeData,
+				age:  this.ageStringPipe.transform(this.analyzeData.pet?.DOB || '')
+			},
+			FileFormat.pdf
+		).subscribe({
+			error: () =>  this.errInDocumentGeneration(),
+			complete: () =>  {
+				this.printButtonLoader = false,
+				this._changeDetectorRef.markForCheck()
+			}
+		})
 	}
+
 	downloadAnalyze(){
-		this.printButtonLoader = false;
-	}	
+		this.printButtonLoader = true;
+		this.documentGenerateService.generateDocumentByData(
+			this.currentAnalyze.typeName,
+			this.analyzeData, 
+			FileFormat.docx
+		).subscribe({
+			error: () =>  this.errInDocumentGeneration(),
+			complete: () =>  {
+				this.printButtonLoader = false,
+				this._changeDetectorRef.markForCheck()
+			}
+		})
+	}
 }

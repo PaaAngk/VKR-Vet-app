@@ -82,7 +82,7 @@ export const Analiz_kroviForm: DynamicFilterBase<string|string[]|number> =
             postfix:'пг'
         }),
         new CountboxDynamicFilter({
-            key: 'г/л',
+            key: 'MCHC',
             label: 'MCHC (эр. индекс. сколько гемоглобина во всех эритроцитах)',
             inputRangeParameters: inputCountBoxParams,
             postfix:'г/л'
@@ -128,6 +128,12 @@ export const Analiz_kroviForm: DynamicFilterBase<string|string[]|number> =
             label: 'P_LCR(кровяные тельца, отвечающие за свертываемость крови)',
             inputRangeParameters: inputCountBoxParamsForPercent,
             postfix:'%'
+        }),
+        new CountboxDynamicFilter({
+            key: 'P_LCC',
+            label: 'P_LCC(коэффицент больших тромбоцитов)',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'тыс/мкл'
         }),
     ]
 };

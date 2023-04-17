@@ -15,6 +15,7 @@ import { FormDataRequest } from 'nestjs-form-data';
 import { FormDataDto } from './dto/formDataDto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { firstValueFrom, Subject } from 'rxjs';
+import { FileFormat, GenerateDocument } from './models/generateDocument';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const libre = require('libreoffice-convert');
@@ -81,21 +82,40 @@ export class PrintController {
 
   @Header('Access-Control-Allow-Origin', 'http://localhost:4200')
   @Post('generateDocument')
-  async generateDocumentByClientData(
-    @Body() data: any,
+  async generateDocumentByData(
+    @Body() data: GenerateDocument,
     @Res({ passthrough: true }) res
   ) {
+    let buf;
+    if (data.data.__typename == 'AnalyzesResearch')
+      data.data.data = JSON.parse(data.data.data);
     console.log(data);
-    const buf = await this.printService.renderDocxToPdf(
-      './print-files/' + data.docName + '.docx',
-      data.data
-    );
+    console.log(data.data.client);
+    if (data.extension == FileFormat.pdf) {
+      buf = await this.printService.renderDocxToPdf(
+        './print-files/' + data.docName + '.docx',
+        data.data
+      );
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename=${data.docName}.pdf`,
+        'Content-Length': buf.length,
+      });
+    } else if (data.extension == FileFormat.docx) {
+      buf = await this.printService.renderDocx(
+        './print-files/' + data.docName + '.docx',
+        data.data
+      );
+      res.set({
+        'Content-Type':
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'Content-Disposition': `attachment; filename=${data.docName}.docx`,
+        'Content-Length': buf.length,
+      });
+    } else {
+      throw new HttpException('extension problem', HttpStatus.NOT_IMPLEMENTED);
+    }
 
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=check.pdf`,
-      'Content-Length': buf.length,
-    });
     res.json(buf);
   }
 

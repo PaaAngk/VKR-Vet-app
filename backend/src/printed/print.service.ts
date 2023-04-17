@@ -32,6 +32,18 @@ export class PrintService {
     return await firstValueFrom(returnBuffer);
   }
 
+  async renderDocx(template: string, data: any) {
+    const returnBuffer: Subject<Buffer> = new Subject();
+
+    carbone.render(template, data, async function (err, result) {
+      if (err) {
+        throw new HttpException('don`t has file', HttpStatus.NOT_FOUND);
+      }
+      returnBuffer.next(result);
+    });
+    return await firstValueFrom(returnBuffer);
+  }
+
   async convertDocxToPdf(file: Buffer): Promise<Buffer> {
     const returnBuffer: Subject<Buffer> = new Subject();
 

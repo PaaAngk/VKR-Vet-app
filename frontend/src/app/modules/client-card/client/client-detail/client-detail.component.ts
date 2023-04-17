@@ -9,7 +9,7 @@ import {PolymorpheusComponent, PolymorpheusContent} from '@tinkoff/ng-polymorphe
 import { PetDialogComponent } from '../../dialog/add-pet/pet-dialog.component';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { DialogClientComponent } from '../../dialog/client-dialog/client-dialog.component';
-import { DocumentGenerateService } from '../../document-generate.service';
+import { DocumentGenerateService, FileFormat } from '../../document-generate.service';
 import { ComboboxDynamicFilter, CountboxDynamicFilter, DateDynamicFilter, DateRangeDynamicFilter, DropdownDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
 import { DocumentsToGenerate } from '../../models/documentsToGenerate';
@@ -145,7 +145,7 @@ export class ClientDetailComponent implements OnDestroy{
 
 	generateDoc(docName: string){
 		if (docName === 'Pervichnyj_dogovor'){
-			this.documentGenerateService.generateDocumentByClientData(docName, this.client);
+			this.documentGenerateService.generateDocumentByData(docName, this.client, FileFormat.pdf);
 		}
 	}
 

@@ -8,7 +8,7 @@ import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
 import { AnalyzeType } from '../../models/analyzeType';
-import { Analiz_kroviForm, AnalyzesList } from "../analyzeFormTemplates";
+import { AnalyzesList } from "../analyzeFormTemplates";
 
 @Component({
 	selector: 'vet-crm-reception-new',

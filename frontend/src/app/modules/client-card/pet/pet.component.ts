@@ -12,7 +12,7 @@ import { PetDialogComponent } from '../dialog/add-pet/pet-dialog.component';
 import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
 import { ComboboxDynamicFilter, CountboxDynamicFilter, DateDynamicFilter, DateRangeDynamicFilter, DropdownDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
-import { DocumentGenerateService } from '../document-generate.service';
+import { DocumentGenerateService, FileFormat } from '../document-generate.service';
 import { DocumentsToGenerate } from '../models/documentsToGenerate';
 
 @Component({
@@ -314,7 +314,7 @@ export class PetComponent implements OnDestroy, OnInit{
 			this.gettingDocument(docName, dataToPrint);
 		}
 		if (docName === 'Eftanaziya'){
-			this.documentGenerateService.generateDocumentByClientData(docName, dataToPrint);
+			this.documentGenerateService.generateDocumentByData(docName, dataToPrint, FileFormat.pdf);
 		}
 		if (docName === 'Soglasie_na_stacionar'){
 			this.documentForm = {
@@ -332,7 +332,7 @@ export class PetComponent implements OnDestroy, OnInit{
 			this.gettingDocument(docName, dataToPrint);
 		}
 		if (docName === 'Pervichnyj_dogovor'){
-			this.documentGenerateService.generateDocumentByClientData(docName, dataToPrint);
+			this.documentGenerateService.generateDocumentByData(docName, dataToPrint, FileFormat.pdf);
 		}
 		if (docName === 'Karta_dlya_stacionara'){
 			this.documentForm = {
@@ -360,7 +360,7 @@ export class PetComponent implements OnDestroy, OnInit{
 		.pipe(take(1))
 		.subscribe({
 			next: (dialogData: any) => {
-				this.documentGenerateService.generateDocumentByClientData(docName, Object.assign(data, dialogData));
+				this.documentGenerateService.generateDocumentByData(docName, Object.assign(data, dialogData), FileFormat.pdf);
 				this.open = false;
 			}
 		})
