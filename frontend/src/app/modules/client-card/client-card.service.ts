@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, take } from "rxjs";
-import { Client, ClientDetailGQL, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
+import { AnalyzesResearch, Client, ClientDetailGQL, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
 
 @Injectable({
     providedIn: 'root'
@@ -34,6 +34,8 @@ export class ClientCardService
         private deletePetGQL: DeletePetGQL,
         private updateReceptionGQL: UpdateReceptionGQL,
         private createReceptionGQL: CreateReceptionGQL,
+        private createAnalyzesResearchGQL: CreateAnalyzesResearchGQL, 
+        private updateAnalyzesResearchGQL: UpdateAnalyzesResearchGQL,
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
@@ -422,6 +424,62 @@ export class ClientCardService
         )
     }
 
+    /**
+     * Create Analyze with editing cached pet in service and appolo cache  
+     */
+    createAnalyzesResearch(newData:CreateAnalyzesResearchInput)
+    {
+        return this.createAnalyzesResearchGQL.mutate({
+            data: newData,
+        }).pipe(
+            map(( {data} ) => {
+                if (data?.createAnalyzesResearch) {
+                    // eslint-disable-next-line prefer-const
+                    let newPetAnalyzesResearchs = {...this._currentPet.getValue()}
+                    newPetAnalyzesResearchs.analyzesResearchs = newPetAnalyzesResearchs.analyzesResearchs?.concat(data?.createAnalyzesResearch)
+                    this.apollo.client.cache.modify({
+                        id: this.apollo.client.cache.identify({ __typename: 'Pet', id: newData.petId }),
+                        fields: {
+                            analyzesResearchs() {
+                                return newPetAnalyzesResearchs.analyzesResearchs
+                            },
+                        },
+                    });
+                    return data;
+                }
+                return data
+            })
+        )
+    }
+
+    /**
+     * Updating analyze  
+     */
+    updateAnalyzesResearch(analyzesResearchId:string, data:UpdateAnalyzesResearchInput)
+    {
+        return this.updateAnalyzesResearchGQL.mutate({
+            analyzesResearchId: analyzesResearchId,
+            data: data,
+        }).pipe(
+            map(( {data} ) => {
+                if (data?.updateAnalyzesResearch) {
+
+                    // eslint-disable-next-line prefer-const
+                    let newPetAnalyzesResearch = {...this._currentPet.getValue()}
+                    newPetAnalyzesResearch.analyzesResearchs = newPetAnalyzesResearch 
+                        .analyzesResearchs?.filter( (analyzesResearchs: AnalyzesResearch) => analyzesResearchs.id != data?.updateAnalyzesResearch.id )
+                        .concat(data?.updateAnalyzesResearch)
+                    
+                    this._currentPet.next(newPetAnalyzesResearch);
+
+                    //Delete reception from cache for refetch in reception view
+                    this.apollo.client.cache.evict({id:this.apollo.client.cache.identify({ __typename: 'AnalyzesResearch', id: analyzesResearchId })})                    
+                    return data;
+                }
+                return data
+            })
+        )
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -429,7 +487,7 @@ export class ClientCardService
 
     /**
      * При выборе препарата необходимо указывать количество использованных миллилитров, с условием: 
-	 * при использовании 0.5 мл и меньше стоимость – половина стоимости за мл, 
+	 * при использовании 0.5 мл и меньше - стоимость = половина стоимости за мл, 
 	 * больше 0.5 мл – полная стоимость мл( мл, таблетки, ампулы)
      * @param good 
      */

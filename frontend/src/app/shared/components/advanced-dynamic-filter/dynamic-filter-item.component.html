@@ -8,7 +8,7 @@
 		[collapsed]="true"
 	>
 		<!-- Textbox input -->
-		<tui-input *ngSwitchCase="'textbox'" [formControlName]="input.key" >
+		<tui-input *ngSwitchCase="'textbox'" [formControlName]="input.key" [readOnly]="input.readOnly">
 			<label [attr.for]="input.key">{{input.label}}</label>
 			<input
 				tuiTextfield
@@ -32,8 +32,16 @@
 		</tui-input-range>
 
 		<!-- Countbox input -->
-		<tui-input-number *ngSwitchCase="'countbox'" [formControlName]="input.key" [id]="input.key" >
-			<label [attr.for]="input.key">{{input.label}}</label>
+		<tui-input-number *ngSwitchCase="'countbox'" 
+			[formControlName]="input.key" 
+			[id]="input.key" 
+			[readOnly]="input.readOnly"
+			[min]="input.inputRangeParameters['min']"
+			[max]="input.inputRangeParameters['max']"
+			[precision]="input.inputRangeParameters['precision']"
+			[postfix]="input.postfix"
+		>
+			<label [attr.for]="input.key" >{{input.label}}</label>
 		</tui-input-number>
 
 		<!-- Date range input -->

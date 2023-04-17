@@ -55,13 +55,15 @@ export class ClientComponent implements OnDestroy{
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
 		.subscribe((clients: Client[]) => {	
 			const time = '13:20';
+			if (Object.keys(clients).length !== 0){
+				this.loading = false;
+			}
 			this.clients = clients.map(client => {
 				return {
 					time:time,
 					client:client
 				} as ClientTable
 			})
-			this.loading = false;
 		});
 		
 		// Поиск из ссылки

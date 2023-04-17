@@ -554,8 +554,7 @@ export class DocumentGenerateService
         const sendingData = {
             data: {
                 ...data, 
-                currentData: TuiDay.currentLocal(),
-                age: Math.abs(Date.now() - new Date(data.DOB).getTime())
+                currentDate: TuiDay.currentLocal(),
             }, 
             docName: docName
         }

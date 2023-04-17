@@ -13,6 +13,8 @@ import { AnalyzesResearch } from './models/analyzes-research.model';
 import { CreateAnalyzesResearchInput } from './dto/CreateAnalyzesResearchInput.input';
 import { AnalyzesResearchIdArgs } from './args/analyzes-research-id.args';
 import { TypeAnalyzesResearch } from './models/type-analyzes-research.model';
+import { Pet } from 'src/pets/models/pet.model';
+import { UpdateAnalyzesResearchInput } from './dto/UpdateAnalyzesResearchInput.input copy';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => AnalyzesResearch)
@@ -44,10 +46,33 @@ export class AnalyzesResearchResolver {
     });
   }
 
+  @Mutation(() => AnalyzesResearch)
+  async updateAnalyzesResearch(
+    @Args({ name: 'analyzesResearchId', type: () => String })
+    analyzesResearchId: string,
+    @Args('data') newAnalyzesData: UpdateAnalyzesResearchInput
+  ) {
+    return await this.prisma.analyzesResearch.update({
+      data: {
+        data: newAnalyzesData.data || null,
+      },
+      where: {
+        id: analyzesResearchId,
+      },
+    });
+  }
+
   @ResolveField('type', () => TypeAnalyzesResearch)
-  async typeAnalyzesResearch(@Parent() analyzesResearch: AnalyzesResearch) {
+  async type(@Parent() analyzesResearch: AnalyzesResearch) {
     return this.prisma.typeAnalyzesResearch.findUnique({
       where: { id: analyzesResearch.typeId },
+    });
+  }
+
+  @ResolveField('pet', () => Pet)
+  async pet(@Parent() typeAnalyzesResearch: AnalyzesResearch) {
+    return this.prisma.pet.findUnique({
+      where: { id: typeAnalyzesResearch.petId },
     });
   }
 }

@@ -2,15 +2,15 @@
 
     <!-- Header -->
     <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="p-2 rounded-lg bg-white shadow-md" >
-        <div tuiTextfieldSize="m" class="flex flex-row items-center gap-2">
-            <p class="text-base md:basis-3/6 basis-full">
+        <div tuiTextfieldSize="m" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <p class="text-base">
                 <b class="mx-4 text-xl">{{ pet.alias }} </b> 
-                Вид: <b class="mr-4">{{ pet.kind }}</b> 
-                Дата рождения: <b class="mr-4">{{pet.DOB | date:'dd/MM/yyy' | checkNull}}</b>
+                Вид: <b class="mr-4">{{ pet.kind }}</b><br>
+                Дата рождения: <b>{{pet.DOB | date:'dd/MM/yyy' | checkNull}}</b>
             </p>
             <div
                 tuiGroup
-                class="group md:basis-1/6 basis-full"
+                class="group w-52 justify-self-end"
                 [collapsed]="true"
             >
                 <button
@@ -32,7 +32,6 @@
                     Удалить
                 </button>
             </div>
-
             <div 
                 tuiGroup
                 class="group md:basis-2/6 basis-full"
@@ -51,6 +50,7 @@
                     tuiButton
                     icon="tuiIconThermometerLarge"
                     size="m"
+                    routerLink="analyzes/new"
                 >
                     <p class="text-base">
                         Добавить анализы
@@ -268,7 +268,7 @@
                                 *tuiCell="'type'"
                                 tuiTd
                             >
-                                <b>{{ analyzesResearch.type.typeName }}</b>
+                                <b>{{ analyzesResearch.type?.typeName }}</b>
                             </td>
                             <td
                                 *tuiCell="'date'"
@@ -301,23 +301,14 @@
             </div>
 
              <!-- Document generate -->
-             <div *ngIf="activeItemIndex === 3" class="flex space-x-2">
-                <!-- <div class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Расписка ИП</h5>
-                    <button tuiButton size="m" (click)="generateDoc('Raspiska_ip')">Сгенерировать</button>
-                </div>
-                <div class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Эфтаназия</h5>
-                    <button tuiButton size="m" (click)="generateDoc('Eftanaziya')">Сгенерировать</button>
-                </div> -->
+             <div *ngIf="activeItemIndex === 3" class="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div 
-                    class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center" 
+                    class="p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center " 
                     *ngFor="let item of listOfDocumentToGenerate"
                 >
                     <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">{{ item.name }}</h4>
                     <button tuiButton size="m" (click)="generateDoc(item.fileName)">Сгенерировать</button>
                 </div>
-                {{age}}
             </div>
         </div>
     </tui-loader>

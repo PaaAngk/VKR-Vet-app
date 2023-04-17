@@ -1,0 +1,44 @@
+<div class="flex flex-col space-y-3" *ngIf="true">
+
+    <div class="w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-2 rounded-lg items-center justify-between bg-white shadow-md pr-2">
+        <button
+            tuiButton
+            icon = 'tuiIconArrowLeftLarge'
+            appearance="textfield"
+            [routerLink]="'/client-card/pet/'+ petId"
+            class="md:w-52 w-full"
+        >
+            К питомцу
+        </button>
+
+        <div tuiTextfieldSize="m" class="flex items-center justify-center h-full py-auto space-x-2 w-full">
+            <button-with-dropdown
+                [data]="printButtonData" 
+                [showLoader]="printButtonLoader"
+                (buttonAction)="printAnalyze()" 
+                (dropdownAction)="downloadAnalyze()"
+            ></button-with-dropdown>
+        </div>
+
+        <button
+            tuiButton
+            icon = 'tuiIconEditLarge'
+            appearance="outline"
+            size="m"
+            class="md:w-52 w-full justify-self-end"
+            routerLink="edit"
+        >
+            Изменить
+        </button>
+    </div>
+
+    <div class="w-full h-full rounded-lg bg-white shadow-md">
+        <tui-loader [overlay]="true" [showLoader] = "loading" class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'75vh'}">
+            <app-advanced-dynamic-form
+                *ngIf="!loading"
+                [segmentForms] = "formData"
+                [twoColumns] = "true"
+            ></app-advanced-dynamic-form>
+        </tui-loader> 
+    </div>
+</div>

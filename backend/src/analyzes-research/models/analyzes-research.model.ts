@@ -7,11 +7,11 @@ export class AnalyzesResearch {
   @Field(() => String)
   id: string;
 
-  @Field(() => TypeAnalyzesResearch)
-  TypeAnalyzesResearch?: TypeAnalyzesResearch;
+  @Field(() => TypeAnalyzesResearch, { nullable: true })
+  type?: TypeAnalyzesResearch;
 
   @Field(() => Pet)
-  Pet?: Pet;
+  pet?: Pet;
 
   @Field(() => Int)
   typeId?: number;

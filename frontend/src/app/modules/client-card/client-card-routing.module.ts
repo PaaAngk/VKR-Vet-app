@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AnalyzesComponent } from './analyzes/analyzes-add/analyzes.component';
+import { AnalyzesViewComponent } from './analyzes/view/analyzes-view.component';
 import { ClientDetailComponent } from './client/client-detail/client-detail.component';
 import { ClientComponent } from './client/client.component';
 import { PetComponent } from './pet/pet.component';
@@ -49,7 +51,20 @@ const routes: Routes = [
     },
     component: ReceptionViewComponent,
   },
-  
+  {
+    path: 'pet/:id/analyzes/new', 
+    data: {
+      title: 'Добавление приема'
+    },
+    component: AnalyzesComponent,
+  },
+  {
+    path: 'pet/:id/analyzes/:id', 
+    data: {
+      title: 'Просмотр приема'
+    },
+    component: AnalyzesViewComponent,
+  },
 ];
 
 @NgModule({

@@ -1,3 +1,5 @@
+# ---------------------------------- Client ---------------------------------
+
 query GetClient($search:String!){
   clientsWithSearch(search:$search){
     id
@@ -35,6 +37,31 @@ query ClientDetail($clientId:String!){
     }
   }
 }
+
+mutation UpdateClient($clientId:String!, $data:UpdateClientInput!) {
+  updateClient(clientId:$clientId, data:$data){
+    id
+    fullName
+    address
+    telephoneNumber
+    pets{
+      id
+      alias
+      kind
+      gender
+      DOB
+      breed
+    }
+  }
+}
+
+mutation DeleteClient($clientId:String!) {
+  deleteClient(clientId:$clientId){
+    id
+  }
+}
+
+# ---------------------------------- Pet ---------------------------------
 
 mutation CreatePet($data:CreatePetInput!) {
   createPet(data:$data){
@@ -88,6 +115,49 @@ query GetPetDetail($petId:String!){
   }
 }
 
+mutation UpdatePet($petId:String!, $data:UpdatePetInput!) {
+  updatePet(petId:$petId, data:$data){
+    id
+    alias
+    DOB
+    alias
+    breed
+    castration
+    color
+    diagnosis
+    gender
+    kind
+    notes
+    nutrition
+    weight
+    clientId
+    receptions{
+      id
+      diagnosis
+      createdAt
+      cost
+      purpose{
+        purposeName
+      }
+    }
+    analyzesResearchs{
+      id
+      type{
+        typeName
+      }
+      createdAt
+    }
+  }
+}
+
+mutation DeletePet($petId:String!) {
+  deletePet(petId:$petId){
+    id
+  }
+}
+
+# ---------------------------------- Service ---------------------------------
+
 query GetAllServiceTypeWithServiceName{
   allServiceType{
     id
@@ -99,6 +169,9 @@ query GetAllServiceTypeWithServiceName{
     }
   }
 }
+
+
+# ---------------------------------- Goods ---------------------------------
 
 query GetAllGoodsCategoryWithGoods{
   allGoodsCategory{
@@ -119,6 +192,8 @@ query GetAllEmployees{
     fullName
   }
 }
+
+# ---------------------------------- Reception ---------------------------------
 
 query GetAllReceptionPurpose{
   allReceptionPurpose{
@@ -200,72 +275,53 @@ query GetReception($receptionId:String!){
   }
 }
 
-mutation UpdateClient($clientId:String!, $data:UpdateClientInput!) {
-  updateClient(clientId:$clientId, data:$data){
-    id
-    fullName
-    address
-    telephoneNumber
-    pets{
-      id
-      alias
-      kind
-      gender
-      DOB
-      breed
-    }
-  }
-}
-
-mutation DeleteClient($clientId:String!) {
-  deleteClient(clientId:$clientId){
-    id
-  }
-}
-
-mutation UpdatePet($petId:String!, $data:UpdatePetInput!) {
-  updatePet(petId:$petId, data:$data){
-    id
-    alias
-    DOB
-    alias
-    breed
-    castration
-    color
-    diagnosis
-    gender
-    kind
-    notes
-    nutrition
-    weight
-    clientId
-    receptions{
-      id
-      diagnosis
-      createdAt
-      cost
-      purpose{
-        purposeName
-      }
-    }
-    analyzesResearchs{
-      id
-      type{
-        typeName
-      }
-      createdAt
-    }
-  }
-}
-
-mutation DeletePet($petId:String!) {
-  deletePet(petId:$petId){
-    id
-  }
-}
-
 mutation UpdateReception($data: UpdateReceptionInput!, $receptionId:String!){
 	updateReception(data: $data, receptionId:$receptionId){
+    id
+  }
+}
+
+# ---------------------------------- Analyzes and research  ---------------------------------
+query GetAllAnalyzeTypes{
+  allTypeAnalyzesResearch{
+    id
+    typeName
+  }
+}
+
+mutation createAnalyzesResearch($data:CreateAnalyzesResearchInput!) {
+  createAnalyzesResearch(data:$data){
+    id
+		typeId
+  	petId
+  	data
+  }
+}
+query GetAnalyzesResearch($analyzesResearchId:String!){
+	analyzesResearch(analyzesResearchId:$analyzesResearchId){
+    id
+  	data
+    pet{
+      alias
+      DOB
+      kind
+      gender
+      id
+      client{
+        id
+        fullName
+        telephoneNumber
+      }
+    }
+    type{
+      id
+      typeName
+    }
+  }
+}
+
+mutation UpdateAnalyzesResearch($data: UpdateAnalyzesResearchInput!, $analyzesResearchId:String!){
+	updateAnalyzesResearch(analyzesResearchId:$analyzesResearchId, data: $data){
     id
   }
 }

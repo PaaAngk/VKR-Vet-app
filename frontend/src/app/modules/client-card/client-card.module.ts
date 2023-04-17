@@ -42,6 +42,8 @@ import { TuiStringifyContentPipeModule } from '@taiga-ui/kit';
 import { DocumentGenerateService } from './document-generate.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AdvancedDynamicFilterModule } from 'src/app/shared/components/advanced-dynamic-filter';
+import { AnalyzesComponent } from './analyzes/analyzes-add/analyzes.component';
+import { AnalyzesViewComponent } from './analyzes/view/analyzes-view.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,8 @@ import { AdvancedDynamicFilterModule } from 'src/app/shared/components/advanced-
     ReceptionViewComponent,
     ArrayToAnyArrayPipe,
     SafeHtmlPipe,
+    AnalyzesComponent,
+    AnalyzesViewComponent
   ],
   imports: [
     CommonModule,

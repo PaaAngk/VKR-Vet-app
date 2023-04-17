@@ -27,14 +27,13 @@ export type AddInGoodsListInput = {
 
 export type AnalyzesResearch = {
   __typename?: 'AnalyzesResearch';
-  Pet?: Maybe<Pet>;
-  TypeAnalyzesResearch?: Maybe<TypeAnalyzesResearch>;
   /** Identifies the date and time when the object was created. */
   createdAt?: Maybe<Scalars['DateTime']>;
   data?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  pet?: Maybe<Pet>;
   petId?: Maybe<Scalars['String']>;
-  type: TypeAnalyzesResearch;
+  type?: Maybe<TypeAnalyzesResearch>;
   typeId?: Maybe<Scalars['Int']>;
 };
 
@@ -217,6 +216,7 @@ export type Mutation = {
   deleteService: Service;
   login: Auth;
   refreshToken: Token;
+  updateAnalyzesResearch: AnalyzesResearch;
   updateClient: Client;
   updateGoods: Goods;
   updatePet: Pet;
@@ -306,6 +306,12 @@ export type MutationRefreshTokenArgs = {
 };
 
 
+export type MutationUpdateAnalyzesResearchArgs = {
+  analyzesResearchId: Scalars['String'];
+  data: UpdateAnalyzesResearchInput;
+};
+
+
 export type MutationUpdateClientArgs = {
   clientId: Scalars['String'];
   data: UpdateClientInput;
@@ -386,6 +392,7 @@ export type Query = {
   allServiceList: Array<ServiceList>;
   allServiceType: Array<ServiceType>;
   allServices: Array<Service>;
+  allTypeAnalyzesResearch: Array<TypeAnalyzesResearch>;
   analyzesResearch: AnalyzesResearch;
   clientDetail: Client;
   clientsWithSearch: Array<Client>;
@@ -532,6 +539,10 @@ export type TypeAnalyzesResearch = {
   typeName?: Maybe<Scalars['String']>;
 };
 
+export type UpdateAnalyzesResearchInput = {
+  data: Scalars['String'];
+};
+
 export type UpdateClientInput = {
   address: Scalars['String'];
   fullName: Scalars['String'];
@@ -622,6 +633,21 @@ export type ClientDetailQueryVariables = Exact<{
 
 export type ClientDetailQuery = { __typename?: 'Query', clientDetail: { __typename?: 'Client', id: string, fullName: string, address?: string | null, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null }> | null } };
 
+export type UpdateClientMutationVariables = Exact<{
+  clientId: Scalars['String'];
+  data: UpdateClientInput;
+}>;
+
+
+export type UpdateClientMutation = { __typename?: 'Mutation', updateClient: { __typename?: 'Client', id: string, fullName: string, address?: string | null, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null }> | null } };
+
+export type DeleteClientMutationVariables = Exact<{
+  clientId: Scalars['String'];
+}>;
+
+
+export type DeleteClientMutation = { __typename?: 'Mutation', deleteClient: { __typename?: 'Client', id: string } };
+
 export type CreatePetMutationVariables = Exact<{
   data: CreatePetInput;
 }>;
@@ -634,7 +660,22 @@ export type GetPetDetailQueryVariables = Exact<{
 }>;
 
 
-export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, address?: string | null } | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
+export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, address?: string | null } | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type?: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } | null }> | null } };
+
+export type UpdatePetMutationVariables = Exact<{
+  petId: Scalars['String'];
+  data: UpdatePetInput;
+}>;
+
+
+export type UpdatePetMutation = { __typename?: 'Mutation', updatePet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: string | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type?: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } | null }> | null } };
+
+export type DeletePetMutationVariables = Exact<{
+  petId: Scalars['String'];
+}>;
+
+
+export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'Pet', id: string } };
 
 export type GetAllServiceTypeWithServiceNameQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -670,36 +711,6 @@ export type GetReceptionQueryVariables = Exact<{
 
 export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, petId?: string | null, discount?: number | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: string, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, id: number, categoryId?: number | null, measure?: string | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null } } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', id: number, typeId?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null } } } | null> | null } };
 
-export type UpdateClientMutationVariables = Exact<{
-  clientId: Scalars['String'];
-  data: UpdateClientInput;
-}>;
-
-
-export type UpdateClientMutation = { __typename?: 'Mutation', updateClient: { __typename?: 'Client', id: string, fullName: string, address?: string | null, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null }> | null } };
-
-export type DeleteClientMutationVariables = Exact<{
-  clientId: Scalars['String'];
-}>;
-
-
-export type DeleteClientMutation = { __typename?: 'Mutation', deleteClient: { __typename?: 'Client', id: string } };
-
-export type UpdatePetMutationVariables = Exact<{
-  petId: Scalars['String'];
-  data: UpdatePetInput;
-}>;
-
-
-export type UpdatePetMutation = { __typename?: 'Mutation', updatePet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: string | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } }> | null } };
-
-export type DeletePetMutationVariables = Exact<{
-  petId: Scalars['String'];
-}>;
-
-
-export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'Pet', id: string } };
-
 export type UpdateReceptionMutationVariables = Exact<{
   data: UpdateReceptionInput;
   receptionId: Scalars['String'];
@@ -707,6 +718,33 @@ export type UpdateReceptionMutationVariables = Exact<{
 
 
 export type UpdateReceptionMutation = { __typename?: 'Mutation', updateReception: { __typename?: 'Reception', id: string } };
+
+export type GetAllAnalyzeTypesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllAnalyzeTypesQuery = { __typename?: 'Query', allTypeAnalyzesResearch: Array<{ __typename?: 'TypeAnalyzesResearch', id?: number | null, typeName?: string | null }> };
+
+export type CreateAnalyzesResearchMutationVariables = Exact<{
+  data: CreateAnalyzesResearchInput;
+}>;
+
+
+export type CreateAnalyzesResearchMutation = { __typename?: 'Mutation', createAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: string, typeId?: number | null, petId?: string | null, data?: string | null } };
+
+export type GetAnalyzesResearchQueryVariables = Exact<{
+  analyzesResearchId: Scalars['String'];
+}>;
+
+
+export type GetAnalyzesResearchQuery = { __typename?: 'Query', analyzesResearch: { __typename?: 'AnalyzesResearch', id: string, data?: string | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: string, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null } | null, type?: { __typename?: 'TypeAnalyzesResearch', id?: number | null, typeName?: string | null } | null } };
+
+export type UpdateAnalyzesResearchMutationVariables = Exact<{
+  data: UpdateAnalyzesResearchInput;
+  analyzesResearchId: Scalars['String'];
+}>;
+
+
+export type UpdateAnalyzesResearchMutation = { __typename?: 'Mutation', updateAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: string } };
 
 export type GetAllGoodsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -889,6 +927,53 @@ export const ClientDetailDocument = gql`
       super(apollo);
     }
   }
+export const UpdateClientDocument = gql`
+    mutation UpdateClient($clientId: String!, $data: UpdateClientInput!) {
+  updateClient(clientId: $clientId, data: $data) {
+    id
+    fullName
+    address
+    telephoneNumber
+    pets {
+      id
+      alias
+      kind
+      gender
+      DOB
+      breed
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateClientGQL extends Apollo.Mutation<UpdateClientMutation, UpdateClientMutationVariables> {
+    override document = UpdateClientDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteClientDocument = gql`
+    mutation DeleteClient($clientId: String!) {
+  deleteClient(clientId: $clientId) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteClientGQL extends Apollo.Mutation<DeleteClientMutation, DeleteClientMutationVariables> {
+    override document = DeleteClientDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const CreatePetDocument = gql`
     mutation CreatePet($data: CreatePetInput!) {
   createPet(data: $data) {
@@ -960,6 +1045,71 @@ export const GetPetDetailDocument = gql`
   })
   export class GetPetDetailGQL extends Apollo.Query<GetPetDetailQuery, GetPetDetailQueryVariables> {
     override document = GetPetDetailDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdatePetDocument = gql`
+    mutation UpdatePet($petId: String!, $data: UpdatePetInput!) {
+  updatePet(petId: $petId, data: $data) {
+    id
+    alias
+    DOB
+    alias
+    breed
+    castration
+    color
+    diagnosis
+    gender
+    kind
+    notes
+    nutrition
+    weight
+    clientId
+    receptions {
+      id
+      diagnosis
+      createdAt
+      cost
+      purpose {
+        purposeName
+      }
+    }
+    analyzesResearchs {
+      id
+      type {
+        typeName
+      }
+      createdAt
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdatePetGQL extends Apollo.Mutation<UpdatePetMutation, UpdatePetMutationVariables> {
+    override document = UpdatePetDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeletePetDocument = gql`
+    mutation DeletePet($petId: String!) {
+  deletePet(petId: $petId) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeletePetGQL extends Apollo.Mutation<DeletePetMutation, DeletePetMutationVariables> {
+    override document = DeletePetDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);
@@ -1149,118 +1299,6 @@ export const GetReceptionDocument = gql`
       super(apollo);
     }
   }
-export const UpdateClientDocument = gql`
-    mutation UpdateClient($clientId: String!, $data: UpdateClientInput!) {
-  updateClient(clientId: $clientId, data: $data) {
-    id
-    fullName
-    address
-    telephoneNumber
-    pets {
-      id
-      alias
-      kind
-      gender
-      DOB
-      breed
-    }
-  }
-}
-    `;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class UpdateClientGQL extends Apollo.Mutation<UpdateClientMutation, UpdateClientMutationVariables> {
-    override document = UpdateClientDocument;
-    
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
-export const DeleteClientDocument = gql`
-    mutation DeleteClient($clientId: String!) {
-  deleteClient(clientId: $clientId) {
-    id
-  }
-}
-    `;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class DeleteClientGQL extends Apollo.Mutation<DeleteClientMutation, DeleteClientMutationVariables> {
-    override document = DeleteClientDocument;
-    
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
-export const UpdatePetDocument = gql`
-    mutation UpdatePet($petId: String!, $data: UpdatePetInput!) {
-  updatePet(petId: $petId, data: $data) {
-    id
-    alias
-    DOB
-    alias
-    breed
-    castration
-    color
-    diagnosis
-    gender
-    kind
-    notes
-    nutrition
-    weight
-    clientId
-    receptions {
-      id
-      diagnosis
-      createdAt
-      cost
-      purpose {
-        purposeName
-      }
-    }
-    analyzesResearchs {
-      id
-      type {
-        typeName
-      }
-      createdAt
-    }
-  }
-}
-    `;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class UpdatePetGQL extends Apollo.Mutation<UpdatePetMutation, UpdatePetMutationVariables> {
-    override document = UpdatePetDocument;
-    
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
-export const DeletePetDocument = gql`
-    mutation DeletePet($petId: String!) {
-  deletePet(petId: $petId) {
-    id
-  }
-}
-    `;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class DeletePetGQL extends Apollo.Mutation<DeletePetMutation, DeletePetMutationVariables> {
-    override document = DeletePetDocument;
-    
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
 export const UpdateReceptionDocument = gql`
     mutation UpdateReception($data: UpdateReceptionInput!, $receptionId: String!) {
   updateReception(data: $data, receptionId: $receptionId) {
@@ -1274,6 +1312,99 @@ export const UpdateReceptionDocument = gql`
   })
   export class UpdateReceptionGQL extends Apollo.Mutation<UpdateReceptionMutation, UpdateReceptionMutationVariables> {
     override document = UpdateReceptionDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetAllAnalyzeTypesDocument = gql`
+    query GetAllAnalyzeTypes {
+  allTypeAnalyzesResearch {
+    id
+    typeName
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllAnalyzeTypesGQL extends Apollo.Query<GetAllAnalyzeTypesQuery, GetAllAnalyzeTypesQueryVariables> {
+    override document = GetAllAnalyzeTypesDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateAnalyzesResearchDocument = gql`
+    mutation createAnalyzesResearch($data: CreateAnalyzesResearchInput!) {
+  createAnalyzesResearch(data: $data) {
+    id
+    typeId
+    petId
+    data
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateAnalyzesResearchGQL extends Apollo.Mutation<CreateAnalyzesResearchMutation, CreateAnalyzesResearchMutationVariables> {
+    override document = CreateAnalyzesResearchDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetAnalyzesResearchDocument = gql`
+    query GetAnalyzesResearch($analyzesResearchId: String!) {
+  analyzesResearch(analyzesResearchId: $analyzesResearchId) {
+    id
+    data
+    pet {
+      alias
+      DOB
+      kind
+      gender
+      id
+      client {
+        id
+        fullName
+        telephoneNumber
+      }
+    }
+    type {
+      id
+      typeName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAnalyzesResearchGQL extends Apollo.Query<GetAnalyzesResearchQuery, GetAnalyzesResearchQueryVariables> {
+    override document = GetAnalyzesResearchDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateAnalyzesResearchDocument = gql`
+    mutation UpdateAnalyzesResearch($data: UpdateAnalyzesResearchInput!, $analyzesResearchId: String!) {
+  updateAnalyzesResearch(analyzesResearchId: $analyzesResearchId, data: $data) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateAnalyzesResearchGQL extends Apollo.Mutation<UpdateAnalyzesResearchMutation, UpdateAnalyzesResearchMutationVariables> {
+    override document = UpdateAnalyzesResearchDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

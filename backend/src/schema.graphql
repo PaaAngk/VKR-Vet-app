@@ -9,15 +9,13 @@ input AddInGoodsListInput {
 }
 
 type AnalyzesResearch {
-  Pet: Pet
-  TypeAnalyzesResearch: TypeAnalyzesResearch
-
   """Identifies the date and time when the object was created."""
   createdAt: DateTime
   data: String
   id: String!
+  pet: Pet
   petId: String
-  type: TypeAnalyzesResearch!
+  type: TypeAnalyzesResearch
   typeId: Int
 }
 
@@ -203,6 +201,7 @@ type Mutation {
   deleteService(serviceId: Int!): Service!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
+  updateAnalyzesResearch(analyzesResearchId: String!, data: UpdateAnalyzesResearchInput!): AnalyzesResearch!
   updateClient(clientId: String!, data: UpdateClientInput!): Client!
   updateGoods(data: UpdateGoodsInput!, goodsId: Int!): Goods!
   updatePet(data: UpdatePetInput!, petId: String!): Pet!
@@ -257,6 +256,7 @@ type Query {
   allServiceList: [ServiceList!]!
   allServiceType: [ServiceType!]!
   allServices: [Service!]!
+  allTypeAnalyzesResearch: [TypeAnalyzesResearch!]!
   analyzesResearch(analyzesResearchId: String!): AnalyzesResearch!
   clientDetail(clientId: String!): Client!
   clientsWithSearch(search: String!): [Client!]!
@@ -358,6 +358,10 @@ type TypeAnalyzesResearch {
   analyzesResearch: [AnalyzesResearch!]
   id: Int
   typeName: String
+}
+
+input UpdateAnalyzesResearchInput {
+  data: String!
 }
 
 input UpdateClientInput {

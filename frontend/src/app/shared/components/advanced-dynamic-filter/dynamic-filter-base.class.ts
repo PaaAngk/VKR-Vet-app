@@ -20,6 +20,8 @@ export interface DynamicFilterBase<T>{
  * @param maxLength number | null - Definition a input maximum length
  * @param validationPatern string - Definition a RegExp patern
  * @param placeholder string - Define placeholder for input
+ * @param postfix string - A postfix string
+ * @param readOnly boolean - Set input to only read
  * @param options string[] - Array of values for combobox and dropdown
  * @param inputRangeParameters :{[key: string]: number} - Value for setting range input parameter. Parameters: min - Min value; max - Max value,  quantum - Minimum indivisible value,  steps - Number of actual discrete slider steps; segments - A number of visual segments
  */
@@ -35,12 +37,15 @@ export class DynamicFilterInput<T> {
 	maxLength: number | null; // Definition a input maximum length
 	validationPatern: string; // Definition a RegExp patern 
 	placeholder:string; // Define placeholder for input
+	postfix:string; // A postfix string
+	readOnly: boolean; // Set input to only read
 	options: string[]; // Array of values for combobox and dropdown
 	inputRangeParameters : {[key: string]: number}; // Value for setting range input parameter. 
 												// min - Min value; max - Max value, 
 												// quantum - Minimum indivisible value, 
 												// steps - Number of actual discrete slider steps;
 												// segments - A number of visual segments
+												// precision - A number of digits after comma
 	constructor(options: {
 			value?: T;
 			key?: string;
@@ -54,6 +59,8 @@ export class DynamicFilterInput<T> {
 			validationPatern?: string;
 			placeholder?:string;
 			options?: string[];
+			postfix?: string;
+			readOnly?: boolean;
 			inputRangeParameters?: {[key: string]: number};
 		} = {}) {
 		this.value = options.value;
@@ -67,8 +74,10 @@ export class DynamicFilterInput<T> {
 		this.maxLength = options.maxLength || null;
 		this.validationPatern = options.validationPatern || '';
 		this.placeholder = options.placeholder || '';
+		this.postfix = options.postfix || '';
+		this.readOnly = options.readOnly || false;
 		this.options = options.options || [];
-		this.inputRangeParameters = options.inputRangeParameters || {min:1, max:100, quantum:1};
+		this.inputRangeParameters = options.inputRangeParameters || {min:-Infinity, max:Infinity, quantum:0.0001, precision:2};
 	}
 }
 

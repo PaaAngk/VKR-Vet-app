@@ -12,6 +12,7 @@ import { DialogClientComponent } from '../../dialog/client-dialog/client-dialog.
 import { DocumentGenerateService } from '../../document-generate.service';
 import { ComboboxDynamicFilter, CountboxDynamicFilter, DateDynamicFilter, DateRangeDynamicFilter, DropdownDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
+import { DocumentsToGenerate } from '../../models/documentsToGenerate';
 
 @Component({
 	selector: 'vet-crm-client-detail',
@@ -21,119 +22,7 @@ import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-fi
 })
 export class ClientDetailComponent implements OnDestroy{
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
-	documentForm: DynamicFilterBase<string|string[]|number> = 
-		{
-			title: "Assigment",
-			dynamicFilterInputs: [
-				new DateDynamicFilter({
-					key: 'dateSelector',
-					label: 'Date entering',
-					value: new Date(2011, 0, 1)
-				}),
 
-				new DateRangeDynamicFilter({
-					key: 'dateRangeSelector',
-					label: 'Date entering',
-				}),
-
-				new ComboboxDynamicFilter({
-					key: 'combobox',
-					label: 'Bravery Rating',
-					placeholder:"Enter value to checkbox",
-					options: [
-						"Solid",
-						"Great",
-						"Good",
-						"Unproven"
-					],
-					
-				}),
-
-				new DropdownDynamicFilter({
-					key: 'dropdown',
-					label: 'Dropdown Exapmle',
-					placeholder:"Enter value to dropdown input",
-					options: [
-						"Solid",
-						"Great",
-						"Good",
-						"Unproven"
-					],
-					match: true,
-					
-				}),
-
-				new TextboxDynamicFilter({
-					key: 'firstName',
-					label: 'First name',
-					value: 'Bombasto',
-					placeholder:"Enter first name into input",
-					required: true,
-					match: true,
-				}),
-
-				new CountboxDynamicFilter({
-					key: 'counter',
-					label: 'Counter',
-					value: 0,
-					required: true,
-				}),
-				
-				// new DateDynamicFilter({
-				//   key: 'date',
-				//   label: 'Date entering',
-				// }),
-
-				new TextboxDynamicFilter({
-					key: 'emailAddress',
-					label: 'Email',
-					type: 'email',
-					
-					minLength: 5
-				}),
-
-				new ComboboxDynamicFilter({
-					key: 'combobox123',
-					label: 'Bravery Rating',
-					placeholder:"Enter value to checkbox",
-					options: [
-						"Solid",
-						"Great",
-						"Good",
-						"Unproven"
-					],
-					
-				}),
-
-				new DropdownDynamicFilter({
-					key: 'dropdown123',
-					label: 'Dropdown Exapmle',
-					placeholder:"Enter value to dropdown input",
-					options: [
-						"Solid",
-						"Great",
-						"Good",
-						"Unproven"
-					],
-					
-				}),
-
-				new TextboxDynamicFilter({
-					key: 'firstName213',
-					label: 'First name',
-					value: 'Bombasto',
-					placeholder:"Enter first name into input",
-					required: true,
-				}),
-
-				new CountboxDynamicFilter({
-					key: 'counter123',
-					label: 'Counter',
-					value: 0,
-					required: true,
-				}),
-			]
-		};
 
 	client = {} as Client;
 	pets = [] as Pet[];
@@ -141,7 +30,9 @@ export class ClientDetailComponent implements OnDestroy{
 	readonly petsColumns = ['alias', 'kind', 'gender', 'DOB', 'breed', 'actions'];
 	pageLoader = false;
 
-	open =false;
+	listOfDocumentToGenerate: DocumentsToGenerate[] = [
+		// {name: 'Первичный договор', fileName: 'Pervichnyj_dogovor'}, 
+	]
 	
 
 	private readonly dialogAddPet = this.dialogService.open<number>(
@@ -192,7 +83,7 @@ export class ClientDetailComponent implements OnDestroy{
 				if (Object.keys(client).length !== 0){
 					this.pageLoader = false;
 				}
-				this.client = client
+				this.client = {...client, pets:[]}
 				this.pets = client.pets || []
 			},
 			error: () => {
@@ -252,9 +143,10 @@ export class ClientDetailComponent implements OnDestroy{
 		});
 	}
 
-	generateDoc(){
-		// this.documentGenerateService.receiptForManipulation()
-		this.open = true;
+	generateDoc(docName: string){
+		if (docName === 'Pervichnyj_dogovor'){
+			this.documentGenerateService.generateDocumentByClientData(docName, this.client);
+		}
 	}
 
 	printDocument(event: any){

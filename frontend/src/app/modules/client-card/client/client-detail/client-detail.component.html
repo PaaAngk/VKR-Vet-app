@@ -43,7 +43,6 @@
                     Добавить питомца
                 </p>
             </button>
-            
         </div>
     </tui-loader>
 
@@ -209,11 +208,13 @@
             </div>
 
             <!-- Document generate -->
-            <div *ngIf="activeItemIndex === 1">
-                
-                <div class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Noteworthy technology acquisitions 2021</h5>
-                    <button tuiButton (click)="generateDoc()">Document Generate</button>
+            <div *ngIf="activeItemIndex === 1" class="flex space-x-2">
+                <div 
+                    class="max-w-xs p-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-col justify-center items-center text-center" 
+                    *ngFor="let item of listOfDocumentToGenerate"
+                >
+                    <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">{{ item.name }}</h4>
+                    <button tuiButton size="m" (click)="generateDoc(item.fileName)">Сгенерировать</button>
                 </div>
             </div>
         </div>

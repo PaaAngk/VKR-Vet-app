@@ -13,12 +13,7 @@ import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
 import { ComboboxDynamicFilter, CountboxDynamicFilter, DateDynamicFilter, DateRangeDynamicFilter, DropdownDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
 import { DocumentGenerateService } from '../document-generate.service';
-import { TuiDay } from "@taiga-ui/cdk";
-
-interface DocumentsToGenerate{
-	name: string,
-	fileName: string
-}
+import { DocumentsToGenerate } from '../models/documentsToGenerate';
 
 @Component({
 	selector: 'vet-crm-pet',
@@ -171,10 +166,13 @@ export class PetComponent implements OnDestroy, OnInit{
 			}),
 		]
 	};
+
 	listOfDocumentToGenerate: DocumentsToGenerate[] = [
 		{name: 'Расписка ИП', fileName: 'Raspiska_ip'}, 
 		{name: 'Эфтаназия', fileName: 'Eftanaziya'}, 
-		{name: 'Согласие на стационар', fileName: 'Soglasie_na_stacionar'}, 
+		{name: 'Согласие на стационар', fileName: 'Soglasie_na_stacionar'},
+		{name: 'Первичный договор', fileName: 'Pervichnyj_dogovor'},
+		{name: 'Карта для стационара', fileName: 'Karta_dlya_stacionara'},
 	]
 
 	age = '';
@@ -211,9 +209,9 @@ export class PetComponent implements OnDestroy, OnInit{
 			next: (pet: Pet) => {
 				if (Object.keys(pet).length !== 0){
 					this.pageLoader = false;
-					console.log( TuiDay.fromLocalNativeDate(new Date(Number(pet.DOB) as number)) )
-					console.log(TuiDay.lengthBetween(TuiDay.fromLocalNativeDate(new Date(Number(pet.DOB) as number)), TuiDay.currentLocal()))
-					this.age = ''
+					// console.log( TuiDay.fromLocalNativeDate(new Date(Number(pet.DOB) as number)) )
+					// console.log(TuiDay.lengthBetween(TuiDay.fromLocalNativeDate(new Date(Number(pet.DOB) as number)), TuiDay.currentLocal()))
+					// console.log(this.dataPipe.transform(pet.DOB,  'dd MM yyyy'))
 				}
 				this.pet = {...pet, receptions: [], analyzesResearchs:[]}
 				this.receptions = pet.receptions || [] as Reception[];//.sort((a, b) => ( new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() ) )
@@ -275,11 +273,9 @@ export class PetComponent implements OnDestroy, OnInit{
 	}
 
 	generateDoc(docName: string){
-		
-
 		const dataToPrint: any = {
 			...this.pet, 
-			genderString: this.pet.gender ? "Мужской ":"Женский ", 
+			genderString: this.pet.gender ? "Мужской":"Женский", 
 			formatDate: this.dataPipe.transform(this.pet.DOB,  'dd.MM.yyyy')
 		}
 		if (docName === 'Raspiska_ip'){
@@ -329,6 +325,28 @@ export class PetComponent implements OnDestroy, OnInit{
 						label: 'Выбор сотрудника',
 						placeholder:"Начните вводить ФИО сотрудника",
 						options: this.employeesList,
+					}),
+				]
+			}
+			this.open = true
+			this.gettingDocument(docName, dataToPrint);
+		}
+		if (docName === 'Pervichnyj_dogovor'){
+			this.documentGenerateService.generateDocumentByClientData(docName, dataToPrint);
+		}
+		if (docName === 'Karta_dlya_stacionara'){
+			this.documentForm = {
+				title: "Согласие на стационар",
+				dynamicFilterInputs: [
+					new ComboboxDynamicFilter({
+						key: 'employee',
+						label: 'Выбор сотрудника',
+						placeholder:"Начните вводить ФИО сотрудника",
+						options: this.employeesList,
+					}),
+					new TextboxDynamicFilter({
+						key: 'diagnos',
+						label: 'Предварительный диагноз',
 					}),
 				]
 			}

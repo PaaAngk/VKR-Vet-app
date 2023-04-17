@@ -122,11 +122,6 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 	// -----------------------------------------------------------------------------------------------------
    
 
-	setClient(clientId : string) {
-		this.clientCardService.setSelectedClient(clientId);
-		this.router.navigateByUrl('client-card/detail');
-	}
-
 	errInDocumentGeneration = () => {
 		this.alertService.open("Обратитесь к администратору или обновите страницу", 
 		{

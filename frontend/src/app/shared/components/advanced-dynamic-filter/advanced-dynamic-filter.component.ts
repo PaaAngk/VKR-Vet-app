@@ -17,12 +17,17 @@ export class AdvancedDynamicFilterComponent implements OnInit {
 	/** Input form */
 	@Input() segmentForms: DynamicFilterBase<any | any[]> = {} as DynamicFilterBase<any | any[]>;
 
+	/** Input needed in two columns */
+	@Input() twoColumns: boolean = false;
+
 	form!: FormGroup;
 	constructor(private dfs: DynamicFilterControlService) {}
 
 	ngOnInit() {
 		// Format gettings filter to FromGroup
 		this.form = this.dfs.toFormGroupFromBase(this.segmentForms as DynamicFilterBase<any | any[]>);
+		if(this.twoColumns)
+			this.form.valueChanges.subscribe(() => this.onSubmit());
 	}
 
 	/**

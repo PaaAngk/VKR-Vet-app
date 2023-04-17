@@ -1,6 +1,5 @@
-<form (ngSubmit)="onSubmit()" class="flex flex-col rounded-lg bg-white h-full items-center justify-center" [formGroup]="form" [tuiTextfieldCleaner]="true">
-	<div class="flex flex-col space-y-2 w-full overflow-y-auto h-full">
-		<!-- <p *ngIf="segmentForms.title">{{segmentForms.title}}</p> -->
+<form (ngSubmit)="onSubmit()" class="flex flex-col rounded-lg bg-white h-full items-center justify-center w-full" [formGroup]="form" [tuiTextfieldCleaner]="true">
+	<div class="flex flex-col space-y-2 w-full overflow-y-auto h-full" *ngIf="!twoColumns">
 		<ng-container *ngFor="let filter of segmentForms.dynamicFilterInputs" >
 			<dynamic-filter-item 
 				[input]="filter" 
@@ -10,7 +9,18 @@
 		</ng-container>
 		<button tuiButton type="submit" [disabled]="!form.valid">Печать</button>
 	</div>
+
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto w-full" *ngIf="twoColumns">
+		<dynamic-filter-item 
+			*ngFor="let filter of segmentForms.dynamicFilterInputs"
+			[input]="filter" 
+			[form]="form" 
+			class=""
+		></dynamic-filter-item>
+	</div>
 </form>
+
+
 <!-- 
 <div class="flex p-2 w-full overflow-y-auto ">
 	<tui-accordion class="w-full">

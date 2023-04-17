@@ -1,11 +1,12 @@
 <div class="flex flex-col space-y-3" *ngIf="true">
 
-    <div class="w-full h-full flex rounded-lg items-center justify-between bg-white shadow-md">
+    <div class="w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-2 rounded-lg items-center justify-between bg-white shadow-md pr-2">
         <button
             tuiButton
             icon = 'tuiIconArrowLeftLarge'
             appearance="textfield"
             [routerLink]="'/client-card/pet/'+ reception.petId"
+            class="md:w-52 w-full"
         >
             К питомцу
         </button>
@@ -31,7 +32,7 @@
             icon = 'tuiIconEditLarge'
             appearance="outline"
             size="m"
-            class="mr-2"
+            class="md:w-52 w-full justify-self-end"
             routerLink="edit"
         >
             Изменить
@@ -126,7 +127,7 @@
 
             <!-- Check -->
             <div class="w-full pb-2" *ngIf="activeItemIndex === 2">
-                <div class="flex flex-row space-x-4 pb-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <!-- Service list -->
                     <div class="space-y-4 w-full">                  
                         <table
@@ -274,7 +275,7 @@
                     </div>
                 </div>
 
-                <div class="text-center flex flex-col items-center" *ngIf="reception.services!.length !== 0 || reception.goods!.length !== 0">
+                <div class="text-center flex flex-col items-center mt-4" *ngIf="reception.services!.length !== 0 || reception.goods!.length !== 0">
                     <h1 class="tui-text_h4 w-56 text-black">Итог: {{reception.cost}}</h1>
                     <span class="tui-text_body-xl w-60">Скидка: {{reception.discount ? reception.discount : 0}} %</span>
                 </div>
