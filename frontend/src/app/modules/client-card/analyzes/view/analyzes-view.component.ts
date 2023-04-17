@@ -56,47 +56,35 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 
 	ngOnInit(): void {
 		this.loading = true;
-		//Getting analyze types, then Getting analyze and formating form for dynamic filter
-		//Search in array of analyzes and select needed with file name and needed form for selected analyze
-		this.getAllAnalyzeTypesGQL.watch().valueChanges
-			.pipe(take(1))
-			.subscribe( ({data}) => {
-				// Set id from DB for list of accesing analyzes
-				this.analyzesList.map((analyze: AnalyzeType) => 
-					analyze['id'] = data.allTypeAnalyzesResearch.find(obj => obj.typeName?.trim() == analyze.name.trim())?.id || -1
-				)
-				
-				//Getting analyze and formating form for dynamic filter
-				this.activateRoute.params.subscribe(params => {
-					this.getAnalyzesResearchGQL
-					.watch({
-						analyzesResearchId:params['id'],
-					})
-					.valueChanges
-					.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
-					.subscribe( ({data, loading}) => {
-						// this.reception = data.reception as Reception
-						this.analyzeData = data.analyzesResearch
-						const parcedData = JSON.parse(data.analyzesResearch.data || '');
-						this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeType;
-						const form = this.currentAnalyze?.form.dynamicFilterInputs
-							.map((item: DynamicFilterInput<any>) => {
-								item.readOnly = true
-								item.value = parcedData[item.key] || null;
-								return item
-							})
-						this.petId = data.analyzesResearch.pet?.id || ''
-						this.dynamicFormData = {
-							title: this.currentAnalyze?.name || '',
-							dynamicFilterInputs: form
-						}
-						this.loading = loading;
-					});
-				});
+		// Getting analyze and formating form for dynamic filter
+		//Search in array of analyzes and select needed with file name and needed form for selected analyze		
+		//Getting analyze and formating form for dynamic filter
+		this.activateRoute.params.subscribe(params => {
+			this.getAnalyzesResearchGQL
+			.watch({
+				analyzesResearchId:params['id'],
 			})
-
-
-
+			.valueChanges
+			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
+			.subscribe( ({data, loading}) => {
+				// this.reception = data.reception as Reception
+				this.analyzeData = data.analyzesResearch
+				const parcedData = JSON.parse(data.analyzesResearch.data || '');
+				this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeType;
+				const form = this.currentAnalyze?.form.dynamicFilterInputs
+					.map((item: DynamicFilterInput<any>) => {
+						item.readOnly = true
+						item.value = parcedData[item.key] || null;
+						return item
+					})
+				this.petId = data.analyzesResearch.pet?.id || ''
+				this.dynamicFormData = {
+					title: this.currentAnalyze?.name || '',
+					dynamicFilterInputs: form
+				}
+				this.loading = loading;
+			});
+		});
 	}
 
 	ngOnDestroy(): void

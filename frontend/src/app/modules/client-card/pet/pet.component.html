@@ -3,10 +3,10 @@
     <!-- Header -->
     <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="p-2 rounded-lg bg-white shadow-md" >
         <div tuiTextfieldSize="m" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <p class="text-base">
-                <b class="mx-4 text-xl">{{ pet.alias }} </b> 
+            <p class="text-base pl-4">
+                <b class="text-xl mr-4">{{ pet.alias }} </b> 
                 Вид: <b class="mr-4">{{ pet.kind }}</b><br>
-                Дата рождения: <b>{{pet.DOB | date:'dd/MM/yyy' | checkNull}}</b>
+                Возраст: <b>{{pet.DOB | ageString | checkNull }}</b>
             </p>
             <div
                 tuiGroup

@@ -38,7 +38,7 @@ import { TuiStringifyContentPipeModule } from '@taiga-ui/kit';
 import { DocumentGenerateService } from './document-generate.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AdvancedDynamicFilterModule } from 'src/app/shared/components/advanced-dynamic-filter';
-import { AnalyzesComponent } from './analyzes/analyzes-add/analyzes.component';
+import { AnalyzesComponent } from './analyzes/analyzes-add-edit/analyzes.component';
 import { AnalyzesViewComponent } from './analyzes/view/analyzes-view.component';
 import { AgeStringPipe, SafeHtmlPipe, ArrayToAnyArrayPipe, CheckNullPipe, FormatPetGenderPipe } from 'src/app/shared/pipes';
 
@@ -58,6 +58,7 @@ import { AgeStringPipe, SafeHtmlPipe, ArrayToAnyArrayPipe, CheckNullPipe, Format
     SafeHtmlPipe,
     AnalyzesComponent,
     AnalyzesViewComponent,
+    AgeStringPipe,
   ],
   imports: [
     CommonModule,

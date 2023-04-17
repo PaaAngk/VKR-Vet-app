@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AnalyzesComponent } from './analyzes/analyzes-add/analyzes.component';
+import { AnalyzesComponent } from './analyzes/analyzes-add-edit/analyzes.component';
 import { AnalyzesViewComponent } from './analyzes/view/analyzes-view.component';
 import { ClientDetailComponent } from './client/client-detail/client-detail.component';
 import { ClientComponent } from './client/client.component';
@@ -54,16 +54,23 @@ const routes: Routes = [
   {
     path: 'pet/:id/analyzes/new', 
     data: {
-      title: 'Добавление приема'
+      title: 'Добавление анализов'
     },
     component: AnalyzesComponent,
   },
   {
     path: 'pet/:id/analyzes/:id', 
     data: {
-      title: 'Просмотр приема'
+      title: 'Просмотр анализов'
     },
     component: AnalyzesViewComponent,
+  },
+  {
+    path: 'pet/:id/analyzes/:id/edit', 
+    data: {
+      title: 'Изменение анализов'
+    },
+    component: AnalyzesComponent,
   },
 ];
 

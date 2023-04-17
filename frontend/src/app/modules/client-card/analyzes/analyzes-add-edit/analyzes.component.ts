@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector
 import { ActivatedRoute, Router } from '@angular/router';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
-import { Subject, take, takeUntil } from 'rxjs';
-import { GetAllAnalyzeTypesGQL, CreateAnalyzesResearchInput } from 'src/graphql/generated';
+import { Subject, takeUntil } from 'rxjs';
+import { CreateAnalyzesResearchInput, GetAnalyzesResearchGQL, AnalyzesResearch, UpdateAnalyzesResearchInput } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
 import { AnalyzeType } from '../../models/analyzeType';
 import { AnalyzesList } from "../analyzeFormTemplates";
+import { DynamicFilterInput } from 'src/app/shared/components/advanced-dynamic-filter';
 
 @Component({
 	selector: 'vet-crm-reception-new',
@@ -18,17 +19,20 @@ import { AnalyzesList } from "../analyzeFormTemplates";
 export class AnalyzesComponent implements OnDestroy, OnInit {
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+	// Store type with analyze and file name and form
 	currentAnalyzeType:AnalyzeType = null as unknown as AnalyzeType;
-
-	analyzesList: AnalyzeType[] = AnalyzesList;
+	// For dropdown
+	analyzesList = AnalyzesList;
+	// Edited analyze
+	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
 
 	formData = {};
 	maySave = false;
 
 	/** Interface */
 	editMode = false;
-	receptionId = '';
 	petId = '';
+	analyzeId = '';
 
 	@ViewChild(TuiHostedDropdownComponent)
     component?: TuiHostedDropdownComponent;
@@ -49,54 +53,45 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		private _changeDetectorRef: ChangeDetectorRef,
 		@Inject(Router) private readonly router: Router,
 		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
-		private getAllAnalyzeTypesGQL : GetAllAnalyzeTypesGQL,
+		
+		private getAnalyzesResearchGQL : GetAnalyzesResearchGQL,
     ) {}
 
 	ngOnInit(): void {
 		// Getting id pet from url for now reception
 		this.activateRoute.params.subscribe(params=> this.petId=params['id'] );
 
-		//Getting analyze types 
-		this.getAllAnalyzeTypesGQL.watch().valueChanges
-			.pipe(take(1))
-			.subscribe( ({data}) => {
-				// Set id from DB for list of accesing analyzes
-				this.analyzesList.map((analyze: AnalyzeType) => 
-					analyze['id'] = data.allTypeAnalyzesResearch.find(obj => obj.typeName?.trim() == analyze.name.trim())?.id || -1
-				)
-			})
+		if (this.activateRoute.snapshot.url[4] && this.activateRoute.snapshot.url[4].path == 'edit'){
+			this.loading = true;
+			this.editMode = true;
+			this.analyzeId = this.activateRoute.snapshot.url[3].path;
 
-		// Getting reception data for edit and fill current form
-		// if (this.activateRoute.snapshot.url[4] && this.activateRoute.snapshot.url[4].path == 'edit'){
-		// 	this.editMode = true;
-		// 	this.receptionId = this.activateRoute.snapshot.url[3].path;
-		// 	this.getReceptionGQL
-		// 	.watch({
-		// 		receptionId: this.receptionId
-		// 	}).valueChanges
-		// 	.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
-		// 	.subscribe( ({data, loading}) => {
-		// 		this.loading = loading;
-		// 		const reception : Reception = data.reception
-		// 		// this.addReceptionForm.setValue({
-		// 		// 	employeeId: -1,
-		// 		// 	purposeId: -1,
-		// 		// 	anamnesis: reception.anamnesis as string,
-		// 		// 	clinicalSigns: reception.clinicalSigns as string,
-		// 		// 	diagnosis: reception.diagnosis as string,
-		// 		// 	assignment: reception.assignment as string,
-		// 		// 	cost: reception.cost as number,
-		// 		// 	discount:reception.discount as number || 0,
-		// 		// 	employeeInput: reception.employee as Employee,
-		// 		// 	visitPurposeInput: reception.purpose as ReceptionPurpose,
-		// 		// });
-		// 		// this.selectGoodsInput = reception.goods?.map(goodsItem => ({...goodsItem?.goods, quantity: goodsItem?.quantity} ) )as SelectedGoods[]
-		// 		// this.selectedGoods = this.selectGoodsInput;
+			this.getAnalyzesResearchGQL
+				.watch({
+					analyzesResearchId: this.analyzeId,
+				})
+				.valueChanges
+				.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
+				.subscribe( ({data, loading}) => {
+					this.analyzeData = data.analyzesResearch
+					const parcedData = JSON.parse(data.analyzesResearch.data || '');
 
-		// 		// this.selectedServices = reception.services?.map(serviceItem => ({...serviceItem?.service, quantity: serviceItem?.quantity} ) )as SelectedService[]
-		// 		// this.selectServiceInput = this.selectedServices
-		// 	});
-		// }
+					this.currentAnalyzeType = structuredClone(AnalyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeType;
+					const form = this.currentAnalyzeType?.form.dynamicFilterInputs
+						.map((item: DynamicFilterInput<any>) => {
+							item.value = parcedData[item.key] || null;
+							return item
+						})
+
+					this.petId = data.analyzesResearch.pet?.id || ''
+
+					this.currentAnalyzeType.form = {
+						title: this.currentAnalyzeType?.name || '',
+						dynamicFilterInputs: form
+					}
+					this.loading = loading;
+				});
+		}	
 	}
 
 	ngOnDestroy(): void
@@ -112,12 +107,9 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 
 	readonly stringifyAnalyzeList = (item: AnalyzeType): string => `${item.name}`;
 
-	submitAnalyzes(){
-			// this.loading = true;
-			
-            // if(this.editMode) this.editReception(goodsListReceptionInput, serviceListReceptionInput)
-			// else this.createReception(goodsListReceptionInput, serviceListReceptionInput)
-			this.createAnalyzes()
+	submitAnalyzes(){			
+            if(this.editMode) this.editAnalyzes()
+			else this.createAnalyzes();
 	}
 
 	createAnalyzes(){
@@ -152,32 +144,35 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		})
 	}
 
-	editReception(){
-		// this.clientCardService.updateReception(
-		// 	this.receptionId,
-		// 	{ ...this.addReceptionForm.value, goodsListReceptionInput, serviceListReceptionInput } as UpdateReceptionInput
-		// ).subscribe({
-		// 	next: () => {
-		// 		this.loading = false;
-		// 		this.alertService.open("", {
-		// 			status: TuiNotification.Success, 
-		// 			label:"Прием успешно изменен!",
-		// 			autoClose: 5000,
-		// 		}).subscribe();
-		// 		this.router.navigate([`/client-card/pet/${this.petId}/reception/${this.receptionId}`], {relativeTo: this.activateRoute})
-		// 	},
-		// 	error: (error)  => 
-		// 	{
-		// 		this.alertService.open(
-		// 			"Проверьте правильность введенных данных", 
-		// 			{
-		// 				status: TuiNotification.Error, 
-		// 				label: "Невозможно изменить прием!",
-		// 				autoClose: 5000,
-		// 			}).subscribe()
-		// 		console.log(error)
-		// 	}
-		// })
+	editAnalyzes(){
+		this.clientCardService.updateAnalyzesResearch(
+			this.analyzeData.id,
+			{
+				data: JSON.stringify(this.formData), 
+			} as UpdateAnalyzesResearchInput
+		)
+		.subscribe({
+			next: (data) => {
+				this.loading = false;
+				this.alertService.open("", {
+					status: TuiNotification.Success,
+					label:"Анализ успешно обновлен!",
+					autoClose: 5000,
+				}).subscribe();
+				this.router.navigate([`/client-card/pet/${this.petId}/analyzes/${data?.updateAnalyzesResearch.id}`], {relativeTo: this.activateRoute})
+			},
+			error: (error)  => 
+			{
+				this.alertService.open(
+					"Проверьте правильность введенных данных", 
+					{
+						status: TuiNotification.Error, 
+						label: "Невозможно обновить анализ!",
+						autoClose: 5000,
+					}).subscribe()
+				console.log(error)
+			}
+		})
 	}
 
 	dataFromDialog(event: any){

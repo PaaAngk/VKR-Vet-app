@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, take } from "rxjs";
-import { AnalyzesResearch, Client, ClientDetailGQL, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
+import { AnalyzesResearch, Client, ClientDetailGQL, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
+import { AnalyzesList } from "./analyzes/analyzeFormTemplates";
+import { AnalyzeType } from "./models/analyzeType";
 
 @Injectable({
     providedIn: 'root'
@@ -36,12 +38,14 @@ export class ClientCardService
         private createReceptionGQL: CreateReceptionGQL,
         private createAnalyzesResearchGQL: CreateAnalyzesResearchGQL, 
         private updateAnalyzesResearchGQL: UpdateAnalyzesResearchGQL,
+        private getAllAnalyzeTypesGQL : GetAllAnalyzeTypesGQL,
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
         this.getAllEmployees();
         this.getAllReceptionPurpose();
         this.getClientsData();
+        this.getAllAnalyzeTypes();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -260,6 +264,18 @@ export class ClientCardService
                 this._employeesList.next(data.data.allEmployees)
             },
 		});
+    }
+
+    getAllAnalyzeTypes(){
+        //Getting analyze types 
+        this.getAllAnalyzeTypesGQL.watch().valueChanges
+		.pipe(take(1))
+		.subscribe( ({data}) => {
+			// Set id from DB for list of accesing analyzes
+			AnalyzesList.map((analyze: AnalyzeType) => 
+				analyze['id'] = data.allTypeAnalyzesResearch.find(obj => obj.typeName?.trim() == analyze.name.trim())?.id || -1
+			)
+        })
     }
 
     /**

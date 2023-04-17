@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
 import { tuiWatch } from '@taiga-ui/cdk';
-import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
-import {  BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
+import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { Subject, take, takeUntil } from 'rxjs';
 import { TableColumn } from 'src/app/core';
 import { AnalyzesResearch, Client, Employee, Pet, Reception } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
-import {PolymorpheusComponent, PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { PetDialogComponent } from '../dialog/add-pet/pet-dialog.component';
 import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';

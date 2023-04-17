@@ -1,0 +1,73 @@
+<div class="flex flex-col space-y-3" *ngIf="true">
+    <div class="w-full h-full rounded-lg bg-white shadow-md">
+        <tui-loader 
+            [overlay]="true" 
+            [showLoader] = "loading" 
+        >
+            <div class="flex flex-row justify-between items-center p-1">
+                <tui-combo-box
+                    class="w-96"
+                    [stringify]="stringifyAnalyzeList"
+                    [(ngModel)] = "currentAnalyzeType"
+                    [tuiTextfieldCleaner]="true"
+                >
+                    Вид анализа или исследования
+                    <input
+                        tuiTextfield
+                        placeholder="Начните вводить вид"
+                    />
+                    <tui-data-list-wrapper
+                        *tuiDataList
+                        [items]="analyzesList | tuiFilterByInputWith : stringifyAnalyzeList"
+                        [itemContent]="stringifyAnalyzeList | tuiStringifyContent"
+                    ></tui-data-list-wrapper>
+                </tui-combo-box>
+                <button
+                    *ngIf="!editMode"
+                    tuiButton
+                    size="m"
+                    (click)="submitAnalyzes()"
+                    [disabled]="!maySave"
+                    [showLoader]="loading"
+                >
+                    <p class="text-base">
+                        Добавить
+                    </p>
+                </button>
+                <button
+                    *ngIf="editMode"
+                    tuiButton
+                    size="m"
+                    class="mr-2"
+                    (click)="submitAnalyzes()"
+                    [disabled]="!maySave"
+                    [showLoader]="loading"
+                >
+                    <p class="text-base">
+                        Изменить
+                    </p>
+                </button>
+            </div>
+        </tui-loader> 
+
+        <tui-loader 
+            [overlay]="true" 
+            [showLoader] = "loading" 
+            class="p-2 shadow-inner overflow-auto" 
+            [ngStyle]="{'max-height':'85vh'}"
+        >
+            <app-advanced-dynamic-form
+                *ngIf="currentAnalyzeType"
+                [segmentForms] = "currentAnalyzeType.form"
+                (formValues) = "dataFromDialog($event)"
+                [twoColumns] = "true"
+            ></app-advanced-dynamic-form>
+            <h3
+                *ngIf="!currentAnalyzeType && !loading"
+                class="text-2xl py-2 font-bold text-center"
+            >
+                Выберите вид анализа и исследования
+            </h3>
+        </tui-loader> 
+    </div>
+</div>
