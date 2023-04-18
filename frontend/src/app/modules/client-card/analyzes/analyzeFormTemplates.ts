@@ -146,5 +146,5 @@ export const AnalyzesList: AnalyzeType[] = [
     { name:'Общий анализ крови', typeName: 'Analiz_krovi', form: Analiz_kroviForm },
     { name:'Гистологическое заключение', typeName: 'Gistologicheskoe_zaklyuchenie', form: Analiz_kroviForm },
     { name:'Анализ кала', typeName: 'Analiz_kala', form: Analiz_kroviForm },
-    { name:'Файлы анализов', typeName: 'Files', form: Analiz_kroviForm },
+    { name:'Файлы анализов', typeName: 'Files', form: null },
 ]

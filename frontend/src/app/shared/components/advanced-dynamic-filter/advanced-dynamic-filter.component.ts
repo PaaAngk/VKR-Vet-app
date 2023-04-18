@@ -15,7 +15,7 @@ export class AdvancedDynamicFilterComponent implements OnInit {
 	@Output() formValues = new EventEmitter<any>();
 
 	/** Input form */
-	@Input() segmentForms: DynamicFilterBase<any | any[]> = {} as DynamicFilterBase<any | any[]>;
+	@Input() segmentForms: DynamicFilterBase<any | any[]> | null = null;
 
 	/** Input needed in two columns */
 	@Input() twoColumns: boolean = false;
@@ -25,9 +25,12 @@ export class AdvancedDynamicFilterComponent implements OnInit {
 
 	ngOnInit() {
 		// Format gettings filter to FromGroup
-		this.form = this.dfs.toFormGroupFromBase(this.segmentForms as DynamicFilterBase<any | any[]>);
-		if(this.twoColumns)
-			this.form.valueChanges.subscribe(() => this.onSubmit());
+		if (this.segmentForms)
+			this.form = this.dfs.toFormGroupFromBase(this.segmentForms as DynamicFilterBase<any | any[]>);
+
+			if(this.twoColumns)
+				this.form.valueChanges.subscribe(() => this.onSubmit());
+		
 	}
 
 	/**

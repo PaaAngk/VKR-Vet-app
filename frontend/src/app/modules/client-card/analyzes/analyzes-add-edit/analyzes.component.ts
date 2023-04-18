@@ -77,7 +77,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 					const parcedData = JSON.parse(data.analyzesResearch.data || '');
 
 					this.currentAnalyzeType = structuredClone(AnalyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeType;
-					const form = this.currentAnalyzeType?.form.dynamicFilterInputs
+					const form = this.currentAnalyzeType?.form?.dynamicFilterInputs
 						.map((item: DynamicFilterInput<any>) => {
 							item.value = parcedData[item.key] || null;
 							return item
@@ -87,7 +87,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 
 					this.currentAnalyzeType.form = {
 						title: this.currentAnalyzeType?.name || '',
-						dynamicFilterInputs: form
+						dynamicFilterInputs: form as DynamicFilterInput<any>[]
 					}
 					this.loading = loading;
 				});
@@ -113,36 +113,66 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	}
 
 	createAnalyzes(){
-		this.clientCardService.createAnalyzesResearch(
-			{ 
-				data: JSON.stringify(this.formData), 
-				petId: this.petId,
-				typeId:this.currentAnalyzeType.id
-			} as CreateAnalyzesResearchInput
-		)
-		.subscribe({
-			next: (data) => {
-				this.loading = false;
-				this.alertService.open("", {
-					status: TuiNotification.Success,
-					label:"Анализ успешно добавлен!",
-					autoClose: 5000,
-				}).subscribe();
-				this.router.navigate([`../${data?.createAnalyzesResearch.id}`], {relativeTo: this.activateRoute})
-			},
-			error: (error)  => 
-			{
-				this.alertService.open(
-					"Проверьте правильность введенных данных", 
-					{
-						status: TuiNotification.Error, 
-						label: "Невозможно добавить анализ!",
-						autoClose: 5000,
-					}).subscribe()
-				console.log(error)
-			}
-		})
+		if(this.currentAnalyzeType.typeName !== 'Files'){
+			this.clientCardService.createAnalyzesResearch(
+				{ 
+					data: JSON.stringify(this.formData), 
+					petId: this.petId,
+					typeId:this.currentAnalyzeType.id
+				} as CreateAnalyzesResearchInput
+			)
+			.subscribe({
+				next: (data) => {
+					this.successCreate(data?.createAnalyzesResearch.id);
+				},
+				error: (error)  => 
+				{
+					this.errorCreate()
+					console.log(error)
+				}
+			})
+		}
+		else if (this.currentAnalyzeType.typeName === 'Files'){
+			this.clientCardService.uploadAnalyzeFile(
+				this.formData as File[],
+				{ 
+					petId: this.petId,
+					typeId:this.currentAnalyzeType.id
+				}
+			).subscribe({
+				next: (data) => {
+					// this.successCreate("");
+				},
+				error: (error)  => 
+				{
+					this.errorCreate()
+					console.log(error)
+				}
+			})
+		}
 	}
+
+	successCreate(id: any){
+		this.loading = false;
+		this.alertService.open("", {
+			status: TuiNotification.Success,
+			label:"Анализ успешно добавлен!",
+			autoClose: 5000,
+		}).subscribe();
+		this.router.navigate([`../${id}`], {relativeTo: this.activateRoute})
+	}
+
+	errorCreate(){
+		this.loading = false;
+		this.alertService.open(
+			"Проверьте правильность введенных данных", 
+			{
+				status: TuiNotification.Error, 
+				label: "Невозможно добавить анализ!",
+				autoClose: 5000,
+			}).subscribe()
+	}
+
 
 	editAnalyzes(){
 		this.clientCardService.updateAnalyzesResearch(

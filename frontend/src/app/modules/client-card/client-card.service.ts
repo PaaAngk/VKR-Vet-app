@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, take } from "rxjs";
@@ -21,6 +22,8 @@ export class ClientCardService
 
     constructor(
         private apollo: Apollo,
+        private http: HttpClient,
+
         private getClientGQL: GetClientGQL,
         private createClientGQL: CreateClientGQL,
         private clientDetailGQL: ClientDetailGQL,
@@ -495,6 +498,30 @@ export class ClientCardService
                 return data
             })
         )
+    }
+
+
+    uploadAnalyzeFile(files: File[], analyzeData: any){
+        
+        const formData:FormData = new FormData();
+        files.forEach((file, i) => {
+            formData.append(`file${i}`, file);
+        })
+        formData.append(`analyzeData`, JSON.stringify(analyzeData));
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'multipart/form-data');
+        headers.append('Accept', '*/*');
+        const options = { headers: headers };
+
+        console.log(formData)   
+        return this.http.post(`http://localhost:3000/analyzes/upload-file`, formData, options)
+        // .subscribe({
+        //     next: (buffer: any) => {
+        //         const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
+        //         window.open(fileURL);
+        //     },
+        //     error: (error: any) => console.log(error),
+        // })
     }
 
     // -----------------------------------------------------------------------------------------------------

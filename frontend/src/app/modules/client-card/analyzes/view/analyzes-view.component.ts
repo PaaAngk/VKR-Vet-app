@@ -71,7 +71,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 				this.analyzeData = data.analyzesResearch
 				const parcedData = JSON.parse(data.analyzesResearch.data || '');
 				this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeType;
-				const form = this.currentAnalyze?.form.dynamicFilterInputs
+				const form = this.currentAnalyze?.form?.dynamicFilterInputs
 					.map((item: DynamicFilterInput<any>) => {
 						item.readOnly = true
 						item.value = parcedData[item.key] || null;
@@ -80,7 +80,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 				this.petId = data.analyzesResearch.pet?.id || ''
 				this.dynamicFormData = {
 					title: this.currentAnalyze?.name || '',
-					dynamicFilterInputs: form
+					dynamicFilterInputs: form as DynamicFilterInput<any>[]
 				}
 				this.loading = loading;
 			});

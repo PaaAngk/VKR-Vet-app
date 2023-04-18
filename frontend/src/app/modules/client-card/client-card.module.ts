@@ -41,6 +41,7 @@ import { AdvancedDynamicFilterModule } from 'src/app/shared/components/advanced-
 import { AnalyzesComponent } from './analyzes/analyzes-add-edit/analyzes.component';
 import { AnalyzesViewComponent } from './analyzes/view/analyzes-view.component';
 import { AgeStringPipe, SafeHtmlPipe, ArrayToAnyArrayPipe, CheckNullPipe, FormatPetGenderPipe } from 'src/app/shared/pipes';
+import { FileInputModule } from 'src/app/shared/components/file-input/file-input.module';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { AgeStringPipe, SafeHtmlPipe, ArrayToAnyArrayPipe, CheckNullPipe, Format
     HttpClientModule,
     ButtonWithDropdownModule,
     AdvancedDynamicFilterModule,
+    FileInputModule,
 
     TuiInputModule,
     TuiButtonModule,
