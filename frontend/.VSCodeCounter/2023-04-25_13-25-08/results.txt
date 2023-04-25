@@ -1,0 +1,246 @@
+Date : 2023-04-25 13:25:08
+Directory : f:\VKR\app\frontend\src
+Total : 151 files,  11979 codes, 774 comments, 1351 blanks, all 14104 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| TypeScript |        108 |      6,811 |        622 |      1,106 |      8,539 |
+| HTML       |         28 |      2,972 |        141 |        177 |      3,290 |
+| XML        |          1 |      1,632 |          1 |          2 |      1,635 |
+| GraphQL    |          4 |        420 |          6 |         31 |        457 |
+| Less       |          9 |        133 |          4 |         32 |        169 |
+| CSS        |          1 |         11 |          0 |          3 |         14 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                         | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                            |        151 |     11,979 |        774 |      1,351 |     14,104 |
+| . (Files)                                                                                                    |          4 |         74 |          4 |         19 |         97 |
+| app                                                                                                          |        143 |      8,915 |        738 |      1,059 |     10,712 |
+| app (Files)                                                                                                  |          6 |        199 |         60 |         34 |        293 |
+| app\core                                                                                                     |         23 |        393 |        105 |         84 |        582 |
+| app\core (Files)                                                                                             |          2 |         22 |          4 |          4 |         30 |
+| app\core\auth                                                                                                |          5 |        189 |         96 |         34 |        319 |
+| app\core\auth (Files)                                                                                        |          3 |        102 |         25 |         15 |        142 |
+| app\core\auth\guards                                                                                         |          2 |         87 |         71 |         19 |        177 |
+| app\core\interceptors                                                                                        |          2 |         20 |          2 |          8 |         30 |
+| app\core\models                                                                                              |          8 |         49 |          1 |          7 |         57 |
+| app\core\services                                                                                            |          6 |        113 |          2 |         31 |        146 |
+| app\core\services (Files)                                                                                    |          4 |         77 |          0 |         22 |         99 |
+| app\core\services\user                                                                                       |          2 |         36 |          2 |          9 |         47 |
+| app\layout                                                                                                   |          4 |        145 |         92 |         56 |        293 |
+| app\modules                                                                                                  |         61 |      6,728 |        343 |        657 |      7,728 |
+| app\modules\auth                                                                                             |         10 |        262 |         10 |         29 |        301 |
+| app\modules\auth\sign-in                                                                                     |          5 |        186 |          3 |         18 |        207 |
+| app\modules\auth\sign-out                                                                                    |          5 |         76 |          7 |         11 |         94 |
+| app\modules\client-card                                                                                      |         30 |      4,812 |        234 |        447 |      5,493 |
+| app\modules\client-card (Files)                                                                              |          5 |      1,391 |        149 |        149 |      1,689 |
+| app\modules\client-card\analyzes                                                                             |          5 |        562 |         20 |         49 |        631 |
+| app\modules\client-card\analyzes (Files)                                                                     |          1 |        144 |          0 |          6 |        150 |
+| app\modules\client-card\analyzes\analyzes-add-edit                                                           |          2 |        257 |         11 |         25 |        293 |
+| app\modules\client-card\analyzes\view                                                                        |          2 |        161 |          9 |         18 |        188 |
+| app\modules\client-card\client                                                                               |          6 |        625 |         17 |         51 |        693 |
+| app\modules\client-card\client (Files)                                                                       |          3 |        256 |          9 |         19 |        284 |
+| app\modules\client-card\client\client-detail                                                                 |          3 |        369 |          8 |         32 |        409 |
+| app\modules\client-card\dialog                                                                               |          4 |        407 |          0 |         43 |        450 |
+| app\modules\client-card\dialog\add-pet                                                                       |          2 |        289 |          0 |         26 |        315 |
+| app\modules\client-card\dialog\client-dialog                                                                 |          2 |        118 |          0 |         17 |        135 |
+| app\modules\client-card\models                                                                               |          2 |         11 |          0 |          3 |         14 |
+| app\modules\client-card\pet                                                                                  |          2 |        662 |         20 |         48 |        730 |
+| app\modules\client-card\reception                                                                            |          6 |      1,154 |         28 |        104 |      1,286 |
+| app\modules\client-card\reception\checkbox-list                                                              |          2 |         71 |          0 |         12 |         83 |
+| app\modules\client-card\reception\new-and-edit                                                               |          2 |        681 |         16 |         59 |        756 |
+| app\modules\client-card\reception\view                                                                       |          2 |        402 |         12 |         33 |        447 |
+| app\modules\goods                                                                                            |          8 |        911 |         36 |         79 |      1,026 |
+| app\modules\goods (Files)                                                                                    |          6 |        738 |         36 |         57 |        831 |
+| app\modules\goods\add-good                                                                                   |          2 |        173 |          0 |         22 |        195 |
+| app\modules\landing                                                                                          |          5 |         52 |         23 |         27 |        102 |
+| app\modules\landing\home                                                                                     |          5 |         52 |         23 |         27 |        102 |
+| app\modules\services                                                                                         |          8 |        691 |         40 |         75 |        806 |
+| app\modules\services (Files)                                                                                 |          6 |        564 |         40 |         55 |        659 |
+| app\modules\services\add-service                                                                             |          2 |        127 |          0 |         20 |        147 |
+| app\shared                                                                                                   |         49 |      1,450 |        138 |        228 |      1,816 |
+| app\shared (Files)                                                                                           |          2 |         12 |          0 |          3 |         15 |
+| app\shared\components                                                                                        |         38 |      1,254 |        137 |        203 |      1,594 |
+| app\shared\components (Files)                                                                                |          1 |          1 |          2 |          0 |          3 |
+| app\shared\components\advanced-dynamic-filter                                                                |         17 |        566 |         80 |         98 |        744 |
+| app\shared\components\advanced-dynamic-filter (Files)                                                        |          9 |        531 |         80 |         83 |        694 |
+| app\shared\components\advanced-dynamic-filter\inputs                                                         |          8 |         35 |          0 |         15 |         50 |
+| app\shared\components\advanced-table                                                                         |          4 |        304 |         52 |         51 |        407 |
+| app\shared\components\button-with-dropdown                                                                   |          4 |        102 |          0 |         16 |        118 |
+| app\shared\components\dialog                                                                                 |          2 |          8 |          1 |          4 |         13 |
+| app\shared\components\dialog\delete-confirm                                                                  |          2 |          8 |          1 |          4 |         13 |
+| app\shared\components\file-input                                                                             |          3 |         99 |          0 |         18 |        117 |
+| app\shared\components\layout                                                                                 |          7 |        174 |          2 |         16 |        192 |
+| app\shared\components\layout (Files)                                                                         |          4 |        147 |          2 |          7 |        156 |
+| app\shared\components\layout\error-access                                                                    |          3 |         27 |          0 |          9 |         36 |
+| app\shared\directives                                                                                        |          2 |         32 |          1 |          7 |         40 |
+| app\shared\pipes                                                                                             |          6 |        121 |          0 |         12 |        133 |
+| app\shared\utils                                                                                             |          1 |         31 |          0 |          3 |         34 |
+| assets                                                                                                       |          1 |      1,632 |          1 |          2 |      1,635 |
+| assets\images                                                                                                |          1 |      1,632 |          1 |          2 |      1,635 |
+| environments                                                                                                 |          2 |          7 |         11 |          4 |         22 |
+| graphql                                                                                                      |          1 |      1,351 |         20 |        267 |      1,638 |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                     | language   | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| f:\VKR\app\frontend\src\app\app-routing.module.ts                                                            | TypeScript |         52 |         41 |         12 |        105 |
+| f:\VKR\app\frontend\src\app\app.component.html                                                               | HTML       |          3 |          0 |          0 |          3 |
+| f:\VKR\app\frontend\src\app\app.component.less                                                               | Less       |          0 |          0 |          1 |          1 |
+| f:\VKR\app\frontend\src\app\app.component.ts                                                                 | TypeScript |         38 |          0 |          5 |         43 |
+| f:\VKR\app\frontend\src\app\app.module.ts                                                                    | TypeScript |        105 |         19 |         16 |        140 |
+| f:\VKR\app\frontend\src\app\core\auth\auth.graphql                                                           | GraphQL    |         17 |          0 |          1 |         18 |
+| f:\VKR\app\frontend\src\app\core\auth\auth.module.ts                                                         | TypeScript |         14 |          0 |          2 |         16 |
+| f:\VKR\app\frontend\src\app\core\auth\auth.service.ts                                                        | TypeScript |         71 |         25 |         12 |        108 |
+| f:\VKR\app\frontend\src\app\core\auth\guards\auth.guard.ts                                                   | TypeScript |         44 |         34 |          8 |         86 |
+| f:\VKR\app\frontend\src\app\core\auth\guards\noAuth.guard.ts                                                 | TypeScript |         43 |         37 |         11 |         91 |
+| f:\VKR\app\frontend\src\app\core\core.module.ts                                                              | TypeScript |         19 |          4 |          2 |         25 |
+| f:\VKR\app\frontend\src\app\core\index.ts                                                                    | TypeScript |          3 |          0 |          2 |          5 |
+| f:\VKR\app\frontend\src\app\core\interceptors\http.token.interceptor.ts                                      | TypeScript |         19 |          2 |          7 |         28 |
+| f:\VKR\app\frontend\src\app\core\interceptors\index.ts                                                       | TypeScript |          1 |          0 |          1 |          2 |
+| f:\VKR\app\frontend\src\app\core\models\auth-user.ts                                                         | TypeScript |          7 |          0 |          0 |          7 |
+| f:\VKR\app\frontend\src\app\core\models\errors.model.ts                                                      | TypeScript |          3 |          0 |          1 |          4 |
+| f:\VKR\app\frontend\src\app\core\models\index.ts                                                             | TypeScript |          6 |          0 |          1 |          7 |
+| f:\VKR\app\frontend\src\app\core\models\profile.model.ts                                                     | TypeScript |          7 |          0 |          1 |          8 |
+| f:\VKR\app\frontend\src\app\core\models\sidebar.metadata.ts                                                  | TypeScript |          8 |          1 |          1 |         10 |
+| f:\VKR\app\frontend\src\app\core\models\tableColumn.model.ts                                                 | TypeScript |          5 |          0 |          1 |          6 |
+| f:\VKR\app\frontend\src\app\core\models\tree-node.model.ts                                                   | TypeScript |          5 |          0 |          0 |          5 |
+| f:\VKR\app\frontend\src\app\core\models\user.model.ts                                                        | TypeScript |          8 |          0 |          2 |         10 |
+| f:\VKR\app\frontend\src\app\core\services\api.service.ts                                                     | TypeScript |         41 |          0 |          8 |         49 |
+| f:\VKR\app\frontend\src\app\core\services\index.ts                                                           | TypeScript |          4 |          0 |          2 |          6 |
+| f:\VKR\app\frontend\src\app\core\services\jwt.service.ts                                                     | TypeScript |         15 |          0 |          7 |         22 |
+| f:\VKR\app\frontend\src\app\core\services\profiles.service.ts                                                | TypeScript |         17 |          0 |          5 |         22 |
+| f:\VKR\app\frontend\src\app\core\services\user\index.ts                                                      | TypeScript |          1 |          0 |          1 |          2 |
+| f:\VKR\app\frontend\src\app\core\services\user\user.service.ts                                               | TypeScript |         35 |          2 |          8 |         45 |
+| f:\VKR\app\frontend\src\app\graphql.module.ts                                                                | TypeScript |          1 |          0 |          0 |          1 |
+| f:\VKR\app\frontend\src\app\layout\layout.component.html                                                     | HTML       |         20 |         73 |         15 |        108 |
+| f:\VKR\app\frontend\src\app\layout\layout.component.less                                                     | Less       |         59 |          0 |         14 |         73 |
+| f:\VKR\app\frontend\src\app\layout\layout.component.ts                                                       | TypeScript |         42 |         16 |         20 |         78 |
+| f:\VKR\app\frontend\src\app\layout\layout.module.ts                                                          | TypeScript |         24 |          3 |          7 |         34 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-in\sign-in.component.html                                      | HTML       |         62 |          1 |          6 |         69 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-in\sign-in.component.less                                      | Less       |          6 |          0 |          0 |          6 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-in\sign-in.component.ts                                        | TypeScript |         75 |          2 |          8 |         85 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-in\sign-in.module.ts                                           | TypeScript |         32 |          0 |          2 |         34 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-in\sign-in.routing.ts                                          | TypeScript |         11 |          0 |          2 |         13 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-out\sign-out.component.html                                    | HTML       |         15 |          2 |          2 |         19 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-out\sign-out.component.less                                    | Less       |          6 |          0 |          0 |          6 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-out\sign-out.component.ts                                      | TypeScript |         30 |          2 |          5 |         37 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-out\sign-out.module.ts                                         | TypeScript |         17 |          3 |          2 |         22 |
+| f:\VKR\app\frontend\src\app\modules\auth\sign-out\sign-out.routing.ts                                        | TypeScript |          8 |          0 |          2 |         10 |
+| f:\VKR\app\frontend\src\app\modules\client-card\analyzes\analyzeFormTemplates.ts                             | TypeScript |        144 |          0 |          6 |        150 |
+| f:\VKR\app\frontend\src\app\modules\client-card\analyzes\analyzes-add-edit\analyzes.component.html           | HTML       |         79 |          0 |          1 |         80 |
+| f:\VKR\app\frontend\src\app\modules\client-card\analyzes\analyzes-add-edit\analyzes.component.ts             | TypeScript |        178 |         11 |         24 |        213 |
+| f:\VKR\app\frontend\src\app\modules\client-card\analyzes\view\analyzes-view.component.html                   | HTML       |         40 |          0 |          4 |         44 |
+| f:\VKR\app\frontend\src\app\modules\client-card\analyzes\view\analyzes-view.component.ts                     | TypeScript |        121 |          9 |         14 |        144 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client-card-routing.module.ts                                | TypeScript |         79 |          0 |          3 |         82 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client-card.graphql                                          | GraphQL    |        297 |          6 |         24 |        327 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client-card.module.ts                                        | TypeScript |        114 |          0 |          5 |        119 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client-card.service.ts                                       | TypeScript |        393 |        112 |         51 |        556 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client\client-detail\client-detail.component.html            | HTML       |        240 |          3 |          9 |        252 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client\client-detail\client-detail.component.less            | Less       |          0 |          0 |          1 |          1 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client\client-detail\client-detail.component.ts              | TypeScript |        129 |          5 |         22 |        156 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client\client.component.html                                 | HTML       |        158 |          0 |          4 |        162 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client\client.component.less                                 | Less       |          0 |          0 |          1 |          1 |
+| f:\VKR\app\frontend\src\app\modules\client-card\client\client.component.ts                                   | TypeScript |         98 |          9 |         14 |        121 |
+| f:\VKR\app\frontend\src\app\modules\client-card\dialog\add-pet\pet-dialog.component.html                     | HTML       |        175 |          0 |         14 |        189 |
+| f:\VKR\app\frontend\src\app\modules\client-card\dialog\add-pet\pet-dialog.component.ts                       | TypeScript |        114 |          0 |         12 |        126 |
+| f:\VKR\app\frontend\src\app\modules\client-card\dialog\client-dialog\client-dialog.component.html            | HTML       |         35 |          0 |          7 |         42 |
+| f:\VKR\app\frontend\src\app\modules\client-card\dialog\client-dialog\client-dialog.component.ts              | TypeScript |         83 |          0 |         10 |         93 |
+| f:\VKR\app\frontend\src\app\modules\client-card\document-generate.service.ts                                 | TypeScript |        508 |         31 |         66 |        605 |
+| f:\VKR\app\frontend\src\app\modules\client-card\models\analyzeType.ts                                        | TypeScript |          7 |          0 |          2 |          9 |
+| f:\VKR\app\frontend\src\app\modules\client-card\models\documentsToGenerate.ts                                | TypeScript |          4 |          0 |          1 |          5 |
+| f:\VKR\app\frontend\src\app\modules\client-card\pet\pet.component.html                                       | HTML       |        336 |          9 |         13 |        358 |
+| f:\VKR\app\frontend\src\app\modules\client-card\pet\pet.component.ts                                         | TypeScript |        326 |         11 |         35 |        372 |
+| f:\VKR\app\frontend\src\app\modules\client-card\reception\checkbox-list\checkbox-list.component.ts           | TypeScript |         35 |          0 |         11 |         46 |
+| f:\VKR\app\frontend\src\app\modules\client-card\reception\checkbox-list\checkbox-list.template.html          | HTML       |         36 |          0 |          1 |         37 |
+| f:\VKR\app\frontend\src\app\modules\client-card\reception\new-and-edit\reception.component.html              | HTML       |        393 |          6 |         15 |        414 |
+| f:\VKR\app\frontend\src\app\modules\client-card\reception\new-and-edit\reception.component.ts                | TypeScript |        288 |         10 |         44 |        342 |
+| f:\VKR\app\frontend\src\app\modules\client-card\reception\view\reception-view.component.html                 | HTML       |        263 |          6 |         16 |        285 |
+| f:\VKR\app\frontend\src\app\modules\client-card\reception\view\reception-view.component.ts                   | TypeScript |        139 |          6 |         17 |        162 |
+| f:\VKR\app\frontend\src\app\modules\goods\add-good\add-good.component.html                                   | HTML       |         91 |          0 |         10 |        101 |
+| f:\VKR\app\frontend\src\app\modules\goods\add-good\add-good.component.ts                                     | TypeScript |         82 |          0 |         12 |         94 |
+| f:\VKR\app\frontend\src\app\modules\goods\goods-routing.module.ts                                            | TypeScript |         17 |          0 |          3 |         20 |
+| f:\VKR\app\frontend\src\app\modules\goods\goods.component.html                                               | HTML       |        290 |          2 |          7 |        299 |
+| f:\VKR\app\frontend\src\app\modules\goods\goods.component.ts                                                 | TypeScript |        259 |          5 |         28 |        292 |
+| f:\VKR\app\frontend\src\app\modules\goods\goods.graphql                                                      | GraphQL    |         56 |          0 |          3 |         59 |
+| f:\VKR\app\frontend\src\app\modules\goods\goods.module.ts                                                    | TypeScript |         43 |          1 |          5 |         49 |
+| f:\VKR\app\frontend\src\app\modules\goods\goods.service.ts                                                   | TypeScript |         73 |         28 |         11 |        112 |
+| f:\VKR\app\frontend\src\app\modules\landing\home\home-routing.module.ts                                      | TypeScript |         17 |          0 |          3 |         20 |
+| f:\VKR\app\frontend\src\app\modules\landing\home\home.component.html                                         | HTML       |          3 |          8 |          9 |         20 |
+| f:\VKR\app\frontend\src\app\modules\landing\home\home.component.less                                         | Less       |          0 |          0 |          1 |          1 |
+| f:\VKR\app\frontend\src\app\modules\landing\home\home.component.ts                                           | TypeScript |         18 |         15 |         10 |         43 |
+| f:\VKR\app\frontend\src\app\modules\landing\home\home.module.ts                                              | TypeScript |         14 |          0 |          4 |         18 |
+| f:\VKR\app\frontend\src\app\modules\services\add-service\add-service.component.html                          | HTML       |         53 |          0 |          8 |         61 |
+| f:\VKR\app\frontend\src\app\modules\services\add-service\add-service.component.ts                            | TypeScript |         74 |          0 |         12 |         86 |
+| f:\VKR\app\frontend\src\app\modules\services\services-routing.module.ts                                      | TypeScript |         17 |          0 |          3 |         20 |
+| f:\VKR\app\frontend\src\app\modules\services\services.component.html                                         | HTML       |        203 |          1 |          7 |        211 |
+| f:\VKR\app\frontend\src\app\modules\services\services.component.ts                                           | TypeScript |        159 |          4 |         23 |        186 |
+| f:\VKR\app\frontend\src\app\modules\services\services.graphql                                                | GraphQL    |         50 |          0 |          3 |         53 |
+| f:\VKR\app\frontend\src\app\modules\services\services.module.ts                                              | TypeScript |         40 |          1 |          5 |         46 |
+| f:\VKR\app\frontend\src\app\modules\services\services.service.ts                                             | TypeScript |         95 |         34 |         14 |        143 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\advanced-dynamic-filter.component.html | HTML       |         26 |         19 |          3 |         48 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\advanced-dynamic-filter.component.ts   | TypeScript |         47 |          8 |         11 |         66 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\advanced-dynamic-filter.module.ts      | TypeScript |         46 |          1 |          4 |         51 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\dynamic-filter-base.class.ts           | TypeScript |         54 |         27 |          4 |         85 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\dynamic-filter-control.service.ts      | TypeScript |         35 |         10 |          5 |         50 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\dynamic-filter-item.component.html     | HTML       |         97 |          7 |         11 |        115 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\dynamic-filter-item.component.ts       | TypeScript |         12 |          0 |          5 |         17 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\dynamic-filter.service.ts              | TypeScript |        212 |          8 |         39 |        259 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\index.ts                               | TypeScript |          2 |          0 |          1 |          3 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\inputs\dynamic-filter-combobox.ts      | TypeScript |          4 |          0 |          2 |          6 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\inputs\dynamic-filter-countbox.ts      | TypeScript |          4 |          0 |          2 |          6 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\inputs\dynamic-filter-date.ts          | TypeScript |          4 |          0 |          3 |          7 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\inputs\dynamic-filter-dateRange.ts     | TypeScript |          4 |          0 |          2 |          6 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\inputs\dynamic-filter-dropdown.ts      | TypeScript |          4 |          0 |          2 |          6 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\inputs\dynamic-filter-inputRange.ts    | TypeScript |          4 |          0 |          2 |          6 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\inputs\dynamic-filter-textbox.ts       | TypeScript |          4 |          0 |          2 |          6 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-dynamic-filter\inputs\index.ts                        | TypeScript |          7 |          0 |          0 |          7 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-table\advanced-table.component.html                   | HTML       |        138 |          1 |          5 |        144 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-table\advanced-table.component.ts                     | TypeScript |        136 |         51 |         37 |        224 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-table\advanced-table.module.ts                        | TypeScript |         29 |          0 |          7 |         36 |
+| f:\VKR\app\frontend\src\app\shared\components\advanced-table\index.ts                                        | TypeScript |          1 |          0 |          2 |          3 |
+| f:\VKR\app\frontend\src\app\shared\components\button-with-dropdown\button-dropdown.component.html            | HTML       |         49 |          0 |          0 |         49 |
+| f:\VKR\app\frontend\src\app\shared\components\button-with-dropdown\button-dropdown.component.ts              | TypeScript |         19 |          0 |         10 |         29 |
+| f:\VKR\app\frontend\src\app\shared\components\button-with-dropdown\button-dropdown.module.ts                 | TypeScript |         26 |          0 |          5 |         31 |
+| f:\VKR\app\frontend\src\app\shared\components\button-with-dropdown\buttonWithDropdown.interface.ts           | TypeScript |          8 |          0 |          1 |          9 |
+| f:\VKR\app\frontend\src\app\shared\components\dialog\delete-confirm\delete-confirm.component.html            | HTML       |          0 |          1 |          1 |          2 |
+| f:\VKR\app\frontend\src\app\shared\components\dialog\delete-confirm\delete-confirm.component.ts              | TypeScript |          8 |          0 |          3 |         11 |
+| f:\VKR\app\frontend\src\app\shared\components\file-input\file-input.component.html                           | HTML       |         26 |          0 |          4 |         30 |
+| f:\VKR\app\frontend\src\app\shared\components\file-input\file-input.component.ts                             | TypeScript |         50 |          0 |          9 |         59 |
+| f:\VKR\app\frontend\src\app\shared\components\file-input\file-input.module.ts                                | TypeScript |         23 |          0 |          5 |         28 |
+| f:\VKR\app\frontend\src\app\shared\components\index.ts                                                       | TypeScript |          1 |          2 |          0 |          3 |
+| f:\VKR\app\frontend\src\app\shared\components\layout\error-access\error-access.component.css                 | CSS        |         11 |          0 |          3 |         14 |
+| f:\VKR\app\frontend\src\app\shared\components\layout\error-access\error-access.component.html                | HTML       |          4 |          0 |          1 |          5 |
+| f:\VKR\app\frontend\src\app\shared\components\layout\error-access\error-access.component.ts                  | TypeScript |         12 |          0 |          5 |         17 |
+| f:\VKR\app\frontend\src\app\shared\components\layout\index.ts                                                | TypeScript |          1 |          0 |          1 |          2 |
+| f:\VKR\app\frontend\src\app\shared\components\layout\page404.component.html                                  | HTML       |        124 |          2 |          3 |        129 |
+| f:\VKR\app\frontend\src\app\shared\components\layout\page404.component.less                                  | Less       |          7 |          0 |          0 |          7 |
+| f:\VKR\app\frontend\src\app\shared\components\layout\page404.component.ts                                    | TypeScript |         15 |          0 |          3 |         18 |
+| f:\VKR\app\frontend\src\app\shared\directives\index.ts                                                       | TypeScript |          1 |          0 |          0 |          1 |
+| f:\VKR\app\frontend\src\app\shared\directives\show-authed.directive.ts                                       | TypeScript |         31 |          1 |          7 |         39 |
+| f:\VKR\app\frontend\src\app\shared\index.ts                                                                  | TypeScript |          3 |          0 |          1 |          4 |
+| f:\VKR\app\frontend\src\app\shared\pipes\age-string.pipe.ts                                                  | TypeScript |         63 |          0 |          3 |         66 |
+| f:\VKR\app\frontend\src\app\shared\pipes\array-to-any-array.pipe.ts                                          | TypeScript |         10 |          0 |          1 |         11 |
+| f:\VKR\app\frontend\src\app\shared\pipes\check-null.pipe.ts                                                  | TypeScript |         15 |          0 |          1 |         16 |
+| f:\VKR\app\frontend\src\app\shared\pipes\format-pet-gender.pipe.ts                                           | TypeScript |         18 |          0 |          1 |         19 |
+| f:\VKR\app\frontend\src\app\shared\pipes\index.ts                                                            | TypeScript |          5 |          0 |          4 |          9 |
+| f:\VKR\app\frontend\src\app\shared\pipes\safe-html.pipe.ts                                                   | TypeScript |         10 |          0 |          2 |         12 |
+| f:\VKR\app\frontend\src\app\shared\shared.module.ts                                                          | TypeScript |          9 |          0 |          2 |         11 |
+| f:\VKR\app\frontend\src\app\shared\utils\default-day-range-periods.ts                                        | TypeScript |         31 |          0 |          3 |         34 |
+| f:\VKR\app\frontend\src\assets\images\vet_background.svg                                                     | XML        |      1,632 |          1 |          2 |      1,635 |
+| f:\VKR\app\frontend\src\environments\environment.prod.ts                                                     | TypeScript |          3 |          0 |          1 |          4 |
+| f:\VKR\app\frontend\src\environments\environment.ts                                                          | TypeScript |          4 |         11 |          3 |         18 |
+| f:\VKR\app\frontend\src\graphql\generated.ts                                                                 | TypeScript |      1,351 |         20 |        267 |      1,638 |
+| f:\VKR\app\frontend\src\index.html                                                                           | HTML       |         13 |          0 |          1 |         14 |
+| f:\VKR\app\frontend\src\main.ts                                                                              | TypeScript |          5 |          0 |          3 |          8 |
+| f:\VKR\app\frontend\src\styles.less                                                                          | Less       |         55 |          4 |         14 |         73 |
+| f:\VKR\app\frontend\src\test-setup.ts                                                                        | TypeScript |          1 |          0 |          1 |          2 |
+| Total                                                                                                        |            |     11,979 |        774 |      1,351 |     14,104 |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

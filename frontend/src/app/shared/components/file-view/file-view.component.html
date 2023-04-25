@@ -1,0 +1,16 @@
+<div
+    tuiGroup
+    orientation="vertical"
+    class="group w-full"
+    [collapsed]="true"
+>
+    <div
+        class="p-1 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-row items-center" 
+        *ngFor="let file of inputFile"
+    >
+        <button tuiButton size="s" (click)="downloadFile(file)">Скачать</button>
+        <p class="text-base ml-4">{{ file.name }}</p>
+        <p class="text-base ml-2 text-gray-500">{{ file.size }}</p>
+        
+    </div>
+</div>

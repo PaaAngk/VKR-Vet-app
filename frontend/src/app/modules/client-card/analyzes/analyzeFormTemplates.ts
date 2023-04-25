@@ -1,6 +1,6 @@
 import { CountboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
-import { AnalyzeType } from '../models/analyzeType';
+import { AnalyzeForm } from '../models/analyzeType';
 
 const inputCountBoxParams = {min:0, max: 100000, precision: 2}
 const inputCountBoxParamsForPercent = {min:0, max: 100, precision: 2}
@@ -141,7 +141,7 @@ export const Analiz_kroviForm: DynamicFilterBase<string|string[]|number> =
 
 
 
-export const AnalyzesList: AnalyzeType[] = [
+export const AnalyzesList: AnalyzeForm[] = [
     { name:'Биохимия', typeName: 'Biohimiya', form: Analiz_kroviForm },
     { name:'Общий анализ крови', typeName: 'Analiz_krovi', form: Analiz_kroviForm },
     { name:'Гистологическое заключение', typeName: 'Gistologicheskoe_zaklyuchenie', form: Analiz_kroviForm },

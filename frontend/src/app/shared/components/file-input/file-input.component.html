@@ -1,12 +1,12 @@
 <tui-input-files
-    accept="image/*"
+    accept="image/*,application/*"
     [multiple]="true"
     [formControl]="control"
     (reject)="onReject($event)"
     (ngModelChange)="control.markAsTouched()"
 ></tui-input-files>
 
-<tui-files class="tui-space_top-1">
+<tui-files class="tui-space_top-1" *ngIf="!editMode">
     <tui-file
         *ngFor="let file of control.valueChanges | async"
         [file]="file"
@@ -23,6 +23,24 @@
     ></tui-file>
 </tui-files>
 
+<tui-files class="tui-space_top-1" *ngIf="editMode">
+    <tui-file
+        *ngFor="let file of control.value"
+        [file]="file"
+        [showDelete]="control.enabled"
+        (removed)="removeFile(file)"
+    ></tui-file>
+
+    <tui-file
+        *ngFor="let file of rejectedFiles"
+        state="error"
+        [file]="file"
+        [showDelete]="control.enabled"
+        (removed)="clearRejected(file)"
+    ></tui-file>
+
+</tui-files>
+{{control.valueChanges| async }}
 <tui-error
     [formControl]="control"
     [error]="['maxLength'] | tuiFieldError | async"

@@ -6,12 +6,13 @@
         >
             <div class="flex flex-row justify-between items-center p-1">
                 <tui-combo-box
+                    [readOnly]="editMode"
                     class="w-96"
                     [stringify]="stringifyAnalyzeList"
                     [(ngModel)] = "currentAnalyzeType"
                     [tuiTextfieldCleaner]="true"
                 >
-                    Вид анализа или исследования
+                    Вид анализа/исследования
                     <input
                         tuiTextfield
                         placeholder="Начните вводить вид"
@@ -59,21 +60,22 @@
             <app-advanced-dynamic-form
                 *ngIf="currentAnalyzeType && currentAnalyzeType.typeName !== 'Files'"
                 [segmentForms] = "currentAnalyzeType.form"
-                (formValues) = "dataFromDialog($event)"
+                (formValues) = "dataFromForm($event)"
                 [twoColumns] = "true"
             ></app-advanced-dynamic-form>
             <div
                 *ngIf="currentAnalyzeType && currentAnalyzeType.typeName === 'Files'"
             >
                 <file-input
-                    (outputFile)="dataFromDialog($event)"
+                    [editFiles]="analyzeFileData"
+                    (outputFile)="dataFromForm($event)"
                 ></file-input>
             </div>
             <h3
                 *ngIf="!currentAnalyzeType && !loading"
                 class="text-2xl py-2 font-bold text-center"
             >
-                Выберите вид анализа и исследования
+                Выберите вид анализа/исследования
             </h3>
         </tui-loader> 
     </div>

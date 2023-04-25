@@ -1,10 +1,12 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { BehaviorSubject, map, Observable, take } from "rxjs";
+import { BehaviorSubject, map, Observable, pipe, take } from "rxjs";
 import { AnalyzesResearch, Client, ClientDetailGQL, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
 import { AnalyzesList } from "./analyzes/analyzeFormTemplates";
-import { AnalyzeType } from "./models/analyzeType";
+import { AnalyzeForm } from "./models/analyzeType"; 
+import { environment } from "src/environments/environment"
+import { FileData } from "src/app/shared/components/file-view/FileData.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -275,7 +277,7 @@ export class ClientCardService
 		.pipe(take(1))
 		.subscribe( ({data}) => {
 			// Set id from DB for list of accesing analyzes
-			AnalyzesList.map((analyze: AnalyzeType) => 
+			AnalyzesList.map((analyze: AnalyzeForm) => 
 				analyze['id'] = data.allTypeAnalyzesResearch.find(obj => obj.typeName?.trim() == analyze.name.trim())?.id || -1
 			)
         })
@@ -443,6 +445,10 @@ export class ClientCardService
         )
     }
 
+// -----------------------------------------------------------------------------------------------------
+// @ Analyze and researchs
+// -----------------------------------------------------------------------------------------------------
+
     /**
      * Create Analyze with editing cached pet in service and appolo cache  
      */
@@ -500,9 +506,13 @@ export class ClientCardService
         )
     }
 
-
+    /**
+     * Send array of files on server for saving and write in DB
+     * @param files Array of files
+     * @param analyzeData Data of pet and analyze type
+     * @returns Observable server 
+     */
     uploadAnalyzeFile(files: File[], analyzeData: any){
-        
         const formData:FormData = new FormData();
         files.forEach((file, i) => {
             formData.append(`file${i}`, file);
@@ -512,16 +522,20 @@ export class ClientCardService
         headers.append('Content-Type', 'multipart/form-data');
         headers.append('Accept', '*/*');
         const options = { headers: headers };
+        return this.http.post(`${environment.api_url}/analyzes/upload-analyzes-file`, formData, options)
+    }
 
-        console.log(formData)   
-        return this.http.post(`http://localhost:3000/analyzes/upload-file`, formData, options)
-        // .subscribe({
-        //     next: (buffer: any) => {
-        //         const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
-        //         window.open(fileURL);
-        //     },
-        //     error: (error: any) => console.log(error),
-        // })
+
+    downloadAnalyzeFile(file: FileData){
+        console.log(file)
+        this.http.post(`${environment.api_url}/analyzes/download-analyzes-file`, file)
+        .subscribe(
+            (buffer: any) => {
+                console.log(buffer)
+                const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: file.mimetype}))
+                window.saveAs(fileURL, file.name);
+            }
+        )
     }
 
     // -----------------------------------------------------------------------------------------------------

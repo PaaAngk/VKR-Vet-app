@@ -7,7 +7,7 @@ import { CreateAnalyzesResearchInput, GetAnalyzesResearchGQL, AnalyzesResearch, 
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
-import { AnalyzeType } from '../../models/analyzeType';
+import { AnalyzeForm } from '../../models/analyzeType';
 import { AnalyzesList } from "../analyzeFormTemplates";
 import { DynamicFilterInput } from 'src/app/shared/components/advanced-dynamic-filter';
 
@@ -20,11 +20,12 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
 
 	// Store type with analyze and file name and form
-	currentAnalyzeType:AnalyzeType = null as unknown as AnalyzeType;
+	currentAnalyzeType:AnalyzeForm = null as unknown as AnalyzeForm;
 	// For dropdown
 	analyzesList = AnalyzesList;
 	// Edited analyze
 	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
+	analyzeFileData = [];
 
 	formData = {};
 	maySave = false;
@@ -75,21 +76,29 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 				.subscribe( ({data, loading}) => {
 					this.analyzeData = data.analyzesResearch
 					const parcedData = JSON.parse(data.analyzesResearch.data || '');
+					this.currentAnalyzeType = structuredClone(AnalyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeForm;
+					
+					//if not file
+					if (data.analyzesResearch.type?.id != 5){
+						const form = this.currentAnalyzeType?.form?.dynamicFilterInputs
+							.map((item: DynamicFilterInput<any>) => {
+								item.value = parcedData[item.key] || null;
+								return item
+							})
 
-					this.currentAnalyzeType = structuredClone(AnalyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeType;
-					const form = this.currentAnalyzeType?.form?.dynamicFilterInputs
-						.map((item: DynamicFilterInput<any>) => {
-							item.value = parcedData[item.key] || null;
-							return item
-						})
+						this.petId = data.analyzesResearch.pet?.id || ''
 
-					this.petId = data.analyzesResearch.pet?.id || ''
-
-					this.currentAnalyzeType.form = {
-						title: this.currentAnalyzeType?.name || '',
-						dynamicFilterInputs: form as DynamicFilterInput<any>[]
+						this.currentAnalyzeType.form = {
+							title: this.currentAnalyzeType?.name || '',
+							dynamicFilterInputs: form as DynamicFilterInput<any>[]
+						}
+						this.loading = loading;
 					}
-					this.loading = loading;
+	
+					if (data.analyzesResearch.type?.id == 5){
+						this.analyzeFileData = parcedData;
+						this.loading = loading;
+					}
 				});
 		}	
 	}
@@ -105,7 +114,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
 
-	readonly stringifyAnalyzeList = (item: AnalyzeType): string => `${item.name}`;
+	readonly stringifyAnalyzeList = (item: AnalyzeForm): string => `${item.name}`;
 
 	submitAnalyzes(){			
             if(this.editMode) this.editAnalyzes()
@@ -137,14 +146,12 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 				this.formData as File[],
 				{ 
 					petId: this.petId,
-					typeId:this.currentAnalyzeType.id
+					typeId:this.currentAnalyzeType.id,
+					typeName: this.currentAnalyzeType.typeName
 				}
 			).subscribe({
-				next: (data) => {
-					// this.successCreate("");
-				},
-				error: (error)  => 
-				{
+				next: (data: any) => this.successCreate(data.id),
+				error: (error)  => {
 					this.errorCreate()
 					console.log(error)
 				}
@@ -156,7 +163,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		this.loading = false;
 		this.alertService.open("", {
 			status: TuiNotification.Success,
-			label:"Анализ успешно добавлен!",
+			label:"Анализ/Исследование успешно добавлен!",
 			autoClose: 5000,
 		}).subscribe();
 		this.router.navigate([`../${id}`], {relativeTo: this.activateRoute})
@@ -168,44 +175,58 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 			"Проверьте правильность введенных данных", 
 			{
 				status: TuiNotification.Error, 
-				label: "Невозможно добавить анализ!",
+				label: "Невозможно добавить анализ/исследование!",
 				autoClose: 5000,
 			}).subscribe()
 	}
 
-
 	editAnalyzes(){
-		this.clientCardService.updateAnalyzesResearch(
-			this.analyzeData.id,
-			{
-				data: JSON.stringify(this.formData), 
-			} as UpdateAnalyzesResearchInput
-		)
-		.subscribe({
-			next: (data) => {
-				this.loading = false;
-				this.alertService.open("", {
-					status: TuiNotification.Success,
-					label:"Анализ успешно обновлен!",
-					autoClose: 5000,
-				}).subscribe();
-				this.router.navigate([`/client-card/pet/${this.petId}/analyzes/${data?.updateAnalyzesResearch.id}`], {relativeTo: this.activateRoute})
-			},
-			error: (error)  => 
-			{
-				this.alertService.open(
-					"Проверьте правильность введенных данных", 
-					{
-						status: TuiNotification.Error, 
-						label: "Невозможно обновить анализ!",
-						autoClose: 5000,
-					}).subscribe()
-				console.log(error)
-			}
-		})
+		if(this.currentAnalyzeType.typeName !== 'Files'){
+			this.clientCardService.updateAnalyzesResearch(
+				this.analyzeData.id,
+				{
+					data: JSON.stringify(this.formData), 
+				} as UpdateAnalyzesResearchInput
+			)
+			.subscribe({
+				next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || ''),
+				error: (error)  => { this.errorEditAlert(), console.log(error) }
+			})
+		}
+		if(this.currentAnalyzeType.typeName === 'Files'){
+			this.clientCardService.updateAnalyzesResearch(
+				this.analyzeData.id,
+				{
+					data: JSON.stringify(this.formData), 
+				} as UpdateAnalyzesResearchInput
+			)
+			.subscribe({
+				next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || ''),
+				error: (error)  => { this.errorEditAlert(), console.log(error) }
+			})
+		}
+	}
+	successEditAlert(id: string){
+		this.loading = false;
+		this.alertService.open("", {
+			status: TuiNotification.Success,
+			label:"Анализ успешно обновлен!",
+			autoClose: 5000,
+		}).subscribe();
+		this.router.navigate([`/client-card/pet/${this.petId}/analyzes/${id}`], {relativeTo: this.activateRoute})
+	}
+	errorEditAlert(){
+		this.loading = false;
+		this.alertService.open(
+		"Проверьте правильность введенных данных", 
+		{
+			status: TuiNotification.Error, 
+			label: "Невозможно обновить анализ!",
+			autoClose: 5000,
+		}).subscribe()
 	}
 
-	dataFromDialog(event: any){
+	dataFromForm(event: any){
 		this.formData = event;
 		this.maySave = Object.keys(this.formData).length == 0 ? false : true
 	}

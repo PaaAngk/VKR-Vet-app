@@ -1,48 +1,78 @@
 import {
   Body,
   Controller,
-  Header,
+  Get,
   HttpException,
   HttpStatus,
   Post,
+  Query,
   Res,
+  StreamableFile,
 } from '@nestjs/common';
-import { PrismaService } from 'nestjs-prisma';
-import { FormDataRequest } from 'nestjs-form-data';
-import { FormDataDto } from 'src/printed/dto/formDataDto';
+import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { AnalyzesResearchService } from './analyzes-research.service';
+import { createReadStream } from 'fs';
+import { readFile } from 'fs/promises';
+
+interface FileData {
+  path: string;
+  name: string;
+  size: number;
+  mimetype: string;
+}
 
 @Controller('analyzes')
 export class AnalyzesResearchController {
-  constructor(
-    private prisma: PrismaService,
-    private analyzesService: AnalyzesResearchService
-  ) {}
+  constructor(private analyzesService: AnalyzesResearchService) {}
 
   /**
-   * d
+   * Save upload files on server and add path to this data in db
    * @param file
    * @param res
    */
-  @Post('upload-file')
+  @Post('upload-analyzes-file')
   @FormDataRequest()
-  @Header('Access-Control-Allow-Origin', 'http://localhost:4200')
-  async convertDocxToPdf1(
-    // @UploadedFile() files: Express.Multer.File,
-    @Body() files: any,
+  async uploadAnalyzesFile(@Body() files: any) {
+    if (files) {
+      const analyzeData = files.analyzeData;
+      delete files.analyzeData;
+
+      try {
+        return await this.analyzesService.saveFiles(
+          files as MemoryStoredFile[],
+          analyzeData
+        );
+      } catch (err) {
+        console.error(err);
+        throw new HttpException(
+          'Can not save files',
+          HttpStatus.NOT_ACCEPTABLE
+        );
+      }
+    } else {
+      throw new HttpException('don`t has files', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @Post('download-analyzes-file')
+  async downloadAnalyzesFile(
+    @Body() file: FileData,
     @Res({ passthrough: true }) res
   ) {
-    // console.log(files);
-    if (files) {
-      this.analyzesService.saveFiles(files as FormDataDto[], files.analyzeData);
-      // res.set({
-      //   'Content-Type': 'application/pdf',
-      //   'Content-Disposition': `attachment; filename=${fileName}.pdf`,
-      //   'Content-Length': pdfBuf.length,
-      // });
-      // res.end(pdfBuf);
+    if (file) {
+      try {
+        const readedFile = await readFile(file.path);
+        res.set({
+          'Content-Type': file.mimetype,
+          'Content-Disposition': `attachment; filename=${file.name}`,
+        });
+        res.json(readedFile);
+      } catch (err) {
+        console.error(err);
+        throw new HttpException('Can`t download', HttpStatus.NOT_ACCEPTABLE);
+      }
     } else {
-      throw new HttpException('don`t has file', HttpStatus.NOT_FOUND);
+      throw new HttpException('don`t has path', HttpStatus.NOT_FOUND);
     }
   }
 }

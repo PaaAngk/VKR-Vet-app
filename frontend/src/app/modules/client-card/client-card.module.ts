@@ -42,6 +42,7 @@ import { AnalyzesComponent } from './analyzes/analyzes-add-edit/analyzes.compone
 import { AnalyzesViewComponent } from './analyzes/view/analyzes-view.component';
 import { AgeStringPipe, SafeHtmlPipe, ArrayToAnyArrayPipe, CheckNullPipe, FormatPetGenderPipe } from 'src/app/shared/pipes';
 import { FileInputModule } from 'src/app/shared/components/file-input/file-input.module';
+import { FileViewModule } from 'src/app/shared/components/file-view/file-view.module';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { FileInputModule } from 'src/app/shared/components/file-input/file-input
     ButtonWithDropdownModule,
     AdvancedDynamicFilterModule,
     FileInputModule,
+    FileViewModule,
 
     TuiInputModule,
     TuiButtonModule,

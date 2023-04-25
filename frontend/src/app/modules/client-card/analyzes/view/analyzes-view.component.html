@@ -17,6 +17,7 @@
                 [showLoader]="printButtonLoader"
                 (buttonAction)="printAnalyze()" 
                 (dropdownAction)="downloadAnalyze()"
+                *ngIf="currentAnalyze.typeName !== 'Files'"
             ></button-with-dropdown>
         </div>
 
@@ -35,10 +36,14 @@
     <div class="w-full h-full rounded-lg bg-white shadow-md">
         <tui-loader [overlay]="true" [showLoader] = "loading" class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'85vh'}">
             <app-advanced-dynamic-form
-                *ngIf="!loading"
+                *ngIf="!loading && currentAnalyze.typeName !== 'Files'"
                 [segmentForms] = "dynamicFormData"
                 [twoColumns] = "true"
             ></app-advanced-dynamic-form>
+            <file-view
+                *ngIf="!loading && currentAnalyze.typeName === 'Files'"
+                [inputFile]="analyzeFileData"
+            ></file-view>
         </tui-loader> 
     </div>
 </div>

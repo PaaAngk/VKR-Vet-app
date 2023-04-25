@@ -10,9 +10,8 @@ import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdo
 import { DocumentGenerateService, FileFormat } from '../../document-generate.service';
 import { DynamicFilterBase, DynamicFilterInput } from 'src/app/shared/components/advanced-dynamic-filter';
 import { AnalyzesList } from "../analyzeFormTemplates";
-import { AnalyzeType } from '../../models/analyzeType';
+import { AnalyzeForm } from '../../models/analyzeType';
 import { AgeStringPipe } from 'src/app/shared/pipes';
-
 
 @Component({
 	selector: 'vet-crm-analyzes-view',
@@ -34,10 +33,11 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 	printButtonLoader = false;
 
 	dynamicFormData: DynamicFilterBase<any> = {} as DynamicFilterBase<any>;
-	analyzesList: AnalyzeType[] = AnalyzesList;
+	analyzesList: AnalyzeForm[] = AnalyzesList;
 	petId = '';
-	currentAnalyze: AnalyzeType = {} as AnalyzeType;
+	currentAnalyze: AnalyzeForm = {} as AnalyzeForm;
 	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
+	analyzeFileData = [];
 
 
 	loading = false;
@@ -50,15 +50,13 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 		private getAnalyzesResearchGQL : GetAnalyzesResearchGQL,
 		private activateRoute: ActivatedRoute,
 		private documentGenerateService: DocumentGenerateService,
-		private getAllAnalyzeTypesGQL : GetAllAnalyzeTypesGQL,
-		private ageStringPipe: AgeStringPipe
+		private ageStringPipe: AgeStringPipe,
+		@Inject(Router) private readonly router: Router,
     ){}
 
 	ngOnInit(): void {
 		this.loading = true;
-		// Getting analyze and formating form for dynamic filter
-		//Search in array of analyzes and select needed with file name and needed form for selected analyze		
-		//Getting analyze and formating form for dynamic filter
+		
 		this.activateRoute.params.subscribe(params => {
 			this.getAnalyzesResearchGQL
 			.watch({
@@ -66,23 +64,45 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 			})
 			.valueChanges
 			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
-			.subscribe( ({data, loading}) => {
-				// this.reception = data.reception as Reception
-				this.analyzeData = data.analyzesResearch
-				const parcedData = JSON.parse(data.analyzesResearch.data || '');
-				this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeType;
-				const form = this.currentAnalyze?.form?.dynamicFilterInputs
-					.map((item: DynamicFilterInput<any>) => {
-						item.readOnly = true
-						item.value = parcedData[item.key] || null;
-						return item
-					})
-				this.petId = data.analyzesResearch.pet?.id || ''
-				this.dynamicFormData = {
-					title: this.currentAnalyze?.name || '',
-					dynamicFilterInputs: form as DynamicFilterInput<any>[]
-				}
-				this.loading = loading;
+			.subscribe({
+				next: ({data, loading}) => {
+					this.analyzeData = data.analyzesResearch
+					const parcedData = JSON.parse(data.analyzesResearch.data || '');
+					this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeForm;
+					this.petId = data.analyzesResearch.pet?.id || ''
+	
+					//if not file
+					if (data.analyzesResearch.type?.id != 5){
+						// Getting analyze and formating form for dynamic filter
+						//Search in array of analyzes and select needed with file name and needed form for selected analyze		
+						//Getting analyze and formating form for dynamic filter
+						const form = this.currentAnalyze?.form?.dynamicFilterInputs
+							.map((item: DynamicFilterInput<any>) => {
+								item.readOnly = true
+								item.value = parcedData[item.key] || null;
+								return item
+							})
+						this.dynamicFormData = {
+							title: this.currentAnalyze?.name || '',
+							dynamicFilterInputs: form as DynamicFilterInput<any>[]
+						}
+						this.loading = loading;
+					}
+	
+					if (data.analyzesResearch.type?.id == 5){
+						this.analyzeFileData = parcedData;
+						this.loading = loading;
+					}
+				},
+				error: (err) => {
+					this.alertService.open("Перезагрузите страницу или обратитесь к администратору", {
+						status: TuiNotification.Error,
+						label:"Анализ/Исследование не найден!",
+						autoClose: 10000,
+					}).subscribe();
+					console.log(err)
+					this.router.navigateByUrl("client-card");
+				},
 			});
 		});
 	}
@@ -109,7 +129,6 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 	}
 
 	printAnalyze(){
-		console.log(this.analyzeData)
 		this.printButtonLoader = true;
 		this.documentGenerateService.generateDocumentByData(
 			this.currentAnalyze.typeName, 

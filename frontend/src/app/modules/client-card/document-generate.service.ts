@@ -9,6 +9,7 @@ import { Reception } from "src/graphql/generated";
 import { ClientCardService } from "./client-card.service";
 import { parse } from 'node-html-parser';
 import { map, Observable, Subject, throwError } from "rxjs";
+import { environment } from "src/environments/environment"
 
 interface parcedHtml {
     text: string,
@@ -318,7 +319,7 @@ export class DocumentGenerateService
         const headers = new HttpHeaders();
         headers.append('Accept', 'application/pdf');
         const options = { headers: headers };
-        return this.http.post(`http://localhost:3000/print/checkPdfGenerate`, queryData, options)
+        return this.http.post(`${environment.api_url}/print/checkPdfGenerate`, queryData, options)
             .pipe( map( (buffer: any) => {
                 if(buffer) {
                     const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
@@ -527,7 +528,7 @@ export class DocumentGenerateService
                 headers.append('Accept', 'application/pdf');
                 const options = { headers: headers };
                 
-                this.http.post(`http://localhost:3000/print/convert-docx-to-pdf`, formData, options)
+                this.http.post(`${environment.api_url}/print/convert-docx-to-pdf`, formData, options)
                 .subscribe({
                     next: (buffer: any) => {
                         const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
@@ -580,7 +581,7 @@ export class DocumentGenerateService
         const headers = new HttpHeaders();
         headers.append('Accept', 'application/pdf');
         const options = { headers: headers };
-        this.http.post(`http://localhost:3000/print/generateDocument`, sendingData, options)
+        this.http.post(`${environment.api_url}/print/generateDocument`, sendingData, options)
         .subscribe({
             next: (buffer: any) => {
                 if(buffer) {

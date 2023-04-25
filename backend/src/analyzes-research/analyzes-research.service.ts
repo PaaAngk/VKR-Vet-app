@@ -1,24 +1,46 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MemoryStoredFile } from 'nestjs-form-data';
-// import { writeFile, readFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { firstValueFrom, Subject } from 'rxjs';
-import { FormDataDto } from 'src/printed/dto/formDataDto';
-// import carbone from 'carbone';
+import { PrismaService } from 'nestjs-prisma/dist/prisma.service';
 
 @Injectable()
 export class AnalyzesResearchService {
+  constructor(private prisma: PrismaService) {}
   buf: Subject<Buffer> = new Subject();
 
-  async saveFiles(files: FormDataDto[], data: any) {
-    const returnBuffer: Subject<Buffer> = new Subject();
+  /**
+   * Save upload files on server and add path to this data in db
+   * @param files array of files
+   * @param data pet and nalyze data
+   */
+  async saveFiles(files: MemoryStoredFile[], data: any) {
     const analyzeData = JSON.parse(data);
-    console.log(files);
-    console.log(analyzeData);
-
-    for (const file of files) {
-      console.log(file.file.originalName);
+    const savedFiles = [];
+    for (const [, file] of Object.entries(files)) {
+      const dirPath = `Researchs/${analyzeData.petId}`;
+      const filePath = `${dirPath}/${file.originalName}`;
+      await mkdir(dirPath, { recursive: true });
+      try {
+        const promise = writeFile(filePath, file.buffer);
+        await promise;
+      } catch (err) {
+        console.error(err);
+        throw new Error('Can not add!');
+      }
+      savedFiles.push({
+        path: filePath,
+        name: file.originalName,
+        size: file.size,
+        mimetype: file.mimetype,
+      });
     }
-
-    return await firstValueFrom(returnBuffer);
+    return await this.prisma.analyzesResearch.create({
+      data: {
+        petId: analyzeData.petId,
+        typeId: analyzeData.typeId,
+        data: JSON.stringify(savedFiles),
+      },
+    });
   }
 }
