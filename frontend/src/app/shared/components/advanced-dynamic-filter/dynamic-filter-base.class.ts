@@ -82,3 +82,57 @@ export class DynamicFilterInput<T> {
 }
 
 
+// new DateDynamicFilter({
+// 	key: 'dateSelector',
+// 	label: 'Date entering',
+// 	value: new Date(2011, 0, 1)
+// }),
+
+// new DateRangeDynamicFilter({
+// 	key: 'dateRangeSelector',
+// 	label: 'Date entering',
+// }),
+
+// // new DateDynamicFilter({
+// //   key: 'date',
+// //   label: 'Date entering',
+// // }),
+// new ComboboxDynamicFilter({
+// 	key: 'combobox123',
+// 	label: 'Bravery Rating',
+// 	placeholder:"Enter value to checkbox",
+// 	options: [
+// 		"Solid",
+// 		"Great",
+// 		"Good",
+// 		"Unproven"
+// 	],
+	
+// }),
+
+// new DropdownDynamicFilter({
+// 	key: 'dropdown123',
+// 	label: 'Dropdown Exapmle',
+// 	placeholder:"Enter value to dropdown input",
+// 	options: [
+// 		"Solid",
+// 		"Great",
+// 		"Good",
+// 		"Unproven"
+// 	],
+// }),
+
+// new TextboxDynamicFilter({
+// 	key: 'firstName213',
+// 	label: 'First name',
+// 	value: 'Bombasto',
+// 	placeholder:"Enter first name into input",
+// 	required: true,
+// }),
+
+// new CountboxDynamicFilter({
+// 	key: 'counter123',
+// 	label: 'Counter',
+// 	value: 0,
+// 	required: true,
+// }),

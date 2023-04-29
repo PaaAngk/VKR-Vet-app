@@ -65,11 +65,13 @@
 			<label [attr.for]="input.key">{{input.label}}</label>
 		</tui-input-date>
 
+
 		<!-- Combobox input -->
 		<tui-combo-box
-			*ngSwitchCase="'combobox'"
+		*ngSwitchCase="'combobox'"
 			[formControlName]="input.key" 
 			[id]="input.key"
+			[readOnly]="input.readOnly"
 		>
 			{{input.label}}		
 			<input
@@ -81,6 +83,7 @@
 				[items]="input.options | tuiFilterByInput"
 			></tui-data-list-wrapper>
 		</tui-combo-box>
+	
 
 		<!-- Dropdown input -->
 		<tui-select

@@ -587,7 +587,7 @@ export class DocumentGenerateService
                 if(buffer) {
                     if(extension == FileFormat.pdf){
                         const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
-                        window.open(fileURL);
+                        window.open(fileURL)?.print();
                     }
                     if(extension == FileFormat.docx){                            
                         const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}))

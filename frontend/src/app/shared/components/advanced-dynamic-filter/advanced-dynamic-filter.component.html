@@ -5,10 +5,11 @@
 	[tuiTextfieldCleaner]="true"
 	*ngIf="segmentForms"
 >
+<!-- enabledForm &&  -->
 	<div class="flex flex-col space-y-2 w-full overflow-y-auto h-full" *ngIf="!twoColumns">
-		<ng-container *ngFor="let filter of segmentForms.dynamicFilterInputs" >
+		<ng-container *ngFor="let filter of displaydForm " >
 			<dynamic-filter-item 
-				[input]="filter" 
+				[input]="filter"  
 				[form]="form" 
 				class=""
 			></dynamic-filter-item>
@@ -18,7 +19,7 @@
 
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto w-full" *ngIf="twoColumns">
 		<dynamic-filter-item 
-			*ngFor="let filter of segmentForms.dynamicFilterInputs"
+			*ngFor="let filter of displaydForm"
 			[input]="filter" 
 			[form]="form" 
 			class=""

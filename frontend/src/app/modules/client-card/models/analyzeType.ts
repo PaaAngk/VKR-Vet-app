@@ -3,6 +3,6 @@ import { DynamicFilterBase } from "src/app/shared/components/advanced-dynamic-fi
 export interface AnalyzeForm{
 	name: string,
 	typeName: string,
-	form: DynamicFilterBase<any> | null,
+	form: DynamicFilterBase<any>,
 	id?: number
 }

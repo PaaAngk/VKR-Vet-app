@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tuiWatch } from '@taiga-ui/cdk';
-import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
-import { Subject, take, takeUntil } from 'rxjs';
-import { AnalyzesResearch, GetAllAnalyzeTypesGQL, GetAnalyzesResearchGQL } from 'src/graphql/generated';
+import { TuiAlertService, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
+import { AnalyzesResearch, GetAnalyzesResearchGQL } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
@@ -12,6 +12,7 @@ import { DynamicFilterBase, DynamicFilterInput } from 'src/app/shared/components
 import { AnalyzesList } from "../analyzeFormTemplates";
 import { AnalyzeForm } from '../../models/analyzeType';
 import { AgeStringPipe } from 'src/app/shared/pipes';
+import { DatePipe } from '@angular/common';
 
 @Component({
 	selector: 'vet-crm-analyzes-view',
@@ -32,13 +33,13 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 	};
 	printButtonLoader = false;
 
-	dynamicFormData: DynamicFilterBase<any> = {} as DynamicFilterBase<any>;
+	dynamicFormData$: BehaviorSubject<DynamicFilterBase<any>> = new BehaviorSubject({} as DynamicFilterBase<any>);
 	analyzesList: AnalyzeForm[] = AnalyzesList;
 	petId = '';
 	currentAnalyze: AnalyzeForm = {} as AnalyzeForm;
 	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
 	analyzeFileData = [];
-
+	employee: string = '';
 
 	loading = false;
 
@@ -46,17 +47,19 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 
     constructor(
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
+		@Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		private getAnalyzesResearchGQL : GetAnalyzesResearchGQL,
 		private activateRoute: ActivatedRoute,
 		private documentGenerateService: DocumentGenerateService,
 		private ageStringPipe: AgeStringPipe,
+		private clientCardService: ClientCardService,
 		@Inject(Router) private readonly router: Router,
+		@Inject(DatePipe) private datePipe: DatePipe,
     ){}
 
 	ngOnInit(): void {
 		this.loading = true;
-		
 		this.activateRoute.params.subscribe(params => {
 			this.getAnalyzesResearchGQL
 			.watch({
@@ -82,11 +85,12 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 								item.value = parcedData[item.key] || null;
 								return item
 							})
-						this.dynamicFormData = {
+						this.dynamicFormData$.next({
 							title: this.currentAnalyze?.name || '',
 							dynamicFilterInputs: form as DynamicFilterInput<any>[]
-						}
+						})
 						this.loading = loading;
+						this.employee = parcedData.employee
 					}
 	
 					if (data.analyzesResearch.type?.id == 5){
@@ -112,7 +116,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 		// Unsubscribe from all subscriptions
 		this._unsubscribeAll.next(undefined);
 		this._unsubscribeAll.complete();
-		this.dynamicFormData = {} as DynamicFilterBase<any>;
+		this.dynamicFormData$.next( {} as DynamicFilterBase<any>);
 	}
 
 	// -----------------------------------------------------------------------------------------------------
@@ -126,6 +130,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 			label: "Ошибка генерации документа!",
 			autoClose: 5000,
 		}).subscribe()
+		this.printButtonLoader = false;
 	}
 
 	printAnalyze(){
@@ -134,7 +139,8 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 			this.currentAnalyze.typeName, 
 			{
 				...this.analyzeData,
-				age:  this.ageStringPipe.transform(this.analyzeData.pet?.DOB || '')
+				age:  this.ageStringPipe.transform(this.analyzeData.pet?.DOB || ''),
+				createdAt: this.datePipe.transform(this.analyzeData.createdAt, 'dd.MM.yyyy')
 			},
 			FileFormat.pdf
 		).subscribe({
@@ -150,7 +156,11 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 		this.printButtonLoader = true;
 		this.documentGenerateService.generateDocumentByData(
 			this.currentAnalyze.typeName,
-			this.analyzeData, 
+			{
+				...this.analyzeData,
+				age:  this.ageStringPipe.transform(this.analyzeData.pet?.DOB || ''),
+				createdAt: this.datePipe.transform(this.analyzeData.createdAt, 'dd.MM.yyyy')
+			},
 			FileFormat.docx
 		).subscribe({
 			error: () =>  this.errInDocumentGeneration(),
@@ -160,4 +170,46 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 			}
 		})
 	}
+
+	navigateToEdit(){
+		this.router.navigate([`edit`], { relativeTo: this.activateRoute} );
+	}
+
+	deleteAnalyze(content:  any){
+		const _unsubscribeDialog: Subject<any> = new Subject<any>();
+
+		this.dialogService.open(content,{label: 'Подтвердите удаление анализа/исследования:',size: 's'})
+		.pipe(takeUntil(_unsubscribeDialog))
+		.subscribe({
+			next: () => {
+				this.clientCardService.deleteAnalyzesResearch(this.analyzeData.id)
+				.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
+				.subscribe({
+					next: (data) => {
+						if (data?.deleteResearch.id){
+							this.alertService.open("", {
+								status: TuiNotification.Success,
+								label:"Анализ/Исследование успешно удален!",
+								autoClose: 10000,
+							}).subscribe();
+						}
+						this.router.navigateByUrl(`client-card/pet/${this.analyzeData.pet?.id}`);
+					},
+					error: (err) => {
+						this.alertService.open("Перезагрузите страницу или обратитесь к администратору", {
+							status: TuiNotification.Error,
+							label:"Анализ/Исследование не удалось удалить!",
+							autoClose: 10000,
+						}).subscribe();
+						console.log(err)
+						this.router.navigateByUrl("client-card");
+					},
+				});
+				
+				_unsubscribeDialog.next(undefined);
+				_unsubscribeDialog.complete();
+			}
+		});
+	}
+			
 }

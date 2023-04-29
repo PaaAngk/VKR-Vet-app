@@ -43,6 +43,7 @@ import { AnalyzesViewComponent } from './analyzes/view/analyzes-view.component';
 import { AgeStringPipe, SafeHtmlPipe, ArrayToAnyArrayPipe, CheckNullPipe, FormatPetGenderPipe } from 'src/app/shared/pipes';
 import { FileInputModule } from 'src/app/shared/components/file-input/file-input.module';
 import { FileViewModule } from 'src/app/shared/components/file-view/file-view.module';
+import { EditDeleteButtonModule } from 'src/app/shared/components/edit-delete-button/edit-delete-button.module';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { FileViewModule } from 'src/app/shared/components/file-view/file-view.mo
     AdvancedDynamicFilterModule,
     FileInputModule,
     FileViewModule,
+    EditDeleteButtonModule,
 
     TuiInputModule,
     TuiButtonModule,

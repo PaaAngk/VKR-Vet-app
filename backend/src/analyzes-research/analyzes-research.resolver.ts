@@ -47,6 +47,15 @@ export class AnalyzesResearchResolver {
   }
 
   @Mutation(() => AnalyzesResearch)
+  async deleteResearch(@Args() { analyzesResearchId }: AnalyzesResearchIdArgs) {
+    return await this.prisma.analyzesResearch.delete({
+      where: {
+        id: analyzesResearchId,
+      },
+    });
+  }
+
+  @Mutation(() => AnalyzesResearch)
   async updateAnalyzesResearch(
     @Args({ name: 'analyzesResearchId', type: () => String })
     analyzesResearchId: string,

@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, pipe, take } from "rxjs";
-import { AnalyzesResearch, Client, ClientDetailGQL, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
+import { AnalyzesResearch, Client, ClientDetailGQL, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteAnalyzesResearchGQL, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
 import { AnalyzesList } from "./analyzes/analyzeFormTemplates";
 import { AnalyzeForm } from "./models/analyzeType"; 
 import { environment } from "src/environments/environment"
@@ -44,6 +44,7 @@ export class ClientCardService
         private createAnalyzesResearchGQL: CreateAnalyzesResearchGQL, 
         private updateAnalyzesResearchGQL: UpdateAnalyzesResearchGQL,
         private getAllAnalyzeTypesGQL : GetAllAnalyzeTypesGQL,
+        private deleteAnalyzesResearchGQL: DeleteAnalyzesResearchGQL,
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
@@ -510,13 +511,11 @@ export class ClientCardService
      * Send array of files on server for saving and write in DB
      * @param files Array of files
      * @param analyzeData Data of pet and analyze type
-     * @returns Observable server 
+     * @returns Observable server response
      */
     uploadAnalyzeFile(files: File[], analyzeData: any){
         const formData:FormData = new FormData();
-        files.forEach((file, i) => {
-            formData.append(`file${i}`, file);
-        })
+        files.forEach( (file, i) => formData.append(`file${i}`, file) )
         formData.append(`analyzeData`, JSON.stringify(analyzeData));
         const headers = new HttpHeaders();
         headers.append('Content-Type', 'multipart/form-data');
@@ -525,16 +524,39 @@ export class ClientCardService
         return this.http.post(`${environment.api_url}/analyzes/upload-analyzes-file`, formData, options)
     }
 
-
     downloadAnalyzeFile(file: FileData){
-        console.log(file)
-        this.http.post(`${environment.api_url}/analyzes/download-analyzes-file`, file)
-        .subscribe(
+        return this.http.post(`${environment.api_url}/analyzes/download-analyzes-file`, file)
+        .pipe(map(
             (buffer: any) => {
-                console.log(buffer)
                 const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: file.mimetype}))
                 window.saveAs(fileURL, file.name);
             }
+        ))
+    }
+
+    deleteAnalyzesResearch(analyzesResearchId:string){
+        return this.deleteAnalyzesResearchGQL.mutate({
+            analyzesResearchId: analyzesResearchId,
+        }).pipe(
+            map(( {data} ) => {
+                if (data?.deleteResearch) {
+
+                    // eslint-disable-next-line prefer-const
+                    let newPetAnalyze = {...this._currentPet.getValue()}
+                    console.log(newPetAnalyze.analyzesResearchs)
+                    newPetAnalyze.analyzesResearchs = newPetAnalyze 
+                        .analyzesResearchs?.filter( (analyze: AnalyzesResearch) => analyze.id != data?.deleteResearch.id )
+                    
+                    console.log(newPetAnalyze.analyzesResearchs)
+                    
+                    this._currentPet.next(newPetAnalyze);
+
+                    //Delete reception from cache for fetch in reception view
+                    this.apollo.client.cache.evict({id:this.apollo.client.cache.identify({ __typename: 'Reception', id: analyzesResearchId })})                    
+                    return data;
+                }
+                return data
+            })
         )
     }
 

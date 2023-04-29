@@ -7,30 +7,11 @@
                     <p class="text-base"><b>{{client.fullName}}</b> | <b>{{client.telephoneNumber | tuiFormatPhone}}</b><br> 
                     Адрес: {{client.address}}</p>
                 </div>
-                <div
-                    tuiGroup
-                    class="group"
-                    [collapsed]="true"
-                >
-                    <button
-                        tuiButton
-                        type="button"
-                        appearance="outline"
-                        size="m"
-                        (click)="showDialogEditClient()"
-                    >
-                        Изменить
-                    </button>
-                    <button
-                        tuiButton
-                        type="button"
-                        appearance="accent"
-                        size="m"
-                        (click)="deleteClient(template)"
-                    >
-                        Удалить
-                    </button>
-                </div>
+                <edit-delete-button
+                    class="md:w-64 w-full justify-self-end"
+                    (deleteAction)="deleteClient(template)"
+                    (editAction)="showDialogEditClient()"
+                ></edit-delete-button>
             </div>
 
             <button

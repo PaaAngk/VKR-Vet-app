@@ -213,6 +213,7 @@ export type Mutation = {
   deleteClient: Client;
   deleteGoods: Goods;
   deletePet: Pet;
+  deleteResearch: AnalyzesResearch;
   deleteService: Service;
   login: Auth;
   refreshToken: Token;
@@ -288,6 +289,11 @@ export type MutationDeleteGoodsArgs = {
 
 export type MutationDeletePetArgs = {
   petId: Scalars['String'];
+};
+
+
+export type MutationDeleteResearchArgs = {
+  analyzesResearchId: Scalars['String'];
 };
 
 
@@ -729,14 +735,14 @@ export type CreateAnalyzesResearchMutationVariables = Exact<{
 }>;
 
 
-export type CreateAnalyzesResearchMutation = { __typename?: 'Mutation', createAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: string, typeId?: number | null, petId?: string | null, data?: string | null } };
+export type CreateAnalyzesResearchMutation = { __typename?: 'Mutation', createAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: string, typeId?: number | null, petId?: string | null, data?: string | null, createdAt?: any | null } };
 
 export type GetAnalyzesResearchQueryVariables = Exact<{
   analyzesResearchId: Scalars['String'];
 }>;
 
 
-export type GetAnalyzesResearchQuery = { __typename?: 'Query', analyzesResearch: { __typename?: 'AnalyzesResearch', id: string, data?: string | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: string, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null } | null, type?: { __typename?: 'TypeAnalyzesResearch', id?: number | null, typeName?: string | null } | null } };
+export type GetAnalyzesResearchQuery = { __typename?: 'Query', analyzesResearch: { __typename?: 'AnalyzesResearch', id: string, data?: string | null, createdAt?: any | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: string, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null } | null, type?: { __typename?: 'TypeAnalyzesResearch', id?: number | null, typeName?: string | null } | null } };
 
 export type UpdateAnalyzesResearchMutationVariables = Exact<{
   data: UpdateAnalyzesResearchInput;
@@ -745,6 +751,13 @@ export type UpdateAnalyzesResearchMutationVariables = Exact<{
 
 
 export type UpdateAnalyzesResearchMutation = { __typename?: 'Mutation', updateAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: string } };
+
+export type DeleteAnalyzesResearchMutationVariables = Exact<{
+  analyzesResearchId: Scalars['String'];
+}>;
+
+
+export type DeleteAnalyzesResearchMutation = { __typename?: 'Mutation', deleteResearch: { __typename?: 'AnalyzesResearch', id: string } };
 
 export type GetAllGoodsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1343,6 +1356,7 @@ export const CreateAnalyzesResearchDocument = gql`
     typeId
     petId
     data
+    createdAt
   }
 }
     `;
@@ -1362,6 +1376,7 @@ export const GetAnalyzesResearchDocument = gql`
   analyzesResearch(analyzesResearchId: $analyzesResearchId) {
     id
     data
+    createdAt
     pet {
       alias
       DOB
@@ -1405,6 +1420,24 @@ export const UpdateAnalyzesResearchDocument = gql`
   })
   export class UpdateAnalyzesResearchGQL extends Apollo.Mutation<UpdateAnalyzesResearchMutation, UpdateAnalyzesResearchMutationVariables> {
     override document = UpdateAnalyzesResearchDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteAnalyzesResearchDocument = gql`
+    mutation DeleteAnalyzesResearch($analyzesResearchId: String!) {
+  deleteResearch(analyzesResearchId: $analyzesResearchId) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteAnalyzesResearchGQL extends Apollo.Mutation<DeleteAnalyzesResearchMutation, DeleteAnalyzesResearchMutationVariables> {
+    override document = DeleteAnalyzesResearchDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

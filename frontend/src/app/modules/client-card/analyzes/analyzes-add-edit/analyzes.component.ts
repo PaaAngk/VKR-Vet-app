@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector
 import { ActivatedRoute, Router } from '@angular/router';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
-import { Subject, takeUntil } from 'rxjs';
-import { CreateAnalyzesResearchInput, GetAnalyzesResearchGQL, AnalyzesResearch, UpdateAnalyzesResearchInput } from 'src/graphql/generated';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { CreateAnalyzesResearchInput, GetAnalyzesResearchGQL, AnalyzesResearch, UpdateAnalyzesResearchInput, Employee } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
 import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdown/buttonWithDropdown.interface';
 import { AnalyzeForm } from '../../models/analyzeType';
 import { AnalyzesList } from "../analyzeFormTemplates";
-import { DynamicFilterInput } from 'src/app/shared/components/advanced-dynamic-filter';
+import { DynamicFilterBase, DynamicFilterInput } from 'src/app/shared/components/advanced-dynamic-filter';
 
 @Component({
 	selector: 'vet-crm-reception-new',
@@ -21,7 +21,8 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 
 	// Store type with analyze and file name and form
 	currentAnalyzeType:AnalyzeForm = null as unknown as AnalyzeForm;
-	// For dropdown
+	currentAnalyzeForm$: BehaviorSubject<DynamicFilterBase<any>> = new BehaviorSubject(null as unknown as DynamicFilterBase<any>);
+
 	analyzesList = AnalyzesList;
 	// Edited analyze
 	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
@@ -30,10 +31,15 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	formData = {};
 	maySave = false;
 
+	employeesList: string[] = [];
+	employee: string = '';
+
 	/** Interface */
 	editMode = false;
 	petId = '';
 	analyzeId = '';
+
+	enabledForm = false;
 
 	@ViewChild(TuiHostedDropdownComponent)
     component?: TuiHostedDropdownComponent;
@@ -61,7 +67,11 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	ngOnInit(): void {
 		// Getting id pet from url for now reception
 		this.activateRoute.params.subscribe(params=> this.petId=params['id'] );
+		this.clientCardService.getAllEmployees$.subscribe({
+			next:(employees: Employee[]) => this.employeesList = employees.map(d => d.fullName)
+		})
 
+		// Set edited analyze(and file) in form 
 		if (this.activateRoute.snapshot.url[4] && this.activateRoute.snapshot.url[4].path == 'edit'){
 			this.loading = true;
 			this.editMode = true;
@@ -93,6 +103,9 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 							dynamicFilterInputs: form as DynamicFilterInput<any>[]
 						}
 						this.loading = loading;
+						console.log(parcedData)
+						this.employee = parcedData.employee
+						this.currentAnalyzeForm$.next(this.currentAnalyzeType.form)
 					}
 	
 					if (data.analyzesResearch.type?.id == 5){
@@ -116,6 +129,10 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 
 	readonly stringifyAnalyzeList = (item: AnalyzeForm): string => `${item.name}`;
 
+	onFormUpdate(){
+		this.currentAnalyzeForm$?.next(this.currentAnalyzeType.form)
+	}
+
 	submitAnalyzes(){			
             if(this.editMode) this.editAnalyzes()
 			else this.createAnalyzes();
@@ -125,9 +142,9 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		if(this.currentAnalyzeType.typeName !== 'Files'){
 			this.clientCardService.createAnalyzesResearch(
 				{ 
-					data: JSON.stringify(this.formData), 
+					data: JSON.stringify({...this.formData, employee: this.employee}), 
 					petId: this.petId,
-					typeId:this.currentAnalyzeType.id
+					typeId: this.currentAnalyzeType.id,
 				} as CreateAnalyzesResearchInput
 			)
 			.subscribe({
@@ -159,6 +176,48 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		}
 	}
 
+	editAnalyzes(){
+		if(this.currentAnalyzeType.typeName !== 'Files'){
+			this.clientCardService.updateAnalyzesResearch(
+				this.analyzeData.id,
+				{
+					data: JSON.stringify({...this.formData, employee: this.employee}),
+				} as UpdateAnalyzesResearchInput
+			)
+			.subscribe({
+				next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || ''),
+				error: (error)  => { this.errorEditAlert(), console.log(error) }
+			})
+		}
+		if(this.currentAnalyzeType.typeName === 'Files'){
+			// this.clientCardService.updateAnalyzesResearch(
+			// 	this.analyzeData.id,
+			// 	{
+			// 		data: JSON.stringify(this.formData), 
+			// 	} as UpdateAnalyzesResearchInput
+			// )
+			// .subscribe({
+			// 	next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || ''),
+			// 	error: (error)  => { this.errorEditAlert(), console.log(error) }
+			// })
+		}
+	}
+
+	dataFromForm(event: any){
+		this.formData = event;
+		if (this.currentAnalyzeType.typeName === 'UZI_EKHO'){
+			this.maySave = Object.keys(this.formData).length == 0 ? 
+			false 
+			: (this.employee == '' ? false : true)
+		} else{
+			this.maySave = Object.keys(this.formData).length == 0 ? false : true
+		}
+	}
+
+	// -----------------------------------------------------------------------------------------------------
+	// @ Alerts
+	// -----------------------------------------------------------------------------------------------------
+
 	successCreate(id: any){
 		this.loading = false;
 		this.alertService.open("", {
@@ -180,32 +239,6 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 			}).subscribe()
 	}
 
-	editAnalyzes(){
-		if(this.currentAnalyzeType.typeName !== 'Files'){
-			this.clientCardService.updateAnalyzesResearch(
-				this.analyzeData.id,
-				{
-					data: JSON.stringify(this.formData), 
-				} as UpdateAnalyzesResearchInput
-			)
-			.subscribe({
-				next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || ''),
-				error: (error)  => { this.errorEditAlert(), console.log(error) }
-			})
-		}
-		if(this.currentAnalyzeType.typeName === 'Files'){
-			this.clientCardService.updateAnalyzesResearch(
-				this.analyzeData.id,
-				{
-					data: JSON.stringify(this.formData), 
-				} as UpdateAnalyzesResearchInput
-			)
-			.subscribe({
-				next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || ''),
-				error: (error)  => { this.errorEditAlert(), console.log(error) }
-			})
-		}
-	}
 	successEditAlert(id: string){
 		this.loading = false;
 		this.alertService.open("", {
@@ -215,6 +248,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		}).subscribe();
 		this.router.navigate([`/client-card/pet/${this.petId}/analyzes/${id}`], {relativeTo: this.activateRoute})
 	}
+
 	errorEditAlert(){
 		this.loading = false;
 		this.alertService.open(
@@ -224,10 +258,5 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 			label: "Невозможно обновить анализ!",
 			autoClose: 5000,
 		}).subscribe()
-	}
-
-	dataFromForm(event: any){
-		this.formData = event;
-		this.maySave = Object.keys(this.formData).length == 0 ? false : true
 	}
 }

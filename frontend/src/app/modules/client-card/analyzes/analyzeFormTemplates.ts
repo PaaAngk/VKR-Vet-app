@@ -1,4 +1,4 @@
-import { CountboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
+import { ComboboxDynamicFilter, CountboxDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
 import { AnalyzeForm } from '../models/analyzeType';
 
@@ -138,7 +138,137 @@ export const Analiz_kroviForm: DynamicFilterBase<string|string[]|number> =
     ]
 };
 
-
+export const UZI_EKHOForm: DynamicFilterBase<string|string[]|number> = 
+{
+    title: "Эхокардиография",
+    dynamicFilterInputs: [
+        new CountboxDynamicFilter({
+            key: 'KRS',
+            label: 'КРС',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'KDR',
+            label: 'КДР',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'ZSLZHs',
+            label: 'ЗСЛЖс',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'ZSPZHd',
+            label: 'ЗСПЖд',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'MZHPs',
+            label: 'МЖПс',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'MZHPd',
+            label: 'МЖПд',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'ZSPZHd2',
+            label: 'ЗСПЖд',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'LP',
+            label: 'ЛП',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Ao',
+            label: 'Ао',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new TextboxDynamicFilter({
+            key: 'Sootnoshenie_LP/Ao',
+            label: 'Соотношение ЛП/Ао',
+        }),
+        new TextboxDynamicFilter({
+            key: 'Papillyarnye_LZH',
+            label: 'Папиллярные мышцы ЛЖ',
+        }),
+        new CountboxDynamicFilter({
+            key: 'LV',
+            label: 'ЛВ',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new CountboxDynamicFilter({
+            key: 'PVLA',
+            label: 'ПВЛА',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new TextboxDynamicFilter({
+            key: 'Sootnoshenie_LV/PVLA',
+            label: 'Соотношение ЛВ/ПВЛА',
+        }),
+        new CountboxDynamicFilter({
+            key: 'PZH',
+            label: 'ПЖ',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мм'
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Prolaps_stvorok',
+            label: 'Пролапс створок',
+            options: [ "Есть", "Нет" ],
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Elongaciya_stvorok',
+            label: 'Элонгация створок',
+            options: [ "Есть", "Нет" ],
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Diastolicheskoe_otkrytie',
+            label: 'Диастолическое открытие',
+            options: [ "Не нарушено", "Нарушено" ],
+        }),
+        new TextboxDynamicFilter({
+            key: 'Ekhogennost_stvorok',
+            label: 'Эхогенность створок',
+        }),
+        new TextboxDynamicFilter({
+            key: 'Dop_ekhosignaly',
+            label: 'Дополнительные эхосигналы',
+        }),
+        new CountboxDynamicFilter({
+            key: 'FU',
+            label: 'ФУ',
+            inputRangeParameters: inputCountBoxParamsForPercent,
+            postfix:'%'
+        }),
+        new TextboxDynamicFilter({
+            key: '_EPSS',
+            label: '_EPSS',
+        }),
+        new TextboxDynamicFilter({
+            key: 'KDR_normalizovannyj',
+            label: 'КДР нормализованный',
+        }),
+        new TextboxDynamicFilter({
+            key: 'KSR_normalizovannyj',
+            label: 'KSR normalizovannyj',
+        }),
+    ]
+};
 
 
 export const AnalyzesList: AnalyzeForm[] = [
@@ -146,5 +276,6 @@ export const AnalyzesList: AnalyzeForm[] = [
     { name:'Общий анализ крови', typeName: 'Analiz_krovi', form: Analiz_kroviForm },
     { name:'Гистологическое заключение', typeName: 'Gistologicheskoe_zaklyuchenie', form: Analiz_kroviForm },
     { name:'Анализ кала', typeName: 'Analiz_kala', form: Analiz_kroviForm },
-    { name:'Файлы анализов', typeName: 'Files', form: null },
+    { name:'Эхокардиография', typeName: 'UZI_EKHO', form: UZI_EKHOForm },
+    { name:'Файлы анализов', typeName: 'Files', form: null as unknown as DynamicFilterBase<any>},
 ]

@@ -1,12 +1,14 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 import { DynamicFilterBase } from './dynamic-filter-base.class';
 import { DynamicFilterControlService } from './dynamic-filter-control.service';
 
 @Component({
   selector: 'app-advanced-dynamic-form',
   templateUrl: './advanced-dynamic-filter.component.html',
-  providers: [ DynamicFilterControlService ]
+  providers: [ DynamicFilterControlService ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdvancedDynamicFilterComponent implements OnInit {
 	activeMenuItemIndex:number = 0;
@@ -15,21 +17,31 @@ export class AdvancedDynamicFilterComponent implements OnInit {
 	@Output() formValues = new EventEmitter<any>();
 
 	/** Input form */
-	@Input() segmentForms: DynamicFilterBase<any | any[]> | null = null;
+	@Input() segmentForms?: BehaviorSubject<DynamicFilterBase<any>>;
 
 	/** Input needed in two columns */
 	@Input() twoColumns: boolean = false;
 
+	displaydForm?: any[];
 	form!: FormGroup;
-	constructor(private dfs: DynamicFilterControlService) {}
+	enabledForm = false;
+
+	constructor(
+		private dfs: DynamicFilterControlService, 
+	) {}
 
 	ngOnInit() {
 		// Format gettings filter to FromGroup
-		if (this.segmentForms)
-			this.form = this.dfs.toFormGroupFromBase(this.segmentForms as DynamicFilterBase<any | any[]>);
-
-			if(this.twoColumns)
-				this.form.valueChanges.subscribe(() => this.onSubmit());
+		this.segmentForms?.subscribe({
+			next: (form) => {
+				if (form && form.dynamicFilterInputs && Object.keys(form.dynamicFilterInputs).length > 0){
+					this.form = this.dfs.toFormGroupFromBase(form as DynamicFilterBase<any | any[]>);
+					this.displaydForm = form.dynamicFilterInputs;
+					if(this.twoColumns)
+						this.form.valueChanges.subscribe(() => this.onSubmit());	
+				}
+			}
+		})
 		
 	}
 

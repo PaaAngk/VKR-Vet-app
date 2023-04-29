@@ -198,6 +198,7 @@ type Mutation {
   deleteClient(clientId: String!): Client!
   deleteGoods(goodsId: Int!): Goods!
   deletePet(petId: String!): Pet!
+  deleteResearch(analyzesResearchId: String!): AnalyzesResearch!
   deleteService(serviceId: Int!): Service!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!

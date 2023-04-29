@@ -9,12 +9,16 @@ export class DynamicFilterControlService {
 	/** Create FormGroup. Making FormControl to each input in array segmentForm 
 	 * with passed value, validators(if include) and create match toogle to correct input  
 	*/
+	
 	toFormGroupFromBase(segmentForm: DynamicFilterBase<any | any[]> ) {
 		const filtersGroup: any = {};
 		// segmentForm.forEach(filters  => {
 			//const group: any = {};
 			segmentForm.dynamicFilterInputs.forEach(filterItem  => {
-				if(filterItem.controlType === 'combobox' || filterItem.controlType === 'dropdown'){
+				if((filterItem.controlType === 'combobox' || filterItem.controlType === 'dropdown') && filterItem.value){
+					filtersGroup[filterItem.key] = new FormControl(filterItem.value || null);
+				}
+				else if(filterItem.controlType === 'combobox' || filterItem.controlType === 'dropdown' ){
 					filtersGroup[filterItem.key] = new FormControl();
 				}
 				else if(filterItem.controlType === 'date' || filterItem.controlType === 'dateRange'){

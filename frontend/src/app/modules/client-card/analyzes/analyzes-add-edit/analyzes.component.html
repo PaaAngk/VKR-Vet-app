@@ -11,6 +11,7 @@
                     [stringify]="stringifyAnalyzeList"
                     [(ngModel)] = "currentAnalyzeType"
                     [tuiTextfieldCleaner]="true"
+                    (ngModelChange)="onFormUpdate()"
                 >
                     Вид анализа/исследования
                     <input
@@ -23,6 +24,25 @@
                         [itemContent]="stringifyAnalyzeList | tuiStringifyContent"
                     ></tui-data-list-wrapper>
                 </tui-combo-box>
+
+                <!-- Employee -->
+                <tui-combo-box
+                    [readOnly]="editMode"
+                    class="b-form w-80"
+                    [(ngModel)] = "employee"
+                    *ngIf="currentAnalyzeType && currentAnalyzeType.typeName === 'UZI_EKHO'"
+                >
+                    Выполняющий сотрудник
+                    <input
+                        tuiTextfield
+                        placeholder="Начните вводить ФИО сотрудника"
+                    />
+                    <tui-data-list-wrapper
+                        *tuiDataList
+                        [items]="this.employeesList | tuiFilterByInput"
+                    ></tui-data-list-wrapper>
+                </tui-combo-box>
+
                 <button
                     *ngIf="!editMode"
                     tuiButton
@@ -59,7 +79,7 @@
         >
             <app-advanced-dynamic-form
                 *ngIf="currentAnalyzeType && currentAnalyzeType.typeName !== 'Files'"
-                [segmentForms] = "currentAnalyzeType.form"
+                [segmentForms] = "currentAnalyzeForm$"
                 (formValues) = "dataFromForm($event)"
                 [twoColumns] = "true"
             ></app-advanced-dynamic-form>

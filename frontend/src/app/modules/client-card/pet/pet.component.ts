@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { Subject, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
 import { TableColumn } from 'src/app/core';
 import { AnalyzesResearch, Client, Employee, Pet, Reception } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
@@ -53,119 +53,7 @@ export class PetComponent implements OnDestroy, OnInit{
     );
 
 	observeDialogBox: Subject<any> = new Subject();
-	documentForm: DynamicFilterBase<string|string[]|number> = 
-	{
-		title: "Assigment",
-		dynamicFilterInputs: [
-			new DateDynamicFilter({
-				key: 'dateSelector',
-				label: 'Date entering',
-				value: new Date(2011, 0, 1)
-			}),
-
-			new DateRangeDynamicFilter({
-				key: 'dateRangeSelector',
-				label: 'Date entering',
-			}),
-
-			new ComboboxDynamicFilter({
-				key: 'combobox',
-				label: 'Bravery Rating',
-				placeholder:"Enter value to checkbox",
-				options: [
-					"Solid",
-					"Great",
-					"Good",
-					"Unproven"
-				],
-				
-			}),
-
-			new DropdownDynamicFilter({
-				key: 'dropdown',
-				label: 'Dropdown Exapmle',
-				placeholder:"Enter value to dropdown input",
-				options: [
-					"Solid",
-					"Great",
-					"Good",
-					"Unproven"
-				],
-				match: true,
-				
-			}),
-
-			new TextboxDynamicFilter({
-				key: 'firstName',
-				label: 'First name',
-				value: 'Bombasto',
-				placeholder:"Enter first name into input",
-				required: true,
-				match: true,
-			}),
-
-			new CountboxDynamicFilter({
-				key: 'counter',
-				label: 'Counter',
-				value: 0,
-				required: true,
-			}),
-			
-			// new DateDynamicFilter({
-			//   key: 'date',
-			//   label: 'Date entering',
-			// }),
-
-			new TextboxDynamicFilter({
-				key: 'emailAddress',
-				label: 'Email',
-				type: 'email',
-				
-				minLength: 5
-			}),
-
-			new ComboboxDynamicFilter({
-				key: 'combobox123',
-				label: 'Bravery Rating',
-				placeholder:"Enter value to checkbox",
-				options: [
-					"Solid",
-					"Great",
-					"Good",
-					"Unproven"
-				],
-				
-			}),
-
-			new DropdownDynamicFilter({
-				key: 'dropdown123',
-				label: 'Dropdown Exapmle',
-				placeholder:"Enter value to dropdown input",
-				options: [
-					"Solid",
-					"Great",
-					"Good",
-					"Unproven"
-				],
-				
-			}),
-
-			new TextboxDynamicFilter({
-				key: 'firstName213',
-				label: 'First name',
-				value: 'Bombasto',
-				placeholder:"Enter first name into input",
-				required: true,
-			}),
-
-			new CountboxDynamicFilter({
-				key: 'counter123',
-				label: 'Counter',
-				value: 0,
-				required: true,
-			}),
-		]
-	};
+	documentForm$: BehaviorSubject<DynamicFilterBase<any>> = new BehaviorSubject(null as unknown as DynamicFilterBase<any>);
 
 	listOfDocumentToGenerate: DocumentsToGenerate[] = [
 		{name: 'Расписка ИП', fileName: 'Raspiska_ip'}, 
@@ -243,7 +131,6 @@ export class PetComponent implements OnDestroy, OnInit{
 	// -----------------------------------------------------------------------------------------------------
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
-   
 
 	showDialogEditPet(){
 		this.dialogEditPet.pipe(takeUntil(this._unsubscribeAll)).subscribe();
@@ -272,6 +159,7 @@ export class PetComponent implements OnDestroy, OnInit{
 		});
 	}
 
+	// Generate document by documnt name
 	generateDoc(docName: string){
 		const dataToPrint: any = {
 			...this.pet, 
@@ -279,7 +167,7 @@ export class PetComponent implements OnDestroy, OnInit{
 			formatDate: this.dataPipe.transform(this.pet.DOB,  'dd.MM.yyyy')
 		}
 		if (docName === 'Raspiska_ip'){
-			this.documentForm = {
+			this.documentForm$.next({
 				title: "Расписка ИП",
 				dynamicFilterInputs: [
 					new ComboboxDynamicFilter({
@@ -308,7 +196,7 @@ export class PetComponent implements OnDestroy, OnInit{
 						required: true,
 					}),
 				]
-			}
+			})
 			this._changeDetectorRef.markForCheck()
 			this.open = true
 			this.gettingDocument(docName, dataToPrint);
@@ -317,7 +205,7 @@ export class PetComponent implements OnDestroy, OnInit{
 			this.documentGenerateService.generateDocumentByData(docName, dataToPrint, FileFormat.pdf);
 		}
 		if (docName === 'Soglasie_na_stacionar'){
-			this.documentForm = {
+			this.documentForm$.next({
 				title: "Согласие на стационар",
 				dynamicFilterInputs: [
 					new ComboboxDynamicFilter({
@@ -327,7 +215,7 @@ export class PetComponent implements OnDestroy, OnInit{
 						options: this.employeesList,
 					}),
 				]
-			}
+			})
 			this.open = true
 			this.gettingDocument(docName, dataToPrint);
 		}
@@ -335,7 +223,7 @@ export class PetComponent implements OnDestroy, OnInit{
 			this.documentGenerateService.generateDocumentByData(docName, dataToPrint, FileFormat.pdf);
 		}
 		if (docName === 'Karta_dlya_stacionara'){
-			this.documentForm = {
+			this.documentForm$.next({
 				title: "Согласие на стационар",
 				dynamicFilterInputs: [
 					new ComboboxDynamicFilter({
@@ -349,12 +237,13 @@ export class PetComponent implements OnDestroy, OnInit{
 						label: 'Предварительный диагноз',
 					}),
 				]
-			}
+			})
 			this.open = true
 			this.gettingDocument(docName, dataToPrint);
 		}
 	}
 
+	//wait for dialog send data in component and send data on server
 	gettingDocument(docName: string, data: any){
 		this.observeDialogBox
 		.pipe(take(1))
@@ -366,6 +255,7 @@ export class PetComponent implements OnDestroy, OnInit{
 		})
 	}
 
+	// getting data from dialog box
 	dataFromDialog(reciveData: any){
 		this.observeDialogBox.next(reciveData)
 	}

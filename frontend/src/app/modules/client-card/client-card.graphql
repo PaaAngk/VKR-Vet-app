@@ -295,12 +295,14 @@ mutation createAnalyzesResearch($data:CreateAnalyzesResearchInput!) {
 		typeId
   	petId
   	data
+    createdAt
   }
 }
 query GetAnalyzesResearch($analyzesResearchId:String!){
 	analyzesResearch(analyzesResearchId:$analyzesResearchId){
     id
   	data
+    createdAt
     pet{
       alias
       DOB
@@ -325,3 +327,10 @@ mutation UpdateAnalyzesResearch($data: UpdateAnalyzesResearchInput!, $analyzesRe
     id
   }
 }
+
+mutation DeleteAnalyzesResearch($analyzesResearchId:String!){
+	deleteResearch(analyzesResearchId:$analyzesResearchId){
+    id
+  }
+}
+

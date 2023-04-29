@@ -8,30 +8,11 @@
                 Вид: <b class="mr-4">{{ pet.kind }}</b><br>
                 Возраст: <b>{{pet.DOB | ageString | checkNull }}</b>
             </p>
-            <div
-                tuiGroup
-                class="group w-52 justify-self-end"
-                [collapsed]="true"
-            >
-                <button
-                    tuiButton
-                    type="button"
-                    appearance="secondary-destructive"
-                    size="m"
-                    (click)="showDialogEditPet()"
-                >
-                    Изменить
-                </button>
-                <button
-                    tuiButton
-                    type="button"
-                    appearance="accent"
-                    size="m"
-                    (click)="deletePet(template)"
-                >
-                    Удалить
-                </button>
-            </div>
+            <edit-delete-button
+                class="group w-64 justify-self-end"
+                (deleteAction)="deletePet(template)"
+                (editAction)="showDialogEditPet()"
+            ></edit-delete-button>
             <div 
                 tuiGroup
                 class="group md:basis-2/6 basis-full"
@@ -346,12 +327,13 @@
 
 <!-- Dialog box for print document -->
 <ng-template
+    *ngIf="documentForm$ | async as documentForm"
     let-observer
     [tuiDialogOptions]="{label: documentForm.title, size: 's'}"
     [(tuiDialog)]="open"
 >
     <app-advanced-dynamic-form
-        [segmentForms] = "documentForm"
+        [segmentForms] = "documentForm$"
         (formValues) = "dataFromDialog($event)"
     ></app-advanced-dynamic-form>
 </ng-template>

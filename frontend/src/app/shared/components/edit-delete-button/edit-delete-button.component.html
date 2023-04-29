@@ -1,0 +1,26 @@
+<div
+    tuiGroup
+    class="group"
+    [collapsed]="true"
+>
+    <button
+        tuiButton
+        type="button"
+        icon = 'tuiIconEditLarge'
+        appearance="outline"
+        size="m"
+        (click)="editClick()"
+    >
+        Изменить
+    </button>
+    <button
+        tuiButton
+        type="button"
+        icon = 'tuiIconTrash2Large'
+        appearance="accent"
+        size="m"
+        (click)="deleteClick()"
+    >
+        Удалить
+    </button>
+</div>
