@@ -56,6 +56,7 @@ const routes: Routes = [
         {path: 'client-card', loadChildren: () => import('./modules/client-card/client-card.module').then(m => m.ClientCardModule)},
         {path: 'services', loadChildren: () => import('./modules/services/services.module').then(m => m.ServiceModule)},
         {path: 'goods', loadChildren: () => import('./modules/goods/goods.module').then(m => m.GoodsModule)},
+        {path: 'scheduler', loadChildren: () => import('./modules/scheduler/scheduler.module').then(m => m.SchedulerModule)},
 
         // 404 & Catch all
         {path: '404-not-found', pathMatch: 'full', component: Page404Component},

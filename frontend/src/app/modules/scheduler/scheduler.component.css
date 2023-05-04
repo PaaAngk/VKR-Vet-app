@@ -1,0 +1,16 @@
+
+
+.fc { /* the calendar root */
+  margin: 0 auto;
+}
+
+.fc-v-event{
+  --tw-bg-opacity: 1;
+  background-color: rgb(125 211 252 / var(--tw-bg-opacity)) !important;
+}
+
+.fc .fc-button-primary {
+  background-color: var(--tui-primary) !important;
+  border-color: var(--fc-button-border-color);
+  color: var(--fc-button-text-color);
+}

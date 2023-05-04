@@ -1,0 +1,41 @@
+<div class="w-full p-2 border-r border-l border-color rounded-lg bg-white max-h-full">
+    <div tuiTextfieldSize="m" class="flex w-full justify-evenly items-center py-1">
+        
+    </div>
+
+    <div class="p-2 h-full">
+        <div class="items-center text-center mb-2">
+            <div class="text-2xl font-semibold">Регистратура</div>
+        </div>
+        <tui-loader 
+            [showLoader]="loading"
+            [overlay]="true"
+            class="flex flex-auto overflow-auto" 
+            [ngStyle]="{'height':'84vh'}"
+        >
+ 
+            <full-calendar 
+                [options]='calendarOptions'
+                class="w-full"            
+            >
+                <ng-template #eventContent let-arg>
+                    <b>{{ arg.timeText }}</b>
+                    <i>{{ arg.event.title }}</i><br>
+                    <b>sdfsdfh</b>
+                    <!-- {{arg|json}} -->
+                </ng-template>
+            </full-calendar>
+            <div class=''>
+                <h2>All Events ({{currentEvents.length}})</h2>
+                <ul>
+                    <li *ngFor='let event of currentEvents'>
+                        <b>{{event.startStr}}</b>
+                        <i>{{event.title}}</i>
+                    </li>
+                </ul>
+            </div>
+          
+            
+        </tui-loader>    
+    </div>
+</div>
