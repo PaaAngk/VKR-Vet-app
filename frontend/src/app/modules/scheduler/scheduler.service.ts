@@ -1,12 +1,16 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { CreateGoodsGQL, CreateGoodsInput, DeleteGoodsGQL, GetAllGoodsGQL, Goods, UpdateGoodsGQL, UpdateGoodsInput } from "src/graphql/generated";
+import { DateRangeParams } from "./interfaces";
 
 
 @Injectable()
 export class SchedulerService
 {
     private _goodsList : BehaviorSubject<Array<Goods>> = new BehaviorSubject([] as Goods[]);
+
+    // Selected date for create from calendar 
+    private _selectedDateForCreate : BehaviorSubject<DateRangeParams> = new BehaviorSubject({} as DateRangeParams);
 
     constructor(
         private getAllGoodsGQL: GetAllGoodsGQL,
@@ -27,6 +31,19 @@ export class SchedulerService
     get getGoods$(): Observable<Goods[]>
     {
         return this._goodsList.asObservable();
+    }
+
+    /**
+     * Getter for selected date for create
+     */
+    get getSelectedDate$(): Observable<DateRangeParams>
+    {
+        return this._selectedDateForCreate.asObservable();
+    }
+
+    setSelectedDate(date: DateRangeParams)
+    {
+        this._selectedDateForCreate.next(date);
     }
 
     // -----------------------------------------------------------------------------------------------------

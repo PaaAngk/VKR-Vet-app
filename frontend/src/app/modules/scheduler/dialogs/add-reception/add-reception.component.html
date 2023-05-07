@@ -1,0 +1,106 @@
+<form [formGroup]="addPetForm" class="space-y-4 mt-2 justify-center">
+
+
+    <div class="tui-form__row tui-form__row_multi-fields">
+        <div
+            tuiGroup
+            class="group"
+            class="tui-form__multi-field"
+            [collapsed]="true"
+        >
+            <tui-input-time
+                formControlName="testValue"
+                [items]="workTimes"
+            >
+                Время начала
+            </tui-input-time>
+            <tui-input-time
+                formControlName="testValue"
+                [items]="workTimes"
+            >
+                Время окончания
+            </tui-input-time>
+            
+        </div>
+        <tui-error
+            formControlName="alias"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+    
+    </div>
+
+    <div class="tui-form__row tui-form__row_multi-fields">
+        <div class="tui-form__multi-field">
+            <tui-combo-box
+                class="b-form"
+                formControlName="kind"
+            >
+                Вид питомца
+                <input
+                    tuiTextfield
+                    placeholder="Начните вводить вид"
+                />
+                <tui-data-list-wrapper
+                    *tuiDataList
+                    [items]="petsKind | tuiFilterByInput"
+                ></tui-data-list-wrapper>
+            </tui-combo-box>
+
+            <tui-error
+                formControlName="kind"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+        
+        <div class="tui-form__multi-field">
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <div class="tui-form__row">
+
+        
+    </div>
+
+    <div class="tui-form__row">
+        <tui-combo-box
+            class="b-form"
+            formControlName="nutrition"
+            [strict] = "false"
+        >
+            Питание
+            <input
+                tuiTextfield
+                placeholder="Выберите из списка или введите"
+            />
+            <tui-data-list-wrapper
+                *tuiDataList
+                [items]="petsNutrition | tuiFilterByInput"
+            ></tui-data-list-wrapper>
+        </tui-combo-box>
+        <tui-error
+            formControlName="nutrition"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+    </div>
+
+
+    <button
+        tuiButton
+        type="button"
+        size="m"
+        [disabled]="!hasValue"
+        (click)="submit()"
+    >
+        <p *ngIf="data === 'edit'">Изменить</p>
+        <p *ngIf="data === 'add'">Добавить</p>
+    </button>
+    {{dateRange | json}}
+</form>

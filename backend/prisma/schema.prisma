@@ -176,22 +176,23 @@ model ServiceList {
 }
 
 model Schedule {
-  id         String   @id @default(cuid())
-  Employee   Employee @relation(fields: [employeeId], references: [id])
+  id         Int          @id @default(autoincrement())
+  Employee   Employee     @relation(fields: [employeeId], references: [id])
   employeeId Int
-  data       DateTime
+  data       DateTime     @db.Date
   dayType    Int
 }
  
 model ReceptionRecord {
-  id                 String            @id @default(cuid())
-  Employee           Employee?         @relation(fields: [employeeId], references: [id])
+  id                 Int                @id @default(autoincrement())
+  Employee           Employee?          @relation(fields: [employeeId], references: [id])
   employeeId         Int?
-  ReceptionPurpose   ReceptionPurpose? @relation(fields: [receptionPurposeId], references: [id])
+  ReceptionPurpose   ReceptionPurpose?  @relation(fields: [receptionPurposeId], references: [id])
   receptionPurposeId Int?
-  Client             Client?           @relation(fields: [clientId], references: [id])
+  Client             Client?            @relation(fields: [clientId], references: [id])
   clientId           String?
 
-  dataTime     DateTime
-  kindOfAnimal String?
+  dateTimeStart      DateTime
+  dateTimeEnd        DateTime
+  kindOfAnimal       String?
 }

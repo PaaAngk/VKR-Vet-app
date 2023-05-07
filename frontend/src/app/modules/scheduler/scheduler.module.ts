@@ -1,18 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { TuiInputModule } from '@taiga-ui/kit';
+import { TuiComboBoxModule, TuiDataListWrapperModule, TuiFieldErrorPipeModule, TuiFilterByInputPipeModule, TuiInputDateModule, TuiInputModule, TuiInputNumberModule, TuiInputTimeModule, TuiSelectModule, TuiStringifyContentPipeModule } from '@taiga-ui/kit';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiDataListModule, TuiErrorModule, TuiGroupModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { SchedulerService } from './scheduler.service';
 import { SchedulerRoutingModule } from './scheduler-routing.module';
 import { SchedulerComponent } from './scheduler.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { AddReceptionRecordDialogComponent } from './dialogs/add-reception/add-reception.component';
+import { TuiTableModule } from '@taiga-ui/addon-table';
+import { TuiLetModule } from '@taiga-ui/cdk';
 
 
 @NgModule({
   declarations: [
     SchedulerComponent,
+    AddReceptionRecordDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -25,6 +29,18 @@ import { FullCalendarModule } from '@fullcalendar/angular';
     TuiInputModule,
     TuiTextfieldControllerModule,
     TuiLoaderModule,
+    TuiButtonModule,
+    TuiLetModule,
+    TuiErrorModule,
+    TuiFieldErrorPipeModule,
+    TuiDataListModule,
+    TuiDataListWrapperModule,
+    TuiComboBoxModule,
+    TuiFilterByInputPipeModule,
+    TuiStringifyContentPipeModule,
+    TuiInputTimeModule,
+    TuiInputDateModule,
+    TuiGroupModule,
   ],
   providers: [SchedulerService]
 })
