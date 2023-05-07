@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, map, Observable } from "rxjs";
-import { CreateGoodsGQL, CreateGoodsInput, DeleteGoodsGQL, GetAllGoodsGQL, Goods, UpdateGoodsGQL, UpdateGoodsInput } from "src/graphql/generated";
+import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteGoodsGQL, GetAllGoodsGQL, Goods, ReceptionRecord, UpdateGoodsGQL, UpdateGoodsInput } from "src/graphql/generated";
 import { DateRangeParams } from "./interfaces";
 
 
@@ -8,15 +8,18 @@ import { DateRangeParams } from "./interfaces";
 export class SchedulerService
 {
     private _goodsList : BehaviorSubject<Array<Goods>> = new BehaviorSubject([] as Goods[]);
+    
+    private _recordsList : BehaviorSubject<Array<ReceptionRecord>> = new BehaviorSubject([] as ReceptionRecord[]);
 
     // Selected date for create from calendar 
-    private _selectedDateForCreate : BehaviorSubject<DateRangeParams> = new BehaviorSubject({} as DateRangeParams);
+    private _selectedDateForCreate : BehaviorSubject<DateRangeParams> = new BehaviorSubject(undefined as unknown as DateRangeParams);
 
     constructor(
         private getAllGoodsGQL: GetAllGoodsGQL,
-        private createGoodsGQL : CreateGoodsGQL,
         private updateGoodsGQL: UpdateGoodsGQL,
         private deleteGoodsGQL: DeleteGoodsGQL,
+        
+        private createReceptionRecordGQL: CreateReceptionRecordGQL,
     ){
         this.getAllGoods();
     }
@@ -66,18 +69,14 @@ export class SchedulerService
         });
     }
 
-    /**
-     * Query for goods create
-     * @param data CreateGoodsInput 
-     * @returns Observable of created good
-     */
-    createGoods(data: CreateGoodsInput){
-        return this.createGoodsGQL.mutate({
+    createReceptionRecord(data: CreateReceptionRecordInput){
+        return this.createReceptionRecordGQL.mutate({
             data: data
         }).pipe(
             map(( data ) => {
-                if (data.data?.createGoods) {
-                    this._goodsList.next(this._goodsList.getValue().concat(data.data?.createGoods));
+                if (data.data?.createReceptionRecord) {
+                    console.log(data)
+                    // this._goodsList.next(this._goodsList.getValue().concat(data.data?.));
                 }
             })
         )

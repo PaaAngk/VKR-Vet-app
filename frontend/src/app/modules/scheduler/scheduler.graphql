@@ -1,59 +1,56 @@
-query GetAllGoods{
-  allGoods{
-    id
-    name
-    measure
-    quantity
-    price
-    category{
-      id
-      categoryName
-    }
-  }
-}
-mutation CreateGoods($data:CreateGoodsInput!){
-  createGoods(data: $data){
-    id
-    name
-    measure
-    quantity
-    price
-    category{
-      id
-      categoryName
-    }
+# query GetAllGoods{
+#   allGoods{
+#     id
+#     name
+#     measure
+#     quantity
+#     price
+#     category{
+#       id
+#       categoryName
+#     }
+#   }
+# }
+mutation CreateReceptionRecord($data:CreateReceptionRecordInput!){
+  createReceptionRecord(data: $data){
+    clientId
+    employeeId
+    receptionPurposeId
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal 
   }
 }
 
-query GetAllGoodsCategory{
-  allGoodsCategory{
-    id
-    categoryName
-  }
-}
+# query GetAllGoodsCategory{
+#   allGoodsCategory{
+#     id
+#     categoryName
+#   }
+# }
 
-mutation UpdateGoods(
-  $goodsId:Int!,
-  $data:UpdateGoodsInput!
-){
-  updateGoods(goodsId:$goodsId, data: $data){
-    id
-    name
-    measure
-    quantity
-    price
-    category{
-      id
-      categoryName
-    }
-  }
-}
+# mutation UpdateGoods(
+#   $goodsId:Int!,
+#   $data:UpdateGoodsInput!
+# ){
+#   updateGoods(goodsId:$goodsId, data: $data){
+#     id
+#     name
+#     measure
+#     quantity
+#     price
+#     category{
+#       id
+#       categoryName
+#     }
+#   }
+# }
 
-mutation DeleteGoods(
-  $goodsId:Int!,
-){
-  deleteGoods(goodsId:$goodsId){
-    id
-    name
-  }
-}
+# mutation DeleteGoods(
+#   $goodsId:Int!,
+# ){
+#   deleteGoods(goodsId:$goodsId){
+#     id
+#     name
+#   }
+# }

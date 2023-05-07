@@ -39,7 +39,7 @@ export class SchedulerComponent implements OnDestroy{
 		  listPlugin,
 		],
 		height: '100%',
-		expandRows: true,
+		// expandRows: true,
 		headerToolbar: {
 		  left: 'prev,next today',
 		  center: 'title',
@@ -110,7 +110,6 @@ export class SchedulerComponent implements OnDestroy{
 	// -----------------------------------------------------------------------------------------------------
 
 	createReception(){
-		console.log("create");
 
 		this.dialogAddReceptionRecord.subscribe({
             next: data => {
@@ -120,7 +119,6 @@ export class SchedulerComponent implements OnDestroy{
                 console.log('Dialog closed');
             },
         });
-		this._changeDetectorRef.markForCheck();
 	}
 
 
@@ -135,7 +133,6 @@ export class SchedulerComponent implements OnDestroy{
 	}
 
 	handleDateSelect(selectInfo: DateSelectArg) {
-		console.log(selectInfo);
 		const dateRange: DateRangeParams = {
 			start: selectInfo.start,
 			end: selectInfo.end

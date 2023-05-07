@@ -21,6 +21,7 @@ import { ServiceModule } from './services/services.module';
 import { GoodsModule } from './goods/goods.module';
 import { EmployeeModule } from './employee/employee.module';
 import { PrintModule } from './printed/print.module';
+import { ReceptionRecordModule } from './receptionRecord/receptionRecord.module';
 // import { AnalyzesResearchModule } from './analyzes-research/analyzes-research.module';
 
 @Module({
@@ -51,6 +52,7 @@ import { PrintModule } from './printed/print.module';
     GoodsModule,
     EmployeeModule,
     PrintModule,
+    ReceptionRecordModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

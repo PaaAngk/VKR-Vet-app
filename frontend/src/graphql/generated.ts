@@ -141,6 +141,15 @@ export type CreateReceptionInput = {
   serviceListReceptionInput?: InputMaybe<Array<ServiceListReceptionInput>>;
 };
 
+export type CreateReceptionRecordInput = {
+  clientId?: InputMaybe<Scalars['String']>;
+  dateTimeEnd: Scalars['DateTime'];
+  dateTimeStart: Scalars['DateTime'];
+  employeeId?: InputMaybe<Scalars['Int']>;
+  kindOfAnimal?: InputMaybe<Scalars['String']>;
+  receptionPurposeId?: InputMaybe<Scalars['Int']>;
+};
+
 export type CreateServiceInput = {
   name: Scalars['String'];
   price: Scalars['Float'];
@@ -209,6 +218,7 @@ export type Mutation = {
   createGoodsCategory: GoodsCategory;
   createPet: Pet;
   createReception: Reception;
+  createReceptionRecord: ReceptionRecord;
   createService: Service;
   deleteClient: Client;
   deleteGoods: Goods;
@@ -222,6 +232,7 @@ export type Mutation = {
   updateGoods: Goods;
   updatePet: Pet;
   updateReception: Reception;
+  updateReceptionRecord: ReceptionRecord;
   updateService: Service;
   updateUser: User;
 };
@@ -269,6 +280,11 @@ export type MutationCreatePetArgs = {
 
 export type MutationCreateReceptionArgs = {
   data: CreateReceptionInput;
+};
+
+
+export type MutationCreateReceptionRecordArgs = {
+  data: CreateReceptionRecordInput;
 };
 
 
@@ -342,6 +358,12 @@ export type MutationUpdateReceptionArgs = {
 };
 
 
+export type MutationUpdateReceptionRecordArgs = {
+  data: UpdateReceptionRecordInput;
+  receptionRecordId: Scalars['Int'];
+};
+
+
 export type MutationUpdateServiceArgs = {
   data: UpdateServiceInput;
   serviceId: Scalars['Int'];
@@ -408,6 +430,8 @@ export type Query = {
   pet: Pet;
   publishedClients: ClientConnection;
   reception: Reception;
+  receptionRecord: ReceptionRecord;
+  receptionRecordBetweenDate: ReceptionRecord;
 };
 
 
@@ -452,6 +476,17 @@ export type QueryReceptionArgs = {
   receptionId: Scalars['String'];
 };
 
+
+export type QueryReceptionRecordArgs = {
+  receptionRecordId: Scalars['Int'];
+};
+
+
+export type QueryReceptionRecordBetweenDateArgs = {
+  dateEnd: Scalars['DateTime'];
+  dateStart: Scalars['DateTime'];
+};
+
 export type Reception = {
   __typename?: 'Reception';
   /** Анамнез */
@@ -484,6 +519,23 @@ export type ReceptionPurpose = {
   id?: Maybe<Scalars['Int']>;
   purposeName: Scalars['String'];
   receptions?: Maybe<Array<Reception>>;
+};
+
+export type ReceptionRecord = {
+  __typename?: 'ReceptionRecord';
+  client?: Maybe<Client>;
+  clientId?: Maybe<Scalars['String']>;
+  /** Дата конца записи */
+  dateTimeEnd: Scalars['DateTime'];
+  /** Дата начала записи */
+  dateTimeStart: Scalars['DateTime'];
+  employee?: Maybe<Employee>;
+  employeeId?: Maybe<Scalars['Int']>;
+  id: Scalars['Int'];
+  /** Вид животного */
+  kindOfAnimal?: Maybe<Scalars['String']>;
+  purpose?: Maybe<ReceptionPurpose>;
+  receptionPurposeId?: Maybe<Scalars['Int']>;
 };
 
 /** User role */
@@ -587,6 +639,15 @@ export type UpdateReceptionInput = {
   goodsListReceptionInput?: InputMaybe<Array<GoodsListReceptionInput>>;
   purposeId: Scalars['Int'];
   serviceListReceptionInput?: InputMaybe<Array<ServiceListReceptionInput>>;
+};
+
+export type UpdateReceptionRecordInput = {
+  clientId?: InputMaybe<Scalars['String']>;
+  dateTimeEnd: Scalars['DateTime'];
+  dateTimeStart: Scalars['DateTime'];
+  employeeId?: InputMaybe<Scalars['Int']>;
+  kindOfAnimal?: InputMaybe<Scalars['String']>;
+  receptionPurposeId?: InputMaybe<Scalars['Int']>;
 };
 
 export type UpdateServiceInput = {
@@ -790,6 +851,13 @@ export type DeleteGoodsMutationVariables = Exact<{
 
 
 export type DeleteGoodsMutation = { __typename?: 'Mutation', deleteGoods: { __typename?: 'Goods', id: number, name: string } };
+
+export type CreateReceptionRecordMutationVariables = Exact<{
+  data: CreateReceptionRecordInput;
+}>;
+
+
+export type CreateReceptionRecordMutation = { __typename?: 'Mutation', createReceptionRecord: { __typename?: 'ReceptionRecord', clientId?: string | null, employeeId?: number | null, receptionPurposeId?: number | null, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null } };
 
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1554,6 +1622,29 @@ export const DeleteGoodsDocument = gql`
   })
   export class DeleteGoodsGQL extends Apollo.Mutation<DeleteGoodsMutation, DeleteGoodsMutationVariables> {
     override document = DeleteGoodsDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateReceptionRecordDocument = gql`
+    mutation CreateReceptionRecord($data: CreateReceptionRecordInput!) {
+  createReceptionRecord(data: $data) {
+    clientId
+    employeeId
+    receptionPurposeId
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateReceptionRecordGQL extends Apollo.Mutation<CreateReceptionRecordMutation, CreateReceptionRecordMutationVariables> {
+    override document = CreateReceptionRecordDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

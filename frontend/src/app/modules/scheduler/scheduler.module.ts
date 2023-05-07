@@ -11,12 +11,14 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import { AddReceptionRecordDialogComponent } from './dialogs/add-reception/add-reception.component';
 import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
+import { NativeDateTransformerDirective } from 'src/app/shared/directives/native-date-transformer.directive';
 
 
 @NgModule({
   declarations: [
     SchedulerComponent,
     AddReceptionRecordDialogComponent,
+    NativeDateTransformerDirective,
   ],
   imports: [
     CommonModule,

@@ -79,14 +79,14 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	readonly addReceptionForm = new FormGroup({
         employeeId: new FormControl(-1),
         purposeId: new FormControl(-1),
+		employeeInput: new FormControl(null as unknown as Employee, [Validators.required]),
+		visitPurposeInput: new FormControl(null as unknown as ReceptionPurpose, [Validators.required]),
         anamnesis: new FormControl(''),
 		clinicalSigns: new FormControl(''),
 		diagnosis: new FormControl(''),
 		assignment: new FormControl(''),
 		cost: new FormControl(0),
 		discount: new FormControl(0),
-		employeeInput: new FormControl(null as unknown as Employee, [Validators.required]),
-		visitPurposeInput: new FormControl(null as unknown as ReceptionPurpose, [Validators.required]),
 	});
 
     constructor(

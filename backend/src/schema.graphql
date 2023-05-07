@@ -121,6 +121,15 @@ input CreateReceptionInput {
   serviceListReceptionInput: [ServiceListReceptionInput!]
 }
 
+input CreateReceptionRecordInput {
+  clientId: String
+  dateTimeEnd: DateTime!
+  dateTimeStart: DateTime!
+  employeeId: Int
+  kindOfAnimal: String
+  receptionPurposeId: Int
+}
+
 input CreateServiceInput {
   name: String!
   price: Float!
@@ -194,6 +203,7 @@ type Mutation {
   createGoodsCategory(data: CreateGoodsCategoryInput!): GoodsCategory!
   createPet(data: CreatePetInput!): Pet!
   createReception(data: CreateReceptionInput!): Reception!
+  createReceptionRecord(data: CreateReceptionRecordInput!): ReceptionRecord!
   createService(data: CreateServiceInput!): Service!
   deleteClient(clientId: String!): Client!
   deleteGoods(goodsId: Int!): Goods!
@@ -207,6 +217,7 @@ type Mutation {
   updateGoods(data: UpdateGoodsInput!, goodsId: Int!): Goods!
   updatePet(data: UpdatePetInput!, petId: String!): Pet!
   updateReception(data: UpdateReceptionInput!, receptionId: String!): Reception!
+  updateReceptionRecord(data: UpdateReceptionRecordInput!, receptionRecordId: Int!): ReceptionRecord!
   updateService(data: UpdateServiceInput!, serviceId: Int!): Service!
   updateUser(data: UpdateUserInput!): User!
 }
@@ -267,6 +278,8 @@ type Query {
   pet(petId: String!): Pet!
   publishedClients(after: String, before: String, first: Int, last: Int, name: String, orderBy: ClientOrder, skip: Int, telephone: String): ClientConnection!
   reception(receptionId: String!): Reception!
+  receptionRecord(receptionRecordId: Int!): ReceptionRecord!
+  receptionRecordBetweenDate(dateEnd: DateTime!, dateStart: DateTime!): ReceptionRecord!
 }
 
 type Reception {
@@ -305,6 +318,25 @@ type ReceptionPurpose {
   id: Int
   purposeName: String!
   receptions: [Reception!]
+}
+
+type ReceptionRecord {
+  client: Client
+  clientId: String
+
+  """Дата конца записи"""
+  dateTimeEnd: DateTime!
+
+  """Дата начала записи"""
+  dateTimeStart: DateTime!
+  employee: Employee
+  employeeId: Int
+  id: Int!
+
+  """Вид животного"""
+  kindOfAnimal: String
+  purpose: ReceptionPurpose
+  receptionPurposeId: Int
 }
 
 """User role"""
@@ -403,6 +435,15 @@ input UpdateReceptionInput {
   goodsListReceptionInput: [GoodsListReceptionInput!]
   purposeId: Int!
   serviceListReceptionInput: [ServiceListReceptionInput!]
+}
+
+input UpdateReceptionRecordInput {
+  clientId: String
+  dateTimeEnd: DateTime!
+  dateTimeStart: DateTime!
+  employeeId: Int
+  kindOfAnimal: String
+  receptionPurposeId: Int
 }
 
 input UpdateServiceInput {

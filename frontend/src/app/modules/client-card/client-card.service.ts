@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { BehaviorSubject, map, Observable, pipe, take } from "rxjs";
+import { BehaviorSubject, map, Observable, of, pipe, take } from "rxjs";
 import { AnalyzesResearch, Client, ClientDetailGQL, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteAnalyzesResearchGQL, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
 import { AnalyzesList } from "./analyzes/analyzeFormTemplates";
 import { AnalyzeForm } from "./models/analyzeType"; 
@@ -50,7 +50,7 @@ export class ClientCardService
         this.getAllGoodsCategory();
         this.getAllEmployees();
         this.getAllReceptionPurpose();
-        this.getClientsData();
+        // this.getClientsData();
         this.getAllAnalyzeTypes();
     }
 
@@ -115,29 +115,48 @@ export class ClientCardService
 
     /**
      * Get clients data with search string on name and phone number
-     * @search (optionaly) for search need client 
+     * @search  for search need client 
      */
-    getClientsData(search?:string): void
+    searchClients(search?:string | null): Observable<any>
     {
         // Delete first letter in search string when enter telephone 
         // number starts on 8. Because number stored in +7 and 8
-        if (search){
+        if (search && search.length>0){
             if(parseInt(search)){
                 search = search.slice(1)
             }
-        }
 
-        this.getClientGQL.watch({
-            search: search == undefined ? "" : search
+            return this.getClientGQL.watch({
+                search: search
+            })
+            .valueChanges.pipe(
+                map((data) => {
+                    console.log(data)
+                    this._clientsData.next(data.data.clientsWithSearch)
+                    return data.data.clientsWithSearch
+                })
+            );
+            // return of([{fullName: "1111111111", telephoneNumber:"1111111111"} as Client])
+        }
+        else{
+            return of(null)
+        }
+    }
+
+    /**
+     * Get all clients data
+     * @search (optionaly) for search need client 
+     */
+    getAllClientsData(): Observable<any>
+    {
+        return this.getClientGQL.watch({
+            search: ''
         })
-        .valueChanges.subscribe({
-            next : (data) => {
+        .valueChanges.pipe(
+            map((data) => {
                 this._clientsData.next(data.data.clientsWithSearch)
-            },
-            error: (error)  => {
-                console.log(error)
-            }
-        });
+            })
+        );
     }
 
     /**

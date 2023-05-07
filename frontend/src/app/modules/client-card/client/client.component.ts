@@ -50,6 +50,9 @@ export class ClientComponent implements OnDestroy{
 		@Inject(ActivatedRoute) private readonly activatedRoute: ActivatedRoute,
     ) {
 		// Getting data 
+		this.clientCardService.getAllClientsData()
+			.pipe(takeUntil(this._unsubscribeAll))
+			.subscribe();
 		this.loading = true;
 		this.clientCardService.getclientsData$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
@@ -71,7 +74,9 @@ export class ClientComponent implements OnDestroy{
 			this.searchForm.setValue({
 				search: this.activatedRoute.snapshot.queryParams['search']
 			})
-			this.clientCardService.getClientsData(String(this.searchForm.value.search));
+			this.clientCardService.searchClients(String(this.searchForm.value.search))
+			.pipe(takeUntil(this._unsubscribeAll))
+			.subscribe();
 		}
 
 		// Поиск по вводу в поле
@@ -80,8 +85,9 @@ export class ClientComponent implements OnDestroy{
 		.pipe(debounceTime(1000))
 		.subscribe({
 			next: () => {
-				console.log(this.searchForm.value)
-				this.clientCardService.getClientsData(String(this.searchForm.value.search));
+				this.clientCardService.searchClients(String(this.searchForm.value.search))
+				.pipe(takeUntil(this._unsubscribeAll))
+				.subscribe();
 				this.router.navigate([], 
 				{
 					relativeTo: this.activatedRoute,

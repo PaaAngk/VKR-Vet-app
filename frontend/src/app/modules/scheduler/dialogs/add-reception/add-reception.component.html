@@ -1,35 +1,48 @@
-<form [formGroup]="addPetForm" class="space-y-4 mt-2 justify-center">
+<form [formGroup]="addReceptionRecordForm" class="space-y-4 mt-2 justify-center">
 
 
     <div class="tui-form__row tui-form__row_multi-fields">
         <div
             tuiGroup
-            class="group"
-            class="tui-form__multi-field"
+            class="group tui-form__multi-field" 
             [collapsed]="true"
         >
             <tui-input-time
-                formControlName="testValue"
+                formControlName="startTime"
                 [items]="workTimes"
+                [strict]="true"
             >
                 Время начала
             </tui-input-time>
             <tui-input-time
-                formControlName="testValue"
-                [items]="workTimes"
+                formControlName="endTime"
+                [items]="workTimesEnd"
+                [strict]="true"
             >
                 Время окончания
             </tui-input-time>
-            
         </div>
-        <tui-error
-            formControlName="alias"
-            [error]="[] | tuiFieldError | async"
-        ></tui-error>
-    
     </div>
+    <tui-error
+        formControlName="startTime"
+        [error]="[] | tuiFieldError | async"
+    ></tui-error>
 
     <div class="tui-form__row tui-form__row_multi-fields">
+        <div class="tui-form__multi-field">
+            <tui-input-date
+                toNativeDate
+                class="b-form"
+                formControlName="date"
+            >
+                Дата
+            </tui-input-date>
+            <tui-error
+                formControlName="date"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+
         <div class="tui-form__multi-field">
             <tui-combo-box
                 class="b-form"
@@ -51,46 +64,79 @@
                 [error]="[] | tuiFieldError | async"
             ></tui-error>
         </div>
-        
-        <div class="tui-form__multi-field">
-
-        </div>
-    </div>
-
-
-
-
-
-
-
-
-    <div class="tui-form__row">
-
-        
     </div>
 
     <div class="tui-form__row">
         <tui-combo-box
             class="b-form"
-            formControlName="nutrition"
-            [strict] = "false"
+            [stringify]="stringifyEmployeeList"
+            formControlName="employeeInput"
+            [tuiTextfieldCleaner]="true"
         >
-            Питание
+            Врач
             <input
                 tuiTextfield
-                placeholder="Выберите из списка или введите"
+                placeholder="Начните вводить ФИО"
             />
             <tui-data-list-wrapper
                 *tuiDataList
-                [items]="petsNutrition | tuiFilterByInput"
+                [items]="employees | tuiFilterByInputWith : stringifyEmployeeList"
+                [itemContent]="stringifyEmployeeList | tuiStringifyContent"
             ></tui-data-list-wrapper>
         </tui-combo-box>
         <tui-error
-            formControlName="nutrition"
+            formControlName="employeeInput"
             [error]="[] | tuiFieldError | async"
         ></tui-error>
     </div>
 
+    <div class="tui-form__row">
+        <tui-combo-box
+            class="b-form"
+            [stringify]="stringifyPurposeList"
+            formControlName="visitPurposeInput"
+            [tuiTextfieldCleaner]="true"
+        >
+            Цель визита
+            <input
+                tuiTextfield
+                placeholder="Начните вводить цель"
+            />
+            <tui-data-list-wrapper
+                *tuiDataList
+                [items]="receptionPurposes | tuiFilterByInputWith : stringifyPurposeList"
+                [itemContent]="stringifyPurposeList | tuiStringifyContent"
+            ></tui-data-list-wrapper>
+        </tui-combo-box>
+        <tui-error
+            formControlName="visitPurposeInput"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+    </div>
+
+    <div class="tui-form__row">
+        <tui-combo-box
+            formControlName="clientInput"
+            [valueContent]="content"
+            [tuiTextfieldCleaner]="true"
+        >
+            Клиент
+            <input
+                tuiTextfield
+                placeholder="Введите ФИО"
+                (input)="onSearchChange(extractValueFromEvent($event))"
+            />
+            <tui-data-list-wrapper
+                *tuiDataList
+                [items]="items$ | async "
+                [itemContent]="content"
+            ></tui-data-list-wrapper>
+        </tui-combo-box>
+        <tui-error
+            formControlName="clientInput"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+    </div>
 
     <button
         tuiButton
@@ -102,5 +148,11 @@
         <p *ngIf="data === 'edit'">Изменить</p>
         <p *ngIf="data === 'add'">Добавить</p>
     </button>
-    {{dateRange | json}}
 </form>
+
+<ng-template
+    #content
+    let-data
+>
+    <p>{{ data.fullName }} <span class="text-gray-500 ml-2">{{ data.telephoneNumber }}</span> </p>
+</ng-template>
