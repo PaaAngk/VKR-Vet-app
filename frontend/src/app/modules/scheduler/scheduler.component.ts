@@ -29,14 +29,14 @@ export class SchedulerComponent implements OnDestroy{
 	@ViewChild(AddReceptionRecordDialogComponent) addReceptionRecordDialog!: AddReceptionRecordDialogComponent;
 	_recordView: Subject<ReceptionRecord> = new Subject<ReceptionRecord>();
 
-	readonly searchEvents$ = new Subject<ReceptionRecordBetweenDateInput>();
-	eventsList$: Observable<EventInput[] | null> = this.searchEvents$.pipe(
-        filter(value => value !== null),
-        switchMap(search =>
-            this.schedulerService.getRecordsByDatesRange(search).pipe(startWith(null)),
-        ),
-        startWith(null),
-    );
+	eventsList$: Observable<EventInput[] | null>; 
+	// eventsList$: Observable<EventInput[] | null> = this.searchEvents$.pipe(
+    //     filter(value => value !== null),
+    //     switchMap(search =>
+    //         this.schedulerService.getRecordsByDatesRange(search).pipe(startWith(null)),
+    //     ),
+    //     startWith(null),
+    // );
 
 	loading = false;
 	calendarOptions: CalendarOptions = {
@@ -102,7 +102,9 @@ export class SchedulerComponent implements OnDestroy{
 		private schedulerService: SchedulerService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
-    ) {}
+    ) {
+		this.eventsList$ = this.schedulerService.getEvents$;
+	}
 
 	ngOnDestroy(): void
 	{
@@ -135,10 +137,10 @@ export class SchedulerComponent implements OnDestroy{
 
 	handleViewSelect(arg: DatesSetArg) {
 		// console.log(arg)
-		this.searchEvents$.next({
+		this.schedulerService.getRecordsByDatesRange({
 			dateStart: arg.start,
 			dateEnd: arg.end,
-		})
+		}).subscribe()
 	}
 	
 

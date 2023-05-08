@@ -151,6 +151,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
 
     submit(): void {
         if (this.addReceptionRecordForm.status == "VALID") {
+            // Adding record. improve date from TuiDate to native, delete not needed items
             if(this.context.data == 'add'){
                 this.addReceptionRecordForm.value.clientId = this.addReceptionRecordForm.value.clientInput?.id || null;
                 this.addReceptionRecordForm.value.employeeId = this.addReceptionRecordForm.value.employeeInput?.id || null;
@@ -164,7 +165,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                     dateTimeStart = new Date(this.addReceptionRecordForm.value.date!.setHours(
                         this.addReceptionRecordForm.value.startTime?.hours || 0, this.addReceptionRecordForm.value.startTime?.minutes || 0))
                 }
-                
+
                 const dateTimeEnd = new Date(this.addReceptionRecordForm.value.date!.setHours(
                     this.addReceptionRecordForm.value.endTime?.hours || 0, this.addReceptionRecordForm.value.endTime?.minutes || 0))
 
@@ -174,26 +175,20 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                 delete this.addReceptionRecordForm.value.date;
                 delete this.addReceptionRecordForm.value.startTime;
                 delete this.addReceptionRecordForm.value.endTime;
-                
-                console.log({
-                            dateTimeStart,
-                            dateTimeEnd,
-                            ...this.addReceptionRecordForm.value
-                        })
-                this.schedulerService.createReceptionRecord(
-                    {
+
+                const reqData = {
                         dateTimeStart,
                         dateTimeEnd,
                         ...this.addReceptionRecordForm.value
-                    } as CreateReceptionRecordInput)
+                    } as CreateReceptionRecordInput
+                console.log(reqData)
+                this.schedulerService.createReceptionRecord(reqData)
                 .subscribe({
                     next: (data) => { 
                         this.alertService.open("", {status: TuiNotification.Success, label:"Запись на прием успешно добавлена!"}).subscribe();
                         this.context.completeWith(data); 
-                        console.log(data)
                     },
-                    error: (error)  => 
-                    {
+                    error: (error)  => {
                         this.alertService.open("Обновите страницу или обратитесь к администратору", 
                             {status: TuiNotification.Error, label:"Не удалось добавить запись на прием", autoClose:5000}).subscribe()
                         console.log(error)

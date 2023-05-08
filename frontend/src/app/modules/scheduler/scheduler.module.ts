@@ -9,10 +9,11 @@ import { SchedulerRoutingModule } from './scheduler-routing.module';
 import { SchedulerComponent } from './scheduler.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { AddReceptionRecordDialogComponent } from './dialogs/add-record/add-reception.component';
-import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { NativeDateTransformerDirective } from 'src/app/shared/directives/native-date-transformer.directive';
 import { ViewReceptionRecordDialogComponent } from './dialogs/view-record/view-record.component';
+import { NativeToTuiTimeTransformerPipe } from 'src/app/shared/pipes/native-time-transform.pipe';
+import { EditDeleteButtonModule } from 'src/app/shared/components/edit-delete-button/edit-delete-button.module';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { ViewReceptionRecordDialogComponent } from './dialogs/view-record/view-r
     AddReceptionRecordDialogComponent,
     NativeDateTransformerDirective,
     ViewReceptionRecordDialogComponent,
+    NativeToTuiTimeTransformerPipe,
   ],
   imports: [
     CommonModule,
@@ -28,6 +30,7 @@ import { ViewReceptionRecordDialogComponent } from './dialogs/view-record/view-r
     ReactiveFormsModule,
     SchedulerRoutingModule,
     FullCalendarModule,
+    EditDeleteButtonModule,
 
     //TUI
     TuiInputModule,
@@ -46,6 +49,8 @@ import { ViewReceptionRecordDialogComponent } from './dialogs/view-record/view-r
     TuiInputDateModule,
     TuiGroupModule,
   ],
-  providers: [SchedulerService]
+  providers: [
+    SchedulerService,
+  ]
 })
 export class SchedulerModule { }

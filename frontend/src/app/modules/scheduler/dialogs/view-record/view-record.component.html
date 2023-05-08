@@ -1,10 +1,8 @@
 <ng-template
-    #template
+    #templateRecordView
     let-observer
 >
-    <form [formGroup]="addReceptionRecordForm" class="space-y-4 mt-2 justify-center">
-
-
+    <div class="space-y-4 mb-5 justify-center">
         <div class="tui-form__row tui-form__row_multi-fields">
             <div
                 tuiGroup
@@ -12,116 +10,106 @@
                 [collapsed]="true"
             >
                 <tui-input-time
-                    formControlName="startTime"
+                    toNativeTime
+                    [readOnly]="true"
+                    [ngModel] = "currentRecord?.dateTimeStart | nativeToTuiTime"
                 >
                     Время начала
                 </tui-input-time>
                 <tui-input-time
-                    formControlName="endTime"
+                    [readOnly]="true"
+                    toNativeTime
+                    [ngModel] = "currentRecord?.dateTimeEnd | nativeToTuiTime"
                 >
                     Время окончания
                 </tui-input-time>
             </div>
         </div>
-        <tui-error
-            formControlName="startTime"
-            [error]="[] | tuiFieldError | async"
-        ></tui-error>
 
         <div class="tui-form__row tui-form__row_multi-fields">
             <div class="tui-form__multi-field">
                 <tui-input-date
+                    [readOnly]="true"
                     toNativeDate
-                    class="b-form"
-                    formControlName="date"
+                    [ngModel] = "currentRecord?.dateTimeStart"
                 >
                     Дата
                 </tui-input-date>
-                <tui-error
-                    formControlName="date"
-                    [error]="[] | tuiFieldError | async"
-                ></tui-error>
             </div>
 
             <div class="tui-form__multi-field">
-                <tui-combo-box
-                    class="b-form"
-                    formControlName="kindOfAnimal"
+                <tui-input
+                    [ngModel] = "currentRecord?.kindOfAnimal"
+                    [readOnly]="true"
                 >
                     Вид питомца
                     <input
                         tuiTextfield
                         placeholder="Начните вводить вид"
                     />
-                </tui-combo-box>
-
-                <tui-error
-                    formControlName="kindOfAnimal"
-                    [error]="[] | tuiFieldError | async"
-                ></tui-error>
+                </tui-input>
             </div>
         </div>
 
         <div class="tui-form__row">
-            <tui-combo-box
-                class="b-form"
-                formControlName="employeeInput"
-                [tuiTextfieldCleaner]="true"
+            <tui-input
+                [ngModel] = "currentRecord?.employee?.fullName"
+                [readOnly]="true"
             >
                 Врач
-                <input
-                    tuiTextfield
-                    placeholder="Начните вводить ФИО"
-                />
-            </tui-combo-box>
-            <tui-error
-                formControlName="employeeInput"
-                [error]="[] | tuiFieldError | async"
-            ></tui-error>
+            </tui-input>
         </div>
 
         <div class="tui-form__row">
-            <tui-combo-box
-                class="b-form"
-                formControlName="visitPurposeInput"
+            <tui-input
+                [ngModel] = "currentRecord?.purpose?.purposeName || null"
+                [readOnly]="true"
             >
                 Цель визита
-                <input
-                    tuiTextfield
-                    placeholder="Начните вводить цель"
-                />
-            </tui-combo-box>
-            <tui-error
-                formControlName="visitPurposeInput"
-                [error]="[] | tuiFieldError | async"
-            ></tui-error>
+            </tui-input>
         </div>
 
         <div class="tui-form__row">
-            <tui-combo-box
-                formControlName="clientInput"
+            <tui-input
+                [ngModel] = "clientView"
+                [readOnly]="true"
             >
                 Клиент
-                <input
-                    tuiTextfield
-                    placeholder="Введите ФИО"
-                />
-            </tui-combo-box>
-            <tui-error
-                formControlName="clientInput"
-                [error]="[] | tuiFieldError | async"
-            ></tui-error>
+            </tui-input>
         </div>
+    </div>
 
-        <!-- <button
+    <edit-delete-button
+        class="w-32 mt-4"
+        (deleteAction)="deleteReceptionRecord(template)"
+        (editAction)="editReceptionRecord()"
+    ></edit-delete-button>
+</ng-template>
+
+<?-- Template dialog box for confirmation delete elements -->
+<ng-template
+    #template
+    let-observer
+>
+    <p class="mb-2"></p>
+    <div class="flex justify-around">
+        <button
             tuiButton
             type="button"
             size="m"
-            [disabled]="!hasValue"
-            (click)="submit()"
+            appearance="accent"
+            class="bg-slate-500"
+            (click)="observer.next()"
         >
-            <p *ngIf="data === 'edit'">Изменить</p>
-            <p *ngIf="data === 'add'">Добавить</p>
-        </button> -->
-    </form>
+            Удалить
+        </button>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            (click)="observer.complete()"
+        >
+            Отмена
+        </button>
+    </div>
 </ng-template>
