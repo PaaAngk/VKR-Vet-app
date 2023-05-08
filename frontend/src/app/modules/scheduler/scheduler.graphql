@@ -1,21 +1,40 @@
-# query GetAllGoods{
-#   allGoods{
-#     id
-#     name
-#     measure
-#     quantity
-#     price
-#     category{
-#       id
-#       categoryName
-#     }
-#   }
-# }
+query GetRecordsByDatesRange($data:ReceptionRecordBetweenDateInput!){
+  receptionRecordBetweenDate(data: $data){
+    client{
+      id
+      fullName
+      telephoneNumber
+    }
+    employee{
+      id
+      fullName
+    }
+    purpose{
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
 mutation CreateReceptionRecord($data:CreateReceptionRecordInput!){
   createReceptionRecord(data: $data){
-    clientId
-    employeeId
-    receptionPurposeId
+    client{
+      id
+      fullName
+      telephoneNumber
+    }
+    employee{
+      id
+      fullName
+    }
+    purpose{
+      id
+      purposeName
+    }
+    id
     dateTimeStart
     dateTimeEnd
     kindOfAnimal 

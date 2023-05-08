@@ -16,27 +16,23 @@
         [showLoader]="loading"
         [overlay]="true"
         class="overflow-y-auto" 
-        [ngStyle]="{'height':'92%'}"
+        [ngStyle]="{'height':'86%'}"
     >
         <full-calendar 
             [options]='calendarOptions'
-            class="w-full h-full"            
+            class="w-full"     
+            [events]="eventsList$ | async"       
         >
             <ng-template #eventContent let-arg>
-                <b>{{ arg.timeText }}</b>
-                <i>{{ arg.event.title }}</i><br>
-                <b>sdfsdfh</b>
+                <b>{{ arg.timeText }} </b>
+                <i> {{ arg.event.title }}</i><br>
+                <!-- <i>{{ arg.event.display }}</i><br> -->
                 <!-- {{arg|json}} -->
             </ng-template>
         </full-calendar>
-        <!-- <div class=''>
-            <h2>All Events ({{currentEvents.length}})</h2> flex justify-between
-            <ul>
-                <li *ngFor='let event of currentEvents'>
-                    <b>{{event.startStr}}</b>
-                    <i>{{event.title}}</i>
-                </li>
-            </ul>
-        </div> -->
+        <vet-crm-view-record-dialog
+            [_recordView]="_recordView.asObservable()"
+        ></vet-crm-view-record-dialog>
+        
     </tui-loader>    
 </div>

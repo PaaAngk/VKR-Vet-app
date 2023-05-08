@@ -46,7 +46,7 @@
         <div class="tui-form__multi-field">
             <tui-combo-box
                 class="b-form"
-                formControlName="kind"
+                formControlName="kindOfAnimal"
             >
                 Вид питомца
                 <input
@@ -60,7 +60,7 @@
             </tui-combo-box>
 
             <tui-error
-                formControlName="kind"
+                formControlName="kindOfAnimal"
                 [error]="[] | tuiFieldError | async"
             ></tui-error>
         </div>

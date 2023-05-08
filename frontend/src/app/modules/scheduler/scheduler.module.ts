@@ -8,10 +8,11 @@ import { SchedulerService } from './scheduler.service';
 import { SchedulerRoutingModule } from './scheduler-routing.module';
 import { SchedulerComponent } from './scheduler.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { AddReceptionRecordDialogComponent } from './dialogs/add-reception/add-reception.component';
+import { AddReceptionRecordDialogComponent } from './dialogs/add-record/add-reception.component';
 import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { NativeDateTransformerDirective } from 'src/app/shared/directives/native-date-transformer.directive';
+import { ViewReceptionRecordDialogComponent } from './dialogs/view-record/view-record.component';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { NativeDateTransformerDirective } from 'src/app/shared/directives/native
     SchedulerComponent,
     AddReceptionRecordDialogComponent,
     NativeDateTransformerDirective,
+    ViewReceptionRecordDialogComponent,
   ],
   imports: [
     CommonModule,

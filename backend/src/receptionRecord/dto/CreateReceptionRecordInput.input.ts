@@ -1,15 +1,15 @@
 import { IsDate, IsInt, IsNotEmpty, IsString } from 'class-validator';
-import { InputType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class CreateReceptionRecordInput {
-  @IsString()
+  @Field()
   clientId?: string;
 
-  @IsInt()
+  @Field()
   employeeId?: number;
 
-  @IsInt()
+  @Field()
   receptionPurposeId?: number;
 
   @IsDate()

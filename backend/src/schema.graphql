@@ -279,7 +279,7 @@ type Query {
   publishedClients(after: String, before: String, first: Int, last: Int, name: String, orderBy: ClientOrder, skip: Int, telephone: String): ClientConnection!
   reception(receptionId: String!): Reception!
   receptionRecord(receptionRecordId: Int!): ReceptionRecord!
-  receptionRecordBetweenDate(dateEnd: DateTime!, dateStart: DateTime!): ReceptionRecord!
+  receptionRecordBetweenDate(data: ReceptionRecordBetweenDateInput!): [ReceptionRecord!]!
 }
 
 type Reception {
@@ -324,10 +324,10 @@ type ReceptionRecord {
   client: Client
   clientId: String
 
-  """Дата конца записи"""
+  """Дата и время конца записи"""
   dateTimeEnd: DateTime!
 
-  """Дата начала записи"""
+  """Дата и время начала записи"""
   dateTimeStart: DateTime!
   employee: Employee
   employeeId: Int
@@ -337,6 +337,11 @@ type ReceptionRecord {
   kindOfAnimal: String
   purpose: ReceptionPurpose
   receptionPurposeId: Int
+}
+
+input ReceptionRecordBetweenDateInput {
+  dateEnd: DateTime!
+  dateStart: DateTime!
 }
 
 """User role"""

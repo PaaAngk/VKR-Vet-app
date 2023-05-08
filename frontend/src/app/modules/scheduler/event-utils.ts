@@ -14,6 +14,8 @@ export const INITIAL_EVENTS: EventInput[] = [
     title: 'Timed event',
     start: TODAY_STR + 'T10:00:00',
     end: TODAY_STR + 'T13:00:00',
+    editable:false
+    
   },
   {
     id: createEventId(),

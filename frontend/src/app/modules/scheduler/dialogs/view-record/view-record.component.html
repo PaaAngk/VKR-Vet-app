@@ -1,0 +1,127 @@
+<ng-template
+    #template
+    let-observer
+>
+    <form [formGroup]="addReceptionRecordForm" class="space-y-4 mt-2 justify-center">
+
+
+        <div class="tui-form__row tui-form__row_multi-fields">
+            <div
+                tuiGroup
+                class="group tui-form__multi-field" 
+                [collapsed]="true"
+            >
+                <tui-input-time
+                    formControlName="startTime"
+                >
+                    Время начала
+                </tui-input-time>
+                <tui-input-time
+                    formControlName="endTime"
+                >
+                    Время окончания
+                </tui-input-time>
+            </div>
+        </div>
+        <tui-error
+            formControlName="startTime"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+
+        <div class="tui-form__row tui-form__row_multi-fields">
+            <div class="tui-form__multi-field">
+                <tui-input-date
+                    toNativeDate
+                    class="b-form"
+                    formControlName="date"
+                >
+                    Дата
+                </tui-input-date>
+                <tui-error
+                    formControlName="date"
+                    [error]="[] | tuiFieldError | async"
+                ></tui-error>
+            </div>
+
+            <div class="tui-form__multi-field">
+                <tui-combo-box
+                    class="b-form"
+                    formControlName="kindOfAnimal"
+                >
+                    Вид питомца
+                    <input
+                        tuiTextfield
+                        placeholder="Начните вводить вид"
+                    />
+                </tui-combo-box>
+
+                <tui-error
+                    formControlName="kindOfAnimal"
+                    [error]="[] | tuiFieldError | async"
+                ></tui-error>
+            </div>
+        </div>
+
+        <div class="tui-form__row">
+            <tui-combo-box
+                class="b-form"
+                formControlName="employeeInput"
+                [tuiTextfieldCleaner]="true"
+            >
+                Врач
+                <input
+                    tuiTextfield
+                    placeholder="Начните вводить ФИО"
+                />
+            </tui-combo-box>
+            <tui-error
+                formControlName="employeeInput"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+
+        <div class="tui-form__row">
+            <tui-combo-box
+                class="b-form"
+                formControlName="visitPurposeInput"
+            >
+                Цель визита
+                <input
+                    tuiTextfield
+                    placeholder="Начните вводить цель"
+                />
+            </tui-combo-box>
+            <tui-error
+                formControlName="visitPurposeInput"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+
+        <div class="tui-form__row">
+            <tui-combo-box
+                formControlName="clientInput"
+            >
+                Клиент
+                <input
+                    tuiTextfield
+                    placeholder="Введите ФИО"
+                />
+            </tui-combo-box>
+            <tui-error
+                formControlName="clientInput"
+                [error]="[] | tuiFieldError | async"
+            ></tui-error>
+        </div>
+
+        <!-- <button
+            tuiButton
+            type="button"
+            size="m"
+            [disabled]="!hasValue"
+            (click)="submit()"
+        >
+            <p *ngIf="data === 'edit'">Изменить</p>
+            <p *ngIf="data === 'add'">Добавить</p>
+        </button> -->
+    </form>
+</ng-template>

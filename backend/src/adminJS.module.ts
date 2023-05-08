@@ -6,7 +6,7 @@ import { DMMFClass } from '@prisma/client/runtime';
 
 const DEFAULT_ADMIN = {
   email: 'admin@example.com',
-  password: 'password',
+  password: 'artedc126',
 };
 
 const authenticate = async (email: string, password: string) => {
@@ -68,6 +68,12 @@ export default AdminModule.createAdminAsync({
         },
         {
           resource: { model: dmmf.modelMap.ServiceList, client: prisma },
+        },
+        {
+          resource: { model: dmmf.modelMap.ReceptionRecord, client: prisma },
+        },
+        {
+          resource: { model: dmmf.modelMap.Schedule, client: prisma },
         },
       ],
     },

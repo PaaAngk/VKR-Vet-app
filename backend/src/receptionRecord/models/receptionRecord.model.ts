@@ -11,25 +11,31 @@ export class ReceptionRecord {
   @Field(() => Client, { nullable: true })
   client?: Client;
 
-  @Field(() => Employee)
+  @Field(() => Employee, { nullable: true })
   employee?: Employee;
 
-  @Field(() => ReceptionPurpose)
+  @Field(() => ReceptionPurpose, { nullable: true })
   purpose?: ReceptionPurpose;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   clientId?: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   employeeId?: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   receptionPurposeId?: number;
 
-  @Field(() => Date, { nullable: false, description: 'Дата начала записи' })
+  @Field(() => Date, {
+    nullable: false,
+    description: 'Дата и время начала записи',
+  })
   dateTimeStart: Date;
 
-  @Field(() => Date, { nullable: false, description: 'Дата конца записи' })
+  @Field(() => Date, {
+    nullable: false,
+    description: 'Дата и время конца записи',
+  })
   dateTimeEnd: Date;
 
   @Field(() => String, { nullable: true, description: 'Вид животного' })

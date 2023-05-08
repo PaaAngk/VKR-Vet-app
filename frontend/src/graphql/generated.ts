@@ -431,7 +431,7 @@ export type Query = {
   publishedClients: ClientConnection;
   reception: Reception;
   receptionRecord: ReceptionRecord;
-  receptionRecordBetweenDate: ReceptionRecord;
+  receptionRecordBetweenDate: Array<ReceptionRecord>;
 };
 
 
@@ -483,8 +483,7 @@ export type QueryReceptionRecordArgs = {
 
 
 export type QueryReceptionRecordBetweenDateArgs = {
-  dateEnd: Scalars['DateTime'];
-  dateStart: Scalars['DateTime'];
+  data: ReceptionRecordBetweenDateInput;
 };
 
 export type Reception = {
@@ -536,6 +535,11 @@ export type ReceptionRecord = {
   kindOfAnimal?: Maybe<Scalars['String']>;
   purpose?: Maybe<ReceptionPurpose>;
   receptionPurposeId?: Maybe<Scalars['Int']>;
+};
+
+export type ReceptionRecordBetweenDateInput = {
+  dateEnd: Scalars['DateTime'];
+  dateStart: Scalars['DateTime'];
 };
 
 /** User role */
@@ -852,12 +856,19 @@ export type DeleteGoodsMutationVariables = Exact<{
 
 export type DeleteGoodsMutation = { __typename?: 'Mutation', deleteGoods: { __typename?: 'Goods', id: number, name: string } };
 
+export type GetRecordsByDatesRangeQueryVariables = Exact<{
+  data: ReceptionRecordBetweenDateInput;
+}>;
+
+
+export type GetRecordsByDatesRangeQuery = { __typename?: 'Query', receptionRecordBetweenDate: Array<{ __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null }> };
+
 export type CreateReceptionRecordMutationVariables = Exact<{
   data: CreateReceptionRecordInput;
 }>;
 
 
-export type CreateReceptionRecordMutation = { __typename?: 'Mutation', createReceptionRecord: { __typename?: 'ReceptionRecord', clientId?: string | null, employeeId?: number | null, receptionPurposeId?: number | null, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null } };
+export type CreateReceptionRecordMutation = { __typename?: 'Mutation', createReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
 
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1627,12 +1638,57 @@ export const DeleteGoodsDocument = gql`
       super(apollo);
     }
   }
+export const GetRecordsByDatesRangeDocument = gql`
+    query GetRecordsByDatesRange($data: ReceptionRecordBetweenDateInput!) {
+  receptionRecordBetweenDate(data: $data) {
+    client {
+      id
+      fullName
+      telephoneNumber
+    }
+    employee {
+      id
+      fullName
+    }
+    purpose {
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetRecordsByDatesRangeGQL extends Apollo.Query<GetRecordsByDatesRangeQuery, GetRecordsByDatesRangeQueryVariables> {
+    override document = GetRecordsByDatesRangeDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const CreateReceptionRecordDocument = gql`
     mutation CreateReceptionRecord($data: CreateReceptionRecordInput!) {
   createReceptionRecord(data: $data) {
-    clientId
-    employeeId
-    receptionPurposeId
+    client {
+      id
+      fullName
+      telephoneNumber
+    }
+    employee {
+      id
+      fullName
+    }
+    purpose {
+      id
+      purposeName
+    }
+    id
     dateTimeStart
     dateTimeEnd
     kindOfAnimal

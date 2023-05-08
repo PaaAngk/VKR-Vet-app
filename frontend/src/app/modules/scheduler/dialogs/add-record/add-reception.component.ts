@@ -5,12 +5,11 @@ import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { SchedulerService } from '../../scheduler.service';
-import { TuiDay, TuiTime, tuiWatch } from '@taiga-ui/cdk';
+import { TuiTime } from '@taiga-ui/cdk';
 import { debounceTime, filter, Observable, startWith, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
-import { DateRangeParams } from '../../interfaces';
 import { tuiCreateTimePeriods } from '@taiga-ui/kit';
 import { ClientCardService } from 'src/app/modules/client-card/client-card.service';
-import { Client, Employee, ReceptionPurpose } from 'src/graphql/generated';
+import { Client, CreateReceptionRecordInput, Employee, ReceptionPurpose, ReceptionRecordBetweenDateInput } from 'src/graphql/generated';
 
 @Component({
   selector: 'vet-crm-add-reception-dialog',
@@ -20,7 +19,7 @@ import { Client, Employee, ReceptionPurpose } from 'src/graphql/generated';
 export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     petsKind = ["Кошка", "Собака", "Жираф"];
-    dateRange?: DateRangeParams;
+    dateRange?: ReceptionRecordBetweenDateInput;
     workTimes = tuiCreateTimePeriods(10, 20);
     workTimesEnd = tuiCreateTimePeriods(10, 20);
     employees!: Employee[];
@@ -40,10 +39,10 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
 	readonly addReceptionRecordForm = new FormGroup({
         startTime: new FormControl(null as unknown as TuiTime, Validators.required),
         endTime: new FormControl(null as unknown as TuiTime, Validators.required),
-        kind: new FormControl(null as unknown as string, Validators.required),
+        kindOfAnimal: new FormControl(null as unknown as string, Validators.required),
         date: new FormControl(new Date(), Validators.required),
-        employeeId: new FormControl(-1),
-        purposeId: new FormControl(-1),
+        employeeId: new FormControl(null as unknown as number),
+        receptionPurposeId: new FormControl(null as unknown as number),
 		employeeInput: new FormControl(null as unknown as Employee),
 		visitPurposeInput: new FormControl(null as unknown as ReceptionPurpose),
         clientId: new FormControl(null as unknown as string),
@@ -71,18 +70,18 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
             if (dates){
                 this.dateRange = dates;
                 this.addReceptionRecordForm.setValue({
-                    startTime: TuiTime.fromLocalNativeDate(dates.start),
-                    endTime: TuiTime.fromLocalNativeDate(dates.end),
-                    kind: null,
-                    date: dates.start,
-                    employeeId: -1,
-                    purposeId: -1,
+                    startTime: TuiTime.fromLocalNativeDate(dates.dateStart),
+                    endTime: TuiTime.fromLocalNativeDate(dates.dateEnd),
+                    kindOfAnimal: null,
+                    date: dates.dateStart,
+                    employeeId: null as unknown as number,
+                    receptionPurposeId: null as unknown as number,
                     employeeInput: null,
                     visitPurposeInput: null,
                     clientId: null as unknown as string,
                     clientInput: null
                 })
-                this.updateWorkTimeEnd(TuiTime.fromLocalNativeDate(dates.start))
+                this.updateWorkTimeEnd(TuiTime.fromLocalNativeDate(dates.dateStart))
             }
             else {
                 this.dateRange = undefined;
@@ -113,7 +112,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
     
     ngOnDestroy(): void {
         console.log("Destroy")
-        this.schedulerService.setSelectedDate(undefined as unknown as DateRangeParams);
+        this.schedulerService.setSelectedDate(undefined as unknown as ReceptionRecordBetweenDateInput);
         this._unsubscribeAll.next(undefined);
 		this._unsubscribeAll.complete();
     }
@@ -153,30 +152,53 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
     submit(): void {
         if (this.addReceptionRecordForm.status == "VALID") {
             if(this.context.data == 'add'){
-                this.addReceptionRecordForm.value.clientId = this.addReceptionRecordForm.value.clientInput?.id;
-                this.addReceptionRecordForm.value.employeeId = this.addReceptionRecordForm.value.employeeInput?.id;
-                this.addReceptionRecordForm.value.purposeId = this.addReceptionRecordForm.value.visitPurposeInput?.id;
+                this.addReceptionRecordForm.value.clientId = this.addReceptionRecordForm.value.clientInput?.id || null;
+                this.addReceptionRecordForm.value.employeeId = this.addReceptionRecordForm.value.employeeInput?.id || null;
+                this.addReceptionRecordForm.value.receptionPurposeId = this.addReceptionRecordForm.value.visitPurposeInput?.id || null;
 
-                console.log(this.addReceptionRecordForm.value)
+                let dateTimeStart;
+                if(Object.keys(this.dateRange || {}).length>1){
+                    dateTimeStart = new Date(this.addReceptionRecordForm.value.date || 0)
+                }
+                else{
+                    dateTimeStart = new Date(this.addReceptionRecordForm.value.date!.setHours(
+                        this.addReceptionRecordForm.value.startTime?.hours || 0, this.addReceptionRecordForm.value.startTime?.minutes || 0))
+                }
+                
+                const dateTimeEnd = new Date(this.addReceptionRecordForm.value.date!.setHours(
+                    this.addReceptionRecordForm.value.endTime?.hours || 0, this.addReceptionRecordForm.value.endTime?.minutes || 0))
 
-                const startDate = new Date(this.addReceptionRecordForm.value.date || 0)
-                const endDate = new Date(this.addReceptionRecordForm.value.date!
-                    .setHours(this.addReceptionRecordForm.value.endTime?.hours || 0, this.addReceptionRecordForm.value.endTime?.minutes || 0))
-                console.log(startDate)
-                console.log(endDate)
-                // this.schedulerService.createReceptionRecord(this.addPetForm.value as CreatePetInput)
-                // .subscribe({
-                //     next: (data) => { 
-                //         this.alertService.open("", {status: TuiNotification.Success, label:"Питомец успешно добавлен!"}).subscribe();
-                //         this.router.navigateByUrl(`client-card/pet/${data.data?.createPet.id}`)
-                //         this.context.completeWith(1); 
-                //     },
-                //     error: (error)  => 
-                //     {
-                //         this.alertService.open("Питомец уже добавлен", {status: TuiNotification.Error}).subscribe()
-                //         console.log(error)
-                //     }
-                // })
+                delete this.addReceptionRecordForm.value.clientInput;
+                delete this.addReceptionRecordForm.value.employeeInput;
+                delete this.addReceptionRecordForm.value.visitPurposeInput;
+                delete this.addReceptionRecordForm.value.date;
+                delete this.addReceptionRecordForm.value.startTime;
+                delete this.addReceptionRecordForm.value.endTime;
+                
+                console.log({
+                            dateTimeStart,
+                            dateTimeEnd,
+                            ...this.addReceptionRecordForm.value
+                        })
+                this.schedulerService.createReceptionRecord(
+                    {
+                        dateTimeStart,
+                        dateTimeEnd,
+                        ...this.addReceptionRecordForm.value
+                    } as CreateReceptionRecordInput)
+                .subscribe({
+                    next: (data) => { 
+                        this.alertService.open("", {status: TuiNotification.Success, label:"Запись на прием успешно добавлена!"}).subscribe();
+                        this.context.completeWith(data); 
+                        console.log(data)
+                    },
+                    error: (error)  => 
+                    {
+                        this.alertService.open("Обновите страницу или обратитесь к администратору", 
+                            {status: TuiNotification.Error, label:"Не удалось добавить запись на прием", autoClose:5000}).subscribe()
+                        console.log(error)
+                    }
+                })
                     
             }
             // else if(this.context.data == 'edit'){

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, Observable } from "rxjs";
-import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteGoodsGQL, GetAllGoodsGQL, Goods, ReceptionRecord, UpdateGoodsGQL, UpdateGoodsInput } from "src/graphql/generated";
-import { DateRangeParams } from "./interfaces";
+import { EventInput } from "@fullcalendar/core";
+import { BehaviorSubject, delay, map, Observable } from "rxjs";
+import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteGoodsGQL, GetAllGoodsGQL, GetRecordsByDatesRangeGQL, Goods, ReceptionRecord, ReceptionRecordBetweenDateInput, UpdateGoodsGQL, UpdateGoodsInput } from "src/graphql/generated";
 
 
 @Injectable()
@@ -12,7 +12,7 @@ export class SchedulerService
     private _recordsList : BehaviorSubject<Array<ReceptionRecord>> = new BehaviorSubject([] as ReceptionRecord[]);
 
     // Selected date for create from calendar 
-    private _selectedDateForCreate : BehaviorSubject<DateRangeParams> = new BehaviorSubject(undefined as unknown as DateRangeParams);
+    private _selectedDateForCreate : BehaviorSubject<ReceptionRecordBetweenDateInput> = new BehaviorSubject(undefined as unknown as ReceptionRecordBetweenDateInput);
 
     constructor(
         private getAllGoodsGQL: GetAllGoodsGQL,
@@ -20,8 +20,13 @@ export class SchedulerService
         private deleteGoodsGQL: DeleteGoodsGQL,
         
         private createReceptionRecordGQL: CreateReceptionRecordGQL,
+        private GetRecordsByDatesRange:GetRecordsByDatesRangeGQL
     ){
-        this.getAllGoods();
+        // this.getAllGoods();
+        this.getRecordsByDatesRange({
+            dateStart: new Date(2023, 4, 1),
+            dateEnd: new Date(2023, 4, 10),
+        })
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -39,14 +44,19 @@ export class SchedulerService
     /**
      * Getter for selected date for create
      */
-    get getSelectedDate$(): Observable<DateRangeParams>
+    get getSelectedDate$(): Observable<ReceptionRecordBetweenDateInput>
     {
         return this._selectedDateForCreate.asObservable();
     }
 
-    setSelectedDate(date: DateRangeParams)
+    setSelectedDate(date: ReceptionRecordBetweenDateInput)
     {
         this._selectedDateForCreate.next(date);
+    }
+
+    getLocalRecordById(id: number): ReceptionRecord{
+        const data = this._recordsList.getValue().filter((item) => item.id === id)[0] || {} as ReceptionRecord
+        return data
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -56,17 +66,35 @@ export class SchedulerService
     /**
      * Get all goods
      */
-    getAllGoods(): void
+    getRecordsByDatesRange(data: ReceptionRecordBetweenDateInput): Observable<any>//ReceptionRecordBetweenDateInput
     {
-        this.getAllGoodsGQL.watch()
-        .valueChanges.subscribe({
-            next : (data) => {
-                this._goodsList.next(data.data.allGoods)
-            },
-            error: (error)  => {
-                console.log(error)
+        return this.GetRecordsByDatesRange.watch({
+            data: data
+        })
+        .valueChanges.pipe(map(data => {
+            let events: EventInput[] = [];
+            const newRecords = data.data?.receptionRecordBetweenDate             
+
+            if(newRecords){
+                const fun = async () => {
+                    const currentRecords = this._recordsList.getValue()
+                    this._recordsList.next(currentRecords.concat(newRecords.filter((item) => currentRecords.indexOf(item) < 0)));
+                    console.log(this._recordsList.getValue())
+                } 
+                fun();
+
+                events = newRecords.map((item: ReceptionRecord) =>{
+                    return {
+                        id: item.id.toString(),
+						title: item.client?.fullName ? item.client?.fullName : (item.purpose?.purposeName ? item.purpose?.purposeName:"Нет данных"),
+						start: item.dateTimeStart,
+						end: item.dateTimeEnd,
+						// display: `${item.kindOfAnimal||''}`// ${item.employee?.fullName||''} ${item.purpose?.purposeName||''}
+                    }
+                })
             }
-        });
+            return events       
+        }))
     }
 
     createReceptionRecord(data: CreateReceptionRecordInput){
@@ -78,6 +106,7 @@ export class SchedulerService
                     console.log(data)
                     // this._goodsList.next(this._goodsList.getValue().concat(data.data?.));
                 }
+                return data.data?.createReceptionRecord
             })
         )
     }
