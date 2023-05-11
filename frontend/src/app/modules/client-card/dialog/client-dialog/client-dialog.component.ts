@@ -62,9 +62,9 @@ export class DialogClientComponent {
         if (this.searchForm.status == "VALID" ) {
             if(this.context.data == 'add'){
                 this.clientCardService.createClient(this.searchForm.value as CreateClientInput).subscribe({
-                    next: () => { 
+                    next: (data ) => { 
                         this.alertService.open("", {status: TuiNotification.Success, label:"Клиент успешно добавлен!"}).subscribe({});
-                        this.context.completeWith(this.searchForm.value); 
+                        this.context.completeWith(data); 
                     },
                     error: (error)  => 
                     {

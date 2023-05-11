@@ -13,15 +13,8 @@ export class SchedulerService
     // Selected date from calendar for create in dialog  
     private _selectedRecord : BehaviorSubject<ReceptionRecord> = new BehaviorSubject(undefined as unknown as ReceptionRecord);
 
-    // eventsList: Observable<EventInput[] | null> = this.searchEvents$.pipe(
-    //     filter(value => value !== null),
-    //     switchMap(search =>
-    //         this.schedulerService.getRecordsByDatesRange(search).pipe(startWith(null)),
-    //     ),
-    //     startWith(null),
-    // );
-
     private _eventsList: Observable<EventInput[] | null> = this._recordsList.pipe(
+        tap(i => console.log(i)),
         map(val => val.map((item: any) => {
             return {
                 id: item.id.toString(),
@@ -30,7 +23,6 @@ export class SchedulerService
                 end: item.dateTimeEnd,
             }
         })),
-        startWith(null)
     )
 
     constructor(
@@ -99,11 +91,8 @@ export class SchedulerService
             const newRecords = data.data?.receptionRecordBetweenDate             
 
             if(newRecords){
-                const fun = async () => {
-                    const currentRecords = this._recordsList.getValue()
-                    this._recordsList.next(currentRecords.concat(newRecords.filter((item) => currentRecords.indexOf(item) < 0)));
-                }
-                fun();
+                const currentRecords = this._recordsList.getValue()
+                this._recordsList.next(currentRecords.concat(newRecords.filter((item) => currentRecords.indexOf(item) < 0)));
             }
         }))
     }

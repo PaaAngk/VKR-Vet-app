@@ -36,7 +36,7 @@ export class ClientComponent implements OnDestroy{
         new PolymorpheusComponent(DialogClientComponent, this.injector),
         {
 			data: "add",
-            dismissible: true,
+            dismissible: false,
             label: `Добавление клиента `,
         },
     );

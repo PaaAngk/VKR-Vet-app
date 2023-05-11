@@ -12,10 +12,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
-import { INITIAL_EVENTS, createEventId } from './event-utils';
 import ruLocale from '@fullcalendar/core/locales/ru';
 import { AddReceptionRecordDialogComponent } from './dialogs/add-record/add-reception.component';
-import { ReceptionRecord, ReceptionRecordBetweenDateInput } from 'src/graphql/generated';
+import { ReceptionRecord } from 'src/graphql/generated';
 
 
 @Component({
@@ -49,12 +48,11 @@ export class SchedulerComponent implements OnDestroy{
 		},
 		views: {
 			timeGrid: {
-				eventMaxStack : 3,
+				eventMaxStack : 2,
 			}
 		},
 		navLinks: true,
 		initialView: 'timeGridDay',
-		initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
 		weekends: true,
 		editable: true,
 		selectable: true,
@@ -91,8 +89,6 @@ export class SchedulerComponent implements OnDestroy{
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
         @Inject(Injector) private readonly injector: Injector,
 		private schedulerService: SchedulerService,
-		private _changeDetectorRef: ChangeDetectorRef,
-		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
     ) {
 		this.eventsList$ = this.schedulerService.getEvents$;
 	}
@@ -150,7 +146,7 @@ export class SchedulerComponent implements OnDestroy{
 	}
 
 	handleEventClick(clickInfo: EventClickArg) {
-		console.log(clickInfo.event)
+		// console.log(clickInfo.event)
 		this._recordView.next(this.schedulerService.getLocalRecordById( Number(clickInfo.event.id) ))
 	}
 	

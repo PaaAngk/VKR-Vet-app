@@ -1,15 +1,15 @@
-import { IsDate, IsInt, IsNotEmpty, IsString } from 'class-validator';
-import { InputType } from '@nestjs/graphql';
+import { IsDate, IsNotEmpty } from 'class-validator';
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateReceptionRecordInput {
-  @IsString()
+  @Field()
   clientId?: string;
 
-  @IsInt()
+  @Field()
   employeeId?: number;
 
-  @IsInt()
+  @Field()
   receptionPurposeId?: number;
 
   @IsDate()
@@ -20,6 +20,6 @@ export class UpdateReceptionRecordInput {
   @IsNotEmpty()
   dateTimeEnd: Date;
 
-  @IsString()
+  @Field()
   kindOfAnimal?: string;
 }

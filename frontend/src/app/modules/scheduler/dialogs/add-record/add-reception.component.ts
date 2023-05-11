@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import {TuiAlertService, TuiDialogContext, TuiNotification} from '@taiga-ui/core';
+import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -10,6 +10,8 @@ import { debounceTime, filter, map, Observable, startWith, Subject, switchMap, t
 import { tuiCreateTimePeriods } from '@taiga-ui/kit';
 import { ClientCardService } from 'src/app/modules/client-card/client-card.service';
 import { Client, CreateReceptionRecordInput, Employee, ReceptionPurpose, ReceptionRecord, ReceptionRecordBetweenDateInput, UpdateReceptionRecordInput } from 'src/graphql/generated';
+import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
+import { DialogClientComponent } from 'src/app/modules/client-card/dialog/client-dialog/client-dialog.component';
 
 class ClientView{
     constructor(
@@ -61,6 +63,15 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         startWith(null),
     );
 
+    private readonly dialogAddClient = this.dialogService.open<Client>(
+        new PolymorpheusComponent(DialogClientComponent, this.injector),
+        {
+			data: "add",
+            dismissible: false,
+            label: `Добавление клиента`,
+        },
+    );
+
 	readonly addReceptionRecordForm = new FormGroup({
         startTime: new FormControl(null as unknown as TuiTime, Validators.required),
         endTime: new FormControl(null as unknown as TuiTime, Validators.required),
@@ -78,11 +89,11 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         @Inject(TuiAlertService) private readonly alertService: TuiAlertService,
         @Inject(POLYMORPHEUS_CONTEXT)
         private readonly context: TuiDialogContext<any, string>,
+        @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+        @Inject(Injector) private readonly injector: Injector,
         // private clientCardService: ClientCardService,
-        @Inject(Router) private readonly router: Router,
         private schedulerService: SchedulerService,
         private clientCardService: ClientCardService,
-        private datePipe: DatePipe,
     ) {
     }
 
@@ -251,6 +262,24 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                                 {status: TuiNotification.Error, label:"Неправильный ввод", autoClose:5000}).subscribe();
             }
         }
+    }
+
+    addClient(){
+        this.dialogAddClient.subscribe({
+            next: data => {
+                console.log(data);
+                this.addReceptionRecordForm.value.clientInput = 
+                new ClientView(
+                   data.fullName,
+                   data.telephoneNumber,
+                   data.id,
+                   data.address||""
+                )
+            },
+            complete: () => {
+                console.log('Dialog closed');
+            },
+        });
     }
 
 }

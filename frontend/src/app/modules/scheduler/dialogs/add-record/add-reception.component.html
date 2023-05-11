@@ -138,16 +138,30 @@
         ></tui-error>
     </div>
 
-    <button
-        tuiButton
-        type="button"
-        size="m"
-        [disabled]="!hasValue"
-        (click)="submit()"
-    >
-        <p *ngIf="data === 'edit'">Изменить</p>
-        <p *ngIf="data === 'add'">Добавить</p>
-    </button>
+    <div class="flex justify-between">
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            class="w-44"
+            [disabled]="!hasValue"
+            (click)="submit()"
+            [showLoader]="loading"
+        >
+            <p *ngIf="data === 'edit'">Изменить</p>
+            <p *ngIf="data === 'add'">Добавить</p>
+        </button>
+        <button
+            tuiButton
+            type="button"
+            class="w-44"
+            size="m"
+            appearance="outline"
+            (click) = "addClient()"
+        >
+            Добавить клиента
+        </button>
+    </div>
 </form>
 
 <ng-template
