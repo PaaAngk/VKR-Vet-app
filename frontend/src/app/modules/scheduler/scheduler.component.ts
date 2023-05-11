@@ -30,15 +30,7 @@ export class SchedulerComponent implements OnDestroy{
 	_recordView: Subject<ReceptionRecord> = new Subject<ReceptionRecord>();
 
 	eventsList$: Observable<EventInput[] | null>; 
-	// eventsList$: Observable<EventInput[] | null> = this.searchEvents$.pipe(
-    //     filter(value => value !== null),
-    //     switchMap(search =>
-    //         this.schedulerService.getRecordsByDatesRange(search).pipe(startWith(null)),
-    //     ),
-    //     startWith(null),
-    // );
 
-	loading = false;
 	calendarOptions: CalendarOptions = {
 		slotMinTime: '10:00',
     	slotMaxTime: '20:00',
@@ -94,7 +86,6 @@ export class SchedulerComponent implements OnDestroy{
 			size:'auto',
         },
     );
-	clientCardService: any;
 
     constructor(
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
@@ -137,7 +128,7 @@ export class SchedulerComponent implements OnDestroy{
 
 	handleViewSelect(arg: DatesSetArg) {
 		// console.log(arg)
-		this.schedulerService.getRecordsByDatesRange({
+		this.schedulerService.getRecordsByDateRange({
 			dateStart: arg.start,
 			dateEnd: arg.end,
 		}).subscribe()
@@ -150,38 +141,17 @@ export class SchedulerComponent implements OnDestroy{
 	}
 
 	handleDateSelect(selectInfo: DateSelectArg) {
-		const dateRange: ReceptionRecordBetweenDateInput = {
-			dateStart: selectInfo.start,
-			dateEnd: selectInfo.end
-		}
-		this.schedulerService.setSelectedDate(dateRange);
-		this.dialogAddReceptionRecord.subscribe({
-            next: (data: ReceptionRecord) => {
-				const calendarApi = selectInfo.view.calendar;
-				calendarApi.unselect(); // clear date selection
-				if (data) {
-					calendarApi.addEvent({
-						id: data.id.toString(),
-						title: data.client?.fullName,
-						start: data.dateTimeStart,
-						end: data.dateTimeEnd,
-						display: `${data.kindOfAnimal} ${data.employee?.fullName} ${data.purpose?.purposeName}`
-					});
-				}
-				console.log(data);
-            },
-            complete: () => {
-                console.log('Dialog closed');
-            },
-        });
+		this.schedulerService.setSelectedReceptionRecord({
+				dateTimeStart: selectInfo.start,
+				dateTimeEnd: selectInfo.end,
+				id: -1
+			} as ReceptionRecord);
+		this.dialogAddReceptionRecord.subscribe();
 	}
 
 	handleEventClick(clickInfo: EventClickArg) {
 		console.log(clickInfo.event)
 		this._recordView.next(this.schedulerService.getLocalRecordById( Number(clickInfo.event.id) ))
-		// if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-		// 	clickInfo.event.remove();
-		// }
 	}
 	
 }

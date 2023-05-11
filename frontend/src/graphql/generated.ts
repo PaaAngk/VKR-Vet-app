@@ -223,6 +223,7 @@ export type Mutation = {
   deleteClient: Client;
   deleteGoods: Goods;
   deletePet: Pet;
+  deleteReceptionRecord: ReceptionRecord;
   deleteResearch: AnalyzesResearch;
   deleteService: Service;
   login: Auth;
@@ -305,6 +306,11 @@ export type MutationDeleteGoodsArgs = {
 
 export type MutationDeletePetArgs = {
   petId: Scalars['String'];
+};
+
+
+export type MutationDeleteReceptionRecordArgs = {
+  receptionRecordId: Scalars['Int'];
 };
 
 
@@ -524,9 +530,9 @@ export type ReceptionRecord = {
   __typename?: 'ReceptionRecord';
   client?: Maybe<Client>;
   clientId?: Maybe<Scalars['String']>;
-  /** Дата конца записи */
+  /** Дата и время конца записи */
   dateTimeEnd: Scalars['DateTime'];
-  /** Дата начала записи */
+  /** Дата и время начала записи */
   dateTimeStart: Scalars['DateTime'];
   employee?: Maybe<Employee>;
   employeeId?: Maybe<Scalars['Int']>;
@@ -869,6 +875,21 @@ export type CreateReceptionRecordMutationVariables = Exact<{
 
 
 export type CreateReceptionRecordMutation = { __typename?: 'Mutation', createReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
+
+export type UpdateReceptionRecordMutationVariables = Exact<{
+  receptionRecordId: Scalars['Int'];
+  data: UpdateReceptionRecordInput;
+}>;
+
+
+export type UpdateReceptionRecordMutation = { __typename?: 'Mutation', updateReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
+
+export type DeleteReceptionRecordMutationVariables = Exact<{
+  receptionRecordId: Scalars['Int'];
+}>;
+
+
+export type DeleteReceptionRecordMutation = { __typename?: 'Mutation', deleteReceptionRecord: { __typename?: 'ReceptionRecord', id: number } };
 
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1701,6 +1722,58 @@ export const CreateReceptionRecordDocument = gql`
   })
   export class CreateReceptionRecordGQL extends Apollo.Mutation<CreateReceptionRecordMutation, CreateReceptionRecordMutationVariables> {
     override document = CreateReceptionRecordDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateReceptionRecordDocument = gql`
+    mutation UpdateReceptionRecord($receptionRecordId: Int!, $data: UpdateReceptionRecordInput!) {
+  updateReceptionRecord(receptionRecordId: $receptionRecordId, data: $data) {
+    client {
+      id
+      fullName
+      telephoneNumber
+    }
+    employee {
+      id
+      fullName
+    }
+    purpose {
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateReceptionRecordGQL extends Apollo.Mutation<UpdateReceptionRecordMutation, UpdateReceptionRecordMutationVariables> {
+    override document = UpdateReceptionRecordDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteReceptionRecordDocument = gql`
+    mutation DeleteReceptionRecord($receptionRecordId: Int!) {
+  deleteReceptionRecord(receptionRecordId: $receptionRecordId) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteReceptionRecordGQL extends Apollo.Mutation<DeleteReceptionRecordMutation, DeleteReceptionRecordMutationVariables> {
+    override document = DeleteReceptionRecordDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

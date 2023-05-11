@@ -50,7 +50,6 @@ export class ClientCardService
         this.getAllGoodsCategory();
         this.getAllEmployees();
         this.getAllReceptionPurpose();
-        // this.getClientsData();
         this.getAllAnalyzeTypes();
     }
 
@@ -136,7 +135,6 @@ export class ClientCardService
                     return data.data.clientsWithSearch
                 })
             );
-            // return of([{fullName: "1111111111", telephoneNumber:"1111111111"} as Client])
         }
         else{
             return of(null)

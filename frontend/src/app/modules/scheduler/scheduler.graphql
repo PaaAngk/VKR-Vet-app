@@ -41,35 +41,35 @@ mutation CreateReceptionRecord($data:CreateReceptionRecordInput!){
   }
 }
 
-# query GetAllGoodsCategory{
-#   allGoodsCategory{
-#     id
-#     categoryName
-#   }
-# }
+mutation UpdateReceptionRecord(
+  $receptionRecordId:Int!,
+  $data:UpdateReceptionRecordInput!
+){
+  updateReceptionRecord(receptionRecordId:$receptionRecordId, data: $data){
+    client{
+      id
+      fullName
+      telephoneNumber
+    }
+    employee{
+      id
+      fullName
+    }
+    purpose{
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
 
-# mutation UpdateGoods(
-#   $goodsId:Int!,
-#   $data:UpdateGoodsInput!
-# ){
-#   updateGoods(goodsId:$goodsId, data: $data){
-#     id
-#     name
-#     measure
-#     quantity
-#     price
-#     category{
-#       id
-#       categoryName
-#     }
-#   }
-# }
-
-# mutation DeleteGoods(
-#   $goodsId:Int!,
-# ){
-#   deleteGoods(goodsId:$goodsId){
-#     id
-#     name
-#   }
-# }
+mutation DeleteReceptionRecord(
+  $receptionRecordId:Int!,
+){
+  deleteReceptionRecord(receptionRecordId:$receptionRecordId){
+    id
+  }
+}

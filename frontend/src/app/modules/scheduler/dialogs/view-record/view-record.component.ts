@@ -1,15 +1,12 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import {TuiAlertService, TuiDialogContext, TuiDialogService} from '@taiga-ui/core';
-import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Inject, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { SchedulerService } from '../../scheduler.service';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { TuiTime } from '@taiga-ui/cdk';
-import { Client } from 'graphql-ws';
-import { Employee, ReceptionPurpose, ReceptionRecord } from 'src/graphql/generated';
-import {PolymorpheusContent} from '@tinkoff/ng-polymorpheus';
+import { ReceptionRecord } from 'src/graphql/generated';
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
+import { AddReceptionRecordDialogComponent } from '../add-record/add-reception.component';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   selector: 'vet-crm-view-record-dialog',
@@ -20,18 +17,31 @@ export class ViewReceptionRecordDialogComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     @ViewChild('templateRecordView', { static: true }) templateRecordView!: ElementRef;
+    // Observable input record for send data andopen dialog
     @Input() _recordView?: Observable<ReceptionRecord>;
+
     currentRecord?: ReceptionRecord;
     clientView?: string;
+
+    private readonly dialogEditReceptionRecord = this.dialogService.open<ReceptionRecord>(
+        new PolymorpheusComponent(AddReceptionRecordDialogComponent, this.injector),
+        {
+			data: 'edit',
+            dismissible: false,
+            label: `Изменение записи на прием`,
+			size:'auto',
+        },
+    );
     
     constructor(
         @Inject(TuiAlertService) private readonly alertService: TuiAlertService,
-        // private clientCardService: ClientCardService,
-        @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
-        @Inject(Router) private readonly router: Router,
+        @Inject(Injector) private readonly injector: Injector,
+        private schedulerService: SchedulerService,
+        @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     ) {
     }
 
+    // Getting record from local list and format to view
     ngOnInit(): void {
         this._recordView?.subscribe({
             next: (value) => {
@@ -42,23 +52,18 @@ export class ViewReceptionRecordDialogComponent implements OnInit, OnDestroy {
                         dateTimeEnd: new Date(value.dateTimeEnd),
                     };
                     this.clientView = `${value.client?.fullName || ''} \t ${value.client?.telephoneNumber || ''}`
-                    // console.log(this.currentRecord);
-                    this.dialogs.open(this.templateRecordView, {label: 'Просмотр записи'}).subscribe({
-                        next: data => {
-                            console.log(data);
-                        },
-                        complete: () => {
-                            console.log('Dialog closed');
-                        },
-                    });
+                    this.dialogService.open(this.templateRecordView, {label: 'Просмотр записи'})
+                    .pipe(takeUntil(this._unsubscribeAll)).subscribe();
                 }
             },
         })
     }
     
     ngOnDestroy(): void {
+        console.log("destroy")
         this._unsubscribeAll.next(undefined);
-		this._unsubscribeAll.complete();
+        this._unsubscribeAll.complete();
+		this._unsubscribeAll = new Subject<any>();
     }
 
 
@@ -69,29 +74,42 @@ export class ViewReceptionRecordDialogComponent implements OnInit, OnDestroy {
     deleteReceptionRecord(content: PolymorpheusContent<TuiDialogContext>):void{
 		const _unsubscribeDialog: Subject<any> = new Subject<any>();
 
-		this.dialogs.open(content,{label: 'Подтвердите удаление записи:',size: 's'})
+		this.dialogService.open(content,{label: 'Подтвердите удаление записи:',size: 's'})
 		.pipe(takeUntil(_unsubscribeDialog))
 		.subscribe({
-			// next: () =>{
-			// 	this.clientCardService.deletePet(this.pet.id).subscribe({
-			// 		next: () => {
-			// 			this.alertService.open("", {status: TuiNotification.Success, label:"Питомец удален!"}).subscribe();
-			// 			this.router.navigateByUrl(`client-card/client/${this.pet.clientId}`);
-			// 		},
-			// 		error: (err) => {
-			// 			console.log(err); 
-			// 			this.alertService.open("Не удалось удалить питомца", {status: TuiNotification.Error, label:"Ошибка удаления"}).subscribe();
-			// 		}
-			// 	})
-			// 	_unsubscribeDialog.next(undefined);
-			// 	_unsubscribeDialog.complete();
-			// }
+			next: () =>{
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				this.schedulerService.deleteReceptionRecord(this.currentRecord!.id).subscribe({
+					next: () => {
+						this.alertService.open("", {status: TuiNotification.Success, label:"Запись удалена!"}).subscribe();
+                        this.ngOnDestroy();
+					},
+					error: (err) => {
+						console.log(err); 
+						this.alertService.open("Не удалось удалить запись, перезагрузите страницу", 
+                            {status: TuiNotification.Error, label:"Ошибка удаления", autoClose:5000}).subscribe();
+                        this.ngOnDestroy();
+					}
+				})
+				_unsubscribeDialog.next(undefined);
+				_unsubscribeDialog.complete();
+			}
 		});
 	}
 
 
     editReceptionRecord(){
-        console.log("1")
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.schedulerService.setSelectedReceptionRecord(this.currentRecord!)
+        this.ngOnDestroy();
+        this.dialogEditReceptionRecord.subscribe({
+            next: data => {
+                console.log(data);
+            },
+            complete: () => {
+                console.log('Dialog closed');
+            },
+        });
     }
 
 

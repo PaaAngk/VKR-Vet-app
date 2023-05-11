@@ -81,6 +81,17 @@ export class ReceptionRecordResolver {
     });
   }
 
+  @Mutation(() => ReceptionRecord)
+  async deleteReceptionRecord(
+    @Args() { receptionRecordId }: ReceptionRecordIdArgs
+  ) {
+    return await this.prisma.receptionRecord.delete({
+      where: {
+        id: receptionRecordId,
+      },
+    });
+  }
+
   @Query(() => [ReceptionRecord])
   async receptionRecordBetweenDate(
     @Args('data') data: ReceptionRecordBetweenDateInput

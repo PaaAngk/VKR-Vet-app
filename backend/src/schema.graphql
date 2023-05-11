@@ -208,6 +208,7 @@ type Mutation {
   deleteClient(clientId: String!): Client!
   deleteGoods(goodsId: Int!): Goods!
   deletePet(petId: String!): Pet!
+  deleteReceptionRecord(receptionRecordId: Int!): ReceptionRecord!
   deleteResearch(analyzesResearchId: String!): AnalyzesResearch!
   deleteService(serviceId: Int!): Service!
   login(data: LoginInput!): Auth!
