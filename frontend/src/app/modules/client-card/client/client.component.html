@@ -1,7 +1,7 @@
-<div class="flex flex-row bg-white shadow-xl rounded-xl" *ngIf="true">
+<div class="flex flex-row bg-white shadow-xl rounded-xl h-full" *ngIf="true">
 
-    <div class="w-full basis-full block h-full p-2 border-r border-l border-color rounded-lg bg-white">
-        <div tuiTextfieldSize="m" class="flex justify-evenly items-center h-full py-auto">
+    <div class="w-full h-full p-2 border-r border-l border-color rounded-lg bg-white overflow-hidden">
+        <div tuiTextfieldSize="m" class="flex justify-evenly items-center py-auto py-2">
             <form [formGroup]="searchForm">
                 <tui-input
                     class="lg:w-96 mr-5"
@@ -34,129 +34,147 @@
                 <div class="mt-4 text-2xl font-semibold">Выберите</div>
             </div>
         </ng-container>
-        
-        <tui-loader [overlay]="true" [showLoader] = "loading">
-            <div class="flex flex-col items-center text-center mb-3">
-                <div class="mt-4 text-2xl font-semibold">Клиенты (Ближайшие записи)</div>
-                <h3 
-                    *ngIf="clients.length === 0 && !loading"
-                    class="text-2xl font-bold text-center my-2 bg-red-400 rounded-md w-64 shadow-md"
-                >
-                    Клиент не найден!
-                </h3>
-            </div>
-            <table
-                class="w-full"
-                tuiTable
-                [columns]="columns"
-                *ngIf="clients.length !== 0"
+
+        <div class="flex flex-col items-center text-center mb-3">
+            <h2 class="mt-4 text-2xl font-semibold">
+                Клиенты (Ближайшие записи)
+            </h2>
+            <h3 
+                *ngIf="clients.length === 0 && !loadingPage"
+                class="text-2xl font-semibold  my-2 bg-red-400 rounded-md w-64 shadow-md"
             >
-                <thead>
-                    <tr tuiThGroup>
-                        <th
-                            *tuiHead="'time'"
-                            class="w-24"
-                            tuiTh
-                        >
-                            Время
-                        </th>
-                        <th
-                            *tuiHead="'fullName'"
-                            tuiTh
-                            class=""
-                        >
-                            ФИО
-                        </th>
-                        <th
-                            *tuiHead="'telephone'"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Телефон
-                        </th>
-                        <th
-                            *tuiHead="'pets'"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Питомцы
-                        </th>
-                        <th
-                            *tuiHead="'actions'"
-                            tuiTh
-                            class="lg:w-32"
-                            [sorter]="null"
-                        ></th>
-                    </tr>
-                </thead>
-                <tbody
-                    *tuiLet="clients | tuiTableSort as sortedClients"
-                    tuiTbody
-                    [data]="sortedClients"
+                Клиент не найден!
+            </h3>
+        </div>
+
+        <tui-loader 
+            [showLoader] = "loadingPage" 
+            class="w-full h-full"
+        >
+        <!-- h-3/4 2xl:h-5/6 tui-zero-scrollbar   tuiScrollable   | tuiTableSort  virtual-scroll tui-zero-scrollbar-->
+            <virtual-scroller 
+                #scroll 
+                [items]="clients" 
+                class="h-3/4 w-full tui-zero-scrollbar"
+                (vsEnd)="fetchMore($event)"
+                [enableUnequalChildrenSizes]="true"
+                (vsUpdate)="_changeDetectorRef.detectChanges()"
+            >
+                <table
+                    class="h-full w-full tui-table tui-table_font-size_s "
+                    tuiTable
+                    [columns]="columns"
+                    *ngIf="clients.length !== 0"
                 >
-                    <tr
-                        *ngFor="let client of sortedClients; let index = index"
-                        tuiTr
-                    >
-                        <td
-                            *tuiCell="'time'"
-                            tuiTd
-                        >
-                            {{ client.time }}
-                        </td>
-                        <td
-                            *tuiCell="'fullName'"
-                            tuiTd
-                        >
-                            {{ client.client.fullName }}
-                        </td>
-                        <td
-                            *tuiCell="'telephone'"
-                            tuiTd
-                        >
-                            {{ client.client.telephoneNumber | tuiFormatPhone }}
-                        </td>
-                        <td
-                            *tuiCell="'pets'"
-                            tuiTd
-                            class="flex items-center justify-between"
-                        >
-                            <div class="overflow-x-auto whitespace-nowrap space-x-1 mr-2 lg:w-96 md:w-24 w-16" >
-                                <span *ngIf="!client.client.pets || client.client.pets.length === 0">Нет питомцев</span>
-                                <tui-tag
-                                    *ngFor="let tag of client.client.pets"
-                                    size="m"
-                                    [hoverable]="true"
-                                    [value]="tag.alias"
-                                    [autoColor]="true"
-                                    [routerLink]="['pet', tag.id]"
-                                    [tuiHint]="'Перейти к питомцу ' + tag.alias"
-                                ></tui-tag>
-                            </div>
-                            <button
-                                tuiButton
-                                size="xs"
-                                (click)="newPet(client.client.id)"
+                    <thead >
+                        <tr class="tui-table__tr " tuiThGroup>
+                            <th
+                                class="tui-table__th tui-table__th_font-size_l"
+                                *tuiHead="'fullName'"
+                                tuiTh
                             >
-                                Добавить
-                            </button>
-                        </td>
-                        <td
-                            *tuiCell="'actions'"
-                            class="space-x-2"
-                            tuiTd
-                        >
-                            <button
-                                tuiButton
-                                size="s"
-                                (click)="setClient(client.client.id)"
+                                ФИО
+                            </th>
+                            <th
+                                class="tui-table__th tui-table__th_font-size_l"
+                                *tuiHead="'telephone'"
+                                tuiTh
+                                [sorter]="null"
                             >
-                                Просмотр
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                Телефон
+                            </th>
+                            <th
+                                class="tui-table__th tui-table__th_font-size_l"
+                                *tuiHead="'pets'"
+                                tuiTh
+                                [sorter]="null"
+                            >
+                                Питомцы
+                            </th>
+                            <th
+                                *tuiHead="'actions'"
+                                tuiTh
+                                class="lg:w-32 tui-table__th tui-table__th_font-size_l"
+                                [sorter]="null"
+                            >Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody tuiTbody #container>
+                        <tr
+                            *ngFor="let client of scroll.viewPortItems; trackBy: trackByFunction"
+                            tuiTr
+                            class="tui-table__tr h-10"
+                        >
+                            <td
+                                *tuiCell="'fullName'"
+                                class="tui-table__td tui-table__td_align_center w-80"
+                                tuiTd
+                            >
+                                {{ client.fullName }}
+                            </td>
+                            <td
+                                *tuiCell="'telephone'"
+                                class="tui-table__td tui-table__td_align_center w-36"
+                                tuiTd
+                            >
+                                {{ client.telephoneNumber | tuiFormatPhone }}
+                            </td>
+                            <td
+                                *tuiCell="'pets'"
+                                tuiTd
+                                class=" tui-table__td tui-table__td_align_center"
+                            >
+                                <div class="flex items-center justify-between mx-1">
+                                    <div class="overflow-x-auto whitespace-nowrap space-x-1 mr-2 lg:w-96 md:w-24 w-16" >
+                                        <span *ngIf="!client.pets || client.pets.length === 0">Нет питомцев</span>
+                                        <tui-tag
+                                            *ngFor="let tag of client.pets"
+                                            size="m"
+                                            [hoverable]="true"
+                                            [value]="tag.alias"
+                                            [autoColor]="true"
+                                            [routerLink]="['pet', tag.id]"
+                                            [tuiHint]="'Перейти к питомцу ' + tag.alias"
+                                        ></tui-tag>
+                                    </div>
+                                    <button
+                                        tuiButton
+                                        size="xs"
+                                        (click)="newPet(client.id)"
+                                    >
+                                        Добавить
+                                    </button>
+                                </div>
+                            </td>
+                            <td
+                                *tuiCell="'actions'"
+                                class="tui-table__td tui-table__td_align_center"
+                                tuiTd
+                            >
+                                <button
+                                    tuiButton
+                                    size="s"
+                                    (click)="setClient(client.id)"
+                                >
+                                    Просмотр
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="loadingTable">
+                            <td></td>
+                            <td></td>
+                            <td >
+                                <tui-loader 
+                                    [overlay]="true"
+                                    [showLoader] = "loadingTable" 
+                                    class="w-10"
+                                ></tui-loader>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </virtual-scroller>
         </tui-loader>
     </div>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { EventInput } from "@fullcalendar/core";
-import { BehaviorSubject, delay, map, Observable, of, startWith, Subject, tap } from "rxjs";
-import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteReceptionRecordGQL, GetRecordsByDatesRangeGQL, ReceptionRecord, ReceptionRecordBetweenDateInput, UpdateReceptionRecordGQL, UpdateReceptionRecordInput } from "src/graphql/generated";
+import { BehaviorSubject, map, Observable } from "rxjs";
+import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteReceptionRecordGQL, GetRecordsByDatesRangeGQL, ReceptionRecord, ReceptionRecordBetweenDateInput, UpdateDateReceptionRecordGQL, UpdateReceptionRecordGQL, UpdateReceptionRecordInput } from "src/graphql/generated";
 
 
 @Injectable()
@@ -14,7 +14,7 @@ export class SchedulerService
     private _selectedRecord : BehaviorSubject<ReceptionRecord> = new BehaviorSubject(undefined as unknown as ReceptionRecord);
 
     private _eventsList: Observable<EventInput[] | null> = this._recordsList.pipe(
-        tap(i => console.log(i)),
+        // tap(i => console.log(i)),
         map(val => val.map((item: any) => {
             return {
                 id: item.id.toString(),
@@ -31,6 +31,7 @@ export class SchedulerService
         private getRecordsByDatesRangeGQL:GetRecordsByDatesRangeGQL,
         private updateReceptionRecordGQL: UpdateReceptionRecordGQL,
         private deleteReceptionRecordGQL: DeleteReceptionRecordGQL,
+        private updateDateReceptionRecordGQL: UpdateDateReceptionRecordGQL,
     ){
     }
 
@@ -138,6 +139,30 @@ export class SchedulerService
         )
     }
 
+    
+    /**
+     * Update only dates in record and update list
+     * @param id 
+     * @param newRecord 
+     * @returns 
+     */
+    updateDateReceptionRecord(id:number, newRecord : ReceptionRecordBetweenDateInput){
+        return this.updateDateReceptionRecordGQL.mutate({
+            data: newRecord,
+            receptionRecordId: id
+        }).pipe(
+            map(( {data} ) => {
+                if (data?.updateDateReceptionRecord) {
+                    this._recordsList.next(
+                        this._recordsList.getValue().map(val => {
+                            return val.id === data?.updateDateReceptionRecord.id ? data?.updateDateReceptionRecord : val
+                        })
+                    );
+                }
+            })
+        )
+    }
+    
     /**  
      * Delete record and remove from list
      * @param id id current rcord

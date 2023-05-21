@@ -44,14 +44,9 @@ type Client {
 }
 
 type ClientConnection {
-  edges: [ClientEdge!]
+  nodes: [Client!]
   pageInfo: PageInfo!
   totalCount: Int!
-}
-
-type ClientEdge {
-  cursor: String!
-  node: Client!
 }
 
 input ClientOrder {
@@ -215,6 +210,7 @@ type Mutation {
   refreshToken(token: JWT!): Token!
   updateAnalyzesResearch(analyzesResearchId: String!, data: UpdateAnalyzesResearchInput!): AnalyzesResearch!
   updateClient(clientId: String!, data: UpdateClientInput!): Client!
+  updateDateReceptionRecord(data: ReceptionRecordBetweenDateInput!, receptionRecordId: Int!): ReceptionRecord!
   updateGoods(data: UpdateGoodsInput!, goodsId: Int!): Goods!
   updatePet(data: UpdatePetInput!, petId: String!): Pet!
   updateReception(data: UpdateReceptionInput!, receptionId: String!): Reception!
@@ -272,15 +268,15 @@ type Query {
   allTypeAnalyzesResearch: [TypeAnalyzesResearch!]!
   analyzesResearch(analyzesResearchId: String!): AnalyzesResearch!
   clientDetail(clientId: String!): Client!
-  clientsWithSearch(search: String!): [Client!]!
+  clientsWithSearch(search: String): [Client!]!
   hello(name: String!): String!
   helloWorld: String!
   me: User!
   pet(petId: String!): Pet!
-  publishedClients(after: String, before: String, first: Int, last: Int, name: String, orderBy: ClientOrder, skip: Int, telephone: String): ClientConnection!
   reception(receptionId: String!): Reception!
   receptionRecord(receptionRecordId: Int!): ReceptionRecord!
   receptionRecordBetweenDate(data: ReceptionRecordBetweenDateInput!): [ReceptionRecord!]!
+  searchClients(after: String, before: String, first: Int, last: Int, orderBy: ClientOrder, search: String, skip: Int): ClientConnection!
 }
 
 type Reception {

@@ -106,31 +106,21 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                 this.dateRange = {dateEnd:data.dateTimeEnd,dateStart:data.dateTimeStart};
                 console.log(data)
                 if(this.context.data == 'add'){
-                    this.addReceptionRecordForm.setValue({
-                        startTime: TuiTime.fromLocalNativeDate(data.dateTimeStart),
+                    this.addReceptionRecordForm.patchValue({
+                        startTime: TuiTime.fromLocalNativeDate(data.dateTimeStart) || null,
                         endTime: TuiTime.fromLocalNativeDate(data.dateTimeEnd),
-                        kindOfAnimal: null,
                         date: data.dateTimeStart,
-                        employeeId: null as unknown as number,
-                        receptionPurposeId: null as unknown as number,
-                        employeeInput: null,
-                        visitPurposeInput: null,
-                        clientId: null as unknown as string,
-                        clientInput: null
                     })
                 }
                 else if(this.context.data == 'edit') {
                     this.recordID = data.id
-                    this.addReceptionRecordForm.setValue({
-                        startTime: TuiTime.fromLocalNativeDate(data.dateTimeStart),
+                    this.addReceptionRecordForm.patchValue({
+                        startTime: TuiTime.fromLocalNativeDate(data.dateTimeStart) || null,
                         endTime: TuiTime.fromLocalNativeDate(data.dateTimeEnd),
                         kindOfAnimal: data.kindOfAnimal || '',
                         date: data.dateTimeStart,
-                        employeeId: null as unknown as number,
-                        receptionPurposeId: null as unknown as number,
                         employeeInput: data.employee || null,
                         visitPurposeInput: data.purpose || null,
-                        clientId: null as unknown as string,
                         clientInput: data.client as ClientView  || null
                     })
                 }
@@ -223,7 +213,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                 kindOfAnimal: this.addReceptionRecordForm.value.kindOfAnimal,
                 receptionPurposeId: this.addReceptionRecordForm.value.visitPurposeInput?.id || null,
             } 
-            if(dateTimeStart<=dateTimeEnd){
+            if(dateTimeStart<=dateTimeEnd && dateTimeStart.getHours() > 10){
                 if(this.context.data == 'add'){
                     this.schedulerService.createReceptionRecord(reqData as CreateReceptionRecordInput)
                     .subscribe({
@@ -250,7 +240,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                         error: (error)  => 
                         {
                             this.alertService.open("Обновите страницу или обратитесь к администратору", 
-                                {status: TuiNotification.Error, label:"Не удалось добавить запись на прием", autoClose:5000}).subscribe();
+                                {status: TuiNotification.Error, label:"Не удалось обновить запись на прием", autoClose:5000}).subscribe();
                             console.log(error)
                             this.loading = false;
                         }
@@ -260,21 +250,25 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
             else{
                 this.alertService.open("Время начала должно быть меньшне окончания", 
                                 {status: TuiNotification.Error, label:"Неправильный ввод", autoClose:5000}).subscribe();
+                this.loading = false;
             }
         }
     }
 
+    // Добавление клиента и установка в поле client input
     addClient(){
         this.dialogAddClient.subscribe({
             next: data => {
                 console.log(data);
-                this.addReceptionRecordForm.value.clientInput = 
-                new ClientView(
-                   data.fullName,
-                   data.telephoneNumber,
-                   data.id,
-                   data.address||""
-                )
+                this.addReceptionRecordForm.patchValue({
+                    clientInput: new ClientView(
+                        data.fullName,
+                        data.telephoneNumber,
+                        data.id,
+                        data.address || ""
+                    ),
+                })
+                
             },
             complete: () => {
                 console.log('Dialog closed');

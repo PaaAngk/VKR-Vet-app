@@ -1,18 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IPageInfo } from '@iharbeck/ngx-virtual-scroller';
 import { tuiWatch } from '@taiga-ui/cdk';
 import {TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
-import { debounceTime, Subject, takeUntil, tap } from 'rxjs';
-import { Client } from 'src/graphql/generated';
+import { debounceTime, Subject, take, takeUntil, tap } from 'rxjs';
+import { Client, ClientConnection, ClientOrder, ClientOrderField, OrderDirection } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
 import { DialogClientComponent } from '../dialog/client-dialog/client-dialog.component';
-
-interface ClientTable {
-	readonly time: string;
-	readonly client: Client;
-}
 
 @Component({
 	selector: 'vet-crm-client',
@@ -20,18 +16,21 @@ interface ClientTable {
 	styleUrls: ['./client.component.less'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ClientComponent implements OnDestroy{
+export class ClientComponent implements OnDestroy, OnInit{
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
+	private endCursor: string | null = null;
+	private fetchSize = 10;
+	private endIndexFromVirtScroll = 0;
+	orderByDefault: ClientOrder = {direction: OrderDirection.Asc, field:ClientOrderField.Id}
 
-	clients : ClientTable[] = [] as ClientTable[];
-	readonly columns = [`time`, `fullName`, `telephone`, `pets`, `actions`];
+	clients: Client[] = [];
 
-	loading = false;
-
+	readonly columns = [`fullName`, `telephone`, `pets`, `actions`];
+	loadingPage = false;
+	loadingTable = false;
 	readonly searchForm = new FormGroup({
 		search: new FormControl(''),
 	});
-
 	private readonly dialog = this.dialogService.open<number>(
         new PolymorpheusComponent(DialogClientComponent, this.injector),
         {
@@ -40,54 +39,63 @@ export class ClientComponent implements OnDestroy{
             label: `Добавление клиента `,
         },
     );
+
  
     constructor(
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
         @Inject(Injector) private readonly injector: Injector,
 		private clientCardService: ClientCardService,
-		private _changeDetectorRef: ChangeDetectorRef,
+		public _changeDetectorRef: ChangeDetectorRef,
 		@Inject(Router) private readonly router: Router,
 		@Inject(ActivatedRoute) private readonly activatedRoute: ActivatedRoute,
     ) {
-		// Getting data 
-		this.clientCardService.getAllClientsData()
-			.pipe(takeUntil(this._unsubscribeAll))
-			.subscribe();
-		this.loading = true;
 		this.clientCardService.getclientsData$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
-		.subscribe((clients: Client[]) => {	
-			const time = '13:20';
-			if (Object.keys(clients).length !== 0){
-				this.loading = false;
-			}
-			this.clients = clients.map(client => {
-				return {
-					time:time,
-					client:client
-				} as ClientTable
-			})
+		.subscribe((client: Client[]) => {
+			this.clients = client
 		});
-		
+		this.loadingPage = true;
+	}
+
+	ngOnInit(): void {
+		let searchString = ""
 		// Поиск из ссылки
 		if(this.activatedRoute.snapshot.queryParams['search']){
 			this.searchForm.setValue({
 				search: this.activatedRoute.snapshot.queryParams['search']
 			})
-			this.clientCardService.searchClients(String(this.searchForm.value.search))
-			.pipe(takeUntil(this._unsubscribeAll))
-			.subscribe();
-		}
+			searchString = String(this.searchForm.value.search)
+		} 
+		
+		// initial data
+		this.clientCardService.searchClientsWithPagination
+			(searchString, this.fetchSize, this.endCursor, this.orderByDefault)
+			.pipe(tuiWatch(this._changeDetectorRef), take(1))
+			.subscribe((clientConnection: ClientConnection) => {
+				this.loadingPage = false;
+				this.endCursor = clientConnection.pageInfo.endCursor || null
+			});
 
 		// Поиск по вводу в поле
 		this.searchForm.valueChanges
-		.pipe(takeUntil(this._unsubscribeAll), tap({next: () => this.loading= true}))
-		.pipe(debounceTime(1000))
+		.pipe(
+			takeUntil(this._unsubscribeAll), 
+			debounceTime(500), 
+			tap({next: () => {this.loadingPage= true; this._changeDetectorRef.markForCheck();}})
+		)
 		.subscribe({
 			next: () => {
-				this.clientCardService.searchClients(String(this.searchForm.value.search))
-				.pipe(takeUntil(this._unsubscribeAll))
-				.subscribe();
+				console.log(this.searchForm.value.search)
+				this.endCursor = null;
+				this.endIndexFromVirtScroll = 0;
+				this.clientCardService.searchClientsWithPagination
+					(String(this.searchForm.value.search), this.fetchSize, this.endCursor, this.orderByDefault)
+					.pipe(tuiWatch(this._changeDetectorRef), take(1))
+					.subscribe((clientConnection: ClientConnection) => {
+						console.log(clientConnection)
+						this.loadingPage = false;
+						this.endCursor = clientConnection.pageInfo.endCursor || null
+					});
 				this.router.navigate([], 
 				{
 					relativeTo: this.activatedRoute,
@@ -110,7 +118,7 @@ export class ClientComponent implements OnDestroy{
 	// -----------------------------------------------------------------------------------------------------
 
     showDialog(): void {
-        this.dialog.subscribe();
+        this.dialog.subscribe({ next: () => this.endIndexFromVirtScroll +=1 });
     }
 
 	// Open client detail
@@ -124,4 +132,35 @@ export class ClientComponent implements OnDestroy{
 		this.clientCardService.setSelectedClient(clientId);
 		this.router.navigate([`client-card/client/${clientId}`], {queryParams:{'addPet':'dialog'}});
 	}
+
+	protected fetchMore(event: IPageInfo) {
+		// Переменная endIndexFromVirtScroll нужна для отмены постоянных запросов приходящих с
+		// библиотеки, так отсекаются испольненные запросы, а если не исполнился возращаем переменную на предыдущее значение
+        if (this.endIndexFromVirtScroll>= event.endIndex || event.endIndex !== this.clients.length-1 || event.endIndex === -1  ) return;
+		const prevEndIndexFromVirtScroll = this.endIndexFromVirtScroll
+		this.endIndexFromVirtScroll = event.endIndex
+        this.loadingTable = true;
+		console.log(event)
+		this.clientCardService.searchClientsWithPagination
+			(String(this.searchForm.value.search), 5, this.endCursor, {direction: OrderDirection.Asc, field:ClientOrderField.Id})//this.fetchSize
+			.pipe(tuiWatch(this._changeDetectorRef), take(1))
+			.subscribe({
+				next: (clientConnection: ClientConnection) =>{
+					console.log(clientConnection)
+					if(clientConnection.pageInfo.endCursor)
+						this.endCursor = clientConnection.pageInfo.endCursor;
+					this.loadingTable = false;
+				},
+				error: (err) => {
+					console.log(err);
+					this.endIndexFromVirtScroll = prevEndIndexFromVirtScroll;
+					this.loadingTable = false;
+				}
+			});
+    }
+
+	public trackByFunction(index: number, complexItem: Client): string {
+		return complexItem.id;
+	}
+	
 }

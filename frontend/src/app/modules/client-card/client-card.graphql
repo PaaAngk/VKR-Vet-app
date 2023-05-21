@@ -12,12 +12,37 @@ query GetClient($search:String!){
   }
 }
 
+query GetClientWithPagination($search:String!, $first: Int!, $after:String, $orderBy: ClientOrder!){
+  searchClients(search:$search, first: $first, after: $after, orderBy: $orderBy){
+    nodes{
+      id
+      fullName
+      telephoneNumber
+      pets{
+        id
+        alias
+      }
+    }
+    pageInfo{
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}
+
 mutation CreateClient($data:CreateClientInput!) {
   createClient(data:$data){
     id
 	  fullName
     telephoneNumber
     address
+    pets{
+      id
+      alias
+    }
   }
 }
 

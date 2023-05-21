@@ -36,3 +36,68 @@
         
     </tui-loader>    
 </div>
+
+<ng-template
+    #eventDropConfirm
+    let-observer
+>
+    <p>Подтвердите перенос записи с</p>
+    <strong>{{ eventDropValue?.oldEvent?.start | date:'EEEE, dd MMMM, H:mm' }}</strong>
+    <p>на</p>
+    <strong>{{ eventDropValue?.event?.start | date:'EEEE, d MMMM, H:mm'}}</strong>
+
+    <div class="flex justify-around mt-2">
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            appearance="accent"
+            class="bg-slate-500"
+            (click)="observer.next()"
+            [showLoader]="eventDroploading"
+        >
+            Подтвердить
+        </button>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            (click)="observer.complete()"
+        >
+            Отмена
+        </button>
+    </div>
+</ng-template>
+
+<ng-template
+    #eventResizeConfirm
+    let-observer
+>
+    <p>Подтвердите изменение времени записи с</p>
+    <strong>{{ eventResizeValue?.oldEvent?.start | date:'H:mm' }} - {{ eventResizeValue?.oldEvent?.end | date:'H:mm' }}</strong>
+    <p>на</p>
+    <strong>{{ eventResizeValue?.event?.start | date:'H:mm'}} - {{ eventResizeValue?.event?.end | date:'H:mm'}}</strong>
+
+    <div class="flex justify-around mt-2">
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            appearance="accent"
+            class="bg-slate-500"
+            (click)="observer.next()"
+            [showLoader]="eventResizeLoading"
+        >
+            Подтвердить
+        </button>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            (click)="observer.complete()"
+        >
+            Отмена
+        </button>
+    </div>
+</ng-template>
+

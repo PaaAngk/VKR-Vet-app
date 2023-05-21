@@ -75,12 +75,9 @@ export class ClientsResolver {
   }
 
   @Query(() => ClientConnection)
-  async publishedClients(
+  async searchClients(
     @Args() { after, before, first, last }: PaginationArgs,
-    @Args({ name: 'name', type: () => String, nullable: true })
-    name: string,
-    @Args({ name: 'telephone', type: () => String, nullable: true })
-    telephone: string,
+    @Args() { search }: ClientSearchArgs,
     @Args({
       name: 'orderBy',
       type: () => ClientOrder,
@@ -92,8 +89,20 @@ export class ClientsResolver {
       (args) =>
         this.prisma.client.findMany({
           where: {
-            fullName: { contains: name || '' },
-            telephoneNumber: { contains: telephone || '' },
+            OR: [
+              {
+                fullName: {
+                  contains: search || '',
+                  mode: 'insensitive',
+                },
+              },
+              {
+                telephoneNumber: {
+                  contains: search || '',
+                  mode: 'insensitive',
+                },
+              },
+            ],
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : null,
           ...args,
@@ -101,8 +110,20 @@ export class ClientsResolver {
       () =>
         this.prisma.client.count({
           where: {
-            fullName: { contains: name || '' },
-            telephoneNumber: { contains: telephone || '' },
+            OR: [
+              {
+                fullName: {
+                  contains: search || '',
+                  mode: 'insensitive',
+                },
+              },
+              {
+                telephoneNumber: {
+                  contains: search || '',
+                  mode: 'insensitive',
+                },
+              },
+            ],
           },
         }),
       { first, last, before, after }

@@ -18,6 +18,7 @@ import {
   TuiLinkModule,
   TuiLoaderModule,
   TuiPrimitiveTextfieldModule,
+  TuiScrollbarModule,
   TuiSvgModule,
   TuiTextfieldControllerModule,
 } from '@taiga-ui/core';
@@ -44,6 +45,9 @@ import { AgeStringPipe, SafeHtmlPipe, ArrayToAnyArrayPipe, CheckNullPipe, Format
 import { FileInputModule } from 'src/app/shared/components/file-input/file-input.module';
 import { FileViewModule } from 'src/app/shared/components/file-view/file-view.module';
 import { EditDeleteButtonModule } from 'src/app/shared/components/edit-delete-button/edit-delete-button.module';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
+
 
 @NgModule({
   declarations: [
@@ -111,6 +115,10 @@ import { EditDeleteButtonModule } from 'src/app/shared/components/edit-delete-bu
     TuiLoaderModule,
     TuiHostedDropdownModule,
     TuiStringifyContentPipeModule,
+    TuiScrollbarModule,
+    
+    ScrollingModule,
+    VirtualScrollerModule,
   ],
   providers:[
     DatePipe,

@@ -73,3 +73,28 @@ mutation DeleteReceptionRecord(
     id
   }
 }
+
+mutation UpdateDateReceptionRecord(
+  $receptionRecordId:Int!,
+  $data:ReceptionRecordBetweenDateInput!
+){
+  updateDateReceptionRecord(receptionRecordId:$receptionRecordId, data: $data){
+    client{
+      id
+      fullName
+      telephoneNumber
+    }
+    employee{
+      id
+      fullName
+    }
+    purpose{
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}

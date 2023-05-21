@@ -72,6 +72,28 @@ export class ReceptionRecordResolver {
     return newReceptionRecord;
   }
 
+  /** Update only start and end date
+   * @param dates
+   * @param receptionRecordId
+   * @returns new reception
+   */
+  @Mutation(() => ReceptionRecord)
+  async updateDateReceptionRecord(
+    @Args({ name: 'receptionRecordId', type: () => Int })
+    receptionRecordId: number,
+    @Args('data') dates: ReceptionRecordBetweenDateInput
+  ) {
+    return await this.prisma.receptionRecord.update({
+      data: {
+        dateTimeStart: dates.dateStart,
+        dateTimeEnd: dates.dateEnd,
+      },
+      where: {
+        id: receptionRecordId,
+      },
+    });
+  }
+
   @Query(() => ReceptionRecord)
   async receptionRecord(@Args() { receptionRecordId }: ReceptionRecordIdArgs) {
     return await this.prisma.receptionRecord.findUnique({

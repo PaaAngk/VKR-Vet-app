@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TuiRootModule, TuiAlertModule, TUI_SANITIZER, TuiDialogModule } from '@taiga-ui/core';
@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { TUI_LANGUAGE, TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import {
   HttpClientModule,
   HttpHeaders,
@@ -25,6 +25,9 @@ import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
+
+import localeRu from '@angular/common/locales/ru';
+registerLocaleData(localeRu);
 
 @NgModule({
   declarations: [AppComponent],
@@ -52,11 +55,11 @@ import { createClient } from 'graphql-ws';
 
   ],
   providers: [
+    { provide: LOCALE_ID, useValue: "ru-RU" },
     {
       provide: TUI_LANGUAGE,
       useValue: of(TUI_RUSSIAN_LANGUAGE),
     },
-
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpTokenInterceptor,

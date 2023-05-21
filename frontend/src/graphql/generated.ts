@@ -63,15 +63,9 @@ export type Client = {
 
 export type ClientConnection = {
   __typename?: 'ClientConnection';
-  edges?: Maybe<Array<ClientEdge>>;
+  nodes?: Maybe<Array<Client>>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
-};
-
-export type ClientEdge = {
-  __typename?: 'ClientEdge';
-  cursor: Scalars['String'];
-  node: Client;
 };
 
 export type ClientOrder = {
@@ -230,6 +224,7 @@ export type Mutation = {
   refreshToken: Token;
   updateAnalyzesResearch: AnalyzesResearch;
   updateClient: Client;
+  updateDateReceptionRecord: ReceptionRecord;
   updateGoods: Goods;
   updatePet: Pet;
   updateReception: Reception;
@@ -346,6 +341,12 @@ export type MutationUpdateClientArgs = {
 };
 
 
+export type MutationUpdateDateReceptionRecordArgs = {
+  data: ReceptionRecordBetweenDateInput;
+  receptionRecordId: Scalars['Int'];
+};
+
+
 export type MutationUpdateGoodsArgs = {
   data: UpdateGoodsInput;
   goodsId: Scalars['Int'];
@@ -434,10 +435,10 @@ export type Query = {
   helloWorld: Scalars['String'];
   me: User;
   pet: Pet;
-  publishedClients: ClientConnection;
   reception: Reception;
   receptionRecord: ReceptionRecord;
   receptionRecordBetweenDate: Array<ReceptionRecord>;
+  searchClients: ClientConnection;
 };
 
 
@@ -452,7 +453,7 @@ export type QueryClientDetailArgs = {
 
 
 export type QueryClientsWithSearchArgs = {
-  search: Scalars['String'];
+  search?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -463,18 +464,6 @@ export type QueryHelloArgs = {
 
 export type QueryPetArgs = {
   petId: Scalars['String'];
-};
-
-
-export type QueryPublishedClientsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  name?: InputMaybe<Scalars['String']>;
-  orderBy?: InputMaybe<ClientOrder>;
-  skip?: InputMaybe<Scalars['Int']>;
-  telephone?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -490,6 +479,17 @@ export type QueryReceptionRecordArgs = {
 
 export type QueryReceptionRecordBetweenDateArgs = {
   data: ReceptionRecordBetweenDateInput;
+};
+
+
+export type QuerySearchClientsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ClientOrder>;
+  search?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type Reception = {
@@ -696,12 +696,22 @@ export type GetClientQueryVariables = Exact<{
 
 export type GetClientQuery = { __typename?: 'Query', clientsWithSearch: Array<{ __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string }> | null }> };
 
+export type GetClientWithPaginationQueryVariables = Exact<{
+  search: Scalars['String'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['String']>;
+  orderBy: ClientOrder;
+}>;
+
+
+export type GetClientWithPaginationQuery = { __typename?: 'Query', searchClients: { __typename?: 'ClientConnection', totalCount: number, nodes?: Array<{ __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string }> | null }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+
 export type CreateClientMutationVariables = Exact<{
   data: CreateClientInput;
 }>;
 
 
-export type CreateClientMutation = { __typename?: 'Mutation', createClient: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, address?: string | null } };
+export type CreateClientMutation = { __typename?: 'Mutation', createClient: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, address?: string | null, pets?: Array<{ __typename?: 'Pet', id: string, alias: string }> | null } };
 
 export type ClientDetailQueryVariables = Exact<{
   clientId: Scalars['String'];
@@ -891,6 +901,14 @@ export type DeleteReceptionRecordMutationVariables = Exact<{
 
 export type DeleteReceptionRecordMutation = { __typename?: 'Mutation', deleteReceptionRecord: { __typename?: 'ReceptionRecord', id: number } };
 
+export type UpdateDateReceptionRecordMutationVariables = Exact<{
+  receptionRecordId: Scalars['Int'];
+  data: ReceptionRecordBetweenDateInput;
+}>;
+
+
+export type UpdateDateReceptionRecordMutation = { __typename?: 'Mutation', updateDateReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
+
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -990,6 +1008,39 @@ export const GetClientDocument = gql`
       super(apollo);
     }
   }
+export const GetClientWithPaginationDocument = gql`
+    query GetClientWithPagination($search: String!, $first: Int!, $after: String, $orderBy: ClientOrder!) {
+  searchClients(search: $search, first: $first, after: $after, orderBy: $orderBy) {
+    nodes {
+      id
+      fullName
+      telephoneNumber
+      pets {
+        id
+        alias
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetClientWithPaginationGQL extends Apollo.Query<GetClientWithPaginationQuery, GetClientWithPaginationQueryVariables> {
+    override document = GetClientWithPaginationDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const CreateClientDocument = gql`
     mutation CreateClient($data: CreateClientInput!) {
   createClient(data: $data) {
@@ -997,6 +1048,10 @@ export const CreateClientDocument = gql`
     fullName
     telephoneNumber
     address
+    pets {
+      id
+      alias
+    }
   }
 }
     `;
@@ -1774,6 +1829,40 @@ export const DeleteReceptionRecordDocument = gql`
   })
   export class DeleteReceptionRecordGQL extends Apollo.Mutation<DeleteReceptionRecordMutation, DeleteReceptionRecordMutationVariables> {
     override document = DeleteReceptionRecordDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateDateReceptionRecordDocument = gql`
+    mutation UpdateDateReceptionRecord($receptionRecordId: Int!, $data: ReceptionRecordBetweenDateInput!) {
+  updateDateReceptionRecord(receptionRecordId: $receptionRecordId, data: $data) {
+    client {
+      id
+      fullName
+      telephoneNumber
+    }
+    employee {
+      id
+      fullName
+    }
+    purpose {
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateDateReceptionRecordGQL extends Apollo.Mutation<UpdateDateReceptionRecordMutation, UpdateDateReceptionRecordMutationVariables> {
+    override document = UpdateDateReceptionRecordDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

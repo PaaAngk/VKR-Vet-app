@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, of, pipe, take } from "rxjs";
-import { AnalyzesResearch, Client, ClientDetailGQL, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteAnalyzesResearchGQL, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
+import { AnalyzesResearch, Client, ClientConnection, ClientDetailGQL, ClientOrder, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteAnalyzesResearchGQL, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetClientWithPaginationGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
 import { AnalyzesList } from "./analyzes/analyzeFormTemplates";
 import { AnalyzeForm } from "./models/analyzeType"; 
 import { environment } from "src/environments/environment"
@@ -45,6 +45,7 @@ export class ClientCardService
         private updateAnalyzesResearchGQL: UpdateAnalyzesResearchGQL,
         private getAllAnalyzeTypesGQL : GetAllAnalyzeTypesGQL,
         private deleteAnalyzesResearchGQL: DeleteAnalyzesResearchGQL,
+        private getClientWithPaginationGQL: GetClientWithPaginationGQL
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
@@ -139,6 +140,42 @@ export class ClientCardService
         else{
             return of(null)
         }
+    }
+
+
+    /**
+     * Get clients data with search string on name and phone number
+     * @search  for search need client 
+     */
+    searchClientsWithPagination(search: string | null, first: number, after: string|null , orderBy: ClientOrder): Observable<ClientConnection>
+    {
+        // Delete first letter in search string when enter telephone 
+        // number starts on 8. Because number stored in +7 and 8
+        if(search && parseInt(search)){
+            search = search.slice(1)
+        }
+        if(!after){
+            this._clientsData.next([])
+        }
+
+        return this.getClientWithPaginationGQL.watch({
+            search: search || '', 
+            first:first,
+            after:after,
+            orderBy: orderBy
+        },
+        {
+            fetchPolicy: 'network-only',
+        },
+        )
+        .valueChanges.pipe(
+            map((data) => {
+                const currentValue = this._clientsData.getValue()
+                if(data.data.searchClients.nodes)
+                    this._clientsData.next( currentValue.concat(data.data.searchClients.nodes).filter((ids => ({ id }) => !ids.has(id) && ids.add(id))(new Set)) );
+                return data.data.searchClients
+            })
+        );
     }
 
     /**
