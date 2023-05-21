@@ -14,7 +14,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import ruLocale from '@fullcalendar/core/locales/ru';
 import { AddReceptionRecordDialogComponent } from './dialogs/add-record/add-reception.component';
-import { ReceptionRecord, ReceptionRecordBetweenDateInput } from 'src/graphql/generated';
+import { ReceptionRecord, BetweenDateInput } from 'src/graphql/generated';
 
 
 @Component({
@@ -174,7 +174,7 @@ export class SchedulerComponent implements OnDestroy{
 		.subscribe({
 			next: () => {
 				this.eventDroploading = true;
-				const dataForUpdate: ReceptionRecordBetweenDateInput = {
+				const dataForUpdate: BetweenDateInput = {
 					dateStart: info.event.start,
 					dateEnd: info.event.end,
 				}
@@ -218,7 +218,7 @@ export class SchedulerComponent implements OnDestroy{
 		.subscribe({
 			next: () => {
 				this.eventResizeLoading = true;
-				const dataForUpdate: ReceptionRecordBetweenDateInput = {
+				const dataForUpdate: BetweenDateInput = {
 					dateStart: info.event.start,
 					dateEnd: info.event.end,
 				}

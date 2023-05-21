@@ -1,0 +1,50 @@
+<div class="w-full max-h-full border-r border-l border-color rounded-lg bg-white shadow-lg">
+
+
+    <div class="w-full h-full" ><!--tui-loader [overlay]="true" [showLoader] = "loading"-->
+        <div class="items-center text-center mb-1 p-2">
+            <div class="text-2xl font-semibold">Аналитика</div>
+        </div>
+        <div class="w-full h-full">
+            <tui-tabs [(activeItemIndex)]="activeItemIndex">
+                <button
+                    tuiTab
+                >Пациенты</button>
+                <button
+                    tuiTab
+                >Выручка</button>
+                <button
+                    tuiTab
+                >Остальное</button>
+            </tui-tabs>
+            <div class="p-2 shadow-inner overflow-auto h-full" >
+                <div class="h-full w-full p-4" *ngIf="activeItemIndex === 0">
+                    <tui-input-date-range
+                        [maxLength]="maxLength"
+                        [(ngModel)]="range"
+                        class="w-72 mb-2"
+                    >
+                        Период
+                    </tui-input-date-range>
+                    <tui-axes
+                        *ngIf="computeLabels$(range) | async as labels"
+                        class="h-96"
+                        [verticalLines]="labels.length"
+                        [horizontalLines]="4"
+                        [axisXLabels]="labels"
+                    >
+                        <tui-line-days-chart
+                            class="chart"
+                            [height]="200"
+                            [value]="value"
+                            [yStringify]="yStringify"
+                            [xStringify]="xStringify$ | async"
+                        ></tui-line-days-chart>
+                    </tui-axes>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

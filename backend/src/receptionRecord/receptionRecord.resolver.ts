@@ -16,7 +16,7 @@ import { CreateReceptionRecordInput } from './dto/CreateReceptionRecordInput.inp
 import { Employee } from 'src/common/models';
 import { UpdateReceptionRecordInput } from './dto/UpdateReceptionRecordInput.input';
 import { Client } from 'src/clients/models/client.model';
-import { ReceptionRecordBetweenDateInput } from './dto/ReceptionRecordBetweenDateInput.input';
+import { BetweenDateInput } from './dto/BetweenDateInput.input';
 import { ReceptionPurpose } from 'src/reception/models/reception-purpose.model';
 
 @UseGuards(GqlAuthGuard)
@@ -81,7 +81,7 @@ export class ReceptionRecordResolver {
   async updateDateReceptionRecord(
     @Args({ name: 'receptionRecordId', type: () => Int })
     receptionRecordId: number,
-    @Args('data') dates: ReceptionRecordBetweenDateInput
+    @Args('data') dates: BetweenDateInput
   ) {
     return await this.prisma.receptionRecord.update({
       data: {
@@ -115,9 +115,7 @@ export class ReceptionRecordResolver {
   }
 
   @Query(() => [ReceptionRecord])
-  async receptionRecordBetweenDate(
-    @Args('data') data: ReceptionRecordBetweenDateInput
-  ) {
+  async receptionRecordBetweenDate(@Args('data') data: BetweenDateInput) {
     console.log(data.dateStart);
     console.log(data.dateEnd);
     return await this.prisma.receptionRecord.findMany({

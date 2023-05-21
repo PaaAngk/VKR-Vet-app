@@ -2,7 +2,7 @@ import { AuthSignOutComponent } from './modules/auth/sign-out/sign-out.component
 import { SignInComponent } from './modules/auth/sign-in/sign-in.component';
 import { AuthGuard } from './core/auth/guards/auth.guard';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, ExtraOptions, PreloadAllModules } from '@angular/router';
+import { Routes, RouterModule, ExtraOptions } from '@angular/router';
 import { NoAuthGuard } from './core/auth/guards/noAuth.guard';
 import { LayoutComponent } from './layout/layout.component';
 import { Page404Component } from './shared';
@@ -57,6 +57,7 @@ const routes: Routes = [
         {path: 'services', loadChildren: () => import('./modules/services/services.module').then(m => m.ServiceModule)},
         {path: 'goods', loadChildren: () => import('./modules/goods/goods.module').then(m => m.GoodsModule)},
         {path: 'scheduler', loadChildren: () => import('./modules/scheduler/scheduler.module').then(m => m.SchedulerModule)},
+        {path: 'analytics', loadChildren: () => import('./modules/analytics/analytics.module').then(m => m.AnalyticsModule)},
 
         // 404 & Catch all
         {path: '404-not-found', pathMatch: 'full', component: Page404Component},

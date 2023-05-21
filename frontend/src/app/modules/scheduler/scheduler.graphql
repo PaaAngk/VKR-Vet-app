@@ -1,4 +1,4 @@
-query GetRecordsByDatesRange($data:ReceptionRecordBetweenDateInput!){
+query GetRecordsByDatesRange($data:BetweenDateInput!){
   receptionRecordBetweenDate(data: $data){
     client{
       id
@@ -76,7 +76,7 @@ mutation DeleteReceptionRecord(
 
 mutation UpdateDateReceptionRecord(
   $receptionRecordId:Int!,
-  $data:ReceptionRecordBetweenDateInput!
+  $data:BetweenDateInput!
 ){
   updateDateReceptionRecord(receptionRecordId:$receptionRecordId, data: $data){
     client{

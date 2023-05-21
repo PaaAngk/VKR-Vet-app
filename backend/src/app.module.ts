@@ -22,6 +22,7 @@ import { GoodsModule } from './goods/goods.module';
 import { EmployeeModule } from './employee/employee.module';
 import { PrintModule } from './printed/print.module';
 import { ReceptionRecordModule } from './receptionRecord/receptionRecord.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 // import { AnalyzesResearchModule } from './analyzes-research/analyzes-research.module';
 
 @Module({
@@ -53,6 +54,7 @@ import { ReceptionRecordModule } from './receptionRecord/receptionRecord.module'
     EmployeeModule,
     PrintModule,
     ReceptionRecordModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

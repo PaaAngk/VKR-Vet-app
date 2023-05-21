@@ -9,7 +9,7 @@ import { TuiTime } from '@taiga-ui/cdk';
 import { debounceTime, filter, map, Observable, startWith, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 import { tuiCreateTimePeriods } from '@taiga-ui/kit';
 import { ClientCardService } from 'src/app/modules/client-card/client-card.service';
-import { Client, CreateReceptionRecordInput, Employee, ReceptionPurpose, ReceptionRecord, ReceptionRecordBetweenDateInput, UpdateReceptionRecordInput } from 'src/graphql/generated';
+import { Client, CreateReceptionRecordInput, Employee, ReceptionPurpose, ReceptionRecord, BetweenDateInput, UpdateReceptionRecordInput } from 'src/graphql/generated';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { DialogClientComponent } from 'src/app/modules/client-card/dialog/client-dialog/client-dialog.component';
 
@@ -34,7 +34,7 @@ class ClientView{
 export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     petsKind = ["Кошка", "Собака", "Жираф"];
-    dateRange?: ReceptionRecordBetweenDateInput;
+    dateRange?: BetweenDateInput;
     workTimes = tuiCreateTimePeriods(10, 20);
     workTimesEnd = tuiCreateTimePeriods(10, 20);
     employees!: Employee[];

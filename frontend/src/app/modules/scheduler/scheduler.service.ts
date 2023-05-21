@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { EventInput } from "@fullcalendar/core";
 import { BehaviorSubject, map, Observable } from "rxjs";
-import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteReceptionRecordGQL, GetRecordsByDatesRangeGQL, ReceptionRecord, ReceptionRecordBetweenDateInput, UpdateDateReceptionRecordGQL, UpdateReceptionRecordGQL, UpdateReceptionRecordInput } from "src/graphql/generated";
+import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteReceptionRecordGQL, GetRecordsByDatesRangeGQL, ReceptionRecord, BetweenDateInput, UpdateDateReceptionRecordGQL, UpdateReceptionRecordGQL, UpdateReceptionRecordInput } from "src/graphql/generated";
 
 
 @Injectable()
@@ -82,7 +82,7 @@ export class SchedulerService
     /**
      * Get reception record by range datetime
      */
-    getRecordsByDateRange(data: ReceptionRecordBetweenDateInput): Observable<any>//ReceptionRecordBetweenDateInput
+    getRecordsByDateRange(data: BetweenDateInput): Observable<any>//BetweenDateInput
     {
         return this.getRecordsByDatesRangeGQL.watch({
             data: data
@@ -146,7 +146,7 @@ export class SchedulerService
      * @param newRecord 
      * @returns 
      */
-    updateDateReceptionRecord(id:number, newRecord : ReceptionRecordBetweenDateInput){
+    updateDateReceptionRecord(id:number, newRecord : BetweenDateInput){
         return this.updateDateReceptionRecordGQL.mutate({
             data: newRecord,
             receptionRecordId: id

@@ -18,6 +18,7 @@ import { GoodsList } from 'src/goods/models/goods-list.model';
 import { Employee } from 'src/common/models';
 import { UpdateReceptionInput } from './dto/UpdateReceptionInput.input';
 import { Pet } from 'src/pets/models/pet.model';
+import { BetweenDateInput } from 'src/receptionRecord/dto/BetweenDateInput.input';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Reception)
