@@ -1,10 +1,17 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { TuiContextWithImplicit, TuiDay, TuiDayLike, TuiDayRange, TuiMonth, tuiPure, TuiStringHandler, tuiWatch } from '@taiga-ui/cdk';
+import { TuiContextWithImplicit, TuiDay, TuiDayLike, TuiDayRange, TuiMonth, tuiPure, TuiStringHandler, tuiWatch, TuiMapper } from '@taiga-ui/cdk';
 import { TuiPoint, TUI_MONTHS } from '@taiga-ui/core';
+import { TuiDayRangePeriod } from '@taiga-ui/kit';
 import { map, Observable, of, Subject, take, takeUntil, tap } from 'rxjs';
 import { BetweenDateInput } from 'src/graphql/generated';
 import { ServicesAnalytics } from './analytics.service';
-import { StatisticByDates } from './types.interface';
+import { Statistic, StatisticByDates } from './types.interface';
+
+const today = TuiDay.currentLocal();
+const lastWeek = today.append({day: -7});
+const lastTwoWeek = today.append({day: -14});
+const lastMonth = today.append({month: -1});
+const lastThreeMonth = today.append({month: -3, day:-1});
 
 @Component({
 	selector: 'vet-crm-analytics',
@@ -20,21 +27,40 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
     currentDate = new Date();
     maxHeightYAxis:number = 0;
     axisYLabels:string[] = [];
+    statisticFromCurrentPeriod:{pet:number, earn: number} = {pet:0, earn: 0};
+    statisticFromServer:Statistic[][] = [];
     
 	dateRange: TuiDayRange = {} as TuiDayRange;
     dateRangeNative: BetweenDateInput = {} as BetweenDateInput;
+    readonly items = [
+        new TuiDayRangePeriod(
+            new TuiDayRange(lastWeek, today),
+            'Неделя',
+            ({$implicit}) => `Неделя (c ${$implicit.from})`,
+        ),
+        new TuiDayRangePeriod(
+            new TuiDayRange(lastTwoWeek, today),
+            'Две недели',
+            ({$implicit}) => `Две недели (c ${$implicit.from})`,
+        ),
+        new TuiDayRangePeriod(
+            new TuiDayRange(lastMonth, today),
+            'Месяц',
+            ({$implicit}) => `Месяц (c ${$implicit.from})`,
+        ),
+        new TuiDayRangePeriod(
+            new TuiDayRange(lastThreeMonth, today),
+            'Три месяца',
+            ({$implicit}) => `Три месяца (c ${$implicit.from})`,
+        ),
+    ];
 
 	readonly maxLength: TuiDayLike = {month: 6};
  
-    readonly xStringify$: Observable<TuiStringHandler<TuiDay>> = this.months$.pipe(
-        map(
-            months =>
-                ({month, day}) =>
-                    `${months[month]}, ${day}`,
-        ),
-    );
-    // readonly yStringify: TuiStringHandler<number> = y =>
-    //     `${(y).toLocaleString('ru-RU', {maximumFractionDigits: 0})} ₽`;
+
+    get range(): TuiDayRange {
+        return this.computeRange(this.dateRange);
+    }
 
     statByDates: ReadonlyArray<ReadonlyArray<[TuiDay, number]>> = []
 
@@ -52,8 +78,7 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
             this.servicesAnalytics.getEarnByDates(this.dateRangeNative).pipe(take(1)).subscribe();
         });
         this._dates.next(new TuiDayRange(
-            TuiDay.fromLocalNativeDate(new Date(new Date().setMonth(this.currentDate.getMonth() - 2))),
-            TuiDay.fromLocalNativeDate(this.currentDate),
+            lastTwoWeek, today,
         ));
         this.loading = true;
 	}
@@ -66,9 +91,17 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
             next: (data: StatisticByDates[]) => {
                 if(data.length>0) {this.statByDates = this.getDaysArray(this.dateRangeNative, data); this.loading = false;}
                 this._changeDetectorRef.markForCheck();
-                console.log(this.statByDates)
             },
             error: () => this.loading = false
+        })
+        
+        this.servicesAnalytics.getStatistic()
+        .pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
+        .subscribe({
+            next: (data: Statistic[][]) => {
+                this.statisticFromServer = data
+                this._changeDetectorRef.markForCheck();
+            },
         })
 
 	}
@@ -80,32 +113,27 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
 		this._unsubscribeAll.complete();
 	}
 
+    readonly toNumbers: TuiMapper<ReadonlyArray<[TuiDay, number]>, readonly TuiPoint[]> =
+        (days, {from}: TuiDayRange) =>
+            days.map(
+                ([day, value]) =>
+                    [TuiDay.lengthBetween(from, day), value] as [number, number],
+            );
 	// -----------------------------------------------------------------------------------------------------
 	// @ Public methods
 	// -----------------------------------------------------------------------------------------------------
-	
-	@tuiPure
-    computeXLabels$({from, to}: TuiDayRange): Observable<readonly string[]> {
-        return this.months$.pipe(
-            map(months =>
-                Array.from(
-                    {length: TuiMonth.lengthBetween(from, to) + 1},
-                    (_, i) => months[from.append({month: i}).month],
-                ),
-            ),
-        );
-    }
     
     @tuiPure
     computeYLabels$(maxXValue: number): readonly string[] {
         const arr: string[] = [];
         if ( maxXValue > 0){
             for(let x=0; x<=maxXValue; x+=maxXValue/4){
-                arr.push(Math.floor(x).toString());
+                arr.push(Math.round(x).toString());
             }
         }
         return arr
     }
+
 
     @tuiPure
     getDate(day: TuiDay | number, date: TuiDay): TuiDay {
@@ -146,10 +174,11 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
  
     // Complete space between dates and calc max sum
     private getDaysArray(dates: BetweenDateInput, data: StatisticByDates[]):ReadonlyArray<ReadonlyArray<[TuiDay, number]>> {
-        
         const arrCost: [TuiDay, number][] = [];
         const arrUnique_pets: [TuiDay, number][] = [];
         const arrUnique_client: [TuiDay, number][] = [];
+        let petsCount = 0;
+        let earnCount = 0;
         this.maxHeightYAxis = 0;
         for(let dt:Date=dates.dateStart; dt<=dates.dateEnd; dt.setDate(dt.getDate()+1)){
             const finded_date = data.find(val => new Date(val.date).toDateString() === new Date(dt).toDateString())
@@ -158,6 +187,8 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
                 arrUnique_pets.push([TuiDay.fromLocalNativeDate(dt), finded_date.unique_pets*300]);
                 arrUnique_client.push([TuiDay.fromLocalNativeDate(dt), finded_date.unique_client*300]);
                 if (finded_date.cost_sum > this.maxHeightYAxis) this.maxHeightYAxis = finded_date.cost_sum;
+                petsCount += finded_date.unique_pets;
+                earnCount += finded_date.cost_sum;
             }
             else {
                 arrCost.push([TuiDay.fromLocalNativeDate(dt), Math.floor(randn_bm()*3000)]);
@@ -166,6 +197,7 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
             }
             
         }
+        this.statisticFromCurrentPeriod = {pet:petsCount, earn:earnCount}
         const arrSum: [TuiDay, number][][] = [arrCost, arrUnique_pets, arrUnique_client];
         return arrSum;
     }

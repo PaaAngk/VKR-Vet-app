@@ -8,21 +8,19 @@
                 <div class="flex flex-row">
                     <button
                         tuiTab
-                    ><p class="px-4">Выручка</p></button>
+                    ><p class="px-4">График</p></button>
                     <button
                         tuiTab
-                    ><p class="px-2">Пациенты</p></button>
-                    <button
-                        tuiTab
-                    ><p class="px-2">Остальное</p></button>
+                    ><p class="px-2">Статистика</p></button>
                 </div>
-                <div class="items-center text-center  p-2">
-                    <div class="text-2xl font-bold text-black">Аналитика</div>
+                <div class="items-center text-center p-2">
+                    <div class="tui-text_h4 font-bold text-black">Аналитика</div>
                 </div>
                 <tui-input-date-range 
                     tuiTextfieldSize='m'
                     [maxLength]="maxLength"
                     [(ngModel)]="dateRange"
+                    [items]="items"
                     class="w-72 p-2 mr-4"
                     (ngModelChange)="onDateRangeChange($event)"
                 >
@@ -30,14 +28,14 @@
                 </tui-input-date-range>
             </tui-tabs>
             <tui-loader class="p-2 shadow-inner overflow-auto h-full" [showLoader]="loading">
-                <div class="h-full w-full p-4" *ngIf="activeItemIndex === 0">
+                <div class="h-full w-full p-4 overflow-hidden" *ngIf="activeItemIndex === 0">
                     <p class="legend">
                         <span class="item"> <p class="name">Выручка</p></span>
                         <span class="item"> <p class="name">Питомцы</p></span>
                         <span class="item"> <p class="name">Клиенты</p></span>
                     </p>
                     <tui-axes
-                        *ngIf=" computeXLabels$(dateRange) | async as axisXLabels"
+                        *ngIf="dateRange | XlabelsOnChart | async as axisXLabels"
                         class="axes"
                         [verticalLines]="axisXLabels.length"
                         [horizontalLines]="4"
@@ -45,14 +43,39 @@
                         [axisYLabels]="computeYLabels$(maxHeightYAxis)"
                         [tuiLineChartHint]="hint"
                     >
-                        <tui-line-days-chart
-                            *ngFor="let chart of statByDates"
-                            [height]="maxHeightYAxis "
-                            [value]="chart"
-                            class="chart"
-                            [xStringify]="xStringify$ | async"
-                        ></tui-line-days-chart>
+
+                        <ng-container *ngIf="getWidth(dateRange) > 90; else line">
+                            <tui-line-days-chart
+                              *ngFor="let chart of statByDates"
+                              class="chart"
+                              [height]="maxHeightYAxis"
+                              [value]="chart "
+                            ></tui-line-days-chart>
+                          </ng-container>
+                          <ng-template #line>
+                            <tui-line-chart
+                              *ngFor="let chart of statByDates"
+                              class="chart"
+                              [height]="maxHeightYAxis"
+                              [width]="getWidth(range)"
+                              [value]="chart | tuiMapper: toNumbers:range"
+                            ></tui-line-chart>
+                          </ng-template>
                     </tui-axes>                   
+                </div>
+                <div class="h-full w-full p-4 overflow-hidden grid grid-cols-2 gap-4 text-lg" *ngIf="activeItemIndex === 1">
+                    <div class="flex flex-col items-center" *ngIf="statisticFromServer[0] as ss">
+                        <h4 class="tui-text_h5">Пациенты</h4>
+                        <p>Выбранный период: {{statisticFromCurrentPeriod.pet}}</p>
+                        <div>Сегодня: {{ statisticFromServer[0][0].unique_pets }}</div>
+                        <p>Вчера: {{statisticFromServer[1][0].unique_pets}}</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <h4 class="tui-text_h5">Выручка</h4>
+                        <p>Выбранный период: {{statisticFromCurrentPeriod.earn | currency:"RUB" }}</p>
+                        <p>Сегодня: {{statisticFromServer[0][0].cost_sum | currency:"RUB"}}</p>
+                        <p>Вчера: {{statisticFromServer[1][0].cost_sum | currency:"RUB"}}</p>
+                    </div>
                 </div>
             </tui-loader>
         </div>
@@ -67,8 +90,17 @@
         <strong>{{ getDate(data[0][0], dateRange.from) }}</strong>
     </div>
     <div>
-        <div class="item"> <span class="value">Выручка: {{ data[0][1].toFixed(0) }} ₽</span></div>
+        <div class="item"> <span class="value">Выручка: {{ data[0][1].toFixed(0) | currency:"RUB" }}</span></div>
         <div class="item"> <span class="value">Питомцы: {{ data[1][1].toFixed(0)/300 }}</span></div>
         <div class="item"> <span class="value">Клиенты: {{ data[2][1].toFixed(0)/300 }}</span></div>
     </div>
 </ng-template>
+
+<!--
+    <tui-line-days-chart
+        *ngFor="let chart of statByDates"
+        [height]="maxHeightYAxis "
+        [value]="chart"
+        class="chart"
+        [xStringify]="xStringify$ | async"
+    ></tui-line-days-chart> -->

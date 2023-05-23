@@ -1,24 +1,45 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { AnalyticsService } from './analytics.service';
 import { BetweenDateInput } from 'src/receptionRecord/dto/BetweenDateInput.input';
-import { StatisticByDates } from './models/analytics';
+import { Statistic, StatisticByDates } from './models/analytics';
 
 @Controller('analytics')
 export class AnalyticsController {
-  constructor(
-    private readonly analyticsService: AnalyticsService,
-    private prisma: PrismaService
-  ) {}
+  constructor(private prisma: PrismaService) {}
+
+  /**
+   * Select statistic (sum of earn, count of clients and pets(unique)) to today an yesteday
+   * @param res
+   */
+  @Get('analytics')
+  async receptionsStatistic(@Res() res) {
+    const dates: Date[] = [
+      new Date(),
+      new Date(new Date().setDate(new Date().getDate() - 1)),
+    ];
+    const result: Statistic[] = [];
+    for (const date of dates) {
+      result.push(
+        await this.prisma.$queryRawUnsafe(`SELECT 
+          SUM("cost") as cost_sum, 
+          cast(COUNT(distinct public."Client"."id") as integer) as unique_client, 
+          cast(count(distinct "petId") as integer) as unique_pets
+        FROM public."Reception" 
+        LEFT JOIN public."Pet" ON public."Pet"."id" = "petId"
+        LEFT JOIN public."Client" on  public."Client"."id" = "clientId"
+        WHERE public."Reception"."createdAt"::date = '${date.toDateString()}'`)
+      );
+    }
+    console.log(result);
+    res.json(result);
+  }
 
   /**
    * Convert docx document to pdf extension
    */
-  @Post('receptions-earn-by-dates')
-  async receptionsStatisticByDates(
-    @Body() data: BetweenDateInput,
-    @Res({ passthrough: true }) res
-  ) {
+  @Post('analytics-by-dates')
+  async receptionsStatisticByDates(@Body() data: BetweenDateInput, @Res() res) {
     const result: StatisticByDates = await this.prisma.$queryRawUnsafe(`SELECT 
           DATE_TRUNC('day', public."Reception"."createdAt") as date, SUM("cost") as cost_sum, 
           cast(COUNT(distinct public."Client"."id") as integer) as unique_client, 
@@ -26,7 +47,9 @@ export class AnalyticsController {
         FROM public."Reception" 
         LEFT JOIN public."Pet" ON public."Pet"."id" = "petId"
         LEFT JOIN public."Client" on  public."Client"."id" = "clientId"
-        where public."Reception"."createdAt" BETWEEN '${data.dateStart}' and '${addDays(data.dateEnd, 1).toDateString()}'
+        where public."Reception"."createdAt" BETWEEN '${
+          data.dateStart
+        }' and '${addDays(data.dateEnd, 1).toDateString()}'
         GROUP BY DATE_TRUNC('day', public."Reception"."createdAt")
         ORDER BY date`);
     // console.log(addDays(data.dateEnd, 1));
@@ -39,13 +62,13 @@ function addDays(date, days): Date {
   result.setDate(result.getDate() + days);
   return result;
 }
-// `SELECT DATE_TRUNC('day', "createdAt") as date, SUM("cost")
+// SELECT
+// 	DATE_TRUNC('day', public."Reception"."createdAt") as date, SUM("cost") as cost_sum,
+// 	cast(COUNT(distinct public."Client"."id") as integer) as unique_client,
+//cast(count(distinct "petId") as integer) as unique_pets
 // FROM public."Reception"
-// where "createdAt" BETWEEN '${data.dateStart}' and '${addDays(data.dateEnd, 1).toDateString()}'
-// GROUP BY DATE_TRUNC('day', "createdAt")
-// ORDER BY date`
-// SELECT DATE_TRUNC('day', "createdAt") as date, SUM("cost")
-//   FROM public."Reception"
-//   where "createdAt" BETWEEN '2023-01-12' and '2023-06-01'
-//   GROUP BY DATE_TRUNC('day', "createdAt")
-//   ORDER BY date
+// LEFT JOIN public."Pet" ON public."Pet"."id" = "petId"
+// LEFT JOIN public."Client" on  public."Client"."id" = "clientId"
+// where public."Reception"."createdAt" BETWEEN '2023-01-12' and '2023-06-01'
+// GROUP BY DATE_TRUNC('day', public."Reception"."createdAt")
+// ORDER BY date

@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, map, Observable, tap } from "rxjs";
 import { BetweenDateInput, ServiceType } from "src/graphql/generated";
 import { environment } from "src/environments/environment"
-import { StatisticByDates } from "./types.interface";
+import { Statistic, StatisticByDates } from "./types.interface";
 
 
 @Injectable({
@@ -54,8 +54,13 @@ export class ServicesAnalytics
      */
     getEarnByDates(dates: BetweenDateInput): Observable<StatisticByDates[]>
     {
-        return this.http.post<StatisticByDates[]>(`${environment.api_url}/analytics/receptions-earn-by-dates`, dates)
+        return this.http.post<StatisticByDates[]>(`${environment.api_url}/analytics/analytics-by-dates`, dates)
         .pipe(map(data => {this._earnByDates.next(data); return data}))
+    }
+
+    getStatistic(): Observable<Statistic[][]>
+    {
+        return this.http.get<Statistic[][]>(`${environment.api_url}/analytics/analytics`)
     }
     
 }
