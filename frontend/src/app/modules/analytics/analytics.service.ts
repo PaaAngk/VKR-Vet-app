@@ -12,13 +12,10 @@ import { Statistic, StatisticByDates } from "./types.interface";
 export class ServicesAnalytics
 {
     private _earnByDates : BehaviorSubject<Array<StatisticByDates>> = new BehaviorSubject([] as StatisticByDates[]);
-    private _serviceTypesList : BehaviorSubject<Array<ServiceType>> = new BehaviorSubject([] as ServiceType[]);
-
 
     constructor(
         private http: HttpClient,
     ){
-        console.log("Provide")
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -26,20 +23,13 @@ export class ServicesAnalytics
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Getter for services
+     * Getter for 
      */
     get getEarnByDates$(): Observable<Array<StatisticByDates>>
     {
         return this._earnByDates.asObservable();
     }
 
-    /**
-     * Getter for service types
-     */
-    get getServiceTypes$(): Observable<ServiceType[]>
-    {
-        return this._serviceTypesList.asObservable();
-    }
 
     clearOnDestroy(){
         this._earnByDates.next([]);
@@ -58,6 +48,7 @@ export class ServicesAnalytics
         .pipe(map(data => {this._earnByDates.next(data); return data}))
     }
 
+    // Get statistic (sum of earn, count of clients and pets(unique)) to today and yesterday
     getStatistic(): Observable<Statistic[][]>
     {
         return this.http.get<Statistic[][]>(`${environment.api_url}/analytics/analytics`)

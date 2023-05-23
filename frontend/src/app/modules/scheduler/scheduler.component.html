@@ -14,7 +14,7 @@
     </div>
     <tui-loader
         *tuiLet="eventsList$ | async as eventsList"
-        [showLoader]="eventsList!.length < 1"
+        [showLoader]="!eventsList"
         [overlay]="true"
         class="overflow-y-auto" 
         [ngStyle]="{'height':'88%'}"

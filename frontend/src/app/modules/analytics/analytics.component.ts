@@ -69,6 +69,7 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
 		private _changeDetectorRef: ChangeDetectorRef,
 		@Inject(TUI_MONTHS) private readonly months$: Observable<readonly string[]>,
     ) {
+        //cahnge dates on onChange data picker
         this._dates.subscribe(dates => {
             this.dateRange = dates;
             this.dateRangeNative = {
@@ -77,6 +78,7 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
             };
             this.servicesAnalytics.getEarnByDates(this.dateRangeNative).pipe(take(1)).subscribe();
         });
+        // Initial date period
         this._dates.next(new TuiDayRange(
             lastTwoWeek, today,
         ));
@@ -85,6 +87,7 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
 
     ngOnInit(): void
 	{
+        //getting statistic data by dates and format its to plot
         this.servicesAnalytics.getEarnByDates$
         .pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
         .subscribe({
@@ -95,6 +98,7 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
             error: () => this.loading = false
         })
         
+        // Getting statistics today and yesterday
         this.servicesAnalytics.getStatistic()
         .pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
         .subscribe({
@@ -144,6 +148,7 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
     getWidth({from, to}: TuiDayRange): number {
         return TuiDay.lengthBetween(from, to);
     }
+
     @tuiPure
     private computeRange(range: TuiDayRange): TuiDayRange {
         const {from, to} = range;
@@ -172,7 +177,13 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
         return range;
     }
  
-    // Complete space between dates and calc max sum
+    /**
+     * Complete space between dates and calc max sum and statistic by choosen period.
+     * Format column to 3 deferent array then concat its
+     * @param dates dates for complete space, from and to
+     * @param data data include StatisticByDates array
+     * @returns formated array to shape (3,lenght,2) for display plot
+     */
     private getDaysArray(dates: BetweenDateInput, data: StatisticByDates[]):ReadonlyArray<ReadonlyArray<[TuiDay, number]>> {
         const arrCost: [TuiDay, number][] = [];
         const arrUnique_pets: [TuiDay, number][] = [];
@@ -201,10 +212,6 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
         const arrSum: [TuiDay, number][][] = [arrCost, arrUnique_pets, arrUnique_client];
         return arrSum;
     }
-
-    readonly hintContent = ({
-        $implicit,
-    }: TuiContextWithImplicit<readonly TuiPoint[]>): string => `${$implicit[0][1]} ₽`;
 
     onDateRangeChange(dates: TuiDayRange){
         this._dates.next(dates)

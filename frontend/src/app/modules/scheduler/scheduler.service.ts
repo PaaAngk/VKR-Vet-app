@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { EventInput } from "@fullcalendar/core";
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, map, Observable, tap } from "rxjs";
 import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteReceptionRecordGQL, GetRecordsByDatesRangeGQL, ReceptionRecord, BetweenDateInput, UpdateDateReceptionRecordGQL, UpdateReceptionRecordGQL, UpdateReceptionRecordInput } from "src/graphql/generated";
 
 
@@ -14,7 +14,7 @@ export class SchedulerService
     private _selectedRecord : BehaviorSubject<ReceptionRecord> = new BehaviorSubject(undefined as unknown as ReceptionRecord);
 
     private _eventsList: Observable<EventInput[] | null> = this._recordsList.pipe(
-        // tap(i => console.log(i)),
+        tap(i => console.log(i)),
         map(val => val.map((item: any) => {
             return {
                 id: item.id.toString(),
@@ -82,19 +82,22 @@ export class SchedulerService
     /**
      * Get reception record by range datetime
      */
-    getRecordsByDateRange(data: BetweenDateInput): Observable<any>//BetweenDateInput
+    getRecordsByDateRange(dates: BetweenDateInput): Observable<any>//BetweenDateInput
     {
         return this.getRecordsByDatesRangeGQL.watch({
-            data: data
+            data: dates
         })
-        .valueChanges.pipe(map(data => {
+        .valueChanges.pipe(map(result => {
             // let events: EventInput[] = [];
-            const newRecords = data.data?.receptionRecordBetweenDate             
+            const newRecords = result.data?.receptionRecordBetweenDate             
 
             if(newRecords){
                 const currentRecords = this._recordsList.getValue()
                 this._recordsList.next(currentRecords.concat(newRecords.filter((item) => currentRecords.indexOf(item) < 0)));
+                
             }
+            console.log(result)
+            console.log(dates)
         }))
     }
 

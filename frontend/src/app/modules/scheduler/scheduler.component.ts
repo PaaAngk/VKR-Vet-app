@@ -29,7 +29,6 @@ export class SchedulerComponent implements OnDestroy{
 	@ViewChild('eventDropConfirm', { static: true }) eventDropConfirmView!: ElementRef;
 	@ViewChild('eventResizeConfirm', { static: true }) eventResizeConfirmView!: ElementRef;
 
-
 	_recordView: Subject<ReceptionRecord> = new Subject<ReceptionRecord>();
 
 	eventsList$: Observable<EventInput[] | null>; 
