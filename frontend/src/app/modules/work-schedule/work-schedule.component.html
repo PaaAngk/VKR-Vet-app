@@ -1,0 +1,21 @@
+<div class="w-full p-2 border-r border-l border-color rounded-lg bg-white h-full shadow-lg"  >
+    <div class="w-full items-center mb-2 grid grid-cols-3">
+        <div class=""></div>
+        <div class="text-2xl font-semibold w-96 pl-12">График работы</div>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            class="w-72 place-self-end"
+        >
+            Добавление графика работы
+        </button>
+    </div>
+    <tui-loader 
+        class="overflow-y-auto w-full " 
+        [ngStyle]="{'height':'88%'}" 
+        [showLoader]="false"
+    >
+        <full-calendar class="w-full p-2" [options]="calendarOptions"></full-calendar>
+    </tui-loader>
+</div>

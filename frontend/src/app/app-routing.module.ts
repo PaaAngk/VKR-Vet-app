@@ -58,6 +58,7 @@ const routes: Routes = [
         {path: 'goods', loadChildren: () => import('./modules/goods/goods.module').then(m => m.GoodsModule)},
         {path: 'scheduler', loadChildren: () => import('./modules/scheduler/scheduler.module').then(m => m.SchedulerModule)},
         {path: 'analytics', loadChildren: () => import('./modules/analytics/analytics.module').then(m => m.AnalyticsModule)},
+        {path: 'work-scheduler', loadChildren: () => import('./modules/work-schedule/work-schedule.module').then(m => m.WorkScheduleModule)},
 
         // 404 & Catch all
         {path: '404-not-found', pathMatch: 'full', component: Page404Component},

@@ -1,6 +1,6 @@
 <div class="flex flex-col space-y-3" *ngIf="true">
 
-    <div class="w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-2 rounded-lg items-center justify-between bg-white shadow-md pr-2">
+    <div class="w-full h-full flex rounded-lg items-center justify-between bg-white shadow-md pr-2">
         <button
             tuiButton
             icon = 'tuiIconArrowLeftLarge'
@@ -10,8 +10,8 @@
         >
             К питомцу
         </button>
-
-        <div tuiTextfieldSize="m" class="flex items-center justify-center h-full py-auto space-x-2 w-full">
+<!--  [ngStyle]="{'width':'600px'}" -->
+        <div tuiTextfieldSize="m" class="flex items-center space-x-2 justify-center ">
             <button-with-dropdown
                 [data]="assignmentPrintButtonData" 
                 [showLoader]="assignmentButtonLoader"

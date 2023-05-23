@@ -122,10 +122,10 @@
                             <td
                                 *tuiCell="'pets'"
                                 tuiTd
-                                class=" tui-table__td tui-table__td_align_center"
+                                class="tui-table__td tui-table__td_align_center w-1/4 pet-scroll"
                             >
-                                <div class="flex items-center justify-between mx-1">
-                                    <div class="overflow-x-auto whitespace-nowrap space-x-1 mr-2 lg:w-96 md:w-24 w-16" >
+                                <div class="flex items-center justify-between mx-1" >
+                                    <div class="overflow-x-auto whitespace-nowrap space-x-1 mr-2 w-full" >
                                         <span *ngIf="!client.pets || client.pets.length === 0">Нет питомцев</span>
                                         <tui-tag
                                             *ngFor="let tag of client.pets"

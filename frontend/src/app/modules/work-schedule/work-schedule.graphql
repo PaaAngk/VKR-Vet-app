@@ -1,0 +1,100 @@
+query GetRecordsByDatesRange($data:BetweenDateInput!){
+  receptionRecordBetweenDate(data: $data){
+    client{
+      id
+      fullName
+      telephoneNumber
+    }
+    employee{
+      id
+      fullName
+    }
+    purpose{
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
+mutation CreateReceptionRecord($data:CreateReceptionRecordInput!){
+  createReceptionRecord(data: $data){
+    client{
+      id
+      fullName
+      telephoneNumber
+    }
+    employee{
+      id
+      fullName
+    }
+    purpose{
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal 
+  }
+}
+
+mutation UpdateReceptionRecord(
+  $receptionRecordId:Int!,
+  $data:UpdateReceptionRecordInput!
+){
+  updateReceptionRecord(receptionRecordId:$receptionRecordId, data: $data){
+    client{
+      id
+      fullName
+      telephoneNumber
+    }
+    employee{
+      id
+      fullName
+    }
+    purpose{
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
+
+mutation DeleteReceptionRecord(
+  $receptionRecordId:Int!,
+){
+  deleteReceptionRecord(receptionRecordId:$receptionRecordId){
+    id
+  }
+}
+
+mutation UpdateDateReceptionRecord(
+  $receptionRecordId:Int!,
+  $data:BetweenDateInput!
+){
+  updateDateReceptionRecord(receptionRecordId:$receptionRecordId, data: $data){
+    client{
+      id
+      fullName
+      telephoneNumber
+    }
+    employee{
+      id
+      fullName
+    }
+    purpose{
+      id
+      purposeName
+    }
+    id
+    dateTimeStart
+    dateTimeEnd
+    kindOfAnimal
+  }
+}
