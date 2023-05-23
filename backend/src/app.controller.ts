@@ -24,7 +24,12 @@ export class AppController {
     // return await this.prisma.$queryRaw`
     // SELECT date_trunc('day', '2023-05-16') month,
     // sum(cost) amount_by_month FROM Reception group by 1;`;
-    return await this.prisma.$queryRaw`SELECT * FROM reception
-      where start_date between '2023-01-01' and '2023-09-13'`;
+    return await this.prisma.$queryRaw`
+      SELECT DATE_TRUNC('day', "createdAt") as date, SUM("cost")
+      FROM public."Reception"
+      where "createdAt" BETWEEN '2023-01-12' and '2023-06-01'
+      GROUP BY DATE_TRUNC('day', "createdAt")
+      ORDER BY date
+    `;
   }
 }

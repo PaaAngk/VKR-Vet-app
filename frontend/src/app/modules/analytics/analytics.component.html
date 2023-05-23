@@ -2,49 +2,73 @@
 
 
     <div class="w-full h-full" ><!--tui-loader [overlay]="true" [showLoader] = "loading"-->
-        <div class="items-center text-center mb-1 p-2">
-            <div class="text-2xl font-semibold">Аналитика</div>
-        </div>
+        
         <div class="w-full h-full">
-            <tui-tabs [(activeItemIndex)]="activeItemIndex">
-                <button
-                    tuiTab
-                >Пациенты</button>
-                <button
-                    tuiTab
-                >Выручка</button>
-                <button
-                    tuiTab
-                >Остальное</button>
+            <tui-tabs [(activeItemIndex)]="activeItemIndex" class="grid-cols-1 lg:grid-cols-3 justify-between items-center">
+                <div class="flex flex-row">
+                    <button
+                        tuiTab
+                    ><p class="px-4">Выручка</p></button>
+                    <button
+                        tuiTab
+                    ><p class="px-2">Пациенты</p></button>
+                    <button
+                        tuiTab
+                    ><p class="px-2">Остальное</p></button>
+                </div>
+                <div class="items-center text-center  p-2">
+                    <div class="text-2xl font-bold text-black">Аналитика</div>
+                </div>
+                <tui-input-date-range 
+                    tuiTextfieldSize='m'
+                    [maxLength]="maxLength"
+                    [(ngModel)]="dateRange"
+                    class="w-72 p-2 mr-4"
+                    (ngModelChange)="onDateRangeChange($event)"
+                >
+                    Период
+                </tui-input-date-range>
             </tui-tabs>
-            <div class="p-2 shadow-inner overflow-auto h-full" >
+            <tui-loader class="p-2 shadow-inner overflow-auto h-full" [showLoader]="loading">
                 <div class="h-full w-full p-4" *ngIf="activeItemIndex === 0">
-                    <tui-input-date-range
-                        [maxLength]="maxLength"
-                        [(ngModel)]="range"
-                        class="w-72 mb-2"
-                    >
-                        Период
-                    </tui-input-date-range>
+                    <p class="legend">
+                        <span class="item"> <p class="name">Выручка</p></span>
+                        <span class="item"> <p class="name">Питомцы</p></span>
+                        <span class="item"> <p class="name">Клиенты</p></span>
+                    </p>
                     <tui-axes
-                        *ngIf="computeLabels$(range) | async as labels"
-                        class="h-96"
-                        [verticalLines]="labels.length"
+                        *ngIf=" computeXLabels$(dateRange) | async as axisXLabels"
+                        class="axes"
+                        [verticalLines]="axisXLabels.length"
                         [horizontalLines]="4"
-                        [axisXLabels]="labels"
+                        [axisXLabels]="axisXLabels"
+                        [axisYLabels]="computeYLabels$(maxHeightYAxis)"
+                        [tuiLineChartHint]="hint"
                     >
                         <tui-line-days-chart
+                            *ngFor="let chart of statByDates"
+                            [height]="maxHeightYAxis "
+                            [value]="chart"
                             class="chart"
-                            [height]="200"
-                            [value]="value"
-                            [yStringify]="yStringify"
                             [xStringify]="xStringify$ | async"
                         ></tui-line-days-chart>
-                    </tui-axes>
-                    
+                    </tui-axes>                   
                 </div>
-            </div>
-
+            </tui-loader>
         </div>
     </div>
 </div>
+
+<ng-template
+    #hint
+    let-data
+>
+    <div class="tui-space_bottom-2">
+        <strong>{{ getDate(data[0][0], dateRange.from) }}</strong>
+    </div>
+    <div>
+        <div class="item"> <span class="value">Выручка: {{ data[0][1].toFixed(0) }} ₽</span></div>
+        <div class="item"> <span class="value">Питомцы: {{ data[1][1].toFixed(0)/300 }}</span></div>
+        <div class="item"> <span class="value">Клиенты: {{ data[2][1].toFixed(0)/300 }}</span></div>
+    </div>
+</ng-template>

@@ -7,7 +7,7 @@ import { TuiButtonModule, TuiDataListModule, TuiErrorModule, TuiLoaderModule, Tu
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { AnalyticsComponent } from './analytics.component';
 import { AnalyticsRoutingModule } from './analytics-routing.module';
-import { TuiAxesModule, TuiLineDaysChartModule } from '@taiga-ui/addon-charts';
+import { TuiAxesModule, TuiLineChartModule, TuiLineDaysChartModule } from '@taiga-ui/addon-charts';
 
 
 @NgModule({
@@ -35,6 +35,7 @@ import { TuiAxesModule, TuiLineDaysChartModule } from '@taiga-ui/addon-charts';
     TuiLineDaysChartModule,
     TuiAxesModule,
     TuiInputDateRangeModule,
-  ]
+    TuiLineChartModule,
+  ],
 })
 export class AnalyticsModule { }

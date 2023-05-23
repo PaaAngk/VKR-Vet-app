@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Apollo } from "apollo-angular";
-import { BehaviorSubject, map, Observable } from "rxjs";
-import { BetweenDateInput, CreateServiceGQL, CreateServiceInput, DeleteServiceGQL, GetAllServiceGQL, GetAllServiceTypeGQL, Service, ServiceType, UpdateServiceGQL, UpdateServiceInput } from "src/graphql/generated";
+import { BehaviorSubject, map, Observable, tap } from "rxjs";
+import { BetweenDateInput, ServiceType } from "src/graphql/generated";
 import { environment } from "src/environments/environment"
+import { StatisticByDates } from "./types.interface";
 
 
 @Injectable({
@@ -11,34 +11,14 @@ import { environment } from "src/environments/environment"
 })
 export class ServicesAnalytics
 {
-    private _serviceList : BehaviorSubject<Array<Service>> = new BehaviorSubject([] as Service[]);
+    private _earnByDates : BehaviorSubject<Array<StatisticByDates>> = new BehaviorSubject([] as StatisticByDates[]);
     private _serviceTypesList : BehaviorSubject<Array<ServiceType>> = new BehaviorSubject([] as ServiceType[]);
 
 
     constructor(
-        private apollo: Apollo,
-        private getAllServiceGQL: GetAllServiceGQL,
-        private createServiceGQL : CreateServiceGQL,
-        private getAllServiceTypeGQL: GetAllServiceTypeGQL,
-        private updateServiceGQL: UpdateServiceGQL,
-        private deleteServiceGQL: DeleteServiceGQL,
-
         private http: HttpClient,
     ){
-
-        const dates: BetweenDateInput ={
-            dateStart: new Date(2023,2,1),
-            dateEnd: new Date(2023,6,25)
-        }
-        this.http.post(`${environment.api_url}/analytics/receptions-earn-by-dates`, dates)
-        .subscribe({
-            next: (data: any) => {
-                console.log(data)
-                
-            },
-        })
-        this.getAllServices();
-        this.getAllServiceTypes();
+        console.log("Provide")
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -48,9 +28,9 @@ export class ServicesAnalytics
     /**
      * Getter for services
      */
-    get getServices$(): Observable<Service[]>
+    get getEarnByDates$(): Observable<Array<StatisticByDates>>
     {
-        return this._serviceList.asObservable();
+        return this._earnByDates.asObservable();
     }
 
     /**
@@ -61,98 +41,21 @@ export class ServicesAnalytics
         return this._serviceTypesList.asObservable();
     }
 
+    clearOnDestroy(){
+        this._earnByDates.next([]);
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Get all services
+     * Get all cost in date with date range
      */
-    getAllServices(): void
+    getEarnByDates(dates: BetweenDateInput): Observable<StatisticByDates[]>
     {
-        this.getAllServiceGQL.watch()
-        .valueChanges.subscribe({
-            next : (data) => {
-                this._serviceList.next(data.data.allServices)
-            },
-            error: (error)  => {
-                console.log(error)
-            }
-        });
+        return this.http.post<StatisticByDates[]>(`${environment.api_url}/analytics/receptions-earn-by-dates`, dates)
+        .pipe(map(data => {this._earnByDates.next(data); return data}))
     }
-
-    /**
-     * Get all services
-     */
-    getAllServiceTypes(): void
-    {
-        this.getAllServiceTypeGQL.watch()
-        .valueChanges.subscribe({
-            next : (data) => {
-                this._serviceTypesList.next(data.data.allServiceType)
-            },
-            error: (error)  => {
-                console.log(error)
-            }
-        });
-    }
-
-    /**
-     * Query for service create
-     * @param data CreateServiceInput 
-     * @returns Observable of created service
-     */
-    createService(data: CreateServiceInput){
-        return this.createServiceGQL.mutate({
-            data: data
-        }).pipe(
-            map(( data ) => {
-                if (data.data?.createService) {
-                    this._serviceList.next(this._serviceList.getValue().concat(data.data?.createService));
-                }
-            })
-        )
-    }
-
-    /**
-     * Update service and replace updated in serviceList
-     * @param id id current service
-     * @param newService UpdateServiceInput new service data
-     * @returns Observable of updated service
-     */
-    updateService(id:number, newService : UpdateServiceInput){
-        return this.updateServiceGQL.mutate({
-            data: newService,
-            serviceId: id
-        }).pipe(
-            map(( {data} ) => {
-                if (data?.updateService) {
-                    this._serviceList.next(
-                        this._serviceList.getValue().map(val => {
-                            return val.id === data?.updateService.id ? data?.updateService : val
-                        })
-                    );
-                }
-            })
-        )
-    }
-
-    /**
-     * Delete service and remove from list
-     * @param id id current service
-     * @returns Observable of updated service
-     */
-    deleteService(id:number){
-        return this.deleteServiceGQL.mutate({
-            serviceId: id
-        }).pipe(
-            map(( {data} ) => {
-                if (data?.deleteService) {
-                    this._serviceList.next(
-                        this._serviceList.getValue().filter((item: Service) => item.id != id)
-                    );
-                }
-            })
-        )
-    }
+    
 }
