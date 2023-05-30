@@ -1,4 +1,3 @@
-import { AuthSignOutComponent } from './modules/auth/sign-out/sign-out.component';
 import { SignInComponent } from './modules/auth/sign-in/sign-in.component';
 import { AuthGuard } from './core/auth/guards/auth.guard';
 import { NgModule } from '@angular/core';
@@ -14,7 +13,7 @@ const routerConfig: ExtraOptions = {
 
 const routes: Routes = [
   // Redirect empty path to 'home'
-  {path: '', pathMatch : 'full', redirectTo: 'home'},
+  {path: '', pathMatch : 'full', redirectTo: 'scheduler'},
 
   // Redirect signed in user to the '/home'
   //
@@ -34,17 +33,6 @@ const routes: Routes = [
     ]
   }, 
 
-  // Auth routes for authenticated users
-  {
-    path: '',
-    canActivate: [AuthGuard],
-    canActivateChild: [AuthGuard],
-    component: AuthSignOutComponent,
-    children: [
-      {path: 'sign-out', loadChildren: () => import('./modules/auth/sign-out/sign-out.module').then(m => m.AuthSignOutModule)},
-    ]
-  },
-
   // Landing routes
   {
     path: '',
@@ -52,7 +40,6 @@ const routes: Routes = [
     canActivateChild: [AuthGuard],
     component  : LayoutComponent,
     children: [
-        {path: 'home', loadChildren: () => import('./modules/landing/home/home.module').then(m => m.HomeModule)},
         {path: 'client-card', loadChildren: () => import('./modules/client-card/client-card.module').then(m => m.ClientCardModule)},
         {path: 'services', loadChildren: () => import('./modules/services/services.module').then(m => m.ServiceModule)},
         {path: 'goods', loadChildren: () => import('./modules/goods/goods.module').then(m => m.GoodsModule)},

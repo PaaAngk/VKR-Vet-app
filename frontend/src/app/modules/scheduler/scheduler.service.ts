@@ -15,10 +15,11 @@ export class SchedulerService
 
     private _eventsList: Observable<EventInput[] | null> = this._recordsList.pipe(
         tap(i => console.log(i)),
-        map(val => val.map((item: any) => {
+        map(val => val.map((item: ReceptionRecord) => {
             return {
                 id: item.id.toString(),
-                title: item.client?.fullName ? item.client?.fullName : (item.purpose?.purposeName ? item.purpose?.purposeName : "Нет данных"),
+                title: item.employee?.fullName ? item.employee?.fullName : 
+                    (item.purpose?.purposeName ? item.purpose?.purposeName : (item.kindOfAnimal ? item.kindOfAnimal: 'Нет данных')),
                 start: item.dateTimeStart,
                 end: item.dateTimeEnd,
             }
@@ -86,7 +87,10 @@ export class SchedulerService
     {
         return this.getRecordsByDatesRangeGQL.watch({
             data: dates
-        })
+        },
+        {
+            fetchPolicy: 'network-only',
+        },)
         .valueChanges.pipe(map(result => {
             // let events: EventInput[] = [];
             const newRecords = result.data?.receptionRecordBetweenDate             

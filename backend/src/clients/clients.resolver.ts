@@ -13,8 +13,6 @@ import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection
 import { PubSub } from 'graphql-subscriptions';
 import { UseGuards } from '@nestjs/common';
 import { PaginationArgs } from 'src/common/pagination/pagination.args';
-import { UserEntity } from 'src/common/decorators/user.decorator';
-import { User } from 'src/users/models/user.model';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { Client } from './models/client.model';
 import { ClientConnection } from './models/client-connection.model';
@@ -52,7 +50,7 @@ export class ClientsResolver {
 
   @Mutation(() => Client)
   async updateClient(
-    @Args({ name: 'clientId', type: () => String }) clientId: string,
+    @Args({ name: 'clientId', type: () => Int }) clientId: number,
     @Args('data') newClientData: UpdateClientInput
   ) {
     return this.prisma.client.update({
@@ -65,7 +63,7 @@ export class ClientsResolver {
 
   @Mutation(() => Client)
   async deleteClient(
-    @Args({ name: 'clientId', type: () => String }) clientId: string
+    @Args({ name: 'clientId', type: () => Int }) clientId: number
   ) {
     return this.prisma.client.delete({
       where: {
@@ -85,7 +83,7 @@ export class ClientsResolver {
     })
     orderBy: ClientOrder
   ) {
-    const a = await findManyCursorConnection(
+    const result = await findManyCursorConnection(
       (args) =>
         this.prisma.client.findMany({
           where: {
@@ -128,7 +126,7 @@ export class ClientsResolver {
         }),
       { first, last, before, after }
     );
-    return a;
+    return result;
   }
 
   /**

@@ -1,17 +1,13 @@
 import {
   Body,
   Controller,
-  Get,
   HttpException,
   HttpStatus,
   Post,
-  Query,
   Res,
-  StreamableFile,
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { AnalyzesResearchService } from './analyzes-research.service';
-import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
 
 interface FileData {

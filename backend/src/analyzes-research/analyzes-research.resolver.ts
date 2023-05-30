@@ -6,6 +6,7 @@ import {
   Args,
   ResolveField,
   Mutation,
+  Int,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
@@ -57,8 +58,8 @@ export class AnalyzesResearchResolver {
 
   @Mutation(() => AnalyzesResearch)
   async updateAnalyzesResearch(
-    @Args({ name: 'analyzesResearchId', type: () => String })
-    analyzesResearchId: string,
+    @Args({ name: 'analyzesResearchId', type: () => Int })
+    analyzesResearchId: number,
     @Args('data') newAnalyzesData: UpdateAnalyzesResearchInput
   ) {
     return await this.prisma.analyzesResearch.update({

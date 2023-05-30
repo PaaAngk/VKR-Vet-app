@@ -579,7 +579,7 @@ export class DocumentGenerateService
             extension: extension
         }
         const headers = new HttpHeaders();
-        headers.append('Accept', 'application/pdf');
+        headers.append('Accept', 'application/pdf; application/vnd.openxmlformats-officedocument.wordprocessingml.document');
         const options = { headers: headers };
         this.http.post(`${environment.api_url}/print/generateDocument`, sendingData, options)
         .subscribe({

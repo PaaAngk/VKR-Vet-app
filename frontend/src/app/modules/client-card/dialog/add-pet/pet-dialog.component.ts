@@ -27,7 +27,7 @@ export function fullNameValidator(field: AbstractControl): Validators | null {
 export class PetDialogComponent {
     petsKind = ["Кошка", "Собака", "Жираф"];
     petsNutrition = ["Промышленный корм", "Натуральный корм", "Смешанный корм"];
-    petId: string = '';
+    petId: number = -1;
 
 	readonly addPetForm = new FormGroup({
         DOB: new FormControl(),
@@ -41,7 +41,7 @@ export class PetDialogComponent {
         notes: new FormControl(null as unknown as string),
         nutrition: new FormControl(null as unknown as string),
         weight: new FormControl(null as unknown as number),
-        clientId: new FormControl(''),
+        clientId: new FormControl(-1),
 	});
 
     constructor(
@@ -68,7 +68,7 @@ export class PetDialogComponent {
                     notes: pet.notes as string,
                     nutrition: pet.nutrition as string,
                     weight: pet.weight as number,
-                    clientId: pet.clientId as string,
+                    clientId: pet.clientId as number,
                 }); 
                 this.petId = pet.id
             });

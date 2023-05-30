@@ -18,7 +18,7 @@ import { DialogClientComponent } from '../dialog/client-dialog/client-dialog.com
 })
 export class ClientComponent implements OnDestroy, OnInit{
 	private _unsubscribeAll: Subject<any> = new Subject<any>();
-	private endCursor: string | null = null;
+	private endCursor: number | null = null;
 	private fetchSize = 10;
 	private endIndexFromVirtScroll = 0;
 	orderByDefault: ClientOrder = {direction: OrderDirection.Asc, field:ClientOrderField.Id}
@@ -122,13 +122,13 @@ export class ClientComponent implements OnDestroy, OnInit{
     }
 
 	// Open client detail
-	setClient(clientId : string) {
+	setClient(clientId : number) {
 		this.clientCardService.setSelectedClient(clientId);
 		this.router.navigateByUrl(`client-card/client/${clientId}`);
 	}
 
 	//Set query for open dialog with pet adding 
-	newPet(clientId : string) {
+	newPet(clientId : number) {
 		this.clientCardService.setSelectedClient(clientId);
 		this.router.navigate([`client-card/client/${clientId}`], {queryParams:{'addPet':'dialog'}});
 	}
@@ -140,13 +140,13 @@ export class ClientComponent implements OnDestroy, OnInit{
 		const prevEndIndexFromVirtScroll = this.endIndexFromVirtScroll
 		this.endIndexFromVirtScroll = event.endIndex
         this.loadingTable = true;
-		console.log(event)
+		// console.log(event)
 		this.clientCardService.searchClientsWithPagination
 			(String(this.searchForm.value.search), 5, this.endCursor, {direction: OrderDirection.Asc, field:ClientOrderField.Id})//this.fetchSize
 			.pipe(tuiWatch(this._changeDetectorRef), take(1))
 			.subscribe({
 				next: (clientConnection: ClientConnection) =>{
-					console.log(clientConnection)
+					// console.log(clientConnection)
 					if(clientConnection.pageInfo.endCursor)
 						this.endCursor = clientConnection.pageInfo.endCursor;
 					this.loadingTable = false;
@@ -159,7 +159,7 @@ export class ClientComponent implements OnDestroy, OnInit{
 			});
     }
 
-	public trackByFunction(index: number, complexItem: Client): string {
+	public trackByFunction(index: number, complexItem: Client): number {
 		return complexItem.id;
 	}
 	

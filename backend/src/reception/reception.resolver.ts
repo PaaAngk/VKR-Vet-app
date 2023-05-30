@@ -6,6 +6,7 @@ import {
   Args,
   ResolveField,
   Mutation,
+  Int,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
@@ -82,7 +83,7 @@ export class ReceptionResolver {
    */
   @Mutation(() => Reception)
   async updateReception(
-    @Args({ name: 'receptionId', type: () => String }) receptionId: string,
+    @Args({ name: 'receptionId', type: () => Int }) receptionId: number,
     @Args('data') newReceptionData: UpdateReceptionInput
   ) {
     const newReception = await this.prisma.reception.update({

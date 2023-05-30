@@ -41,8 +41,8 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 
 	/** Interface */
 	editMode = false;
-	receptionId = '';
-	petId = '';
+	receptionId = -1;
+	petId = -1;
 
 	activeItemIndex = 0;
 	@ViewChild(TuiHostedDropdownComponent)
@@ -125,12 +125,12 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		});
 
 		// Getting id pet from url for now reception
-		this.activateRoute.params.subscribe(params=> this.petId=params['id'] );
+		this.activateRoute.params.subscribe(params=> this.petId=Number(params['id']) );
 
 		// getting reception data for edit and fill current form
 		if (this.activateRoute.snapshot.url[4] && this.activateRoute.snapshot.url[4].path == 'edit'){
 			this.editMode = true;
-			this.receptionId = this.activateRoute.snapshot.url[3].path;
+			this.receptionId = Number(this.activateRoute.snapshot.url[3].path);
 			this.getReceptionGQL
 			.watch({
 				receptionId: this.receptionId
@@ -301,7 +301,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 			error: (error)  => 
 			{
 				this.alertService.open(
-					"Проверьте правильность введенных данных", 
+					"Проверьте правильность введенных данных или перезагрузите страницу.", 
 					{
 						status: TuiNotification.Error, 
 						label: "Невозможно добавить прием!",

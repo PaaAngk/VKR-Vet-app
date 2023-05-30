@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { InputType, Field, Float } from '@nestjs/graphql';
+import { InputType, Field, Float, Int } from '@nestjs/graphql';
 
 @InputType()
 export class UpdatePetInput {
@@ -38,6 +38,6 @@ export class UpdatePetInput {
   @Field(() => Float, { nullable: true })
   weight?: number;
 
-  @Field(() => String)
-  clientId?: string;
+  @Field(() => Int)
+  clientId?: number;
 }

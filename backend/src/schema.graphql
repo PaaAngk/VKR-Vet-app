@@ -5,16 +5,16 @@
 input AddInGoodsListInput {
   goodsId: Int!
   quantity: Float!
-  receptionId: String!
+  receptionId: Int!
 }
 
 type AnalyzesResearch {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime
   data: String
-  id: String!
+  id: Int!
   pet: Pet
-  petId: String
+  petId: Int
   type: TypeAnalyzesResearch
   typeId: Int
 }
@@ -43,7 +43,7 @@ type Client {
 
   """Client full name."""
   fullName: String!
-  id: String!
+  id: Int!
   pets: [Pet!]
   telephoneNumber: String!
 }
@@ -70,7 +70,7 @@ enum ClientOrderField {
 
 input CreateAnalyzesResearchInput {
   data: String
-  petId: String!
+  petId: Int!
   typeId: Int!
 }
 
@@ -97,7 +97,7 @@ input CreatePetInput {
   alias: String!
   breed: String
   castration: Boolean
-  clientId: String!
+  clientId: Int!
   color: String
   diagnosis: String
   gender: Boolean
@@ -116,13 +116,13 @@ input CreateReceptionInput {
   discount: Int
   employeeId: Int!
   goodsListReceptionInput: [GoodsListReceptionInput!]
-  petId: String!
+  petId: Int!
   purposeId: Int!
   serviceListReceptionInput: [ServiceListReceptionInput!]
 }
 
 input CreateReceptionRecordInput {
-  clientId: String
+  clientId: Int
   dateTimeEnd: DateTime!
   dateTimeStart: DateTime!
   employeeId: Int
@@ -205,20 +205,20 @@ type Mutation {
   createReception(data: CreateReceptionInput!): Reception!
   createReceptionRecord(data: CreateReceptionRecordInput!): ReceptionRecord!
   createService(data: CreateServiceInput!): Service!
-  deleteClient(clientId: String!): Client!
+  deleteClient(clientId: Int!): Client!
   deleteGoods(goodsId: Int!): Goods!
-  deletePet(petId: String!): Pet!
+  deletePet(petId: Int!): Pet!
   deleteReceptionRecord(receptionRecordId: Int!): ReceptionRecord!
-  deleteResearch(analyzesResearchId: String!): AnalyzesResearch!
+  deleteResearch(analyzesResearchId: Int!): AnalyzesResearch!
   deleteService(serviceId: Int!): Service!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
-  updateAnalyzesResearch(analyzesResearchId: String!, data: UpdateAnalyzesResearchInput!): AnalyzesResearch!
-  updateClient(clientId: String!, data: UpdateClientInput!): Client!
+  updateAnalyzesResearch(analyzesResearchId: Int!, data: UpdateAnalyzesResearchInput!): AnalyzesResearch!
+  updateClient(clientId: Int!, data: UpdateClientInput!): Client!
   updateDateReceptionRecord(data: BetweenDateInput!, receptionRecordId: Int!): ReceptionRecord!
   updateGoods(data: UpdateGoodsInput!, goodsId: Int!): Goods!
-  updatePet(data: UpdatePetInput!, petId: String!): Pet!
-  updateReception(data: UpdateReceptionInput!, receptionId: String!): Reception!
+  updatePet(data: UpdatePetInput!, petId: Int!): Pet!
+  updateReception(data: UpdateReceptionInput!, receptionId: Int!): Reception!
   updateReceptionRecord(data: UpdateReceptionRecordInput!, receptionRecordId: Int!): ReceptionRecord!
   updateService(data: UpdateServiceInput!, serviceId: Int!): Service!
   updateUser(data: UpdateUserInput!): User!
@@ -233,10 +233,10 @@ enum OrderDirection {
 }
 
 type PageInfo {
-  endCursor: String
+  endCursor: Int
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
-  startCursor: String
+  startCursor: Int
 }
 
 type Pet {
@@ -246,14 +246,14 @@ type Pet {
   breed: String
   castration: Boolean
   client: Client
-  clientId: String
+  clientId: Int
   color: String
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime
   diagnosis: String
   gender: Boolean
-  id: String!
+  id: Int!
   kind: String
   notes: String
   nutrition: String
@@ -271,17 +271,17 @@ type Query {
   allServiceType: [ServiceType!]!
   allServices: [Service!]!
   allTypeAnalyzesResearch: [TypeAnalyzesResearch!]!
-  analyzesResearch(analyzesResearchId: String!): AnalyzesResearch!
-  clientDetail(clientId: String!): Client!
+  analyzesResearch(analyzesResearchId: Int!): AnalyzesResearch!
+  clientDetail(clientId: Int!): Client!
   clientsWithSearch(search: String): [Client!]!
   hello(name: String!): String!
   helloWorld: String!
   me: User!
-  pet(petId: String!): Pet!
-  reception(receptionId: String!): Reception!
+  pet(petId: Int!): Pet!
+  reception(receptionId: Int!): Reception!
   receptionRecord(receptionRecordId: Int!): ReceptionRecord!
   receptionRecordBetweenDate(data: BetweenDateInput!): [ReceptionRecord!]!
-  searchClients(after: String, before: String, first: Int, last: Int, orderBy: ClientOrder, search: String, skip: Int): ClientConnection!
+  searchClients(after: Int, before: Int, first: Int, last: Int, orderBy: ClientOrder, search: String, skip: Int): ClientConnection!
 }
 
 type Reception {
@@ -308,9 +308,9 @@ type Reception {
   employee: Employee
   employeeId: Int
   goods: [GoodsList]
-  id: String!
+  id: Int!
   pet: Pet
-  petId: String
+  petId: Int
   purpose: ReceptionPurpose
   purposeId: Int
   services: [ServiceList]
@@ -416,7 +416,7 @@ input UpdatePetInput {
   alias: String!
   breed: String
   castration: Boolean
-  clientId: String!
+  clientId: Int!
   color: String
   diagnosis: String
   gender: Boolean
@@ -440,7 +440,7 @@ input UpdateReceptionInput {
 }
 
 input UpdateReceptionRecordInput {
-  clientId: String
+  clientId: Int
   dateTimeEnd: DateTime!
   dateTimeStart: DateTime!
   employeeId: Int

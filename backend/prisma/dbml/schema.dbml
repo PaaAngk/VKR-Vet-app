@@ -6,7 +6,6 @@ Table User {
   id Int [pk, increment]
   login String [unique, not null]
   password String [not null]
-  fullName String [unique]
   role Role [not null]
 }
 
@@ -20,7 +19,7 @@ Table Employee {
 }
 
 Table Client {
-  id String [pk]
+  id Int [pk, increment]
   pet Pet [not null]
   receptionRecord ReceptionRecord [not null]
   fullName String [not null]
@@ -34,9 +33,9 @@ Table Client {
 }
 
 Table Pet {
-  id String [pk]
+  id Int [pk, increment]
   client Client [not null]
-  clientId String [not null]
+  clientId Int [not null]
   AnalyzesResearch AnalyzesResearch [not null]
   Reception Reception [not null]
   alias String [not null]
@@ -58,11 +57,11 @@ Table Pet {
 }
 
 Table AnalyzesResearch {
-  id String [pk]
+  id Int [pk, increment]
   TypeAnalyzesResearch TypeAnalyzesResearch [not null]
   typeId Int [not null]
   pet Pet [not null]
-  petId String [not null]
+  petId Int [not null]
   data String [not null]
   createdAt DateTime [default: `now()`, not null]
 }
@@ -74,9 +73,9 @@ Table TypeAnalyzesResearch {
 }
 
 Table Reception {
-  id String [pk]
+  id Int [pk, increment]
   pet Pet [not null]
-  petId String [not null]
+  petId Int [not null]
   Employee Employee [not null]
   employeeId Int [not null]
   purpose ReceptionPurpose [not null]
@@ -118,7 +117,7 @@ Table GoodsCategory {
 
 Table GoodsList {
   Reception Reception [not null]
-  receptionId String [not null]
+  receptionId Int [not null]
   Goods Goods [not null]
   goodsId Int [not null]
   quantity Float [not null]
@@ -149,7 +148,7 @@ Table ServiceType {
 
 Table ServiceList {
   Reception Reception [not null]
-  receptionId String [not null]
+  receptionId Int [not null]
   Service Service [not null]
   serviceId Int [not null]
   quantity Int [not null]
@@ -164,7 +163,7 @@ Table Schedule {
   Employee Employee [not null]
   employeeId Int [not null]
   data DateTime [not null]
-  dayType Int [not null]
+  dayType Boolean [not null]
 }
 
 Table ReceptionRecord {
@@ -174,7 +173,7 @@ Table ReceptionRecord {
   ReceptionPurpose ReceptionPurpose
   receptionPurposeId Int
   Client Client
-  clientId String
+  clientId Int
   dateTimeStart DateTime [not null]
   dateTimeEnd DateTime [not null]
   kindOfAnimal String
@@ -198,22 +197,22 @@ Ref: Reception.employeeId > Employee.id
 
 Ref: Reception.purposeId > ReceptionPurpose.id
 
-Ref: Goods.categoryId > GoodsCategory.id
+Ref: Goods.categoryId > GoodsCategory.id [delete: Cascade]
 
 Ref: GoodsList.receptionId > Reception.id [delete: Cascade]
 
 Ref: GoodsList.goodsId > Goods.id [delete: Cascade]
 
-Ref: Service.typeId > ServiceType.id
+Ref: Service.typeId > ServiceType.id [delete: Cascade]
 
 Ref: ServiceList.receptionId > Reception.id [delete: Cascade]
 
 Ref: ServiceList.serviceId > Service.id [delete: Cascade]
 
-Ref: Schedule.employeeId > Employee.id
+Ref: Schedule.employeeId > Employee.id [delete: Cascade]
 
-Ref: ReceptionRecord.employeeId > Employee.id
+Ref: ReceptionRecord.employeeId > Employee.id [delete: Cascade]
 
-Ref: ReceptionRecord.receptionPurposeId > ReceptionPurpose.id
+Ref: ReceptionRecord.receptionPurposeId > ReceptionPurpose.id [delete: Cascade]
 
-Ref: ReceptionRecord.clientId > Client.id
+Ref: ReceptionRecord.clientId > Client.id [delete: Cascade]

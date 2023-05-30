@@ -8,22 +8,27 @@ async function main() {
 
   const user1 = await prisma.user.create({
     data: {
-      fullName: 'Ivan Ivanovich',
-      login: 'ivan.ivanovich',
-      password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
+      login: 'manager',
+      password: '$2b$10$LEcbl6NJTbQviHhCDjIYiOWmOFIvcri1LQoFLidKvw/wPbPhJezyu', // nFO0uUVL
       role: 'MANAGER',
     },
   });
   const user2 = await prisma.user.create({
     data: {
-      fullName: 'Petr Petrovich',
-      login: 'petr.petrovich',
+      login: 'doctor',
       role: 'DOCTOR',
-      password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
+      password: '$2b$10$V8lBLpc3c7KC2kFebMM8J.bSxyL7RQ2s5hCflUOfSfDKGTpxXYs1G', // sDvLp37v
+    },
+  });
+  const user3 = await prisma.user.create({
+    data: {
+      login: 'admin',
+      role: 'ADMIN',
+      password: '$2b$10$6T2UhDzVlBv9D8Mmom6yAuGBvg6uck66ry.sqTvZyN7ExA3e3OFhO', // Ir3i4Tjn
     },
   });
 
-  console.log({ user1, user2 });
+  console.log({ user1, user2, user3 });
 }
 
 main()
@@ -31,58 +36,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-// async function main() {
-//   await prisma.user.deleteMany();
-//   await prisma.post.deleteMany();
-
-//   console.log('Seeding...');
-
-//   const user1 = await prisma.user.create({
-//     data: {
-//       email: 'lisa@simpson.com',
-//       firstname: 'Lisa',
-//       lastname: 'Simpson',
-//       password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-//       role: 'MANAGER',
-//       posts: {
-//         create: {
-//           title: 'Join us for Prisma Day 2019 in Berlin',
-//           content: 'https://www.prisma.io/day/',
-//           published: true,
-//         },
-//       },
-//     },
-//   });
-//   const user2 = await prisma.user.create({
-//     data: {
-//       email: 'bart@simpson.com',
-//       firstname: 'Bart',
-//       lastname: 'Simpson',
-//       role: 'ADMIN',
-//       password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-//       posts: {
-//         create: [
-//           {
-//             title: 'Subscribe to GraphQL Weekly for community news',
-//             content: 'https://graphqlweekly.com/',
-//             published: true,
-//           },
-//           {
-//             title: 'Follow Prisma on Twitter',
-//             content: 'https://twitter.com/prisma',
-//             published: false,
-//           },
-//         ],
-//       },
-//     },
-//   });
-
-//   console.log({ user1, user2 });
-// }
-
-// main()
-//   .catch((e) => console.error(e))
-//   .finally(async () => {
-//     await prisma.$disconnect();
-//   });

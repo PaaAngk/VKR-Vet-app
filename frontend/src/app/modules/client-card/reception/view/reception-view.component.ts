@@ -99,7 +99,7 @@ export class ReceptionViewComponent implements OnDestroy, OnInit {
 		this.activateRoute.params.subscribe(params => {
 			this.getReceptionGQL
 			.watch({
-				receptionId:params['id'],
+				receptionId:Number(params['id']),
 			})
 			.valueChanges
 			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))

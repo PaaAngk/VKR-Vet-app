@@ -16,7 +16,7 @@ export class CreateReceptionInput {
   @IsString()
   @MinLength(3)
   @IsNotEmpty()
-  petId: string;
+  petId: number;
 
   @IsInt()
   @IsNotEmpty()

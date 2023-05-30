@@ -22,7 +22,7 @@ export type Scalars = {
 export type AddInGoodsListInput = {
   goodsId: Scalars['Int'];
   quantity: Scalars['Float'];
-  receptionId: Scalars['String'];
+  receptionId: Scalars['Int'];
 };
 
 export type AnalyzesResearch = {
@@ -30,9 +30,9 @@ export type AnalyzesResearch = {
   /** Identifies the date and time when the object was created. */
   createdAt?: Maybe<Scalars['DateTime']>;
   data?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['Int'];
   pet?: Maybe<Pet>;
-  petId?: Maybe<Scalars['String']>;
+  petId?: Maybe<Scalars['Int']>;
   type?: Maybe<TypeAnalyzesResearch>;
   typeId?: Maybe<Scalars['Int']>;
 };
@@ -61,7 +61,7 @@ export type Client = {
   address?: Maybe<Scalars['String']>;
   /** Client full name. */
   fullName: Scalars['String'];
-  id: Scalars['String'];
+  id: Scalars['Int'];
   pets?: Maybe<Array<Pet>>;
   telephoneNumber: Scalars['String'];
 };
@@ -89,7 +89,7 @@ export enum ClientOrderField {
 
 export type CreateAnalyzesResearchInput = {
   data?: InputMaybe<Scalars['String']>;
-  petId: Scalars['String'];
+  petId: Scalars['Int'];
   typeId: Scalars['Int'];
 };
 
@@ -116,7 +116,7 @@ export type CreatePetInput = {
   alias: Scalars['String'];
   breed?: InputMaybe<Scalars['String']>;
   castration?: InputMaybe<Scalars['Boolean']>;
-  clientId: Scalars['String'];
+  clientId: Scalars['Int'];
   color?: InputMaybe<Scalars['String']>;
   diagnosis?: InputMaybe<Scalars['String']>;
   gender?: InputMaybe<Scalars['Boolean']>;
@@ -135,13 +135,13 @@ export type CreateReceptionInput = {
   discount?: InputMaybe<Scalars['Int']>;
   employeeId: Scalars['Int'];
   goodsListReceptionInput?: InputMaybe<Array<GoodsListReceptionInput>>;
-  petId: Scalars['String'];
+  petId: Scalars['Int'];
   purposeId: Scalars['Int'];
   serviceListReceptionInput?: InputMaybe<Array<ServiceListReceptionInput>>;
 };
 
 export type CreateReceptionRecordInput = {
-  clientId?: InputMaybe<Scalars['String']>;
+  clientId?: InputMaybe<Scalars['Int']>;
   dateTimeEnd: Scalars['DateTime'];
   dateTimeStart: Scalars['DateTime'];
   employeeId?: InputMaybe<Scalars['Int']>;
@@ -295,7 +295,7 @@ export type MutationCreateServiceArgs = {
 
 
 export type MutationDeleteClientArgs = {
-  clientId: Scalars['String'];
+  clientId: Scalars['Int'];
 };
 
 
@@ -305,7 +305,7 @@ export type MutationDeleteGoodsArgs = {
 
 
 export type MutationDeletePetArgs = {
-  petId: Scalars['String'];
+  petId: Scalars['Int'];
 };
 
 
@@ -315,7 +315,7 @@ export type MutationDeleteReceptionRecordArgs = {
 
 
 export type MutationDeleteResearchArgs = {
-  analyzesResearchId: Scalars['String'];
+  analyzesResearchId: Scalars['Int'];
 };
 
 
@@ -335,13 +335,13 @@ export type MutationRefreshTokenArgs = {
 
 
 export type MutationUpdateAnalyzesResearchArgs = {
-  analyzesResearchId: Scalars['String'];
+  analyzesResearchId: Scalars['Int'];
   data: UpdateAnalyzesResearchInput;
 };
 
 
 export type MutationUpdateClientArgs = {
-  clientId: Scalars['String'];
+  clientId: Scalars['Int'];
   data: UpdateClientInput;
 };
 
@@ -360,13 +360,13 @@ export type MutationUpdateGoodsArgs = {
 
 export type MutationUpdatePetArgs = {
   data: UpdatePetInput;
-  petId: Scalars['String'];
+  petId: Scalars['Int'];
 };
 
 
 export type MutationUpdateReceptionArgs = {
   data: UpdateReceptionInput;
-  receptionId: Scalars['String'];
+  receptionId: Scalars['Int'];
 };
 
 
@@ -394,10 +394,10 @@ export enum OrderDirection {
 
 export type PageInfo = {
   __typename?: 'PageInfo';
-  endCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['Int']>;
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
-  startCursor?: Maybe<Scalars['String']>;
+  startCursor?: Maybe<Scalars['Int']>;
 };
 
 export type Pet = {
@@ -408,13 +408,13 @@ export type Pet = {
   breed?: Maybe<Scalars['String']>;
   castration?: Maybe<Scalars['Boolean']>;
   client?: Maybe<Client>;
-  clientId?: Maybe<Scalars['String']>;
+  clientId?: Maybe<Scalars['Int']>;
   color?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
   createdAt?: Maybe<Scalars['DateTime']>;
   diagnosis?: Maybe<Scalars['String']>;
   gender?: Maybe<Scalars['Boolean']>;
-  id: Scalars['String'];
+  id: Scalars['Int'];
   kind?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   nutrition?: Maybe<Scalars['String']>;
@@ -448,12 +448,12 @@ export type Query = {
 
 
 export type QueryAnalyzesResearchArgs = {
-  analyzesResearchId: Scalars['String'];
+  analyzesResearchId: Scalars['Int'];
 };
 
 
 export type QueryClientDetailArgs = {
-  clientId: Scalars['String'];
+  clientId: Scalars['Int'];
 };
 
 
@@ -468,12 +468,12 @@ export type QueryHelloArgs = {
 
 
 export type QueryPetArgs = {
-  petId: Scalars['String'];
+  petId: Scalars['Int'];
 };
 
 
 export type QueryReceptionArgs = {
-  receptionId: Scalars['String'];
+  receptionId: Scalars['Int'];
 };
 
 
@@ -488,8 +488,8 @@ export type QueryReceptionRecordBetweenDateArgs = {
 
 
 export type QuerySearchClientsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['Int']>;
+  before?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<ClientOrder>;
@@ -516,9 +516,9 @@ export type Reception = {
   employee?: Maybe<Employee>;
   employeeId?: Maybe<Scalars['Int']>;
   goods?: Maybe<Array<Maybe<GoodsList>>>;
-  id: Scalars['String'];
+  id: Scalars['Int'];
   pet?: Maybe<Pet>;
-  petId?: Maybe<Scalars['String']>;
+  petId?: Maybe<Scalars['Int']>;
   purpose?: Maybe<ReceptionPurpose>;
   purposeId?: Maybe<Scalars['Int']>;
   services?: Maybe<Array<Maybe<ServiceList>>>;
@@ -628,7 +628,7 @@ export type UpdatePetInput = {
   alias: Scalars['String'];
   breed?: InputMaybe<Scalars['String']>;
   castration?: InputMaybe<Scalars['Boolean']>;
-  clientId: Scalars['String'];
+  clientId: Scalars['Int'];
   color?: InputMaybe<Scalars['String']>;
   diagnosis?: InputMaybe<Scalars['String']>;
   gender?: InputMaybe<Scalars['Boolean']>;
@@ -652,7 +652,7 @@ export type UpdateReceptionInput = {
 };
 
 export type UpdateReceptionRecordInput = {
-  clientId?: InputMaybe<Scalars['String']>;
+  clientId?: InputMaybe<Scalars['Int']>;
   dateTimeEnd: Scalars['DateTime'];
   dateTimeStart: Scalars['DateTime'];
   employeeId?: InputMaybe<Scalars['Int']>;
@@ -726,75 +726,75 @@ export type GetClientQueryVariables = Exact<{
 }>;
 
 
-export type GetClientQuery = { __typename?: 'Query', clientsWithSearch: Array<{ __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string }> | null }> };
+export type GetClientQuery = { __typename?: 'Query', clientsWithSearch: Array<{ __typename?: 'Client', id: number, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: number, alias: string }> | null }> };
 
 export type GetClientWithPaginationQueryVariables = Exact<{
   search: Scalars['String'];
   first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['Int']>;
   orderBy: ClientOrder;
 }>;
 
 
-export type GetClientWithPaginationQuery = { __typename?: 'Query', searchClients: { __typename?: 'ClientConnection', totalCount: number, nodes?: Array<{ __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string }> | null }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+export type GetClientWithPaginationQuery = { __typename?: 'Query', searchClients: { __typename?: 'ClientConnection', totalCount: number, nodes?: Array<{ __typename?: 'Client', id: number, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: number, alias: string }> | null }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: number | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: number | null } } };
 
 export type CreateClientMutationVariables = Exact<{
   data: CreateClientInput;
 }>;
 
 
-export type CreateClientMutation = { __typename?: 'Mutation', createClient: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, address?: string | null, pets?: Array<{ __typename?: 'Pet', id: string, alias: string }> | null } };
+export type CreateClientMutation = { __typename?: 'Mutation', createClient: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string, address?: string | null, pets?: Array<{ __typename?: 'Pet', id: number, alias: string }> | null } };
 
 export type ClientDetailQueryVariables = Exact<{
-  clientId: Scalars['String'];
+  clientId: Scalars['Int'];
 }>;
 
 
-export type ClientDetailQuery = { __typename?: 'Query', clientDetail: { __typename?: 'Client', id: string, fullName: string, address?: string | null, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null }> | null } };
+export type ClientDetailQuery = { __typename?: 'Query', clientDetail: { __typename?: 'Client', id: number, fullName: string, address?: string | null, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: number, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null }> | null } };
 
 export type UpdateClientMutationVariables = Exact<{
-  clientId: Scalars['String'];
+  clientId: Scalars['Int'];
   data: UpdateClientInput;
 }>;
 
 
-export type UpdateClientMutation = { __typename?: 'Mutation', updateClient: { __typename?: 'Client', id: string, fullName: string, address?: string | null, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: string, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null }> | null } };
+export type UpdateClientMutation = { __typename?: 'Mutation', updateClient: { __typename?: 'Client', id: number, fullName: string, address?: string | null, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: number, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null }> | null } };
 
 export type DeleteClientMutationVariables = Exact<{
-  clientId: Scalars['String'];
+  clientId: Scalars['Int'];
 }>;
 
 
-export type DeleteClientMutation = { __typename?: 'Mutation', deleteClient: { __typename?: 'Client', id: string } };
+export type DeleteClientMutation = { __typename?: 'Mutation', deleteClient: { __typename?: 'Client', id: number } };
 
 export type CreatePetMutationVariables = Exact<{
   data: CreatePetInput;
 }>;
 
 
-export type CreatePetMutation = { __typename?: 'Mutation', createPet: { __typename?: 'Pet', id: string, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null } };
+export type CreatePetMutation = { __typename?: 'Mutation', createPet: { __typename?: 'Pet', id: number, alias: string, kind?: string | null, gender?: boolean | null, DOB?: string | null, breed?: string | null } };
 
 export type GetPetDetailQueryVariables = Exact<{
-  petId: Scalars['String'];
+  petId: Scalars['Int'];
 }>;
 
 
-export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string, address?: string | null } | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type?: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } | null }> | null } };
+export type GetPetDetailQuery = { __typename?: 'Query', pet: { __typename?: 'Pet', id: number, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: number | null, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string, address?: string | null } | null, receptions?: Array<{ __typename?: 'Reception', id: number, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: number, createdAt?: any | null, type?: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } | null }> | null } };
 
 export type UpdatePetMutationVariables = Exact<{
-  petId: Scalars['String'];
+  petId: Scalars['Int'];
   data: UpdatePetInput;
 }>;
 
 
-export type UpdatePetMutation = { __typename?: 'Mutation', updatePet: { __typename?: 'Pet', id: string, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: string | null, receptions?: Array<{ __typename?: 'Reception', id: string, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: string, createdAt?: any | null, type?: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } | null }> | null } };
+export type UpdatePetMutation = { __typename?: 'Mutation', updatePet: { __typename?: 'Pet', id: number, alias: string, DOB?: string | null, breed?: string | null, castration?: boolean | null, color?: string | null, diagnosis?: string | null, gender?: boolean | null, kind?: string | null, notes?: string | null, nutrition?: string | null, weight?: number | null, clientId?: number | null, receptions?: Array<{ __typename?: 'Reception', id: number, diagnosis?: string | null, createdAt?: any | null, cost?: number | null, purpose?: { __typename?: 'ReceptionPurpose', purposeName: string } | null }> | null, analyzesResearchs?: Array<{ __typename?: 'AnalyzesResearch', id: number, createdAt?: any | null, type?: { __typename?: 'TypeAnalyzesResearch', typeName?: string | null } | null }> | null } };
 
 export type DeletePetMutationVariables = Exact<{
-  petId: Scalars['String'];
+  petId: Scalars['Int'];
 }>;
 
 
-export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'Pet', id: string } };
+export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'Pet', id: number } };
 
 export type GetAllServiceTypeWithServiceNameQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -821,22 +821,22 @@ export type CreateReceptionMutationVariables = Exact<{
 }>;
 
 
-export type CreateReceptionMutation = { __typename?: 'Mutation', createReception: { __typename?: 'Reception', anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employeeId?: number | null, petId?: string | null, purposeId?: number | null, discount?: number | null, id: string } };
+export type CreateReceptionMutation = { __typename?: 'Mutation', createReception: { __typename?: 'Reception', anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, employeeId?: number | null, petId?: number | null, purposeId?: number | null, discount?: number | null, id: number } };
 
 export type GetReceptionQueryVariables = Exact<{
-  receptionId: Scalars['String'];
+  receptionId: Scalars['Int'];
 }>;
 
 
-export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: string, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, petId?: string | null, discount?: number | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: string, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, id: number, categoryId?: number | null, measure?: string | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null } } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', id: number, typeId?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null } } } | null> | null } };
+export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: number, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, petId?: number | null, discount?: number | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: number, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, id: number, categoryId?: number | null, measure?: string | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null } } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', id: number, typeId?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null } } } | null> | null } };
 
 export type UpdateReceptionMutationVariables = Exact<{
   data: UpdateReceptionInput;
-  receptionId: Scalars['String'];
+  receptionId: Scalars['Int'];
 }>;
 
 
-export type UpdateReceptionMutation = { __typename?: 'Mutation', updateReception: { __typename?: 'Reception', id: string } };
+export type UpdateReceptionMutation = { __typename?: 'Mutation', updateReception: { __typename?: 'Reception', id: number } };
 
 export type GetAllAnalyzeTypesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -848,29 +848,29 @@ export type CreateAnalyzesResearchMutationVariables = Exact<{
 }>;
 
 
-export type CreateAnalyzesResearchMutation = { __typename?: 'Mutation', createAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: string, typeId?: number | null, petId?: string | null, data?: string | null, createdAt?: any | null } };
+export type CreateAnalyzesResearchMutation = { __typename?: 'Mutation', createAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: number, typeId?: number | null, petId?: number | null, data?: string | null, createdAt?: any | null } };
 
 export type GetAnalyzesResearchQueryVariables = Exact<{
-  analyzesResearchId: Scalars['String'];
+  analyzesResearchId: Scalars['Int'];
 }>;
 
 
-export type GetAnalyzesResearchQuery = { __typename?: 'Query', analyzesResearch: { __typename?: 'AnalyzesResearch', id: string, data?: string | null, createdAt?: any | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: string, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null } | null, type?: { __typename?: 'TypeAnalyzesResearch', id?: number | null, typeName?: string | null } | null } };
+export type GetAnalyzesResearchQuery = { __typename?: 'Query', analyzesResearch: { __typename?: 'AnalyzesResearch', id: number, data?: string | null, createdAt?: any | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: number, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null } | null, type?: { __typename?: 'TypeAnalyzesResearch', id?: number | null, typeName?: string | null } | null } };
 
 export type UpdateAnalyzesResearchMutationVariables = Exact<{
   data: UpdateAnalyzesResearchInput;
-  analyzesResearchId: Scalars['String'];
+  analyzesResearchId: Scalars['Int'];
 }>;
 
 
-export type UpdateAnalyzesResearchMutation = { __typename?: 'Mutation', updateAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: string } };
+export type UpdateAnalyzesResearchMutation = { __typename?: 'Mutation', updateAnalyzesResearch: { __typename?: 'AnalyzesResearch', id: number } };
 
 export type DeleteAnalyzesResearchMutationVariables = Exact<{
-  analyzesResearchId: Scalars['String'];
+  analyzesResearchId: Scalars['Int'];
 }>;
 
 
-export type DeleteAnalyzesResearchMutation = { __typename?: 'Mutation', deleteResearch: { __typename?: 'AnalyzesResearch', id: string } };
+export type DeleteAnalyzesResearchMutation = { __typename?: 'Mutation', deleteResearch: { __typename?: 'AnalyzesResearch', id: number } };
 
 export type GetAllGoodsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -909,14 +909,14 @@ export type GetRecordsByDatesRangeQueryVariables = Exact<{
 }>;
 
 
-export type GetRecordsByDatesRangeQuery = { __typename?: 'Query', receptionRecordBetweenDate: Array<{ __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null }> };
+export type GetRecordsByDatesRangeQuery = { __typename?: 'Query', receptionRecordBetweenDate: Array<{ __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null }> };
 
 export type CreateReceptionRecordMutationVariables = Exact<{
   data: CreateReceptionRecordInput;
 }>;
 
 
-export type CreateReceptionRecordMutation = { __typename?: 'Mutation', createReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
+export type CreateReceptionRecordMutation = { __typename?: 'Mutation', createReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
 
 export type UpdateReceptionRecordMutationVariables = Exact<{
   receptionRecordId: Scalars['Int'];
@@ -924,7 +924,7 @@ export type UpdateReceptionRecordMutationVariables = Exact<{
 }>;
 
 
-export type UpdateReceptionRecordMutation = { __typename?: 'Mutation', updateReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
+export type UpdateReceptionRecordMutation = { __typename?: 'Mutation', updateReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
 
 export type DeleteReceptionRecordMutationVariables = Exact<{
   receptionRecordId: Scalars['Int'];
@@ -939,7 +939,7 @@ export type UpdateDateReceptionRecordMutationVariables = Exact<{
 }>;
 
 
-export type UpdateDateReceptionRecordMutation = { __typename?: 'Mutation', updateDateReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: string, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
+export type UpdateDateReceptionRecordMutation = { __typename?: 'Mutation', updateDateReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
 
 export const CurrentUserProfileDocument = gql`
     query currentUserProfile {
@@ -1119,7 +1119,7 @@ export const GetClientDocument = gql`
     }
   }
 export const GetClientWithPaginationDocument = gql`
-    query GetClientWithPagination($search: String!, $first: Int!, $after: String, $orderBy: ClientOrder!) {
+    query GetClientWithPagination($search: String!, $first: Int!, $after: Int, $orderBy: ClientOrder!) {
   searchClients(search: $search, first: $first, after: $after, orderBy: $orderBy) {
     nodes {
       id
@@ -1177,7 +1177,7 @@ export const CreateClientDocument = gql`
     }
   }
 export const ClientDetailDocument = gql`
-    query ClientDetail($clientId: String!) {
+    query ClientDetail($clientId: Int!) {
   clientDetail(clientId: $clientId) {
     id
     fullName
@@ -1206,7 +1206,7 @@ export const ClientDetailDocument = gql`
     }
   }
 export const UpdateClientDocument = gql`
-    mutation UpdateClient($clientId: String!, $data: UpdateClientInput!) {
+    mutation UpdateClient($clientId: Int!, $data: UpdateClientInput!) {
   updateClient(clientId: $clientId, data: $data) {
     id
     fullName
@@ -1235,7 +1235,7 @@ export const UpdateClientDocument = gql`
     }
   }
 export const DeleteClientDocument = gql`
-    mutation DeleteClient($clientId: String!) {
+    mutation DeleteClient($clientId: Int!) {
   deleteClient(clientId: $clientId) {
     id
   }
@@ -1276,7 +1276,7 @@ export const CreatePetDocument = gql`
     }
   }
 export const GetPetDetailDocument = gql`
-    query GetPetDetail($petId: String!) {
+    query GetPetDetail($petId: Int!) {
   pet(petId: $petId) {
     id
     alias
@@ -1329,7 +1329,7 @@ export const GetPetDetailDocument = gql`
     }
   }
 export const UpdatePetDocument = gql`
-    mutation UpdatePet($petId: String!, $data: UpdatePetInput!) {
+    mutation UpdatePet($petId: Int!, $data: UpdatePetInput!) {
   updatePet(petId: $petId, data: $data) {
     id
     alias
@@ -1376,7 +1376,7 @@ export const UpdatePetDocument = gql`
     }
   }
 export const DeletePetDocument = gql`
-    mutation DeletePet($petId: String!) {
+    mutation DeletePet($petId: Int!) {
   deletePet(petId: $petId) {
     id
   }
@@ -1508,7 +1508,7 @@ export const CreateReceptionDocument = gql`
     }
   }
 export const GetReceptionDocument = gql`
-    query GetReception($receptionId: String!) {
+    query GetReception($receptionId: Int!) {
   reception(receptionId: $receptionId) {
     id
     anamnesis
@@ -1578,7 +1578,7 @@ export const GetReceptionDocument = gql`
     }
   }
 export const UpdateReceptionDocument = gql`
-    mutation UpdateReception($data: UpdateReceptionInput!, $receptionId: String!) {
+    mutation UpdateReception($data: UpdateReceptionInput!, $receptionId: Int!) {
   updateReception(data: $data, receptionId: $receptionId) {
     id
   }
@@ -1637,7 +1637,7 @@ export const CreateAnalyzesResearchDocument = gql`
     }
   }
 export const GetAnalyzesResearchDocument = gql`
-    query GetAnalyzesResearch($analyzesResearchId: String!) {
+    query GetAnalyzesResearch($analyzesResearchId: Int!) {
   analyzesResearch(analyzesResearchId: $analyzesResearchId) {
     id
     data
@@ -1673,7 +1673,7 @@ export const GetAnalyzesResearchDocument = gql`
     }
   }
 export const UpdateAnalyzesResearchDocument = gql`
-    mutation UpdateAnalyzesResearch($data: UpdateAnalyzesResearchInput!, $analyzesResearchId: String!) {
+    mutation UpdateAnalyzesResearch($data: UpdateAnalyzesResearchInput!, $analyzesResearchId: Int!) {
   updateAnalyzesResearch(analyzesResearchId: $analyzesResearchId, data: $data) {
     id
   }
@@ -1691,7 +1691,7 @@ export const UpdateAnalyzesResearchDocument = gql`
     }
   }
 export const DeleteAnalyzesResearchDocument = gql`
-    mutation DeleteAnalyzesResearch($analyzesResearchId: String!) {
+    mutation DeleteAnalyzesResearch($analyzesResearchId: Int!) {
   deleteResearch(analyzesResearchId: $analyzesResearchId) {
     id
   }

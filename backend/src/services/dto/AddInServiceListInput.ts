@@ -5,7 +5,7 @@ import { InputType, Field } from '@nestjs/graphql';
 export class AddInServiceListInput {
   @Field()
   @IsNotEmpty()
-  receptionId?: string;
+  receptionId?: number;
 
   @Field()
   @IsNotEmpty()

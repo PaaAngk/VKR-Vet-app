@@ -10,8 +10,6 @@ import { PetDialogComponent } from '../../dialog/add-pet/pet-dialog.component';
 import { tuiWatch } from '@taiga-ui/cdk';
 import { DialogClientComponent } from '../../dialog/client-dialog/client-dialog.component';
 import { DocumentGenerateService, FileFormat } from '../../document-generate.service';
-import { ComboboxDynamicFilter, CountboxDynamicFilter, DateDynamicFilter, DateRangeDynamicFilter, DropdownDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
-import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
 import { DocumentsToGenerate } from '../../models/documentsToGenerate';
 
 @Component({
@@ -67,7 +65,7 @@ export class ClientDetailComponent implements OnDestroy{
     ) {
 		this.pageLoader = true;
 
-		activateRoute.params.subscribe(params=>this.clientCardService.setSelectedClient(params['id']));
+		activateRoute.params.subscribe(params=>this.clientCardService.setSelectedClient(Number(params['id'])));
 
 		activateRoute.queryParams.subscribe(
             (queryParam: any) => {
@@ -112,7 +110,7 @@ export class ClientDetailComponent implements OnDestroy{
 			.subscribe({ complete: () => this.router.navigate([]) });
     }
 
-	navigatePetDetail(petId: string){
+	navigatePetDetail(petId: number){
 		this.router.navigateByUrl(`client-card/pet/${petId}`);
 	}
 

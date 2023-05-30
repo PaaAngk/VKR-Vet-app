@@ -8,8 +8,8 @@ import { ReceptionPurpose } from './reception-purpose.model';
 
 @ObjectType()
 export class Reception {
-  @Field(() => String)
-  id: string;
+  @Field(() => Int)
+  id: number;
 
   @Field(() => Pet, { nullable: true })
   pet?: Pet;
@@ -20,8 +20,8 @@ export class Reception {
   @Field(() => ReceptionPurpose)
   purpose?: ReceptionPurpose;
 
-  @Field(() => String)
-  petId?: string;
+  @Field(() => Int)
+  petId?: number;
 
   @Field(() => Int)
   employeeId?: number;

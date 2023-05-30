@@ -12,7 +12,7 @@ query GetClient($search:String!){
   }
 }
 
-query GetClientWithPagination($search:String!, $first: Int!, $after:String, $orderBy: ClientOrder!){
+query GetClientWithPagination($search:String!, $first: Int!, $after:Int, $orderBy: ClientOrder!){
   searchClients(search:$search, first: $first, after: $after, orderBy: $orderBy){
     nodes{
       id
@@ -46,7 +46,7 @@ mutation CreateClient($data:CreateClientInput!) {
   }
 }
 
-query ClientDetail($clientId:String!){
+query ClientDetail($clientId:Int!){
 	clientDetail(clientId:$clientId){
 		id
     fullName
@@ -63,7 +63,7 @@ query ClientDetail($clientId:String!){
   }
 }
 
-mutation UpdateClient($clientId:String!, $data:UpdateClientInput!) {
+mutation UpdateClient($clientId:Int!, $data:UpdateClientInput!) {
   updateClient(clientId:$clientId, data:$data){
     id
     fullName
@@ -80,7 +80,7 @@ mutation UpdateClient($clientId:String!, $data:UpdateClientInput!) {
   }
 }
 
-mutation DeleteClient($clientId:String!) {
+mutation DeleteClient($clientId:Int!) {
   deleteClient(clientId:$clientId){
     id
   }
@@ -99,7 +99,7 @@ mutation CreatePet($data:CreatePetInput!) {
   }
 }
 
-query GetPetDetail($petId:String!){
+query GetPetDetail($petId:Int!){
   pet(petId:$petId){
     id
     alias
@@ -140,7 +140,7 @@ query GetPetDetail($petId:String!){
   }
 }
 
-mutation UpdatePet($petId:String!, $data:UpdatePetInput!) {
+mutation UpdatePet($petId:Int!, $data:UpdatePetInput!) {
   updatePet(petId:$petId, data:$data){
     id
     alias
@@ -175,7 +175,7 @@ mutation UpdatePet($petId:String!, $data:UpdatePetInput!) {
   }
 }
 
-mutation DeletePet($petId:String!) {
+mutation DeletePet($petId:Int!) {
   deletePet(petId:$petId){
     id
   }
@@ -242,7 +242,7 @@ mutation CreateReception($data:CreateReceptionInput!) {
   }
 }
 
-query GetReception($receptionId:String!){
+query GetReception($receptionId:Int!){
 	reception(receptionId:$receptionId){
     id
     anamnesis
@@ -300,7 +300,7 @@ query GetReception($receptionId:String!){
   }
 }
 
-mutation UpdateReception($data: UpdateReceptionInput!, $receptionId:String!){
+mutation UpdateReception($data: UpdateReceptionInput!, $receptionId:Int!){
 	updateReception(data: $data, receptionId:$receptionId){
     id
   }
@@ -323,7 +323,7 @@ mutation createAnalyzesResearch($data:CreateAnalyzesResearchInput!) {
     createdAt
   }
 }
-query GetAnalyzesResearch($analyzesResearchId:String!){
+query GetAnalyzesResearch($analyzesResearchId:Int!){
 	analyzesResearch(analyzesResearchId:$analyzesResearchId){
     id
   	data
@@ -347,13 +347,13 @@ query GetAnalyzesResearch($analyzesResearchId:String!){
   }
 }
 
-mutation UpdateAnalyzesResearch($data: UpdateAnalyzesResearchInput!, $analyzesResearchId:String!){
+mutation UpdateAnalyzesResearch($data: UpdateAnalyzesResearchInput!, $analyzesResearchId:Int!){
 	updateAnalyzesResearch(analyzesResearchId:$analyzesResearchId, data: $data){
     id
   }
 }
 
-mutation DeleteAnalyzesResearch($analyzesResearchId:String!){
+mutation DeleteAnalyzesResearch($analyzesResearchId:Int!){
 	deleteResearch(analyzesResearchId:$analyzesResearchId){
     id
   }

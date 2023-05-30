@@ -1,10 +1,10 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Pet } from 'src/pets/models/pet.model';
 
 @ObjectType()
 export class Client {
-  @Field(() => String)
-  id: string;
+  @Field(() => Int)
+  id: number;
 
   @Field(() => String, {
     description: 'Client full name.',

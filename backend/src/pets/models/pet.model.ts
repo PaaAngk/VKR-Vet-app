@@ -1,12 +1,12 @@
-import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { AnalyzesResearch } from 'src/analyzes-research/models/analyzes-research.model';
 import { Client } from 'src/clients/models/client.model';
 import { Reception } from 'src/reception/models/reception.model';
 
 @ObjectType()
 export class Pet {
-  @Field(() => String)
-  id: string;
+  @Field(() => Int)
+  id: number;
 
   @Field(() => Client)
   client?: Client;
@@ -20,8 +20,8 @@ export class Pet {
   @Field(() => String)
   alias: string;
 
-  @Field(() => String)
-  clientId?: string;
+  @Field(() => Int)
+  clientId?: number;
 
   @Field(() => String, { nullable: true })
   kind?: string;

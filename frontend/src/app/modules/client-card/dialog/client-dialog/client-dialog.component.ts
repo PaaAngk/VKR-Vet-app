@@ -22,7 +22,7 @@ export function fullNameValidator(field: AbstractControl): Validators | null {
 })
 export class DialogClientComponent {
     value: number | null = null;
-    clientsId:string = '';
+    clientsId:number = -1;
 	
 	readonly searchForm = new FormGroup({
 		fullName: new FormControl('', [Validators.required, fullNameValidator, Validators.minLength(4), Validators.maxLength(40)]),

@@ -5,7 +5,7 @@ import { InputType, Field, Float } from '@nestjs/graphql';
 export class AddInGoodsListInput {
   @Field()
   @IsNotEmpty()
-  receptionId?: string;
+  receptionId?: number;
 
   @Field()
   @IsNotEmpty()

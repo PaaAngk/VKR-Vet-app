@@ -16,7 +16,6 @@ model User {
   id       Int     @id @default(autoincrement())
   login    String  @unique
   password String
-  fullName String? @unique
   role     Role
 }
 
@@ -37,7 +36,7 @@ model Employee {
 }
 
 model Client {
-  id              String            @id @default(cuid())
+  id              Int               @id @default(autoincrement())
   pet             Pet[]
   receptionRecord ReceptionRecord[]
 
@@ -50,9 +49,9 @@ model Client {
 }
 
 model Pet {
-  id               String             @id @default(cuid())
+  id               Int               @id @default(autoincrement())
   client           Client             @relation(fields: [clientId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  clientId         String
+  clientId         Int
   AnalyzesResearch AnalyzesResearch[]
   Reception        Reception[]
 
@@ -73,11 +72,11 @@ model Pet {
 }
 
 model AnalyzesResearch {
-  id                   String               @id @default(cuid())
+  id                   Int               @id @default(autoincrement())
   TypeAnalyzesResearch TypeAnalyzesResearch @relation(fields: [typeId], references: [id])
   typeId               Int
   pet                  Pet                  @relation(fields: [petId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  petId                String
+  petId                Int
 
   data      String 
   createdAt DateTime @default(now())
@@ -90,9 +89,9 @@ model TypeAnalyzesResearch {
 }
 
 model Reception {
-  id          String           @id @default(cuid())
+  id          Int               @id @default(autoincrement())
   pet         Pet              @relation(fields: [petId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  petId       String
+  petId       Int
   Employee    Employee         @relation(fields: [employeeId], references: [id])
   employeeId  Int
   purpose     ReceptionPurpose @relation(fields: [purposeId], references: [id])
@@ -119,7 +118,7 @@ model ReceptionPurpose {
 
 model Goods {
   id            Int           @id @default(autoincrement())
-  GoodsCategory GoodsCategory @relation(fields: [categoryId], references: [id])
+  GoodsCategory GoodsCategory @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   categoryId    Int
   goodsList     GoodsList[]
 
@@ -137,7 +136,7 @@ model GoodsCategory {
 
 model GoodsList {
   Reception   Reception @relation(fields: [receptionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  receptionId String
+  receptionId Int
   Goods       Goods     @relation(fields: [goodsId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   goodsId     Int
 
@@ -148,7 +147,7 @@ model GoodsList {
 
 model Service {
   id          Int           @id @default(autoincrement())
-  ServiceType ServiceType   @relation(fields: [typeId], references: [id])
+  ServiceType ServiceType   @relation(fields: [typeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   typeId      Int
   serviceList ServiceList[]
 
@@ -166,7 +165,7 @@ model ServiceType {
 
 model ServiceList {
   Reception   Reception @relation(fields: [receptionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  receptionId String
+  receptionId Int
   Service     Service   @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   serviceId   Int
 
@@ -177,20 +176,20 @@ model ServiceList {
 
 model Schedule {
   id         Int          @id @default(autoincrement())
-  Employee   Employee     @relation(fields: [employeeId], references: [id])
+  Employee   Employee     @relation(fields: [employeeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   employeeId Int
   data       DateTime     @db.Date
-  dayType    Int
+  dayType    Boolean
 }
  
 model ReceptionRecord {
   id                 Int                @id @default(autoincrement())
-  Employee           Employee?          @relation(fields: [employeeId], references: [id])
+  Employee           Employee?          @relation(fields: [employeeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   employeeId         Int?
-  ReceptionPurpose   ReceptionPurpose?  @relation(fields: [receptionPurposeId], references: [id])
+  ReceptionPurpose   ReceptionPurpose?  @relation(fields: [receptionPurposeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   receptionPurposeId Int?
-  Client             Client?            @relation(fields: [clientId], references: [id])
-  clientId           String?
+  Client             Client?            @relation(fields: [clientId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  clientId           Int?
 
   dateTimeStart      DateTime
   dateTimeEnd        DateTime

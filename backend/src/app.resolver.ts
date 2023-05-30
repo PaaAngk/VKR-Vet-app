@@ -7,9 +7,7 @@ export class AppResolver {
 
   @Query(() => String)
   async helloWorld(): Promise<string> {
-    const login = 'ivan.ivanovich';
-    const users = await this.prisma.user.findUnique({ where: { login } });
-    return `Hello World! ${users.fullName}`;
+    return `Hello World!`;
   }
 
   @Query(() => String)

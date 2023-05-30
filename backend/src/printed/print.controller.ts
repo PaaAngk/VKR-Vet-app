@@ -80,6 +80,11 @@ export class PrintController {
     res.json(buf);
   }
 
+  /**
+   * Generate documents: paste data in existing file
+   * @param data data from front
+   * @param res file in needed formt
+   */
   @Header('Access-Control-Allow-Origin', 'http://localhost:4200')
   @Post('generateDocument')
   async generateDocumentByData(

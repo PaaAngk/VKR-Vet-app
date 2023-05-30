@@ -6,6 +6,7 @@ import {
   Args,
   ResolveField,
   Mutation,
+  Int,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
@@ -49,7 +50,7 @@ export class PetsResolver {
 
   @Mutation(() => Pet)
   async updatePet(
-    @Args({ name: 'petId', type: () => String }) petId: string,
+    @Args({ name: 'petId', type: () => Int }) petId: number,
     @Args('data') newPetData: UpdatePetInput
   ) {
     return await this.prisma.pet.update({
@@ -61,7 +62,7 @@ export class PetsResolver {
   }
 
   @Mutation(() => Pet)
-  async deletePet(@Args({ name: 'petId', type: () => String }) petId: string) {
+  async deletePet(@Args({ name: 'petId', type: () => Int }) petId: number) {
     return this.prisma.pet.delete({
       where: {
         id: petId,

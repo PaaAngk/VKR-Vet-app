@@ -36,8 +36,8 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 
 	/** Interface */
 	editMode = false;
-	petId = '';
-	analyzeId = '';
+	petId = -1;
+	analyzeId = -1;
 
 	enabledForm = false;
 
@@ -66,7 +66,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 
 	ngOnInit(): void {
 		// Getting id pet from url for now reception
-		this.activateRoute.params.subscribe(params=> this.petId=params['id'] );
+		this.activateRoute.params.subscribe(params=> this.petId=Number(params['id']) );
 		this.clientCardService.getAllEmployees$.subscribe({
 			next:(employees: Employee[]) => this.employeesList = employees.map(d => d.fullName)
 		})
@@ -75,7 +75,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		if (this.activateRoute.snapshot.url[4] && this.activateRoute.snapshot.url[4].path == 'edit'){
 			this.loading = true;
 			this.editMode = true;
-			this.analyzeId = this.activateRoute.snapshot.url[3].path;
+			this.analyzeId = Number(this.activateRoute.snapshot.url[3].path);
 
 			this.getAnalyzesResearchGQL
 				.watch({
@@ -96,7 +96,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 								return item
 							})
 
-						this.petId = data.analyzesResearch.pet?.id || ''
+						this.petId = data.analyzesResearch.pet?.id || -1
 
 						this.currentAnalyzeType.form = {
 							title: this.currentAnalyzeType?.name || '',
@@ -185,7 +185,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 				} as UpdateAnalyzesResearchInput
 			)
 			.subscribe({
-				next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || ''),
+				next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || -1),
 				error: (error)  => { this.errorEditAlert(), console.log(error) }
 			})
 		}
@@ -239,7 +239,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 			}).subscribe()
 	}
 
-	successEditAlert(id: string){
+	successEditAlert(id: number){
 		this.loading = false;
 		this.alertService.open("", {
 			status: TuiNotification.Success,

@@ -89,7 +89,7 @@ export class PetComponent implements OnDestroy, OnInit{
 		private documentGenerateService: DocumentGenerateService,
 		private dataPipe: DatePipe,
     ) {
-		this.activateRoute.params.subscribe(params=>this.clientCardService.getPetDetail(params['id']));
+		this.activateRoute.params.subscribe(params=>this.clientCardService.getPetDetail(Number(params['id'])));
 		this.pageLoader = true;
 		this.clientCardService.getPet$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))

@@ -131,7 +131,7 @@
                             ></tui-input-number>
 
                             <p *ngIf="editedGoods.id !== goods.id">
-                                {{ goods.quantity }} {{goods.measure}}
+                                {{ goods.quantity? goods.quantity : 0 }} {{goods.measure}}
                             </p>
                         </td>
                         <td

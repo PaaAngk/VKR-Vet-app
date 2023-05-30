@@ -10,11 +10,6 @@ const carbone = require('carbone');
 export class PrintService {
   buf: Subject<Buffer> = new Subject();
 
-  data = {
-    firstname: 'John',
-    lastname: 'Doe',
-  };
-
   async renderDocxToPdf(template: string, data: any) {
     const returnBuffer: Subject<Buffer> = new Subject();
 

@@ -5,7 +5,7 @@ import { InputType, Field, Float } from '@nestjs/graphql';
 export class CreatePetInput {
   @Field()
   @IsNotEmpty()
-  clientId: string;
+  clientId: number;
 
   @Field()
   @IsNotEmpty()

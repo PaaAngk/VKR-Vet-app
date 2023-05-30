@@ -70,7 +70,7 @@ export class ClientCardService
      * Setter for current select client data
      * @client string client id
      */
-    setSelectedClient(clientId:string)
+    setSelectedClient(clientId:number)
     {
         this.getClientDetail(clientId)
     }
@@ -83,7 +83,7 @@ export class ClientCardService
     /**
      * Setter for current pet
      */
-    setPet(petId:string)
+    setPet(petId:number)
     {
         this.getPetDetail(petId)
     }
@@ -147,7 +147,7 @@ export class ClientCardService
      * Get clients data with search string on name and phone number
      * @search  for search need client 
      */
-    searchClientsWithPagination(search: string | null, first: number, after: string|null , orderBy: ClientOrder): Observable<ClientConnection>
+    searchClientsWithPagination(search: string | null, first: number, after: any , orderBy: ClientOrder): Observable<ClientConnection>
     {
         // Delete first letter in search string when enter telephone 
         // number starts on 8. Because number stored in +7 and 8
@@ -198,7 +198,7 @@ export class ClientCardService
      * Get clients data with its pets
      * @clientId id of client
      */
-    getClientDetail(clientId:string): void
+    getClientDetail(clientId:number): void
     {
         this.clientDetailGQL.watch({
             clientId:clientId
@@ -267,7 +267,7 @@ export class ClientCardService
      * Get pet data with reception and analyzes
      * @petId id of pet
      */
-    getPetDetail(petId:string): void
+    getPetDetail(petId:number): void
     {
         this.getPetDetailGQL.watch({
             petId:petId
@@ -355,7 +355,7 @@ export class ClientCardService
     /**
      * Updating clients data 
      */
-    updateClient(clientId:string, data:UpdateClientInput)
+    updateClient(clientId:number, data:UpdateClientInput)
     {
         return this.updateClientGQL.mutate({
             clientId: clientId,
@@ -374,7 +374,7 @@ export class ClientCardService
     /**
      * Delete client 
      */
-    deleteClient(clientId:string)
+    deleteClient(clientId:number)
     {
         return this.deleteClientGQL.mutate({
 			clientId: clientId
@@ -392,7 +392,7 @@ export class ClientCardService
     /**
      * Updating clients data 
      */
-    updatePet(petId:string, data:UpdatePetInput)
+    updatePet(petId:number, data:UpdatePetInput)
     {
         return this.updatePetGQL.mutate({
             petId: petId,
@@ -411,7 +411,7 @@ export class ClientCardService
     /**
      * Delete pet  rediict when seleect not existing pet 
      */
-    deletePet(petId:string)
+    deletePet(petId:number)
     {
         return this.deletePetGQL.mutate({
             petId: petId
@@ -474,7 +474,7 @@ export class ClientCardService
     /**
      * Updating receptions  
      */
-    updateReception(receptionId:string, data:UpdateReceptionInput)
+    updateReception(receptionId:number, data:UpdateReceptionInput)
     {
         return this.updateReceptionGQL.mutate({
             receptionId: receptionId,
@@ -535,7 +535,7 @@ export class ClientCardService
     /**
      * Updating analyze  
      */
-    updateAnalyzesResearch(analyzesResearchId:string, data:UpdateAnalyzesResearchInput)
+    updateAnalyzesResearch(analyzesResearchId:number, data:UpdateAnalyzesResearchInput)
     {
         return this.updateAnalyzesResearchGQL.mutate({
             analyzesResearchId: analyzesResearchId,
@@ -588,7 +588,7 @@ export class ClientCardService
         ))
     }
 
-    deleteAnalyzesResearch(analyzesResearchId:string){
+    deleteAnalyzesResearch(analyzesResearchId:number){
         return this.deleteAnalyzesResearchGQL.mutate({
             analyzesResearchId: analyzesResearchId,
         }).pipe(
@@ -624,7 +624,7 @@ export class ClientCardService
 	 * больше 0.5 мл – полная стоимость мл( мл, таблетки, ампулы)
      * @param good 
      */
-    calculateGoodsQuantity(quantity: number ){
+    calculateGoodsQuantity(quantity: number){
         let setQuantity = 0;
         const mod = Math.round((quantity||0 % 1) * 10)
         if ( mod > 0 && mod < 5) setQuantity = Math.round(quantity||0) + 0.5 

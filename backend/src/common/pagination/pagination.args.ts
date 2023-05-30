@@ -1,13 +1,13 @@
-import { ArgsType, Field } from '@nestjs/graphql';
+import { ArgsType, Field, Int } from '@nestjs/graphql';
 
 @ArgsType()
 export class PaginationArgs {
   skip?: number;
 
-  @Field(() => String, { nullable: true })
-  after?: string;
+  @Field(() => Int, { nullable: true })
+  after?: number | null;
 
-  before?: string;
+  before?: number;
 
   first?: number;
 

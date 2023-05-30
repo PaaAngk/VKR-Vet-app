@@ -4,8 +4,8 @@ import { TypeAnalyzesResearch } from './type-analyzes-research.model';
 
 @ObjectType()
 export class AnalyzesResearch {
-  @Field(() => String)
-  id: string;
+  @Field(() => Number)
+  id: number;
 
   @Field(() => TypeAnalyzesResearch, { nullable: true })
   type?: TypeAnalyzesResearch;
@@ -16,8 +16,8 @@ export class AnalyzesResearch {
   @Field(() => Int)
   typeId?: number;
 
-  @Field(() => String)
-  petId?: string;
+  @Field(() => Int)
+  petId?: number;
 
   @Field(() => String)
   data?: string;

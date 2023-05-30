@@ -18,8 +18,10 @@ export class AnalyzesResearchService {
     const analyzeData = JSON.parse(data);
     const savedFiles = [];
     for (const [, file] of Object.entries(files)) {
+      const fileName = file.originalName.split('.');
       const dirPath = `Researchs/${analyzeData.petId}`;
-      const filePath = `${dirPath}/${file.originalName}`;
+      // eslint-disable-next-line prettier/prettier
+      const filePath = `${dirPath}/${fileName[0]}_${analyzeData.id}.${fileName.pop()}`;
       await mkdir(dirPath, { recursive: true });
       try {
         const promise = writeFile(filePath, file.buffer);

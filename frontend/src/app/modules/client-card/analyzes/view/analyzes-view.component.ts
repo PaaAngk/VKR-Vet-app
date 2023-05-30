@@ -35,7 +35,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 
 	dynamicFormData$: BehaviorSubject<DynamicFilterBase<any>> = new BehaviorSubject({} as DynamicFilterBase<any>);
 	analyzesList: AnalyzeForm[] = AnalyzesList;
-	petId = '';
+	petId = -1;
 	currentAnalyze: AnalyzeForm = {} as AnalyzeForm;
 	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
 	analyzeFileData = [];
@@ -63,7 +63,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 		this.activateRoute.params.subscribe(params => {
 			this.getAnalyzesResearchGQL
 			.watch({
-				analyzesResearchId:params['id'],
+				analyzesResearchId:Number(params['id']),
 			})
 			.valueChanges
 			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
@@ -72,7 +72,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 					this.analyzeData = data.analyzesResearch
 					const parcedData = JSON.parse(data.analyzesResearch.data || '');
 					this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeForm;
-					this.petId = data.analyzesResearch.pet?.id || ''
+					this.petId = data.analyzesResearch.pet?.id || -1
 	
 					//if not file
 					if (data.analyzesResearch.type?.id != 5){

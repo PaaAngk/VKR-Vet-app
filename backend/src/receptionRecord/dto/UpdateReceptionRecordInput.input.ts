@@ -4,7 +4,7 @@ import { Field, InputType } from '@nestjs/graphql';
 @InputType()
 export class UpdateReceptionRecordInput {
   @Field()
-  clientId?: string;
+  clientId?: number;
 
   @Field()
   employeeId?: number;

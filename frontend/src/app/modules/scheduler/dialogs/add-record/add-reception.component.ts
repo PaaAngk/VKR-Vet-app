@@ -17,7 +17,7 @@ class ClientView{
     constructor(
         readonly fullName: string,
         readonly telephoneNumber: string,
-        readonly id: string,
+        readonly id: number,
         readonly address?: string,
     ){}
 

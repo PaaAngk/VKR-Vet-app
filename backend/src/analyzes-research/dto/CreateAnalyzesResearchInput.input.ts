@@ -5,7 +5,7 @@ import { InputType, Field } from '@nestjs/graphql';
 export class CreateAnalyzesResearchInput {
   @Field()
   @IsNotEmpty()
-  petId: string;
+  petId: number;
 
   @Field()
   @IsNotEmpty()
