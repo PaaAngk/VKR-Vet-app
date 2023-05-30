@@ -3,6 +3,8 @@ dist/
 prisma/*.db
 coverage/
 Researchs/
+.adminjs/
+.vscode/
 
 .DS_Store
 

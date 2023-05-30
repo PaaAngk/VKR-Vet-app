@@ -1,10 +1,9 @@
 import { PrismaService } from 'nestjs-prisma';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  ConflictException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

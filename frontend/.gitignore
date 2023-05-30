@@ -16,7 +16,9 @@ node_modules
 *.launch
 .settings/
 *.sublime-workspace
-
+.VSCodeCounter/
+e2e/
+environments/
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json

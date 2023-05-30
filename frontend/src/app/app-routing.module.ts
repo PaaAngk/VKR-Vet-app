@@ -12,15 +12,15 @@ const routerConfig: ExtraOptions = {
 };
 
 const routes: Routes = [
-  // Redirect empty path to 'home'
+  // Redirect empty path to 'scheduler'
   {path: '', pathMatch : 'full', redirectTo: 'scheduler'},
 
-  // Redirect signed in user to the '/home'
+  // Redirect signed in user to the '/scheduler'
   //
   // After the user signs in, the sign in page will redirect the user to the 'signed-in-redirect'
   // path. Below is another redirection for that path to redirect the user to the desired
   // location. This is a small convenience to keep all main routes together here on this file.
-  {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'home'},
+  {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'scheduler'},
 
   // Auth routes for guests
   {
