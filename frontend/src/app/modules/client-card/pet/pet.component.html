@@ -9,6 +9,7 @@
                 Возраст: <b>{{pet.DOB | ageString | checkNull }}</b>
             </p>
             <edit-delete-button
+                *disableForRole="['MANAGER']"
                 class="group w-64 justify-self-end"
                 (deleteAction)="deletePet(template)"
                 (editAction)="showDialogEditPet()"
@@ -16,6 +17,7 @@
             <div 
                 tuiGroup
                 class="group md:basis-2/6 basis-full"
+                *disableForRole="['MANAGER']"
             >
                 <button
                     tuiButton

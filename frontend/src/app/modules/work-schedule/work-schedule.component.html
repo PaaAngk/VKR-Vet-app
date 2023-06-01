@@ -7,6 +7,8 @@
             type="button"
             size="m"
             class="w-72 place-self-end"
+            (click)="addWorkSchedule()"
+            *disableForRole="['DOCTOR']"
         >
             Добавление графика работы
         </button>
@@ -14,8 +16,44 @@
     <tui-loader 
         class="overflow-y-auto w-full " 
         [ngStyle]="{'height':'88%'}" 
-        [showLoader]="false"
+        *tuiLet="eventsList$ | async as eventsList"
+        [showLoader]="!eventsList"
     >
-        <full-calendar class="w-full p-2" [options]="calendarOptions"></full-calendar>
+        <full-calendar class="w-full p-2" [options]="calendarOptions" [events]="eventsList">
+            <ng-template #eventContent let-arg>
+                <b> {{ arg.event.title }}</b>
+            </ng-template>
+        </full-calendar>
     </tui-loader>
+
 </div>
+<ng-template
+    #scheduleDelete
+    let-observer
+>
+    <p>Выберите вид удаления графика сотрудника: {{eventForDelete}}</p>
+    <div class="flex flex-col justify-around mt-2">
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            appearance="accent"
+            class="bg-slate-500 mb-4"
+            (click)="observer.next(0)"
+            [showLoader]="eventLoading"
+        >
+            Удалить одну запись
+        </button>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            appearance="accent"
+            class="bg-slate-500"
+            (click)="observer.next(1)"
+            [showLoader]="eventLoading"
+        >
+            Удалить весь график сотрудника
+        </button>
+    </div>
+</ng-template>

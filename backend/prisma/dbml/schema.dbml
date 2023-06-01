@@ -162,8 +162,11 @@ Table Schedule {
   id Int [pk, increment]
   Employee Employee [not null]
   employeeId Int [not null]
-  data DateTime [not null]
-  dayType Boolean [not null]
+  date DateTime [not null]
+
+  indexes {
+    (date, employeeId) [unique]
+  }
 }
 
 Table ReceptionRecord {

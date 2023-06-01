@@ -1,0 +1,67 @@
+<form [formGroup]="addWorkScheduleForm" class="space-y-4 mt-2 justify-center">
+    <div class="tui-form__row">
+        <tui-input-date
+            toNativeDate
+            class="b-form"
+            formControlName="date"
+            tuiHintContent="Первый рабочий день, первый день после 3-х выходных"
+        >
+            Первый рабочий день
+        </tui-input-date>
+        <tui-error
+            formControlName="date"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+    </div>
+    <div class="tui-form__row">
+        <tui-input-number
+            tuiHintContent="Количетсво дней на которое заполняется график, по умолчанию = 30"
+            formControlName="workDays"
+            [min] = "0"
+            [step]="1"
+            [max] = "150"
+        >
+            Период формирования графика, дней
+        </tui-input-number>
+    </div>
+
+    <div class="tui-form__row">
+        <tui-combo-box
+            class="b-form"
+            [stringify]="stringifyEmployeeList"
+            formControlName="employeeInput"
+            [tuiTextfieldCleaner]="true"
+        >
+            Врач
+            <input
+                tuiTextfield
+                placeholder="Начните вводить ФИО"
+            />
+            <tui-data-list-wrapper
+                *tuiDataList
+                [items]="employees | tuiFilterByInputWith : stringifyEmployeeList"
+                [itemContent]="stringifyEmployeeList | tuiStringifyContent"
+            ></tui-data-list-wrapper>
+        </tui-combo-box>
+        <tui-error
+            formControlName="employeeInput"
+            [error]="[] | tuiFieldError | async"
+        ></tui-error>
+    </div>
+
+
+    <div class="flex justify-between">
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            class="w-44"
+            [disabled]="!hasValue"
+            (click)="submit()"
+            [showLoader]="loading"
+        >
+            <p>Добавить</p>
+        </button>
+
+    </div>
+</form>

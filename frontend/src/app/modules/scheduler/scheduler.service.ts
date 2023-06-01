@@ -1,29 +1,33 @@
 import { Injectable } from "@angular/core";
 import { EventInput } from "@fullcalendar/core";
-import { BehaviorSubject, map, Observable, tap } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from "rxjs";
+import { fullNameToShort } from "src/app/shared/utils/fullNameToShort";
 import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteReceptionRecordGQL, GetRecordsByDatesRangeGQL, ReceptionRecord, BetweenDateInput, UpdateDateReceptionRecordGQL, UpdateReceptionRecordGQL, UpdateReceptionRecordInput } from "src/graphql/generated";
 
 
 @Injectable()
 export class SchedulerService
 {
-    private _recordsList : BehaviorSubject<ReceptionRecord[]> = new BehaviorSubject([] as ReceptionRecord[]);
-    // private _eventsList : BehaviorSubject<Array<EventInput>> = new BehaviorSubject([] as EventInput[]);
+    private _recordsList : BehaviorSubject<ReceptionRecord[]|null> = new BehaviorSubject<ReceptionRecord[]|null>(null);
 
     // Selected date from calendar for create in dialog  
     private _selectedRecord : BehaviorSubject<ReceptionRecord> = new BehaviorSubject(undefined as unknown as ReceptionRecord);
 
     private _eventsList: Observable<EventInput[] | null> = this._recordsList.pipe(
-        tap(i => console.log(i)),
-        map(val => val.map((item: ReceptionRecord) => {
-            return {
-                id: item.id.toString(),
-                title: item.employee?.fullName ? item.employee?.fullName : 
-                    (item.purpose?.purposeName ? item.purpose?.purposeName : (item.kindOfAnimal ? item.kindOfAnimal: 'Нет данных')),
-                start: item.dateTimeStart,
-                end: item.dateTimeEnd,
-            }
-        })),
+        distinctUntilChanged(),
+        map(val => {
+            if(val){
+                return val.map((item: ReceptionRecord) => {
+                    return {
+                        id: item.id.toString(),
+                        title: item.employee?.fullName ? fullNameToShort(item.employee?.fullName) : 
+                            (item.purpose?.purposeName ? item.purpose?.purposeName : (item.kindOfAnimal ? item.kindOfAnimal: 'Нет данных')),
+                        start: item.dateTimeStart,
+                        end: item.dateTimeEnd,
+                    }
+                })
+            } else return null;
+        }),
     )
 
     constructor(
@@ -72,7 +76,7 @@ export class SchedulerService
      * @returns 
      */
     getLocalRecordById(id: number): ReceptionRecord{
-        const data = this._recordsList.getValue().filter((item) => item.id === id)[0] || {} as ReceptionRecord
+        const data = this._recordsList.getValue()?.filter((item) => item.id === id)[0] || {} as ReceptionRecord
         return data
     }
 
@@ -83,8 +87,9 @@ export class SchedulerService
     /**
      * Get reception record by range datetime
      */
-    getRecordsByDateRange(dates: BetweenDateInput): Observable<any>//BetweenDateInput
+    getRecordsByDateRange(dates: BetweenDateInput): Observable<ReceptionRecord[]>//BetweenDateInput
     {
+        this._recordsList.next(null)
         return this.getRecordsByDatesRangeGQL.watch({
             data: dates
         },
@@ -92,16 +97,14 @@ export class SchedulerService
             fetchPolicy: 'network-only',
         },)
         .valueChanges.pipe(map(result => {
-            // let events: EventInput[] = [];
             const newRecords = result.data?.receptionRecordBetweenDate             
 
             if(newRecords){
-                const currentRecords = this._recordsList.getValue()
+                const currentRecords = this._recordsList.getValue() || []
                 this._recordsList.next(currentRecords.concat(newRecords.filter((item) => currentRecords.indexOf(item) < 0)));
                 
             }
-            console.log(result)
-            console.log(dates)
+            return newRecords
         }))
     }
 
@@ -116,7 +119,8 @@ export class SchedulerService
         }).pipe(
             map(( data ) => {
                 if (data.data?.createReceptionRecord) {
-                    this._recordsList.next(this._recordsList.getValue().concat(data.data?.createReceptionRecord))
+                    const currentRecords = this._recordsList.getValue() || []
+                    this._recordsList.next(currentRecords.concat(data.data?.createReceptionRecord))
                 }
                 return data.data?.createReceptionRecord
             })
@@ -136,8 +140,9 @@ export class SchedulerService
         }).pipe(
             map(( {data} ) => {
                 if (data?.updateReceptionRecord) {
+                    const currentRecords = this._recordsList.getValue() || []
                     this._recordsList.next(
-                        this._recordsList.getValue().map(val => {
+                        currentRecords.map(val => {
                             return val.id === data?.updateReceptionRecord.id ? data?.updateReceptionRecord : val
                         })
                     );
@@ -160,8 +165,9 @@ export class SchedulerService
         }).pipe(
             map(( {data} ) => {
                 if (data?.updateDateReceptionRecord) {
+                    const currentRecords = this._recordsList.getValue() || []
                     this._recordsList.next(
-                        this._recordsList.getValue().map(val => {
+                        currentRecords.map(val => {
                             return val.id === data?.updateDateReceptionRecord.id ? data?.updateDateReceptionRecord : val
                         })
                     );
@@ -181,11 +187,13 @@ export class SchedulerService
         }).pipe(
             map(( {data} ) => {
                 if (data?.deleteReceptionRecord) {
+                    const currentRecords = this._recordsList.getValue() || []
                     this._recordsList.next(
-                        this._recordsList.getValue().filter((item: ReceptionRecord) => item.id != id)
+                        currentRecords.filter((item: ReceptionRecord) => item.id != id)
                     );
                 }
             })
         )
     }
 }
+

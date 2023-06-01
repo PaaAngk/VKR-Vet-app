@@ -68,6 +68,10 @@ enum ClientOrderField {
   telephoneNumber
 }
 
+type CountOutput {
+  count: Int!
+}
+
 input CreateAnalyzesResearchInput {
   data: String
   petId: Int!
@@ -140,6 +144,14 @@ input CreateServiceTypeInput {
   typeName: String!
 }
 
+input CreateWorkScheduleInput {
+  dateWorkStart: DateTime!
+  employeeId: Int!
+
+  """Количество дней для создания графика."""
+  workDays: Int!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -205,12 +217,15 @@ type Mutation {
   createReception(data: CreateReceptionInput!): Reception!
   createReceptionRecord(data: CreateReceptionRecordInput!): ReceptionRecord!
   createService(data: CreateServiceInput!): Service!
+  createWorkSchedule(data: CreateWorkScheduleInput!): [WorkSchedule!]!
   deleteClient(clientId: Int!): Client!
   deleteGoods(goodsId: Int!): Goods!
   deletePet(petId: Int!): Pet!
   deleteReceptionRecord(receptionRecordId: Int!): ReceptionRecord!
   deleteResearch(analyzesResearchId: Int!): AnalyzesResearch!
   deleteService(serviceId: Int!): Service!
+  deleteWorkScheduleAllEmployeeById(employeeId: Int!): CountOutput!
+  deleteWorkScheduleById(workScheduleId: Int!): WorkSchedule!
   login(data: LoginInput!): Auth!
   refreshToken(token: JWT!): Token!
   updateAnalyzesResearch(analyzesResearchId: Int!, data: UpdateAnalyzesResearchInput!): AnalyzesResearch!
@@ -222,6 +237,7 @@ type Mutation {
   updateReceptionRecord(data: UpdateReceptionRecordInput!, receptionRecordId: Int!): ReceptionRecord!
   updateService(data: UpdateServiceInput!, serviceId: Int!): Service!
   updateUser(data: UpdateUserInput!): User!
+  updateWorkSchedule(data: UpdateWorkScheduleInput!, workScheduleId: Int!): WorkSchedule!
 }
 
 """
@@ -274,6 +290,8 @@ type Query {
   analyzesResearch(analyzesResearchId: Int!): AnalyzesResearch!
   clientDetail(clientId: Int!): Client!
   clientsWithSearch(search: String): [Client!]!
+  getWorkScheduleById(workScheduleId: Int!): WorkSchedule!
+  getWorkSchedulesBetweenDate(data: BetweenDateInput!): [WorkSchedule!]!
   hello(name: String!): String!
   helloWorld: String!
   me: User!
@@ -457,9 +475,22 @@ input UpdateUserInput {
   fullName: String
 }
 
+input UpdateWorkScheduleInput {
+  date: DateTime!
+  employeeId: Int!
+}
+
 type User {
   fullName: String
   id: Int!
   login: String!
   role: Role!
+}
+
+type WorkSchedule {
+  """Дата рабочего дня"""
+  date: DateTime!
+  employee: Employee
+  employeeId: Int
+  id: Int!
 }

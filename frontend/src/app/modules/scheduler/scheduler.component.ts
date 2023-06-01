@@ -15,6 +15,7 @@ import listPlugin from '@fullcalendar/list';
 import ruLocale from '@fullcalendar/core/locales/ru';
 import { AddReceptionRecordDialogComponent } from './dialogs/add-record/add-reception.component';
 import { ReceptionRecord, BetweenDateInput } from 'src/graphql/generated';
+import { UserService } from 'src/app/core';
 
 
 @Component({
@@ -85,6 +86,7 @@ export class SchedulerComponent implements OnDestroy{
 
 	eventResizeValue?: EventResizeDoneArg;
 	eventResizeLoading = false;
+	currentUserRole='';
 
 	private readonly dialogAddReceptionRecord = this.dialogService.open<ReceptionRecord>(
         new PolymorpheusComponent(AddReceptionRecordDialogComponent, this.injector),
@@ -101,8 +103,10 @@ export class SchedulerComponent implements OnDestroy{
         @Inject(Injector) private readonly injector: Injector,
 		private schedulerService: SchedulerService,
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
+		private userService: UserService,
     ) {
 		this.eventsList$ = this.schedulerService.getEvents$;
+		this.currentUserRole = this.userService.getCurrentUser().role
 	}
 
 	ngOnDestroy(): void
@@ -120,14 +124,7 @@ export class SchedulerComponent implements OnDestroy{
 	// -----------------------------------------------------------------------------------------------------
 
 	createReception(){
-		this.dialogAddReceptionRecord.subscribe({
-            next: data => {
-                console.log(`Dialog emitted data = ${data}`);
-            },
-            complete: () => {
-                console.log('Dialog closed');
-            },
-        });
+		this.dialogAddReceptionRecord.subscribe();
 	}
 
 	// -----------------------------------------------------------------------------------------------------

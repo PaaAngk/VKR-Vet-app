@@ -10,6 +10,7 @@ import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { AddServiceComponent } from './add-service/add-service.component';
 import { DeleteConfirmComponent } from 'src/app/shared/components/dialog/delete-confirm/delete-confirm.component';
+import { SharedModule } from 'src/app/shared';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { DeleteConfirmComponent } from 'src/app/shared/components/dialog/delete-
     FormsModule,
     ReactiveFormsModule,
     ServicesRoutingModule,
+    SharedModule,
 
     //TUI
     TuiInputModule,

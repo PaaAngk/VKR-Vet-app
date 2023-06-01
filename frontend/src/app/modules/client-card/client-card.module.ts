@@ -47,6 +47,7 @@ import { FileViewModule } from 'src/app/shared/components/file-view/file-view.mo
 import { EditDeleteButtonModule } from 'src/app/shared/components/edit-delete-button/edit-delete-button.module';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
+import { SharedModule } from 'src/app/shared';
 
 
 @NgModule({
@@ -79,6 +80,7 @@ import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
     FileInputModule,
     FileViewModule,
     EditDeleteButtonModule,
+    SharedModule,
 
     TuiInputModule,
     TuiButtonModule,

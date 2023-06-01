@@ -116,8 +116,6 @@ export class ReceptionRecordResolver {
 
   @Query(() => [ReceptionRecord])
   async receptionRecordBetweenDate(@Args('data') data: BetweenDateInput) {
-    console.log(data.dateStart);
-    console.log(data.dateEnd);
     return await this.prisma.receptionRecord.findMany({
       where: {
         OR: [

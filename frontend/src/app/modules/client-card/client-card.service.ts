@@ -223,6 +223,7 @@ export class ClientCardService
         })
         .pipe(
             map(( data ) => {
+                console.log(data)
                 if (data.data?.createClient) {
                     this._clientsData.next(this._clientsData.getValue().concat(data.data.createClient));
                     return data.data.createClient;

@@ -44,7 +44,7 @@ export class ClientsResolver {
         address: data.address?.trim() || null,
       },
     });
-    pubSub.publish('clientCreated', { clientCreated: newClient });
+    // pubSub.publish('clientCreated', { clientCreated: newClient });
     return newClient;
   }
 

@@ -2,30 +2,82 @@
     
     <!-- Content -->
     <main class="h-full w-full bg-gray-100 flex flex-row"> 
-        <nav
-            tuiTabs
-            vertical="left"
-            class="left pl-2 bg-sky-300 tui-text_body-xl"
+        <div
+          class="bg-sky-300 bg-opacity-70 tui-text_body-xl flex flex-col justify-between"
         >
-            <button routerLink="/scheduler" tuiTab>Регистратура</button>
-            <button routerLink="/client-card" routerLinkActive tuiTab>Карты клиентов</button>
-            <button routerLink="/goods" routerLinkActive tuiTab>Склад</button>
-            <button routerLink="/services" routerLinkActive tuiTab>Услуги</button>
-            <button routerLink="/analytics" routerLinkActive tuiTab>Аналитика</button>
-            <button routerLink="/work-scheduler" routerLinkActive tuiTab>График работы</button>
-            <button tuiTab>Выйти</button>
-        </nav>  
+          <nav
+              tuiTabs
+              vertical="left"
+              class="pl-1 w-36"
+          >
+              <button routerLink="/scheduler" tuiTab>
+                <tui-svg
+                    src="tuiIconCalendar"
+                    class="tui-space_right-1"
+                ></tui-svg>
+                Регистратура
+              </button>
+              <button routerLink="/client-card" routerLinkActive tuiTab>
+                <tui-svg
+                    src="tuiIconUser"
+                    class="tui-space_right-1"
+                ></tui-svg>
+                Карты клиентов
+              </button>
+              <button routerLink="/goods" routerLinkActive tuiTab>
+                <tui-svg
+                    src="tuiIconHome"
+                    class="tui-space_right-1"
+                ></tui-svg>
+                <p class="mr-14">Склад</p> 
+              </button>
+              <button routerLink="/services" routerLinkActive tuiTab>
+                <tui-svg
+                    src="tuiIconClipboard"
+                    class="tui-space_right-1"
+                ></tui-svg>
+                <p class="mr-14">Услуги</p> 
+              </button>
+              <button routerLink="/analytics" routerLinkActive tuiTab>
+                <tui-svg
+                    src="tuiIconBarChart2"
+                    class="tui-space_right-1"
+                ></tui-svg>
+                <p class="mr-6">Аналитика</p> 
+              </button>
+              <button routerLink="/work-scheduler" routerLinkActive tuiTab>
+                <tui-svg
+                    src="tuiIconClock"
+                    class="tui-space_right-1"
+                ></tui-svg>
+                График работы
+              </button>
+          </nav>  
+          <div>
+            <div class="text-lg pl-1 text-black text-center" [ngSwitch]="currentUser.role" >
+              <ng-template ngSwitchCase="DOCTOR">Доктор</ng-template>
+              <ng-template ngSwitchCase="ADMIN">Администратор</ng-template>
+              <ng-template ngSwitchCase="MANAGER">Регистратура</ng-template>
+            </div>
+            <p class="text-lg text-black text-center">{{ today | date:'d MMMM, H:mm' }}</p>
+            <hr class="bg-black">
+            <button
+              tuiButton
+                type="button"
+                class="pl-2 " 
+                appearance="custom"
+                icon="tuiIconLogOut"
+                size="s"
+                (click)="logout()"
+            >
+                <p class="text-base ml-2">Выход</p> 
+            </button>
+          </div>
+      </div>
     <div class="p-4 w-full h-full">
       <router-outlet *ngIf="true"></router-outlet> 
     </div>
     </main>
-
-    <!-- Footer -->
-    <!-- <footer class="flex w-full h-10 px-4 items-center z-49 shadow-inner border-t border-color bg-white print:hidden">
-        <span class="font-medium text-secondary">Copyright &copy; {{ today | date: 'yyyy' }}</span>
-    <h1>sdfsdhfshjkf</h1>
-    </footer> -->
-
 </div>
 
 

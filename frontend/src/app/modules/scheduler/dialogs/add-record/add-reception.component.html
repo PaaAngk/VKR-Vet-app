@@ -34,6 +34,7 @@
                 toNativeDate
                 class="b-form"
                 formControlName="date"
+                (ngModelChange)="onDateChange()"
             >
                 Дата
             </tui-input-date>
@@ -80,8 +81,9 @@
             />
             <tui-data-list-wrapper
                 *tuiDataList
-                [items]="employees | tuiFilterByInputWith : stringifyEmployeeList"
+                [items]="employeesRes | tuiFilterByInputWith : stringifyEmployeeList"
                 [itemContent]="stringifyEmployeeList | tuiStringifyContent"
+                [labels]="employeeLabels"
             ></tui-data-list-wrapper>
         </tui-combo-box>
         <tui-error

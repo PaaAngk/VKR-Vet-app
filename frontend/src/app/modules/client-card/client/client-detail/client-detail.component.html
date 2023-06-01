@@ -8,6 +8,7 @@
                     Адрес: {{client.address}}</p>
                 </div>
                 <edit-delete-button
+                    *disableForRole="['MANAGER']"
                     class="md:w-64 w-full justify-self-end"
                     (deleteAction)="deleteClient(template)"
                     (editAction)="showDialogEditClient()"
@@ -151,6 +152,7 @@
                                     tuiGroup
                                     class="group lg:w-72 md:w-32"
                                     [collapsed]="true"
+                                    *disableForRole="['MANAGER']"
                                 >
                                     <button
                                         tuiButton

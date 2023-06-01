@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
 import { Client, CreateClientInput, UpdateClientInput } from 'src/graphql/generated';
@@ -36,6 +37,7 @@ export class DialogClientComponent {
         private readonly context: TuiDialogContext<any, string>,
         @Inject(TuiAlertService) private readonly alertService: TuiAlertService,
         private clientCardService: ClientCardService,
+        private router: Router,
     ) {
         if(this.context.data == 'edit'){
             this.clientCardService.getSelectedClient$
@@ -59,16 +61,17 @@ export class DialogClientComponent {
     }
 
     submit(): void {
-        if (this.searchForm.status == "VALID" ) {
+        if (this.searchForm.status == "VALID" ){
             if(this.context.data == 'add'){
                 this.clientCardService.createClient(this.searchForm.value as CreateClientInput).subscribe({
-                    next: (data ) => { 
-                        this.alertService.open("", {status: TuiNotification.Success, label:"Клиент успешно добавлен!"}).subscribe({});
+                    next: (data ) => {
+                        this.alertService.open("", {status: TuiNotification.Success, label:"Клиент успешно добавлен!"}).subscribe();
+                        this.router.navigateByUrl(`/client-card/client/${data.id}`)
                         this.context.completeWith(data); 
                     },
-                    error: (error)  => 
-                    {
-                        this.alertService.open("Клиент уже добавлен", {status: TuiNotification.Error}).subscribe({})
+                    error: (error) => {
+                        this.alertService.open("Клиент уже добавлен. Перезагрузите и попробуйте снова.", 
+                            {label:"Ошибка добавления", status: TuiNotification.Error, autoClose: 5000}).subscribe()
                         console.log(error)
                     }
                 })
@@ -76,12 +79,13 @@ export class DialogClientComponent {
             else if(this.context.data == 'edit'){
                 this.clientCardService.updateClient(this.clientsId ,this.searchForm.value as UpdateClientInput).subscribe({
                     next: () => { 
-                        this.alertService.open("", {status: TuiNotification.Success, label:"Данные успешно обновлены!"}).subscribe({});
+                        this.alertService.open("", {status: TuiNotification.Success, label:"Данные успешно обновлены!"}).subscribe();
                         this.context.completeWith(this.searchForm.value); 
                     },
                     error: (error)  => 
                     {
-                        this.alertService.open("Клиент уже добавлен", {status: TuiNotification.Error}).subscribe({})
+                        this.alertService.open("Клиент уже добавлен. Перезагрузите и попробуйте снова.", 
+                            {label:"Ошибка Обновления", status: TuiNotification.Error, autoClose: 5000}).subscribe()
                         console.log(error)
                     }
                 })

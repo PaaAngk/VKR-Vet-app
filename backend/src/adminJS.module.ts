@@ -76,11 +76,27 @@ export default AdminModule.createAdminAsync({
           resource: { model: dmmf.modelMap.Schedule, client: prisma },
         },
       ],
+      locale: {
+        language: 'ru',
+        translations: {
+          labels: {
+            Employee: 'Сотрудники',
+          },
+          resources: {
+            Employee: {
+              properties: {
+                fullName: 'ФИО',
+                role: 'Роль',
+              }
+            }
+          }
+        }
+      },
     },
     auth: {
       authenticate,
       cookieName: 'adminjs',
-      cookiePassword: 'secret',
+      cookiePassword: 'secret12345',
     },
     sessionOptions: {
       resave: true,

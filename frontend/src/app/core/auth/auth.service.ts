@@ -1,22 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, ReplaySubject, throwError } from 'rxjs';
-import { catchError, distinctUntilChanged, map, switchMap, take, tap } from 'rxjs/operators';
-import { ApiService, JwtService } from 'src/app/core/services';
+import { Observable, ReplaySubject } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { JwtService } from 'src/app/core/services';
 import { AuthUser } from 'src/app/core/models/auth-user';
 import { UserService } from 'src/app/core/services/user/user.service';
 import { Apollo } from 'apollo-angular';
 import { CurrentUserProfileGQL, LoginGQL, LoginInput, User } from 'src/graphql/generated';
 
-// const GET_ME = gql`
-//   query CurrentUserProfile {
-//     me {
-//       id
-//       fullName
-// 	  login
-//     }
-//   }
-// `
 
 @Injectable()
 export class AuthService
@@ -26,13 +16,12 @@ export class AuthService
   
     constructor (
       private userService: UserService,
-      private apiService: ApiService,
       private jwtService: JwtService,
 
 	  //Apollo
 	  private apollo: Apollo,
 	  private currentUserProfileGQL: CurrentUserProfileGQL,
-	  private loginGQL:LoginGQL
+	  private loginGQL:LoginGQL,
     ) {}
   
     // Verify JWT in localstorage with server & load user's info.
@@ -40,15 +29,11 @@ export class AuthService
     populate() {
 		// If JWT detected, attempt to get & store user's info
 		if (this.jwtService.getToken()) {
-			// this.apiService.get('/user/me')
-			// .subscribe({
-			// 	next : (data) => {this.setAuth(this.jwtService.getToken())},
-			// 	error: (e)  => {this.purgeAuth()}
-			// });
+
 			this.currentUserProfileGQL.watch()
 			.valueChanges.subscribe({
-				next : (data) => {this.setAuth(this.jwtService.getToken())},
-				error: (error)  => {this.purgeAuth()}
+				next : () => {this.setAuth(this.jwtService.getToken())},
+				error: ()  => {this.purgeAuth()}
 			});
 		} else {
 			// Remove any potential remnants of previous auth states

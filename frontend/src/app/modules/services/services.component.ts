@@ -4,7 +4,8 @@ import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { TuiValidationError, tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { Subject, takeUntil } from 'rxjs';
+import { delay, Subject, takeUntil } from 'rxjs';
+import { UserService } from 'src/app/core';
 import { Service, UpdateServiceInput } from 'src/graphql/generated';
 import { AddServiceComponent } from './add-service/add-service.component';
 import { ServicesService } from './services.service';
@@ -22,9 +23,10 @@ export class ServicesComponent implements OnDestroy{
 	filterServices : Service[] = [] as Service[];
 
 	editedService: Service = {} as Service;
-	readonly columns = [`name`, `typeName`, `price`, `actions`];
+	columns = [`name`, `typeName`, `price`, `actions`];
 
 	loading = false;
+	currentUserRole = '';
 
 	readonly searchForm = new FormGroup({
 		search: new FormControl(''),
@@ -44,6 +46,7 @@ export class ServicesComponent implements OnDestroy{
 		private servicesService: ServicesService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
+		private userService: UserService,
     ) {
 		// Getting data 
 		this.loading = true;
@@ -56,12 +59,15 @@ export class ServicesComponent implements OnDestroy{
 		});
 
 		this.searchForm.valueChanges
-		.pipe(takeUntil(this._unsubscribeAll))
+		.pipe(takeUntil(this._unsubscribeAll), delay(200))
 		.subscribe({
 			next: (data) => {
 				this.filterServices = this.setFilterServices(data['search']);
+				this._changeDetectorRef.markForCheck();
 			}
-		})
+		});
+		this.currentUserRole = this.userService.getCurrentUser().role
+		if( this.currentUserRole === "DOCTOR" || this.currentUserRole === "MANAGER") this.columns = [`name`, `typeName`, `price`]
 	}
 
 	ngOnDestroy(): void
@@ -125,7 +131,7 @@ export class ServicesComponent implements OnDestroy{
 			error: (error)  => 
 			{
 				this.alertService.open(
-					"Услуга уже добавлена", 
+					"Услуга уже добавлена. Попробуйте перезагрузить страницу.", 
 					{
 						status: TuiNotification.Error, 
 						label:"Ошибка обновления услуги",
@@ -167,7 +173,7 @@ export class ServicesComponent implements OnDestroy{
 					error: (error)  => 
 					{
 						this.alertService.open(
-							"Обратитесь к администратору", 
+							"Попробуйте перезагрузить страницу или обратитесь к администратору", 
 							{
 								status: TuiNotification.Error, 
 								label:"Ошибка удаления услуги",

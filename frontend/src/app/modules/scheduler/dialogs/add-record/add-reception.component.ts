@@ -9,9 +9,10 @@ import { TuiTime } from '@taiga-ui/cdk';
 import { debounceTime, filter, map, Observable, startWith, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 import { tuiCreateTimePeriods } from '@taiga-ui/kit';
 import { ClientCardService } from 'src/app/modules/client-card/client-card.service';
-import { Client, CreateReceptionRecordInput, Employee, ReceptionPurpose, ReceptionRecord, BetweenDateInput, UpdateReceptionRecordInput } from 'src/graphql/generated';
+import { Client, CreateReceptionRecordInput, Employee, ReceptionPurpose, ReceptionRecord, BetweenDateInput, UpdateReceptionRecordInput, WorkSchedule } from 'src/graphql/generated';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { DialogClientComponent } from 'src/app/modules/client-card/dialog/client-dialog/client-dialog.component';
+import { WorkScheduleService } from 'src/app/modules/work-schedule/work-schedule.service';
 
 class ClientView{
     constructor(
@@ -37,7 +38,15 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
     dateRange?: BetweenDateInput;
     workTimes = tuiCreateTimePeriods(10, 20);
     workTimesEnd = tuiCreateTimePeriods(10, 20);
+
+    //All employee
     employees!: Employee[];
+    //available emploees in current day
+    workingEmployees!: Employee[];
+    //concat two array for labeling
+    employeesRes!: [Employee[],Employee[]];
+    employeeLabels = ['Работающие сотрудники', 'Не работающие сотрудники']
+
     receptionPurposes!: ReceptionPurpose[];
     recordID!: number;
     loading = false;
@@ -91,7 +100,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         private readonly context: TuiDialogContext<any, string>,
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
         @Inject(Injector) private readonly injector: Injector,
-        // private clientCardService: ClientCardService,
+        private workScheduleService: WorkScheduleService,
         private schedulerService: SchedulerService,
         private clientCardService: ClientCardService,
     ) {
@@ -147,10 +156,13 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         this.addReceptionRecordForm.valueChanges
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((data: any) => {
+            console.log(data)
             if (data.startTime){
                 this.updateWorkTimeEnd(data.startTime)
             }
         })
+
+        this.getAvailableEmployees();
     }
     
     ngOnDestroy(): void {
@@ -274,6 +286,28 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                 console.log('Dialog closed');
             },
         });
+    }
+
+    // Getting working in current date employee
+    getAvailableEmployees(){
+        this.workScheduleService.getRecordsByDateRange({
+            dateStart: this.addReceptionRecordForm.value.date,
+            dateEnd: this.addReceptionRecordForm.value.date
+        })
+        .pipe(take(1))
+        .subscribe((workingEmployees: WorkSchedule[]) => {
+            this.workingEmployees = workingEmployees.map(emp => ({...emp.employee} as Employee) );
+            // Get two array with working in current date and not working employees.
+            // filter all employees if employee include in working list
+            this.employeesRes = [
+                this.workingEmployees, 
+                this.employees.filter(empl => this.workingEmployees.every(workEmp => workEmp.id !== empl.id))
+            ]
+        })
+    }
+
+    onDateChange(){
+        this.getAvailableEmployees();
     }
 
 }

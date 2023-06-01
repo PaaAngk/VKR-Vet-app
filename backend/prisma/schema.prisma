@@ -178,8 +178,9 @@ model Schedule {
   id         Int          @id @default(autoincrement())
   Employee   Employee     @relation(fields: [employeeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   employeeId Int
-  data       DateTime     @db.Date
-  dayType    Boolean
+  date       DateTime     @db.Date
+
+  @@unique([date, employeeId])
 }
  
 model ReceptionRecord {

@@ -28,6 +28,7 @@
 
 
         <edit-delete-button
+            *disableForRole="['MANAGER']"
             class="md:w-64 w-full justify-self-end"
             (deleteAction)="deleteAnalyze(template)"
             (editAction)="navigateToEdit()"

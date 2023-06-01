@@ -202,7 +202,7 @@ export class AnalyticsComponent implements OnDestroy, OnInit{
                 earnCount += finded_date.cost_sum;
             }
             else {
-                arrCost.push([TuiDay.fromLocalNativeDate(dt), Math.floor(randn_bm()*3000)]);
+                arrCost.push([TuiDay.fromLocalNativeDate(dt), Math.floor(randn_bm()*5000)*5]);
                 arrUnique_pets.push([TuiDay.fromLocalNativeDate(dt), Math.floor(randn_bm()*100)*300]);
                 arrUnique_client.push([TuiDay.fromLocalNativeDate(dt), Math.floor(randn_bm()*100)*300])
             }

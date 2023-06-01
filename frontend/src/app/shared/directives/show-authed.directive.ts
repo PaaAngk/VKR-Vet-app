@@ -1,5 +1,4 @@
 /* eslint-disable @angular-eslint/directive-selector */
-import { AuthService } from 'src/app/core/auth/auth.service';
 import {
   Directive,
   Input,
@@ -7,22 +6,31 @@ import {
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
+import { take } from 'rxjs';
+import { UserService } from 'src/app/core';
+import { User } from 'src/graphql/generated';
 
 
-@Directive({ selector: '[appShowAuthed]' })
+@Directive({ selector: '[disableForRole]' })
 export class ShowAuthedDirective implements OnInit {
   constructor(
     private templateRef: TemplateRef<any>,
-    private authService: AuthService,
+    private userService: UserService,
     private viewContainer: ViewContainerRef
   ) {}
 
-  condition !: boolean;
+  ifRoles!: Array<string>;
+
+  @Input() set disableForRole(condition: Array<string>) {
+    this.ifRoles = condition;
+  }
 
   ngOnInit() {
-    this.authService.isAuthenticated.subscribe(
-      (isAuthenticated) => {
-        if (isAuthenticated && this.condition || !isAuthenticated && !this.condition) {
+    this.userService.currentUser.pipe(take(1)).subscribe(
+      (isAuthenticated: User) => {
+        // user Role are checked by a Roles mention in DOM
+        const idx = this.ifRoles.indexOf(isAuthenticated.role);
+        if (idx < 0) {
           this.viewContainer.createEmbeddedView(this.templateRef);
         } else {
           this.viewContainer.clear();
@@ -30,9 +38,4 @@ export class ShowAuthedDirective implements OnInit {
       }
     );
   }
-
-  @Input() set appShowAuthed(condition: boolean) {
-    this.condition = condition;
-  }
-
 }

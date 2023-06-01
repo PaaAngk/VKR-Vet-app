@@ -27,10 +27,15 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 
 import localeRu from '@angular/common/locales/ru';
+import { NativeDateTransformerDirective } from './shared/directives/native-date-transformer.directive';
+import { SharedModule } from './shared';
 registerLocaleData(localeRu);
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent, 
+    NativeDateTransformerDirective,
+  ],
   imports: [
     BrowserModule,
     ApolloModule,
@@ -46,6 +51,7 @@ registerLocaleData(localeRu);
     CoreModule,
     LayoutModule,
     ClientCardModule,
+    SharedModule,
 
 
     //TUI

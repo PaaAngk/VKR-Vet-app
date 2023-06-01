@@ -87,6 +87,11 @@ export enum ClientOrderField {
   TelephoneNumber = 'telephoneNumber'
 }
 
+export type CountOutput = {
+  __typename?: 'CountOutput';
+  count: Scalars['Int'];
+};
+
 export type CreateAnalyzesResearchInput = {
   data?: InputMaybe<Scalars['String']>;
   petId: Scalars['Int'];
@@ -159,6 +164,13 @@ export type CreateServiceTypeInput = {
   typeName: Scalars['String'];
 };
 
+export type CreateWorkScheduleInput = {
+  dateWorkStart: Scalars['DateTime'];
+  employeeId: Scalars['Int'];
+  /** Количество дней для создания графика. */
+  workDays: Scalars['Int'];
+};
+
 export type Employee = {
   __typename?: 'Employee';
   fullName: Scalars['String'];
@@ -219,12 +231,15 @@ export type Mutation = {
   createReception: Reception;
   createReceptionRecord: ReceptionRecord;
   createService: Service;
+  createWorkSchedule: Array<WorkSchedule>;
   deleteClient: Client;
   deleteGoods: Goods;
   deletePet: Pet;
   deleteReceptionRecord: ReceptionRecord;
   deleteResearch: AnalyzesResearch;
   deleteService: Service;
+  deleteWorkScheduleAllEmployeeById: CountOutput;
+  deleteWorkScheduleById: WorkSchedule;
   login: Auth;
   refreshToken: Token;
   updateAnalyzesResearch: AnalyzesResearch;
@@ -236,6 +251,7 @@ export type Mutation = {
   updateReceptionRecord: ReceptionRecord;
   updateService: Service;
   updateUser: User;
+  updateWorkSchedule: WorkSchedule;
 };
 
 
@@ -294,6 +310,11 @@ export type MutationCreateServiceArgs = {
 };
 
 
+export type MutationCreateWorkScheduleArgs = {
+  data: CreateWorkScheduleInput;
+};
+
+
 export type MutationDeleteClientArgs = {
   clientId: Scalars['Int'];
 };
@@ -321,6 +342,16 @@ export type MutationDeleteResearchArgs = {
 
 export type MutationDeleteServiceArgs = {
   serviceId: Scalars['Int'];
+};
+
+
+export type MutationDeleteWorkScheduleAllEmployeeByIdArgs = {
+  employeeId: Scalars['Int'];
+};
+
+
+export type MutationDeleteWorkScheduleByIdArgs = {
+  workScheduleId: Scalars['Int'];
 };
 
 
@@ -386,6 +417,12 @@ export type MutationUpdateUserArgs = {
   data: UpdateUserInput;
 };
 
+
+export type MutationUpdateWorkScheduleArgs = {
+  data: UpdateWorkScheduleInput;
+  workScheduleId: Scalars['Int'];
+};
+
 /** Possible directions in which to order a list of items when provided an `orderBy` argument. */
 export enum OrderDirection {
   Asc = 'asc',
@@ -436,6 +473,8 @@ export type Query = {
   analyzesResearch: AnalyzesResearch;
   clientDetail: Client;
   clientsWithSearch: Array<Client>;
+  getWorkScheduleById: WorkSchedule;
+  getWorkSchedulesBetweenDate: Array<WorkSchedule>;
   hello: Scalars['String'];
   helloWorld: Scalars['String'];
   me: User;
@@ -459,6 +498,16 @@ export type QueryClientDetailArgs = {
 
 export type QueryClientsWithSearchArgs = {
   search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetWorkScheduleByIdArgs = {
+  workScheduleId: Scalars['Int'];
+};
+
+
+export type QueryGetWorkSchedulesBetweenDateArgs = {
+  data: BetweenDateInput;
 };
 
 
@@ -669,6 +718,11 @@ export type UpdateUserInput = {
   fullName?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateWorkScheduleInput = {
+  date: Scalars['DateTime'];
+  employeeId: Scalars['Int'];
+};
+
 export type User = {
   __typename?: 'User';
   fullName?: Maybe<Scalars['String']>;
@@ -677,17 +731,26 @@ export type User = {
   role: Role;
 };
 
+export type WorkSchedule = {
+  __typename?: 'WorkSchedule';
+  /** Дата рабочего дня */
+  date: Scalars['DateTime'];
+  employee?: Maybe<Employee>;
+  employeeId?: Maybe<Scalars['Int']>;
+  id: Scalars['Int'];
+};
+
 export type CurrentUserProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserProfileQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, fullName?: string | null, login: string } };
+export type CurrentUserProfileQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, fullName?: string | null, login: string, role: Role } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Auth', accessToken: any, user: { __typename?: 'User', id: number, login: string, fullName?: string | null } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Auth', accessToken: any, user: { __typename?: 'User', id: number, login: string, fullName?: string | null, role: Role } } };
 
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -941,12 +1004,41 @@ export type UpdateDateReceptionRecordMutationVariables = Exact<{
 
 export type UpdateDateReceptionRecordMutation = { __typename?: 'Mutation', updateDateReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
 
+export type GetWorkSchedulesBetweenDateQueryVariables = Exact<{
+  data: BetweenDateInput;
+}>;
+
+
+export type GetWorkSchedulesBetweenDateQuery = { __typename?: 'Query', getWorkSchedulesBetweenDate: Array<{ __typename?: 'WorkSchedule', id: number, date: any, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null }> };
+
+export type CreateWorkScheduleMutationVariables = Exact<{
+  data: CreateWorkScheduleInput;
+}>;
+
+
+export type CreateWorkScheduleMutation = { __typename?: 'Mutation', createWorkSchedule: Array<{ __typename?: 'WorkSchedule', id: number, date: any, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null }> };
+
+export type DeleteWorkScheduleMutationVariables = Exact<{
+  workScheduleId: Scalars['Int'];
+}>;
+
+
+export type DeleteWorkScheduleMutation = { __typename?: 'Mutation', deleteWorkScheduleById: { __typename?: 'WorkSchedule', id: number } };
+
+export type DeleteWorkScheduleAllByIdMutationVariables = Exact<{
+  employeeId: Scalars['Int'];
+}>;
+
+
+export type DeleteWorkScheduleAllByIdMutation = { __typename?: 'Mutation', deleteWorkScheduleAllEmployeeById: { __typename?: 'CountOutput', count: number } };
+
 export const CurrentUserProfileDocument = gql`
     query currentUserProfile {
   me {
     id
     fullName
     login
+    role
   }
 }
     `;
@@ -969,6 +1061,7 @@ export const LoginDocument = gql`
       id
       login
       fullName
+      role
     }
   }
 }
@@ -1973,6 +2066,88 @@ export const UpdateDateReceptionRecordDocument = gql`
   })
   export class UpdateDateReceptionRecordGQL extends Apollo.Mutation<UpdateDateReceptionRecordMutation, UpdateDateReceptionRecordMutationVariables> {
     override document = UpdateDateReceptionRecordDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetWorkSchedulesBetweenDateDocument = gql`
+    query GetWorkSchedulesBetweenDate($data: BetweenDateInput!) {
+  getWorkSchedulesBetweenDate(data: $data) {
+    employee {
+      id
+      fullName
+    }
+    id
+    date
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetWorkSchedulesBetweenDateGQL extends Apollo.Query<GetWorkSchedulesBetweenDateQuery, GetWorkSchedulesBetweenDateQueryVariables> {
+    override document = GetWorkSchedulesBetweenDateDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateWorkScheduleDocument = gql`
+    mutation CreateWorkSchedule($data: CreateWorkScheduleInput!) {
+  createWorkSchedule(data: $data) {
+    employee {
+      id
+      fullName
+    }
+    id
+    date
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateWorkScheduleGQL extends Apollo.Mutation<CreateWorkScheduleMutation, CreateWorkScheduleMutationVariables> {
+    override document = CreateWorkScheduleDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteWorkScheduleDocument = gql`
+    mutation DeleteWorkSchedule($workScheduleId: Int!) {
+  deleteWorkScheduleById(workScheduleId: $workScheduleId) {
+    id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteWorkScheduleGQL extends Apollo.Mutation<DeleteWorkScheduleMutation, DeleteWorkScheduleMutationVariables> {
+    override document = DeleteWorkScheduleDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteWorkScheduleAllByIdDocument = gql`
+    mutation DeleteWorkScheduleAllById($employeeId: Int!) {
+  deleteWorkScheduleAllEmployeeById(employeeId: $employeeId) {
+    count
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteWorkScheduleAllByIdGQL extends Apollo.Mutation<DeleteWorkScheduleAllByIdMutation, DeleteWorkScheduleAllByIdMutationVariables> {
+    override document = DeleteWorkScheduleAllByIdDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

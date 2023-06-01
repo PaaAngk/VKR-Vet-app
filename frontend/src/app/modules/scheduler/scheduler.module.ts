@@ -14,6 +14,7 @@ import { NativeDateTransformerDirective } from 'src/app/shared/directives/native
 import { ViewReceptionRecordDialogComponent } from './dialogs/view-record/view-record.component';
 import { NativeToTuiTimeTransformerPipe } from 'src/app/shared/pipes/native-time-transform.pipe';
 import { EditDeleteButtonModule } from 'src/app/shared/components/edit-delete-button/edit-delete-button.module';
+import { SharedModule } from 'src/app/shared';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { EditDeleteButtonModule } from 'src/app/shared/components/edit-delete-bu
     SchedulerRoutingModule,
     FullCalendarModule,
     EditDeleteButtonModule,
+    SharedModule,
 
     //TUI
     TuiInputModule,

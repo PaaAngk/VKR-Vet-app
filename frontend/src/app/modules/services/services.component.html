@@ -15,6 +15,7 @@
         </tui-input>
 
         <button
+            *disableForRole="['DOCTOR', 'MANAGER']"
             tuiButton
             (click)="showDialog()"
             icon="tuiIconAddRowLarge"
@@ -25,7 +26,7 @@
         </button>
     </div>
 
-    <div class="p-2 h-full" ><!--tui-loader [overlay]="true" [showLoader] = "loading"-->
+    <div class="p-2 h-full" >
         <div class="items-center text-center mb-3">
             <div class="text-2xl font-semibold">Услуги</div>
         </div>
@@ -64,14 +65,16 @@
                         >
                             Цена
                         </th>
-                        <th
-                            *tuiHead="'actions'"
-                            tuiTh
-                            class="lg:w-52"
-                            [sorter]="null"
-                        >
-                            Действия
-                        </th>
+                        <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                            <th
+                                *tuiHead="'actions'"
+                                tuiTh
+                                class="lg:w-52"
+                                [sorter]="null"
+                            >
+                                Действия
+                            </th>
+                        </ng-container>
                     </tr>
                 </thead>
                 <tbody
@@ -127,48 +130,53 @@
                                 {{ service.price }} ₽
                             </p>
                         </td>
-                        <td
-                            *tuiCell="'actions'"
-                            class="space-x-2"
-                            tuiTd
-                        >
-                            <button
-                                *ngIf="editedService.id !== service.id"
-                                tuiButton
-                                appearance="outline"
-                                size="s"
-                                (click)="setEditableService(service)"
+                        <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                            <td
+                                *tuiCell="'actions'"
+                                class="space-x-2"
+                                tuiTd
                             >
-                                Изменить
-                            </button>
-                            <button
-                                *ngIf="editedService.id === service.id"
-                                tuiButton
-                                appearance="accent"
-                                size="s"
-                                (click)="saveEditService()"
-                            >
-                                Сохранить
-                            </button>
-                            <button
-                                *ngIf="editedService.id === service.id"
-                                tuiButton
-                                appearance="outline"
-                                size="s"
-                                (click)="deleteEditService()"
-                            >
-                                Отмена
-                            </button>
-                            <button
-                                *ngIf="editedService.id !== service.id"
-                                tuiButton
-                                appearance="secondary-destructive"
-                                size="s"
-                                (click)="deleteService(service, deleteConfirmDialog)"
-                            >
-                                Удалить
-                            </button>
-                        </td>
+                            
+                                    <button
+                                        *ngIf="editedService.id !== service.id"
+                                        tuiButton
+                                        appearance="outline"
+                                        size="s"
+                                        (click)="setEditableService(service)"
+                                        
+                                    >
+                                        Изменить
+                                    </button>
+                                    <button
+                                        *ngIf="editedService.id === service.id"
+                                        tuiButton
+                                        appearance="accent"
+                                        size="s"
+                                        (click)="saveEditService()"
+                                    >
+                                        Сохранить
+                                    </button>
+                                    <button
+                                        *ngIf="editedService.id === service.id"
+                                        tuiButton
+                                        appearance="outline"
+                                        size="s"
+                                        (click)="deleteEditService()"
+                                    >
+                                        Отмена
+                                    </button>
+                                    <button
+                                        *ngIf="editedService.id !== service.id"
+                                        tuiButton
+                                        appearance="secondary-destructive"
+                                        size="s"
+                                        (click)="deleteService(service, deleteConfirmDialog)"
+                                    >
+                                        Удалить
+                                    </button>
+                                
+                            </td>
+                        </ng-container>
                     </tr>
                 </tbody>
             </table>

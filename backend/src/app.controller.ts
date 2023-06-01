@@ -32,4 +32,22 @@ export class AppController {
       ORDER BY date
     `;
   }
+
+  @Get('test')
+  async test() {
+    const res = await this.prisma.schedule.createMany({
+      data: [
+        {
+          employeeId: 1,
+          date: '2023-06-01T16:00:00.000Z',
+        },
+        {
+          employeeId: 1,
+          date: '2023-06-01T16:00:00.000Z',
+        },
+      ],
+    });
+
+    return JSON.stringify(res);
+  }
 }

@@ -4,7 +4,8 @@ import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { TuiValidationError, tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { Subject, takeUntil } from 'rxjs';
+import { delay, Subject, takeUntil } from 'rxjs';
+import { UserService } from 'src/app/core';
 import { Goods, UpdateGoodsInput } from 'src/graphql/generated';
 import { AddGoodsComponent } from './add-good/add-good.component';
 import { GoodsService } from './goods.service';
@@ -28,6 +29,7 @@ export class GoodsComponent implements OnDestroy{
 
 	readonly columns = [`name`, `categoryName`, `quantity`, `price`, `actions`];	
 	loading = false;
+	currentUserRole = '';
 
 	readonly searchForm = new FormGroup({
 		search: new FormControl(''),
@@ -44,10 +46,10 @@ export class GoodsComponent implements OnDestroy{
     constructor(
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
         @Inject(Injector) private readonly injector: Injector,
-
 		private goodsService: GoodsService,
 		private _changeDetectorRef: ChangeDetectorRef,
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
+		private userService: UserService,
     ) {
 		// Getting data 
 		this.loading = true;
@@ -60,12 +62,17 @@ export class GoodsComponent implements OnDestroy{
 		});
 
 		this.searchForm.valueChanges
-		.pipe(takeUntil(this._unsubscribeAll))
+		.pipe(takeUntil(this._unsubscribeAll), delay(200))
 		.subscribe({
 			next: (data) => {
 				this.filteredGoods = this.setFilteredGoods(data['search']);
+				this._changeDetectorRef.markForCheck();
 			}
-		})
+		});
+		this.currentUserRole = this.userService.getCurrentUser().role
+		if( this.currentUserRole === "DOCTOR" || this.currentUserRole === "MANAGER") 
+			this.columns = [`name`, `categoryName`, `quantity`, `price`]
+
 	}
 
 	ngOnDestroy(): void

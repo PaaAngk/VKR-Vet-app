@@ -17,6 +17,7 @@
         <button
             tuiButton
             (click)="showDialog()"
+            *disableForRole="['DOCTOR', 'MANAGER']"
             icon="tuiIconAddRowLarge"
             size="l"
         >
@@ -71,14 +72,16 @@
                         >
                             Цена
                         </th>
-                        <th
-                            *tuiHead="'actions'"
-                            tuiTh
-                            class="lg:w-64"
-                            [sorter]="null"
-                        >
-                            Действия
-                        </th>
+                        <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                            <th
+                                *tuiHead="'actions'"
+                                tuiTh
+                                class="lg:w-64"
+                                [sorter]="null"
+                            >
+                                Действия
+                            </th>
+                        </ng-container>
                     </tr>
                 </thead>
                 <tbody
@@ -155,74 +158,78 @@
                                 {{ goods.price }} ₽
                             </p>
                         </td>
-                        <td
-                            *tuiCell="'actions'"
-                            tuiTd
-                        >
-                            <div 
-                                *ngIf="editedGoods.id !== goods.id" 
-                                class="space-x-2 flex flex-row"
+                        <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                            <td
+                                *tuiCell="'actions'"
+                                tuiTd
                             >
-                                <div
-                                    tuiGroup
-                                    class="group"
-                                >
-                                    <button
-                                        tuiButton
-                                        size="s"
-                                        (click)="editQuantity('Приход',editQuantityDialog,goods)"
+                                <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                                    <div 
+                                        *ngIf="editedGoods.id !== goods.id" 
+                                        class="space-x-2 flex flex-row"
                                     >
-                                        Приход
-                                    </button>
-                                    <button
-                                        tuiButton
-                                        size="s"
-                                        (click)="editQuantity('Списание',editQuantityDialog,goods)"
-                                    >
-                                        Списание
-                                    </button>
-                                </div>
-                                <button
-                                    tuiIconButton
-                                    type="button"
-                                    appearance="outline"
-                                    size="s"
-                                    icon = "tuiIconEdit"
-                                    (click)="setEditableGoods(goods)"
-                                    [tuiHint]="'Изменить'"
-                                >
-                                </button>
-                                <button
-                                    tuiIconButton
-                                    type="button"
-                                    appearance="secondary-destructive"
-                                    size="s"
-                                    icon="tuiIconTrash"
-                                    (click)="deleteGoods(goods, deleteConfirmDialog)"
-                                    [tuiHint]="'Удалить'"
-                                >
-                                </button>
-                            </div>
-                            <div *ngIf="editedGoods.id === goods.id" class="space-x-2"> 
-                                <button
-                                    tuiButton
-                                    appearance="accent"
-                                    size="s"
-                                    (click)="updateGood()"
-                                >
-                                    Сохранить
-                                </button>
+                                        <div
+                                            tuiGroup
+                                            class="group"
+                                        >
+                                            <button
+                                                tuiButton
+                                                size="s"
+                                                (click)="editQuantity('Приход',editQuantityDialog,goods)"
+                                            >
+                                                Приход
+                                            </button>
+                                            <button
+                                                tuiButton
+                                                size="s"
+                                                (click)="editQuantity('Списание',editQuantityDialog,goods)"
+                                            >
+                                                Списание
+                                            </button>
+                                        </div>
+                                        <button
+                                            tuiIconButton
+                                            type="button"
+                                            appearance="outline"
+                                            size="s"
+                                            icon = "tuiIconEdit"
+                                            (click)="setEditableGoods(goods)"
+                                            [tuiHint]="'Изменить'"
+                                        >
+                                        </button>
+                                        <button
+                                            tuiIconButton
+                                            type="button"
+                                            appearance="secondary-destructive"
+                                            size="s"
+                                            icon="tuiIconTrash"
+                                            (click)="deleteGoods(goods, deleteConfirmDialog)"
+                                            [tuiHint]="'Удалить'"
+                                        >
+                                        </button>
+                                    </div>
+                                    <div *ngIf="editedGoods.id === goods.id" class="space-x-2"> 
+                                        <button
+                                            tuiButton
+                                            appearance="accent"
+                                            size="s"
+                                            (click)="updateGood()"
+                                        >
+                                            Сохранить
+                                        </button>
 
-                                <button
-                                    tuiButton
-                                    appearance="outline"
-                                    size="s"
-                                    (click)="deleteEditableGoods()"
-                                >
-                                    Отмена
-                                </button>
-                            </div>
-                        </td>
+                                        <button
+                                            tuiButton
+                                            appearance="outline"
+                                            size="s"
+                                            (click)="deleteEditableGoods()"
+                                        >
+                                            Отмена
+                                        </button>
+                                    </div>
+                                </ng-container>
+                            </td>
+                        </ng-container>
                     </tr>
                 </tbody>
             </table>

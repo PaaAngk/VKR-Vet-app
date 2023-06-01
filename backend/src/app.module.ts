@@ -23,6 +23,7 @@ import { EmployeeModule } from './employee/employee.module';
 import { PrintModule } from './printed/print.module';
 import { ReceptionRecordModule } from './receptionRecord/receptionRecord.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { WorkScheduleModule } from './work-schedule/workSchedule.module';
 // import { AnalyzesResearchModule } from './analyzes-research/analyzes-research.module';
 
 @Module({
@@ -55,6 +56,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     PrintModule,
     ReceptionRecordModule,
     AnalyticsModule,
+    WorkScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

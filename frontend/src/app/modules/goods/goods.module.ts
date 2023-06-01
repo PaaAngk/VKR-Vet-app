@@ -10,6 +10,7 @@ import { TuiTableModule } from '@taiga-ui/addon-table';
 import { TuiLetModule, TuiValidatorModule } from '@taiga-ui/cdk';
 import { AddGoodsComponent } from './add-good/add-good.component';
 import { GoodsService } from './goods.service';
+import { SharedModule } from 'src/app/shared';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { GoodsService } from './goods.service';
     FormsModule,
     ReactiveFormsModule,
     GoodsRoutingModule,
+    SharedModule,
 
     //TUI
     TuiInputModule,

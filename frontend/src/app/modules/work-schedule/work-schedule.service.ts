@@ -1,37 +1,38 @@
 import { Injectable } from "@angular/core";
 import { EventInput } from "@fullcalendar/core";
 import { BehaviorSubject, map, Observable, tap } from "rxjs";
-import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteReceptionRecordGQL, GetRecordsByDatesRangeGQL, ReceptionRecord, BetweenDateInput, UpdateDateReceptionRecordGQL, UpdateReceptionRecordGQL, UpdateReceptionRecordInput } from "src/graphql/generated";
+import { fullNameToShort } from "src/app/shared/utils/fullNameToShort";
+import { BetweenDateInput, WorkSchedule, GetWorkSchedulesBetweenDateGQL, CreateWorkScheduleGQL, DeleteWorkScheduleGQL, CreateWorkScheduleInput, DeleteWorkScheduleAllByIdGQL } from "src/graphql/generated";
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class WorkScheduleService
 {
-    private _recordsList : BehaviorSubject<ReceptionRecord[]> = new BehaviorSubject([] as ReceptionRecord[]);
-    // private _eventsList : BehaviorSubject<Array<EventInput>> = new BehaviorSubject([] as EventInput[]);
+    private _scheduleList : BehaviorSubject<WorkSchedule[] | null> = new BehaviorSubject<WorkSchedule[]|null>(null);
 
-    // Selected date from calendar for create in dialog  
-    private _selectedRecord : BehaviorSubject<ReceptionRecord> = new BehaviorSubject(undefined as unknown as ReceptionRecord);
-
-    private _eventsList: Observable<EventInput[] | null> = this._recordsList.pipe(
-        tap(i => console.log(i)),
-        map(val => val.map((item: any) => {
-            return {
-                id: item.id.toString(),
-                title: item.client?.fullName ? item.client?.fullName : (item.purpose?.purposeName ? item.purpose?.purposeName : "Нет данных"),
-                start: item.dateTimeStart,
-                end: item.dateTimeEnd,
-            }
-        })),
+    private _eventsList: Observable<EventInput[] | null> = this._scheduleList.pipe(
+        // tap(c=>console.log(c)),
+        map(val => {
+            if(val){
+                return val.map((item: WorkSchedule) => {
+                    return {
+                        id: item.id.toString(),
+                        title: fullNameToShort(item.employee?.fullName||''),
+                        date: item.date,
+                        groupId: String(item.employee?.id)
+                    }
+                })
+            } else return null;
+        }),
     )
 
     constructor(
-      
-        private createReceptionRecordGQL: CreateReceptionRecordGQL,
-        private getRecordsByDatesRangeGQL:GetRecordsByDatesRangeGQL,
-        private updateReceptionRecordGQL: UpdateReceptionRecordGQL,
-        private deleteReceptionRecordGQL: DeleteReceptionRecordGQL,
-        private updateDateReceptionRecordGQL: UpdateDateReceptionRecordGQL,
+        private getWorkSchedulesBetweenDateGQL: GetWorkSchedulesBetweenDateGQL,
+        private createWorkScheduleGQL: CreateWorkScheduleGQL,
+        private deleteWorkScheduleGQL:DeleteWorkScheduleGQL,
+        private deleteWorkScheduleAllByIdGQL:DeleteWorkScheduleAllByIdGQL
     ){
     }
 
@@ -48,33 +49,6 @@ export class WorkScheduleService
         return this._eventsList;
     }
 
-    /**
-     * Getter for selected date for create
-     */
-    get getSelectedDate$(): Observable<ReceptionRecord>
-    {
-        return this._selectedRecord.asObservable();
-    }
-
-    /**
-     * Set record for create in dialog with preset value
-     * @param data 
-     */
-    setSelectedReceptionRecord(data: ReceptionRecord)
-    {
-        this._selectedRecord.next(data);
-    }
-
-    /**
-     * Search record in list of records
-     * @param id Record id
-     * @returns 
-     */
-    getLocalRecordById(id: number): ReceptionRecord{
-        const data = this._recordsList.getValue().filter((item) => item.id === id)[0] || {} as ReceptionRecord
-        return data
-    }
-
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -82,103 +56,78 @@ export class WorkScheduleService
     /**
      * Get reception record by range datetime
      */
-    getRecordsByDateRange(dates: BetweenDateInput): Observable<any>//BetweenDateInput
+    getRecordsByDateRange(dates: BetweenDateInput): Observable<WorkSchedule[]>
     {
-        return this.getRecordsByDatesRangeGQL.watch({
+        this._scheduleList.next(null)
+        return this.getWorkSchedulesBetweenDateGQL.watch({
             data: dates
-        })
+        }, {fetchPolicy: 'network-only'}
+        )
         .valueChanges.pipe(map(result => {
-            // let events: EventInput[] = [];
-            const newRecords = result.data?.receptionRecordBetweenDate             
+            const schedule = result.data?.getWorkSchedulesBetweenDate             
 
-            if(newRecords){
-                const currentRecords = this._recordsList.getValue()
-                this._recordsList.next(currentRecords.concat(newRecords.filter((item) => currentRecords.indexOf(item) < 0)));
-                
+            if(schedule) {
+                const currentRecords = this._scheduleList.getValue() || []
+                this._scheduleList.next(currentRecords.concat(schedule.filter((item) => currentRecords.indexOf(item) < 0)));
             }
-            console.log(result)
-            console.log(dates)
+            return schedule
         }))
     }
 
     /**
-     * cre
+     * create date by first date, count of days for adding and employee
      * @param data  Data for create
      * @returns 
      */
-    createReceptionRecord(data: CreateReceptionRecordInput){
-        return this.createReceptionRecordGQL.mutate({
+    createReceptionRecord(data: CreateWorkScheduleInput){
+        return this.createWorkScheduleGQL.mutate({
             data: data
         }).pipe(
-            map(( data ) => {
-                if (data.data?.createReceptionRecord) {
-                    this._recordsList.next(this._recordsList.getValue().concat(data.data?.createReceptionRecord))
+            map(( result ) => {
+                if (result.data?.createWorkSchedule) {
+                    const currentRecords = this._scheduleList.getValue() || [];
+                    this._scheduleList.next(currentRecords.filter(val => val.employee?.id !== data.employeeId).concat(result.data?.createWorkSchedule));
+                    return result.data?.createWorkSchedule;
                 }
-                return data.data?.createReceptionRecord
-            })
-        )
-    }
-
-    /**
-     * Update record and update in list
-     * @param id 
-     * @param newRecord 
-     * @returns 
-     */
-    updateReceptionRecord(id:number, newRecord : UpdateReceptionRecordInput){
-        return this.updateReceptionRecordGQL.mutate({
-            data: newRecord,
-            receptionRecordId: id
-        }).pipe(
-            map(( {data} ) => {
-                if (data?.updateReceptionRecord) {
-                    this._recordsList.next(
-                        this._recordsList.getValue().map(val => {
-                            return val.id === data?.updateReceptionRecord.id ? data?.updateReceptionRecord : val
-                        })
-                    );
-                }
-            })
-        )
-    }
-
-    
-    /**
-     * Update only dates in record and update list
-     * @param id 
-     * @param newRecord 
-     * @returns 
-     */
-    updateDateReceptionRecord(id:number, newRecord : BetweenDateInput){
-        return this.updateDateReceptionRecordGQL.mutate({
-            data: newRecord,
-            receptionRecordId: id
-        }).pipe(
-            map(( {data} ) => {
-                if (data?.updateDateReceptionRecord) {
-                    this._recordsList.next(
-                        this._recordsList.getValue().map(val => {
-                            return val.id === data?.updateDateReceptionRecord.id ? data?.updateDateReceptionRecord : val
-                        })
-                    );
-                }
+                return data
             })
         )
     }
     
     /**  
-     * Delete record and remove from list
+     * Delete schedule all records be employee id
      * @param id id current rcord
-     * @returns Observable of id deleted record
+     * @returns Observable of id deleted schedule
      */
-    deleteReceptionRecord(id:number){
-        return this.deleteReceptionRecordGQL.mutate({
-            receptionRecordId: id
-        }).pipe(
+    deleteScheduleAllById(employeeId:number){
+        return this.deleteWorkScheduleAllByIdGQL.mutate({
+            employeeId: employeeId
+        }, {fetchPolicy: 'network-only'}).pipe(
             map(( {data} ) => {
-                if (data?.deleteReceptionRecord) {
-                    this._recordsList.next(
-                        this._recordsList.getValue().filter((item: ReceptionRecord) => item.id != id)
+                if (data?.deleteWorkScheduleAllEmployeeById) {
+                    const currentRecords = this._scheduleList.getValue() || []
+                    this._scheduleList.next(
+                        currentRecords.filter((item: WorkSchedule) => item.employee?.id != employeeId)
+                    );
+                }
+            })
+        )
+    }
+
+    /**  
+     * Delete schedule all records be employee id
+     * @param id id current rcord
+     * @returns Observable of id deleted schedule
+     */
+    deleteScheduleById(id:number){
+        return this.deleteWorkScheduleGQL.mutate({
+            workScheduleId: id
+        }, {fetchPolicy: 'network-only'}).pipe(
+            map(( {data} ) => {
+                if (data?.deleteWorkScheduleById) {
+                    const currentRecords = this._scheduleList.getValue() || []
+                    this._scheduleList.next(
+                        currentRecords.filter((item: WorkSchedule) => item.id != id)
                     );
                 }
             })

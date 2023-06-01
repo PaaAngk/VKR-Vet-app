@@ -1,100 +1,36 @@
-query GetRecordsByDatesRange($data:BetweenDateInput!){
-  receptionRecordBetweenDate(data: $data){
-    client{
-      id
-      fullName
-      telephoneNumber
-    }
+query GetWorkSchedulesBetweenDate($data:BetweenDateInput!){
+  getWorkSchedulesBetweenDate(data: $data){
     employee{
       id
       fullName
     }
-    purpose{
-      id
-      purposeName
-    }
     id
-    dateTimeStart
-    dateTimeEnd
-    kindOfAnimal
+    date
   }
 }
-mutation CreateReceptionRecord($data:CreateReceptionRecordInput!){
-  createReceptionRecord(data: $data){
-    client{
-      id
-      fullName
-      telephoneNumber
-    }
+mutation CreateWorkSchedule($data:CreateWorkScheduleInput!){
+  createWorkSchedule(data: $data){
     employee{
       id
       fullName
     }
-    purpose{
-      id
-      purposeName
-    }
     id
-    dateTimeStart
-    dateTimeEnd
-    kindOfAnimal 
+    date 
   }
 }
 
-mutation UpdateReceptionRecord(
-  $receptionRecordId:Int!,
-  $data:UpdateReceptionRecordInput!
+mutation DeleteWorkSchedule(
+  $workScheduleId:Int!,
 ){
-  updateReceptionRecord(receptionRecordId:$receptionRecordId, data: $data){
-    client{
-      id
-      fullName
-      telephoneNumber
-    }
-    employee{
-      id
-      fullName
-    }
-    purpose{
-      id
-      purposeName
-    }
-    id
-    dateTimeStart
-    dateTimeEnd
-    kindOfAnimal
-  }
-}
-
-mutation DeleteReceptionRecord(
-  $receptionRecordId:Int!,
-){
-  deleteReceptionRecord(receptionRecordId:$receptionRecordId){
+  deleteWorkScheduleById(workScheduleId:$workScheduleId){
     id
   }
 }
 
-mutation UpdateDateReceptionRecord(
-  $receptionRecordId:Int!,
-  $data:BetweenDateInput!
+mutation DeleteWorkScheduleAllById(
+  $employeeId:Int!,
 ){
-  updateDateReceptionRecord(receptionRecordId:$receptionRecordId, data: $data){
-    client{
-      id
-      fullName
-      telephoneNumber
-    }
-    employee{
-      id
-      fullName
-    }
-    purpose{
-      id
-      purposeName
-    }
-    id
-    dateTimeStart
-    dateTimeEnd
-    kindOfAnimal
+  deleteWorkScheduleAllEmployeeById(employeeId:$employeeId){
+    count
   }
 }

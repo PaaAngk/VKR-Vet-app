@@ -38,6 +38,7 @@ export class ViewReceptionRecordDialogComponent implements OnInit, OnDestroy {
         @Inject(Injector) private readonly injector: Injector,
         private schedulerService: SchedulerService,
         @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+        private router: Router,
     ) {
     }
 
@@ -102,15 +103,11 @@ export class ViewReceptionRecordDialogComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.schedulerService.setSelectedReceptionRecord(this.currentRecord!)
         this.ngOnDestroy();
-        this.dialogEditReceptionRecord.subscribe({
-            next: data => {
-                console.log(data);
-            },
-            complete: () => {
-                console.log('Dialog closed');
-            },
-        });
+        this.dialogEditReceptionRecord.subscribe();
     }
 
+    getClientCard(){
+        this.router.navigateByUrl(`/client-card/client/${this.currentRecord?.client?.id}`)
+    }
 
 }

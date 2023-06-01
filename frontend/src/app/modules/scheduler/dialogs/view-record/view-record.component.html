@@ -2,7 +2,7 @@
     #templateRecordView
     let-observer
 >
-    <div class="space-y-4 mb-5 justify-center">
+    <div class="space-y-4 mb-2 justify-center">
         <div class="tui-form__row tui-form__row_multi-fields">
             <div
                 tuiGroup
@@ -77,16 +77,27 @@
                 Клиент
             </tui-input>
         </div>
+        <button
+            tuiButton
+            type="button"
+            size="m"
+            *ngIf="currentRecord?.client"
+            class="w-52 tui-form__row"
+            (click)="getClientCard()"
+        >
+            Перейти к клиенту
+        </button>
     </div>
 
+
     <edit-delete-button
-        class="w-32 mt-4"
+        class="w-32"
         (deleteAction)="deleteReceptionRecord(template)"
         (editAction)="editReceptionRecord()"
     ></edit-delete-button>
 </ng-template>
 
-<?-- Template dialog box for confirmation delete elements -->
+<!-- Template dialog box for confirmation delete elements -->
 <ng-template
     #template
     let-observer
