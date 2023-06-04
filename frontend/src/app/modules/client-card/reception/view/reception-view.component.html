@@ -1,17 +1,15 @@
 <div class="flex flex-col space-y-3" *ngIf="true">
 
-    <div class="w-full h-full flex rounded-lg items-center justify-between bg-white shadow-md pr-2">
+    <div class="w-full flex flex-row flex-wrap rounded-xl items-center bg-white shadow-md pr-2 space-x-2">
         <button
-            tuiButton
+            tuiIconButton
             icon = 'tuiIconArrowLeftLarge'
-            appearance="textfield"
+            appearance="flat"
             [routerLink]="'/client-card/pet/'+ reception.petId"
-            class="md:w-52 w-full"
-        >
-            К питомцу
-        </button>
-<!--  [ngStyle]="{'width':'600px'}" -->
-        <div tuiTextfieldSize="m" class="flex items-center space-x-2 justify-center ">
+            class="md:w-8 w-full flex-initial"
+        ></button>
+
+        <div tuiTextfieldSize="m" class="flex items-center space-x-2 justify-center flex-1">
             <button-with-dropdown
                 [data]="assignmentPrintButtonData" 
                 [showLoader]="assignmentButtonLoader"
@@ -29,10 +27,21 @@
 
         <button
             tuiButton
+            icon = 'tuiIconCopyLarge'
+            appearance="outline"
+            size="m"
+            class="md:w-40 w-full justify-self-end flex-initial"
+            routerLink="copy"
+            *disableForRole="['MANAGER']"
+        >
+            Копировать
+        </button>
+        <button
+            tuiButton
             icon = 'tuiIconEditLarge'
             appearance="outline"
             size="m"
-            class="md:w-52 w-full justify-self-end"
+            class="md:w-40 w-full justify-self-end flex-initial"
             routerLink="edit"
             *disableForRole="['MANAGER']"
         >

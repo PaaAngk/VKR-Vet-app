@@ -10,7 +10,6 @@ import { TuiLetModule } from '@taiga-ui/cdk';
 import { TuiFieldErrorPipeModule, TuiInputModule, TuiComboBoxModule, TuiFilterByInputPipeModule, TuiStringifyContentPipeModule, TuiInputTimeModule, TuiInputDateModule, TuiDataListWrapperModule, TuiInputNumberModule } from '@taiga-ui/kit';
 import { AddWorkScheduleDialogComponent } from './dialogs/add-record/add-workSchedule.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NativeDateTransformerDirective } from 'src/app/shared/directives/native-date-transformer.directive';
 import { SharedModule } from 'src/app/shared';
 
 
@@ -18,7 +17,6 @@ import { SharedModule } from 'src/app/shared';
   declarations: [
     WorkScheduleComponent,
     AddWorkScheduleDialogComponent,
-    NativeDateTransformerDirective,
   ],
   imports: [
     CommonModule,

@@ -99,6 +99,7 @@
                             <tui-input
                                 *ngIf="editedService.id === service.id"
                                 [ngModel] = "editedService.name"
+                                (ngModelChange)="onValueChange($event, 'name')"
                             >
                             </tui-input>
                         </td>

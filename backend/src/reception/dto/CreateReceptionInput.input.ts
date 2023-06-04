@@ -5,7 +5,6 @@ import {
   IsString,
   Max,
   Min,
-  MinLength,
 } from 'class-validator';
 import { InputType, Field, Float, Int } from '@nestjs/graphql';
 import { GoodsListReceptionInput } from './GoodsListReceptionInput.input';
@@ -13,8 +12,7 @@ import { ServiceListReceptionInput } from './ServiceListReceptionInput.input';
 
 @InputType()
 export class CreateReceptionInput {
-  @IsString()
-  @MinLength(3)
+  @IsInt()
   @IsNotEmpty()
   petId: number;
 

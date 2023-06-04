@@ -34,7 +34,7 @@ export class AnalyzesResearchController {
       delete files.analyzeData;
 
       try {
-        return await this.analyzesService.saveFiles(
+        return await this.analyzesService.saveAnalyze(
           files as MemoryStoredFile[],
           analyzeData
         );
@@ -50,6 +50,30 @@ export class AnalyzesResearchController {
     }
   }
 
+  @Post('update-analyzes-file')
+  @FormDataRequest()
+  async updateAnalyzesFile(@Body() files: any) {
+    if (files) {
+      const analyzeData = files.analyzeData;
+      delete files.analyzeData;
+
+      try {
+        return await this.analyzesService.updateAnalyze(
+          files as MemoryStoredFile[],
+          analyzeData
+        );
+      } catch (err) {
+        console.error(err);
+        throw new HttpException(
+          'Can not update files',
+          HttpStatus.NOT_ACCEPTABLE
+        );
+      }
+    } else {
+      throw new HttpException('don`t has files', HttpStatus.NOT_FOUND);
+    }
+  }
+
   @Post('download-analyzes-file')
   async downloadAnalyzesFile(
     @Body() file: FileData,
@@ -57,7 +81,7 @@ export class AnalyzesResearchController {
   ) {
     if (file) {
       try {
-        const readedFile = await readFile(file.path);
+        const readedFile = await readFile(file.path, { encoding: 'binary' });
         res.set({
           'Content-Type': file.mimetype,
           'Content-Disposition': `attachment; filename=${file.name}`,

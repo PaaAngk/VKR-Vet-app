@@ -1,25 +1,30 @@
 <div class="flex flex-col space-y-3" *ngIf="true">
 
     <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="w-full h-full p-2 rounded-lg bg-white shadow-md">
-        <div tuiTextfieldSize="m" class="flex justify-between items-center h-full py-auto">
-            <div class="flex flex-row space-x-10">
-                <div>
-                    <p class="text-base"><b>{{client.fullName}}</b> | <b>{{client.telephoneNumber | tuiFormatPhone}}</b><br> 
-                    Адрес: {{client.address}}</p>
-                </div>
-                <edit-delete-button
-                    *disableForRole="['MANAGER']"
-                    class="md:w-64 w-full justify-self-end"
-                    (deleteAction)="deleteClient(template)"
-                    (editAction)="showDialogEditClient()"
-                ></edit-delete-button>
+        <div tuiTextfieldSize="m" class="flex flex-row items-center space-x-2 w-full flex-wrap">
+            <button
+                tuiIconButton
+                icon = 'tuiIconArrowLeftLarge'
+                appearance="flat"
+                [routerLink]="'/client-card'"
+                class="basis-8 justify-self-start flex-none"
+            ></button>
+            <div class="flex-1">
+                <p class="text-base"><b>{{client.fullName}}</b> | <b>{{client.telephoneNumber | tuiFormatPhone}}</b><br> 
+                Адрес: {{client.address}}</p>
             </div>
-
+            <edit-delete-button
+                *disableForRole="['MANAGER']"
+                class="md:w-64 w-full flex-initial justify-self-end"
+                (deleteAction)="deleteClient(template)"
+                (editAction)="showDialogEditClient()"
+            ></edit-delete-button>
             <button
                 tuiButton
                 icon="tuiIconFileLarge"
                 size="m"
                 (click)="showDialogAddPet()"
+                class="md:w-64 w-full flex-initial justify-self-end"
             >
                 <p class="text-base">
                     Добавить питомца

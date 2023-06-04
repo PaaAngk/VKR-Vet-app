@@ -35,17 +35,18 @@ export class AppController {
 
   @Get('test')
   async test() {
-    const res = await this.prisma.schedule.createMany({
-      data: [
-        {
-          employeeId: 1,
-          date: '2023-06-01T16:00:00.000Z',
-        },
-        {
-          employeeId: 1,
-          date: '2023-06-01T16:00:00.000Z',
-        },
-      ],
+    const res = await this.prisma.reception.createMany({
+      data: {
+        anamnesis: '123',
+        assignment: '213',
+        clinicalSigns: '123',
+        cost: 12.3,
+        diagnosis: '555555',
+        discount: 1,
+        employeeId: 1,
+        petId: 7,
+        purposeId: 1,
+      },
     });
 
     return JSON.stringify(res);

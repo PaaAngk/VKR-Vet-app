@@ -1,22 +1,30 @@
 <div class="flex flex-col space-y-3 max-h-full p-0" *ngIf="true">
 
     <!-- Header -->
-    <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="p-2 rounded-lg bg-white shadow-md" >
-        <div tuiTextfieldSize="m" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <p class="text-base pl-4">
+    <tui-loader  [overlay]="true" [showLoader]="pageLoader" [inheritColor]="true" class="rounded-lg bg-white shadow-md" >
+        <div class="flex flex-row items-center space-x-2 p-2 w-full flex-wrap">
+            <!-- grid grid-cols-1 lg:grid-cols-4 gap-4 -->
+            <button
+                tuiIconButton
+                icon = 'tuiIconArrowLeftLarge'
+                appearance="flat"
+                [routerLink]="'/client-card/client/'+pet.clientId"
+                class="basis-8 justify-self-start flex-none"
+            ></button>
+            <p class="text-base justify-self-start flex-1">
                 <b class="text-xl mr-4">{{ pet.alias }} </b> 
-                Вид: <b class="mr-4">{{ pet.kind }}</b><br>
+                Вид: <b>{{ pet.kind }}</b><br>
                 Возраст: <b>{{pet.DOB | ageString | checkNull }}</b>
             </p>
             <edit-delete-button
                 *disableForRole="['MANAGER']"
-                class="group w-64 justify-self-end"
+                class="group w-full md:w-64 flex-initial justify-self-end"
                 (deleteAction)="deletePet(template)"
                 (editAction)="showDialogEditPet()"
             ></edit-delete-button>
             <div 
                 tuiGroup
-                class="group md:basis-2/6 basis-full"
+                class="group md:basis-2/6 basis-full flex-initial justify-self-end"
                 *disableForRole="['MANAGER']"
             >
                 <button
@@ -85,7 +93,7 @@
             </button>
         </tui-tabs>
 
-        <div class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'75vh'}">
+        <div class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'74vh'}">
             <!-- Pet data -->
             <div class="text-xl text-center space-y-1 divide-y divide-slate-300 py-0" *ngIf="activeItemIndex === 0">
                 <p> <b>Кличка: </b> {{ pet.alias }}</p>
@@ -143,7 +151,7 @@
                             <th
                                 *tuiHead="'actions'"
                                 tuiTh
-                                class="lg:w-32"
+                                class="lg:w-56"
                                 [sorter]="null"
                             >Действия</th>
                         </tr>
@@ -187,6 +195,14 @@
                                 class="space-x-2"
                                 tuiTd
                             >
+                                <button
+                                    tuiButton
+                                    size="s"
+                                    appearance="outline"
+                                    [routerLink]="['reception', reception.id,'copy']"
+                                >
+                                    Копировать
+                                </button>
                                 <button
                                     tuiButton
                                     size="s"

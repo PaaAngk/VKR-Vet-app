@@ -314,6 +314,7 @@ export class DocumentGenerateService
             date:TuiDay.currentLocal().toString(),
             employee: data.employee,
             cost: data.cost,
+            id: data.id
         }
         
         const headers = new HttpHeaders();
@@ -439,15 +440,8 @@ export class DocumentGenerateService
                 spacing:{before:200, after:200}
             }),
 
-            new Paragraph({
-                spacing:{after:150},
-                children: [
-                    new TextRun({ text: `Информация по владельцу (Ф.И.О): `,size:textSize}),
-                    new TextRun({ text: `${data.pet?.client?.fullName}`,size:textSize}),
-                    new TextRun({ text: `\tТелефон: `, size:textSize, }),
-                    new TextRun({ text: `${this.checkNullPipe.transform(data.pet?.client?.telephoneNumber) } `, underline: {}, size:textSize }),
-                ],
-            }), 
+            this.paragraphWithText(`Информация по владельцу (Ф.И.О): ${data.pet?.client?.fullName} `, textSize),
+            this.paragraphWithText(`Телефон: ${this.checkNullPipe.transform(data.pet?.client?.telephoneNumber) } `, textSize),
 
             new Paragraph({
                 spacing:{after:150},
@@ -460,17 +454,13 @@ export class DocumentGenerateService
                 ],
             }), 
 
-            this.paragraphWithText('Диагноз: '+ data.diagnosis, textSize),
+            this.paragraphWithText(`Диагноз: ${data.diagnosis == null ? 'Нет данных ':data.diagnosis}`, textSize),
+            this.paragraphWithText(`Анамнез: ${data.anamnesis == null ? 'Нет данных ':data.anamnesis}`, textSize),
+            this.paragraphWithText(`Клинические признаки: ${data.clinicalSigns == null ? 'Нет данных ':data.clinicalSigns}`, textSize),
 
             new Paragraph({
-                spacing:{after:150},
-                children: [
-                    new TextRun({ text: `Анамнез: `+ data.anamnesis, size:textSize}),
-                ],
-            }), 
-
-            new Paragraph({
-                text: "Рекомендации:",
+                spacing:{before:150},
+                text: "Выписной эпикриз:",
                 heading: HeadingLevel.HEADING_2,
             }),
 
@@ -479,27 +469,27 @@ export class DocumentGenerateService
             new Paragraph({
                 spacing:{after:150, before:200},
                 children: [
-                    new TextRun({ text:'Наблюдать за общим состоянием животного, клиническими симптомами, такими как (вялость, отказ от корма, не оформленный акт дефекации, повышение температуры (измеряется только ректально) и т.д). При наблюдении симптомов обратиться в клинику.', size:textSize, bold:true}),
+                    new TextRun({ text:'Наблюдать за общим состоянием животного, клиническими симптомами, такими как (вялость, отказ от корма, не оформленный акт дефекации, повышение температуры (измеряется только ректально) и т.д). При наблюдении симптомов обратиться в клинику.', size:24}),
                 ],
             }),
 
             new Paragraph({
                 spacing:{after:150},
                 children: [
-                    new TextRun({ text:'Дегельментизировать животное 1 раз в 3 месяца или хотя бы 1 раз в 6 месяцев, ежегодно. Если у животного не наблюдается паразитов в кале, то через 7 - 14 дней животное можно вакцинировать.', size:textSize, bold:true}),
+                    new TextRun({ text:'Дегельментизировать животное 1 раз в 3 месяца или хотя бы 1 раз в 6 месяцев, ежегодно. Если у животного не наблюдается паразитов в кале, то через 7 - 14 дней животное можно вакцинировать.', size:24}),
                 ],
             }),
 
             new Paragraph({
                 spacing:{after:150},
                 children: [
-                    new TextRun({ text:'Мне, доступно объяснено лечение, план обследования, исход болезни и диагноз _________________', size:textSize, bold:true}),
+                    new TextRun({ text:'Мне, доступно объяснено лечение, план обследования, исход болезни и диагноз _________________', size:24}),
                 ],
             }),
 
             new Paragraph({
                 children: [
-                    new TextRun({ text:'Я информирован(а) о возможных нежелательных реакциях, проявляющихся при применении медицинских и ветеринарных лекарственных препаратов для лечения животных. С планом лечения, рекомендуемой диагностикой ознакомлен(а) и даю своё согласие ________________', size:textSize, bold:true}),
+                    new TextRun({ text:'Я информирован(а) о возможных нежелательных реакциях, проявляющихся при применении медицинских и ветеринарных лекарственных препаратов для лечения животных. С планом лечения, рекомендуемой диагностикой ознакомлен(а) и даю своё согласие ________________', size:24}),
                 ],
             }),
         ]
@@ -574,6 +564,7 @@ export class DocumentGenerateService
             data: {
                 ...data, 
                 currentDate: TuiDay.currentLocal(),
+                currentDateStr: this.dataPipe.transform(new Date(),  'dd MMMM yyyy')
             }, 
             docName: docName,
             extension: extension
@@ -587,7 +578,7 @@ export class DocumentGenerateService
                 if(buffer) {
                     if(extension == FileFormat.pdf){
                         const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/pdf'}))
-                        window.open(fileURL)?.print();
+                        window.open(fileURL)//?.print();
                     }
                     if(extension == FileFormat.docx){                            
                         const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}))

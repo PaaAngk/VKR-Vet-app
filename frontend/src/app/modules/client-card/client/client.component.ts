@@ -21,7 +21,8 @@ export class ClientComponent implements OnDestroy, OnInit{
 	private endCursor: number | null = null;
 	private fetchSize = 10;
 	private endIndexFromVirtScroll = 0;
-	orderByDefault: ClientOrder = {direction: OrderDirection.Asc, field:ClientOrderField.Id}
+	private isEndFetch = false;
+	orderByDefault: ClientOrder = {direction: OrderDirection.Asc, field:ClientOrderField.Id};
 
 	clients: Client[] = [];
 
@@ -73,6 +74,7 @@ export class ClientComponent implements OnDestroy, OnInit{
 			.pipe(tuiWatch(this._changeDetectorRef), take(1))
 			.subscribe((clientConnection: ClientConnection) => {
 				this.loadingPage = false;
+				// this.clients = clientConnection.nodes || []
 				this.endCursor = clientConnection.pageInfo.endCursor || null
 			});
 
@@ -88,6 +90,7 @@ export class ClientComponent implements OnDestroy, OnInit{
 				console.log(this.searchForm.value.search)
 				this.endCursor = null;
 				this.endIndexFromVirtScroll = 0;
+				this.isEndFetch = false;
 				this.clientCardService.searchClientsWithPagination
 					(String(this.searchForm.value.search), this.fetchSize, this.endCursor, this.orderByDefault)
 					.pipe(tuiWatch(this._changeDetectorRef), take(1))
@@ -134,9 +137,15 @@ export class ClientComponent implements OnDestroy, OnInit{
 	}
 
 	protected fetchMore(event: IPageInfo) {
+		console.log(event)
 		// Переменная endIndexFromVirtScroll нужна для отмены постоянных запросов приходящих с
 		// библиотеки, так отсекаются испольненные запросы, а если не исполнился возращаем переменную на предыдущее значение
-        if (this.endIndexFromVirtScroll>= event.endIndex || event.endIndex !== this.clients.length-1 || event.endIndex === -1  ) return;
+        if (
+			this.endIndexFromVirtScroll>= event.endIndex || 
+			event.endIndex !== this.clients.length-1 || 
+			event.endIndex === -1  ||
+			this.isEndFetch
+			) return;
 		const prevEndIndexFromVirtScroll = this.endIndexFromVirtScroll
 		this.endIndexFromVirtScroll = event.endIndex
         this.loadingTable = true;
@@ -146,10 +155,11 @@ export class ClientComponent implements OnDestroy, OnInit{
 			.pipe(tuiWatch(this._changeDetectorRef), take(1))
 			.subscribe({
 				next: (clientConnection: ClientConnection) =>{
-					// console.log(clientConnection)
+					console.log(clientConnection)
 					if(clientConnection.pageInfo.endCursor)
 						this.endCursor = clientConnection.pageInfo.endCursor;
 					this.loadingTable = false;
+					this.isEndFetch = !clientConnection.pageInfo.hasNextPage
 				},
 				error: (err) => {
 					console.log(err);

@@ -10,6 +10,7 @@ import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdo
 import { AnalyzeForm } from '../../models/analyzeType';
 import { AnalyzesList } from "../analyzeFormTemplates";
 import { DynamicFilterBase, DynamicFilterInput } from 'src/app/shared/components/advanced-dynamic-filter';
+import { translitRuEn } from 'src/app/shared/utils/translit';
 
 @Component({
 	selector: 'vet-crm-reception-new',
@@ -28,7 +29,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
 	analyzeFileData = [];
 
-	formData = {};
+	formData: any = {};
 	maySave = false;
 
 	employeesList: string[] = [];
@@ -190,16 +191,18 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 			})
 		}
 		if(this.currentAnalyzeType.typeName === 'Files'){
-			// this.clientCardService.updateAnalyzesResearch(
-			// 	this.analyzeData.id,
-			// 	{
-			// 		data: JSON.stringify(this.formData), 
-			// 	} as UpdateAnalyzesResearchInput
-			// )
-			// .subscribe({
-			// 	next: (data) => this.successEditAlert(data?.updateAnalyzesResearch.id || ''),
-			// 	error: (error)  => { this.errorEditAlert(), console.log(error) }
-			// })
+			this.clientCardService.updateAnalyzeFile(
+				this.formData as File[],
+				{ 
+					typeName: this.currentAnalyzeType.typeName,
+					...this.analyzeData,
+					pet: this.analyzeData?.pet?.id
+				}
+			)
+			.subscribe({
+				next: (data: any) => {this.successEditAlert(data.id || -1), console.log(data)},
+				error: (error)  => { this.errorEditAlert(), console.log(error) }
+			})
 		}
 	}
 

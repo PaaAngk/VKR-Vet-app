@@ -22,10 +22,10 @@ export class FileInputComponent implements OnInit {
     rejectedFiles: readonly TuiFileLike[] = [];
  
     ngOnInit(): void {
-		if (this.editFiles.length > 0){
-			this.editMode = true;
-			this.control.setValue(this.editFiles);
-		}
+		// if (this.editFiles.length > 0){
+		// 	this.editMode = true;
+		// 	this.control.setValue(this.editFiles);
+		// }
       	this.control.statusChanges.subscribe(() => {
 			if(!this.control.errors){
 				this.outputFileEmit(this.control.value)
@@ -54,6 +54,7 @@ export class FileInputComponent implements OnInit {
 	outputFileEmit(control: any){
 		this.outputFile.emit(control);
 	}
+
 }
 
 export function maxFilesLength(maxLength: number): ValidatorFn {

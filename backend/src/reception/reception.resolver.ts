@@ -8,7 +8,7 @@ import {
   Mutation,
   Int,
 } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import { ConflictException, UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { ReceptionIdArgs } from './args/reception-id.args';
 import { Reception } from './models/reception.model';
@@ -19,7 +19,6 @@ import { GoodsList } from 'src/goods/models/goods-list.model';
 import { Employee } from 'src/common/models';
 import { UpdateReceptionInput } from './dto/UpdateReceptionInput.input';
 import { Pet } from 'src/pets/models/pet.model';
-import { BetweenDateInput } from 'src/receptionRecord/dto/BetweenDateInput.input';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Reception)
@@ -34,19 +33,24 @@ export class ReceptionResolver {
    */
   @Mutation(() => Reception)
   async createReception(@Args('data') data: CreateReceptionInput) {
-    const newReception = await this.prisma.reception.create({
-      data: {
-        petId: data.petId,
-        employeeId: data.employeeId,
-        purposeId: data.purposeId,
-        clinicalSigns: data.clinicalSigns?.trim() || null,
-        anamnesis: data.anamnesis?.trim() || null,
-        diagnosis: data.diagnosis?.trim() || null,
-        assignment: data.assignment?.trim() || null,
-        discount: data.discount,
-        cost: data.cost,
-      },
-    });
+    let newReception;
+    try {
+      newReception = await this.prisma.reception.create({
+        data: {
+          petId: data.petId,
+          employeeId: data.employeeId,
+          purposeId: data.purposeId,
+          clinicalSigns: data.clinicalSigns?.trim() || null,
+          anamnesis: data.anamnesis?.trim() || null,
+          diagnosis: data.diagnosis?.trim() || null,
+          assignment: data.assignment?.trim() || null,
+          discount: data.discount,
+          cost: data.cost,
+        },
+      });
+    } catch {
+      throw new ConflictException('Error in create reception');
+    }
 
     if (data.goodsListReceptionInput.length > 0) {
       const addInGoodsListInput = data.goodsListReceptionInput.map((goods) => ({
@@ -54,9 +58,13 @@ export class ReceptionResolver {
         receptionId: newReception.id,
       }));
 
-      await this.prisma.goodsList.createMany({
-        data: addInGoodsListInput,
-      });
+      try {
+        await this.prisma.goodsList.createMany({
+          data: addInGoodsListInput,
+        });
+      } catch {
+        throw new ConflictException('Error in create goods list');
+      }
     }
 
     if (data.serviceListReceptionInput.length > 0) {
@@ -67,9 +75,13 @@ export class ReceptionResolver {
         })
       );
 
-      await this.prisma.serviceList.createMany({
-        data: addInServiceListInput,
-      });
+      try {
+        await this.prisma.serviceList.createMany({
+          data: addInServiceListInput,
+        });
+      } catch {
+        throw new ConflictException('Error in create service list');
+      }
     }
     return newReception;
   }
@@ -102,11 +114,10 @@ export class ReceptionResolver {
       },
     });
 
+    await this.prisma.goodsList.deleteMany({
+      where: { receptionId: receptionId },
+    });
     if (newReceptionData.goodsListReceptionInput.length > 0) {
-      await this.prisma.goodsList.deleteMany({
-        where: { receptionId: receptionId },
-      });
-
       const addInGoodsListInput = newReceptionData.goodsListReceptionInput.map(
         (goods) => ({
           ...goods,
@@ -119,11 +130,10 @@ export class ReceptionResolver {
       });
     }
 
+    await this.prisma.serviceList.deleteMany({
+      where: { receptionId: receptionId },
+    });
     if (newReceptionData.serviceListReceptionInput.length > 0) {
-      await this.prisma.serviceList.deleteMany({
-        where: { receptionId: receptionId },
-      });
-
       const addInServiceListInput =
         newReceptionData.serviceListReceptionInput.map((service) => ({
           ...service,

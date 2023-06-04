@@ -64,7 +64,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 			this.getAnalyzesResearchGQL
 			.watch({
 				analyzesResearchId:Number(params['id']),
-			})
+			}, {fetchPolicy: 'network-only'})
 			.valueChanges
 			.pipe(tuiWatch(this._changeDetectorRef),takeUntil(this._unsubscribeAll))
 			.subscribe({

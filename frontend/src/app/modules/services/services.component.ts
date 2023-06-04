@@ -35,7 +35,7 @@ export class ServicesComponent implements OnDestroy{
 	private readonly dialogAddPet = this.dialogService.open<number>(
         new PolymorpheusComponent(AddServiceComponent, this.injector),
         {
-            dismissible: true,
+            dismissible: false,
             label: `Добавление услуги`,
         },
     );
@@ -125,8 +125,8 @@ export class ServicesComponent implements OnDestroy{
 						status: TuiNotification.Success, 
 						label:"Услуга изменена",
 					}
-					).subscribe();
-					this.editedService = {} as Service;
+				).subscribe();
+				this.editedService = {} as Service;
 			},
 			error: (error)  => 
 			{

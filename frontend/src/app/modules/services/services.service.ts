@@ -112,11 +112,10 @@ export class ServicesService
             map(( {data} ) => {
                 if (data?.updateService) {
                     this._serviceList.next(
-                        this._serviceList.getValue().map(val => {
-                            return val.id === data?.updateService.id ? data?.updateService : val
-                        })
+                        this._serviceList.getValue().map(val => val.id === data?.updateService.id ? data?.updateService : val )
                     );
                 }
+                return data
             })
         )
     }

@@ -73,7 +73,7 @@ Table TypeAnalyzesResearch {
 }
 
 Table Reception {
-  id Int [pk, increment]
+  id Int [pk, increment, unique]
   pet Pet [not null]
   petId Int [not null]
   Employee Employee [not null]
@@ -107,6 +107,10 @@ Table Goods {
   measure String
   quantity Float
   price Float
+
+  indexes {
+    (categoryId, name, measure) [unique]
+  }
 }
 
 Table GoodsCategory {

@@ -38,7 +38,7 @@ export class GoodsComponent implements OnDestroy{
 	private readonly dialogAddPet = this.dialogService.open<number>(
         new PolymorpheusComponent(AddGoodsComponent, this.injector),
         {
-            dismissible: true,
+            dismissible: false,
             label: `Добавление товара`,
         },
     );
@@ -65,14 +65,16 @@ export class GoodsComponent implements OnDestroy{
 		.pipe(takeUntil(this._unsubscribeAll), delay(200))
 		.subscribe({
 			next: (data) => {
+				this.editedGoods = {} as Goods;
 				this.filteredGoods = this.setFilteredGoods(data['search']);
 				this._changeDetectorRef.markForCheck();
 			}
 		});
+
+		// hide last action column in table for manager and doctor
 		this.currentUserRole = this.userService.getCurrentUser().role
 		if( this.currentUserRole === "DOCTOR" || this.currentUserRole === "MANAGER") 
 			this.columns = [`name`, `categoryName`, `quantity`, `price`]
-
 	}
 
 	ngOnDestroy(): void

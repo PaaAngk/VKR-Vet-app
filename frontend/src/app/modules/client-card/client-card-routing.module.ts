@@ -45,6 +45,13 @@ const routes: Routes = [
     component: ReceptionComponent,
   },
   {
+    path: 'pet/:id/reception/:id/copy', 
+    data: {
+      title: 'Копирование приема'
+    },
+    component: ReceptionComponent,
+  },
+  {
     path: 'pet/:id/reception/:id', 
     data: {
       title: 'Просмотр приема'

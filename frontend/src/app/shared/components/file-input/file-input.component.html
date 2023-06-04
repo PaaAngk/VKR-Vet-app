@@ -40,7 +40,12 @@
     ></tui-file>
 
 </tui-files>
-{{control.valueChanges| async }}
+<h3
+    *ngIf="control.value && control.value.length === 0"
+    class="text-xl py-2 font-bold text-center"
+>
+    Нет файлов
+</h3>
 <tui-error
     [formControl]="control"
     [error]="['maxLength'] | tuiFieldError | async"

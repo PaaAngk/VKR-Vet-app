@@ -172,7 +172,7 @@ export class ClientCardService
             map((data) => {
                 const currentValue = this._clientsData.getValue()
                 if(data.data.searchClients.nodes)
-                    this._clientsData.next( currentValue.concat(data.data.searchClients.nodes).filter((ids => ({ id }) => !ids.has(id) && ids.add(id))(new Set)) );
+                    this._clientsData.next( currentValue.concat(data.data.searchClients.nodes) );//.filter((ids => ({ id }) => !ids.has(id) && ids.add(id))(new Set)
                 return data.data.searchClients
             })
         );
@@ -225,7 +225,6 @@ export class ClientCardService
             map(( data ) => {
                 console.log(data)
                 if (data.data?.createClient) {
-                    this._clientsData.next(this._clientsData.getValue().concat(data.data.createClient));
                     return data.data.createClient;
                 }
                 return {} as Client
@@ -579,6 +578,23 @@ export class ClientCardService
         return this.http.post(`${environment.api_url}/analyzes/upload-analyzes-file`, formData, options)
     }
 
+    /**
+     * Send array of files on server for update and write in DB
+     * @param files Array of files
+     * @param analyzeData Data of pet and analyze type
+     * @returns Observable server response
+     */
+    updateAnalyzeFile(files: File[], analyzeData: any){
+        const formData:FormData = new FormData();
+        files.forEach( (file, i) => formData.append(`file${i}`, file) )
+        formData.append(`analyzeData`, JSON.stringify(analyzeData));
+        const headers = new HttpHeaders();
+        headers.append('Content-Type', 'multipart/form-data');
+        headers.append('Accept', '*/*');
+        const options = { headers: headers };
+        return this.http.post(`${environment.api_url}/analyzes/update-analyzes-file`, formData, options)
+    }
+
     downloadAnalyzeFile(file: FileData){
         return this.http.post(`${environment.api_url}/analyzes/download-analyzes-file`, file)
         .pipe(map(
@@ -627,11 +643,11 @@ export class ClientCardService
      */
     calculateGoodsQuantity(quantity: number){
         let setQuantity = 0;
-        const mod = Math.round((quantity||0 % 1) * 10)
+        const mod = Math.round((quantity % 1) * 10)
         if ( mod > 0 && mod < 5) setQuantity = Math.round(quantity||0) + 0.5 
         else if(mod >= 5 && mod < 10) setQuantity = Math.round(quantity||0)
         else setQuantity = quantity as number;
-
+        
         return setQuantity
     }
 }

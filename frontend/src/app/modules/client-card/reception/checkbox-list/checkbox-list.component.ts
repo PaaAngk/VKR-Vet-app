@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {EMPTY_ARRAY, TUI_DEFAULT_MATCHER} from '@taiga-ui/cdk';
 import {TuiDataListComponent, tuiIsEditingKey} from '@taiga-ui/core';
+import { Goods } from 'src/graphql/generated';
 
 interface IncludeItems{
     readonly id: number;
@@ -11,7 +12,7 @@ interface IncludeItems{
 interface Items<T> {
     readonly id: number;
     readonly typeName: string;
-    readonly items: IncludeItems[];
+    readonly items: T[];//IncludeItems[];
 }
 
 @Component({
@@ -19,7 +20,7 @@ interface Items<T> {
     templateUrl: `./checkbox-list.template.html`,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckboxListComponent<T> {
+export class CheckboxListComponent<T extends Goods> {
     @Input()
     items: ReadonlyArray<Items<T>> = [];
 
@@ -29,9 +30,10 @@ export class CheckboxListComponent<T> {
 
     readonly filter = TUI_DEFAULT_MATCHER;
 
-    readonly matcher = (items: IncludeItems, search: string): boolean => items.name.toLowerCase().includes(search.toLowerCase().trim());
+    readonly matcher = (items: T, search: string): boolean => items.name.toLowerCase().includes(search.toLowerCase().trim());
 
-    readonly stringify = ( items: IncludeItems ): string => items.name;
+    readonly stringify = ( items: T ): string => items.name;
+
 
     onArrowDown<T>(list: TuiDataListComponent<T>, event: Event): void {
         list.onFocus(event, true);

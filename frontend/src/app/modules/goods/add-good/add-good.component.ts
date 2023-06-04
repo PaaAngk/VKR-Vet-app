@@ -18,7 +18,7 @@ export class AddGoodsComponent implements OnDestroy {
     goodsCategoryList : GoodsCategory[] = [];
     submitLoader= false;
 
-    measure = ['Ампул', 'Доз', 'Мл', 'Флакон', 'Штук', 'Таблетка'];
+    measure = ['Ампула', 'Доза', 'Мл', 'Флакон', 'Штука', 'Таблетка', "Бутылка", "Грамм", "Кг", "Пара"];
 	
 	readonly addGoodsForm = new FormGroup({
 		name: new FormControl(null as unknown as string, [Validators.required, Validators.minLength(2), Validators.maxLength(60)]),
@@ -81,8 +81,8 @@ export class AddGoodsComponent implements OnDestroy {
                 error: (error)  => 
                 {
                     this.alertService.open(
-                        "Услуга уже добавлена", 
-                        {status: TuiNotification.Error, label:"Ошибка добавления услуги"}
+                        "Товар уже есть в базе данных. Попробуйте найти товар или перезагрузите страницу.", 
+                        {status: TuiNotification.Error, label:"Ошибка добавления товара"}
                     ).subscribe();
                     console.log(error);
                     this.submitLoader = false;

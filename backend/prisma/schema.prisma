@@ -89,12 +89,12 @@ model TypeAnalyzesResearch {
 }
 
 model Reception {
-  id          Int               @id @default(autoincrement())
-  pet         Pet              @relation(fields: [petId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  id          Int               @id @unique @default(autoincrement())
+  pet         Pet               @relation(fields: [petId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   petId       Int
-  Employee    Employee         @relation(fields: [employeeId], references: [id])
+  Employee    Employee          @relation(fields: [employeeId], references: [id])
   employeeId  Int
-  purpose     ReceptionPurpose @relation(fields: [purposeId], references: [id])
+  purpose     ReceptionPurpose  @relation(fields: [purposeId], references: [id])
   purposeId   Int
   goodsList   GoodsList[]
   serviceList ServiceList[]
@@ -126,6 +126,8 @@ model Goods {
   measure  String?
   quantity Float?
   price    Float?
+  
+  @@unique([categoryId, name, measure])
 }
 
 model GoodsCategory {

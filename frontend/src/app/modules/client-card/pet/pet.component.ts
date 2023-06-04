@@ -57,7 +57,7 @@ export class PetComponent implements OnDestroy, OnInit{
 
 	listOfDocumentToGenerate: DocumentsToGenerate[] = [
 		{name: 'Расписка ИП', fileName: 'Raspiska_ip'}, 
-		{name: 'Эфтаназия', fileName: 'Eftanaziya'}, 
+		{name: 'Эвтаназия', fileName: 'Eftanaziya'}, 
 		{name: 'Согласие на стационар', fileName: 'Soglasie_na_stacionar'},
 		{name: 'Первичный договор', fileName: 'Pervichnyj_dogovor'},
 		{name: 'Карта для стационара', fileName: 'Karta_dlya_stacionara'},
@@ -119,6 +119,7 @@ export class PetComponent implements OnDestroy, OnInit{
 		this.clientCardService.getAllEmployees$.subscribe({
 			next:(employees: Employee[]) => this.employeesList = employees.map(d => d.fullName)
 		})
+		
 	}
 
 	ngOnDestroy(): void
@@ -175,25 +176,25 @@ export class PetComponent implements OnDestroy, OnInit{
 						label: 'Выбор сотрудника',
 						placeholder:"Начните вводить ФИО сотрудника",
 						options: this.employeesList,
+						required: true,
 					}),
 					new TextboxDynamicFilter({
 						key: 'procedure',
 						label: 'Наименование операции, процедуры',
 						placeholder:"Введите наименование операции",
+						required: true,
 					}),
 					new CountboxDynamicFilter({
 						key: 'costFrom',
 						label: 'Стоимость от',
 						value: 0,
 						inputRangeParameters : {min:0, max:500000},
-						required: true,
 					}),
 					new CountboxDynamicFilter({
 						key: 'costTo',
 						label: 'Стоимость до',
 						value: 0,
 						inputRangeParameters : {min:0, max:500000},
-						required: true,
 					}),
 				]
 			})
