@@ -23,6 +23,13 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+
 volumes:
   postgres:
     name: nest-db

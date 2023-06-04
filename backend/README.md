@@ -151,16 +151,6 @@ When you run your NestJS application in a Docker container update your [.env](.e
 + DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/${POSTGRES_DB}?schema=${DB_SCHEMA}&sslmode=prefer
 ```
 
-If `DATABASE_URL` is missing in the root `.env` file, which is loaded into the Docker container, the NestJS application will exit with the following error:
-
-```bash
-(node:19) UnhandledPromiseRejectionWarning: Error: error: Environment variable not found: DATABASE_URL.
-  -->  schema.prisma:3
-   |
- 2 |   provider = "postgresql"
- 3 |   url      = env("DATABASE_URL")
-```
-
 ### Docker Compose
 
 You can also setup a the database and Nest application with the docker-compose
@@ -175,6 +165,17 @@ npm run docker:build
 docker-compose up -d
 # or
 npm run docker
+```
+
+### Postgres Backup
+Restor DB by backup file
+
+```bash
+# copy backup file
+docker cp backup.sql postgres:/backups.sql
+
+# then 
+docker exec -i postgres /usr/bin/pg_restore -U postgres -d postgres /backups.sql
 ```
 
 ## Schema Development
