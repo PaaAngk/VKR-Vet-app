@@ -170,8 +170,9 @@ export class ClientCardService
         )
         .valueChanges.pipe(
             map((data) => {
+                console.log(data)
                 const currentValue = this._clientsData.getValue()
-                if(data.data.searchClients.nodes)
+                if(data.data.searchClients)
                     this._clientsData.next( currentValue.concat(data.data.searchClients.nodes) );//.filter((ids => ({ id }) => !ids.has(id) && ids.add(id))(new Set)
                 return data.data.searchClients
             })

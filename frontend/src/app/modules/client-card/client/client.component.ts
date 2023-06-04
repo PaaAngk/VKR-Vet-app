@@ -72,10 +72,9 @@ export class ClientComponent implements OnDestroy, OnInit{
 		this.clientCardService.searchClientsWithPagination
 			(searchString, this.fetchSize, this.endCursor, this.orderByDefault)
 			.pipe(tuiWatch(this._changeDetectorRef), take(1))
-			.subscribe((clientConnection: ClientConnection) => {
+			.subscribe((clients: ClientConnection) => {
 				this.loadingPage = false;
-				// this.clients = clientConnection.nodes || []
-				this.endCursor = clientConnection.pageInfo.endCursor || null
+				this.endCursor = clients.nodes[clients.nodes.length - 1].id || null
 			});
 
 		// Поиск по вводу в поле
@@ -94,10 +93,9 @@ export class ClientComponent implements OnDestroy, OnInit{
 				this.clientCardService.searchClientsWithPagination
 					(String(this.searchForm.value.search), this.fetchSize, this.endCursor, this.orderByDefault)
 					.pipe(tuiWatch(this._changeDetectorRef), take(1))
-					.subscribe((clientConnection: ClientConnection) => {
-						console.log(clientConnection)
+					.subscribe((clients: ClientConnection) => {
 						this.loadingPage = false;
-						this.endCursor = clientConnection.pageInfo.endCursor || null
+						this.endCursor = clients.nodes[clients.nodes.length - 1].id || null
 					});
 				this.router.navigate([], 
 				{
@@ -137,7 +135,6 @@ export class ClientComponent implements OnDestroy, OnInit{
 	}
 
 	protected fetchMore(event: IPageInfo) {
-		console.log(event)
 		// Переменная endIndexFromVirtScroll нужна для отмены постоянных запросов приходящих с
 		// библиотеки, так отсекаются испольненные запросы, а если не исполнился возращаем переменную на предыдущее значение
         if (
@@ -149,17 +146,18 @@ export class ClientComponent implements OnDestroy, OnInit{
 		const prevEndIndexFromVirtScroll = this.endIndexFromVirtScroll
 		this.endIndexFromVirtScroll = event.endIndex
         this.loadingTable = true;
-		// console.log(event)
 		this.clientCardService.searchClientsWithPagination
 			(String(this.searchForm.value.search), 5, this.endCursor, {direction: OrderDirection.Asc, field:ClientOrderField.Id})//this.fetchSize
 			.pipe(tuiWatch(this._changeDetectorRef), take(1))
 			.subscribe({
-				next: (clientConnection: ClientConnection) =>{
-					console.log(clientConnection)
-					if(clientConnection.pageInfo.endCursor)
-						this.endCursor = clientConnection.pageInfo.endCursor;
+				next: (clients: ClientConnection) =>{
+					this.isEndFetch = clients.totalCount-1 === this.clients.length
+					if (!this.isEndFetch) {
+						this.endCursor = clients.nodes[clients.nodes.length - 1].id;
+					}
 					this.loadingTable = false;
-					this.isEndFetch = !clientConnection.pageInfo.hasNextPage
+					// console.log(clients.totalCount-1)
+					// console.log(this.clients.length)
 				},
 				error: (err) => {
 					console.log(err);

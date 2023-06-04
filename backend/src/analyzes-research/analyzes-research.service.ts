@@ -32,8 +32,6 @@ export class AnalyzesResearchService {
     const analyzeData = JSON.parse(data);
     const savedFiles = JSON.parse(analyzeData.data);
     const dirPath = `Researchs/${analyzeData.pet}`;
-    console.log(files);
-    console.log(analyzeData);
     for (const file of savedFiles) {
       try {
         const promise = unlink(file.path);

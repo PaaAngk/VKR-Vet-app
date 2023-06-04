@@ -23,12 +23,6 @@ query GetClientWithPagination($search:String!, $first: Int!, $after:Int, $orderB
         alias
       }
     }
-    pageInfo{
-      endCursor
-      hasNextPage
-      hasPreviousPage
-      startCursor
-    }
     totalCount
   }
 }

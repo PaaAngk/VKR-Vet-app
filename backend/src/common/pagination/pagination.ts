@@ -18,11 +18,11 @@ export default function Paginated<TItem>(TItemClass: Type<TItem>) {
     // @Field(() => [EdgeType], { nullable: true })
     // edges: Array<EdgeType>;
 
-    @Field(() => [TItemClass], { nullable: true })
+    @Field(() => [TItemClass])
     nodes: Array<TItem>;
 
-    @Field(() => PageInfo)
-    pageInfo: PageInfo;
+    // @Field(() => PageInfo)
+    // pageInfo: PageInfo;
 
     @Field(() => Int)
     totalCount: number;

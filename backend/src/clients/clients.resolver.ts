@@ -22,6 +22,7 @@ import { ClientSearchArgs } from './args/client-search.args';
 import { ClientIdArgs } from './args/client-id.args';
 import { Pet } from 'src/pets/models/pet.model';
 import { UpdateClientInput } from './dto/UpdateClientInput';
+import { Prisma } from '@prisma/client';
 
 const pubSub = new PubSub();
 
@@ -74,7 +75,7 @@ export class ClientsResolver {
 
   @Query(() => ClientConnection)
   async searchClients(
-    @Args() { after, before, first, last }: PaginationArgs,
+    @Args() { after, first }: PaginationArgs,
     @Args() { search }: ClientSearchArgs,
     @Args({
       name: 'orderBy',
@@ -83,50 +84,51 @@ export class ClientsResolver {
     })
     orderBy: ClientOrder
   ) {
-    const result = await findManyCursorConnection(
-      (args) =>
-        this.prisma.client.findMany({
-          where: {
-            OR: [
-              {
-                fullName: {
-                  contains: search || '',
-                  mode: 'insensitive',
-                },
-              },
-              {
-                telephoneNumber: {
-                  contains: search || '',
-                  mode: 'insensitive',
-                },
-              },
-            ],
+    const result = await this.prisma.client.findMany({
+      where: {
+        OR: [
+          {
+            fullName: {
+              contains: search || '',
+              mode: 'insensitive',
+            },
           },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : null,
-          ...args,
-        }),
-      () =>
-        this.prisma.client.count({
-          where: {
-            OR: [
-              {
-                fullName: {
-                  contains: search || '',
-                  mode: 'insensitive',
-                },
-              },
-              {
-                telephoneNumber: {
-                  contains: search || '',
-                  mode: 'insensitive',
-                },
-              },
-            ],
+          {
+            telephoneNumber: {
+              contains: search || '',
+              mode: 'insensitive',
+            },
           },
-        }),
-      { first, last, before, after }
-    );
-    return result;
+        ],
+      },
+      orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : null,
+      cursor: after === null ? undefined : { id: after },
+      take: first,
+      skip: 1,
+    });
+    const count = await this.prisma.client.count({
+      where: {
+        OR: [
+          {
+            fullName: {
+              contains: search || '',
+              mode: 'insensitive',
+            },
+          },
+          {
+            telephoneNumber: {
+              contains: search || '',
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+
+    return {
+      nodes: result,
+      totalCount: count,
+    } as ClientConnection;
   }
 
   /**

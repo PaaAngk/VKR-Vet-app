@@ -68,8 +68,7 @@ export type Client = {
 
 export type ClientConnection = {
   __typename?: 'ClientConnection';
-  nodes?: Maybe<Array<Client>>;
-  pageInfo: PageInfo;
+  nodes: Array<Client>;
   totalCount: Scalars['Int'];
 };
 
@@ -428,14 +427,6 @@ export enum OrderDirection {
   Asc = 'asc',
   Desc = 'desc'
 }
-
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  endCursor?: Maybe<Scalars['Int']>;
-  hasNextPage: Scalars['Boolean'];
-  hasPreviousPage: Scalars['Boolean'];
-  startCursor?: Maybe<Scalars['Int']>;
-};
 
 export type Pet = {
   __typename?: 'Pet';
@@ -799,7 +790,7 @@ export type GetClientWithPaginationQueryVariables = Exact<{
 }>;
 
 
-export type GetClientWithPaginationQuery = { __typename?: 'Query', searchClients: { __typename?: 'ClientConnection', totalCount: number, nodes?: Array<{ __typename?: 'Client', id: number, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: number, alias: string }> | null }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: number | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: number | null } } };
+export type GetClientWithPaginationQuery = { __typename?: 'Query', searchClients: { __typename?: 'ClientConnection', totalCount: number, nodes: Array<{ __typename?: 'Client', id: number, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: number, alias: string }> | null }> } };
 
 export type CreateClientMutationVariables = Exact<{
   data: CreateClientInput;
@@ -1222,12 +1213,6 @@ export const GetClientWithPaginationDocument = gql`
         id
         alias
       }
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-      hasPreviousPage
-      startCursor
     }
     totalCount
   }

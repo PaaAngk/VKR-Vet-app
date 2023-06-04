@@ -49,8 +49,7 @@ type Client {
 }
 
 type ClientConnection {
-  nodes: [Client!]
-  pageInfo: PageInfo!
+  nodes: [Client!]!
   totalCount: Int!
 }
 
@@ -246,13 +245,6 @@ Possible directions in which to order a list of items when provided an `orderBy`
 enum OrderDirection {
   asc
   desc
-}
-
-type PageInfo {
-  endCursor: Int
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: Int
 }
 
 type Pet {
