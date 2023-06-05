@@ -87,7 +87,10 @@ export class PetsResolver {
   @ResolveField('receptions', () => [Reception])
   async receptions(@Parent() pet: Pet) {
     const { id } = pet;
-    return this.prisma.reception.findMany({ where: { petId: id } });
+    return this.prisma.reception.findMany({
+      where: { petId: id },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
   @ResolveField('analyzesResearchs', () => [AnalyzesResearch])

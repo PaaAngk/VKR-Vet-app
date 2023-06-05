@@ -40,7 +40,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
 	analyzeFileData = [];
 	employee: string = '';
-
+	isFilesAnalyze = false;
 	loading = false;
 
 	readonly tablesColumns = ['name', 'price', 'quantity'];
@@ -73,9 +73,11 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 					const parcedData = JSON.parse(data.analyzesResearch.data || '');
 					this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeForm;
 					this.petId = data.analyzesResearch.pet?.id || -1
-	
+					if (data.analyzesResearch.type?.id != 5 && data.analyzesResearch.type?.id != 7) this.isFilesAnalyze = false;
+					else this.isFilesAnalyze = true;
+					
 					//if not file
-					if (data.analyzesResearch.type?.id != 5){
+					if (!this.isFilesAnalyze){
 						// Getting analyze and formating form for dynamic filter
 						//Search in array of analyzes and select needed with file name and needed form for selected analyze		
 						//Getting analyze and formating form for dynamic filter
@@ -92,8 +94,8 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 						this.loading = loading;
 						this.employee = parcedData.employee
 					}
-	
-					if (data.analyzesResearch.type?.id == 5){
+					// if file or x-ray
+					if (this.isFilesAnalyze){
 						this.analyzeFileData = parcedData;
 						this.loading = loading;
 					}

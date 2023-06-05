@@ -17,7 +17,7 @@
                 Возраст: <b>{{pet.DOB | ageString | checkNull }}</b>
             </p>
             <edit-delete-button
-                *disableForRole="['MANAGER']"
+                *disableForRole="['MANAGER', 'DOCTOR']"
                 class="group w-full md:w-64 flex-initial justify-self-end"
                 (deleteAction)="deletePet(template)"
                 (editAction)="showDialogEditPet()"

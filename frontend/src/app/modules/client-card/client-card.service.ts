@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, of, pipe, take } from "rxjs";
-import { AnalyzesResearch, Client, ClientConnection, ClientDetailGQL, ClientOrder, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteAnalyzesResearchGQL, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetClientWithPaginationGQL, GetPetDetailGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
+import { AnalyzesResearch, Client, ClientConnection, ClientDetailGQL, ClientOrder, CreateAnalyzesResearchGQL, CreateAnalyzesResearchInput, CreateClientGQL, CreateClientInput, CreatePetGQL, CreatePetInput, CreateReceptionGQL, CreateReceptionInput, DeleteAnalyzesResearchGQL, DeleteClientGQL, DeletePetGQL, Employee, GetAllAnalyzeTypesGQL, GetAllEmployeesGQL, GetAllGoodsCategoryWithGoodsGQL, GetAllReceptionPurposeGQL, GetAllServiceTypeWithServiceNameGQL, GetClientGQL, GetClientWithPaginationGQL, GetPetDetailGQL, GetSurgeryListGQL, GoodsCategory, Pet, Reception, ReceptionPurpose, Service, ServiceType, UpdateAnalyzesResearchGQL, UpdateAnalyzesResearchInput, UpdateClientGQL, UpdateClientInput, UpdatePetGQL, UpdatePetInput, UpdateReceptionGQL, UpdateReceptionInput } from "src/graphql/generated";
 import { AnalyzesList } from "./analyzes/analyzeFormTemplates";
 import { AnalyzeForm } from "./models/analyzeType"; 
 import { environment } from "src/environments/environment"
@@ -21,6 +21,7 @@ export class ClientCardService
 	private _goodsCategoriesList : BehaviorSubject<Array<GoodsCategory>> = new BehaviorSubject([] as GoodsCategory[]);
     private _employeesList : BehaviorSubject<Array<Employee>> = new BehaviorSubject([] as Employee[]);
     private _receptionPurposesList : BehaviorSubject<Array<ReceptionPurpose>> = new BehaviorSubject([] as ReceptionPurpose[]);
+    private _surgeryServicesList : BehaviorSubject<Array<Service>> = new BehaviorSubject([] as Service[]);
 
     constructor(
         private apollo: Apollo,
@@ -45,13 +46,15 @@ export class ClientCardService
         private updateAnalyzesResearchGQL: UpdateAnalyzesResearchGQL,
         private getAllAnalyzeTypesGQL : GetAllAnalyzeTypesGQL,
         private deleteAnalyzesResearchGQL: DeleteAnalyzesResearchGQL,
-        private getClientWithPaginationGQL: GetClientWithPaginationGQL
+        private getClientWithPaginationGQL: GetClientWithPaginationGQL,
+        private getSurgeryListGQL: GetSurgeryListGQL,
     ){
         this.getAllServiceType();
         this.getAllGoodsCategory();
         this.getAllEmployees();
         this.getAllReceptionPurpose();
         this.getAllAnalyzeTypes();
+        this.getAllSurgeryServices();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -108,6 +111,11 @@ export class ClientCardService
     get getAllReceptionPurpose$() : Observable<Array<ReceptionPurpose>>{
         return this._receptionPurposesList.asObservable();
     }
+
+    get getSurgeryServicesList$() : Observable<Array<Service>>{
+        return this._surgeryServicesList.asObservable();
+    }
+
 
     // -----------------------------------------------------------------------------------------------------
     // @ API methods
@@ -297,6 +305,22 @@ export class ClientCardService
             },  
 		});
     }
+
+    /**
+     * Get all service in its category
+     */
+    getAllSurgeryServices(): void
+    {
+        this.getSurgeryListGQL.watch().valueChanges
+        .pipe(take(1))
+        .subscribe({
+            next : (data) => {
+                this._surgeryServicesList.next(data.data.getSurgeryList);
+                return data.data.getSurgeryList
+            },  
+        });
+    }
+    
 
     /**
      * Get all service in its category

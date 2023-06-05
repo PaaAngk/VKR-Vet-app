@@ -13,7 +13,7 @@ export class Service {
   @Field(() => [ServiceList])
   ServiceList?: ServiceList[];
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   typeId?: number;
 
   @Field(() => String)

@@ -1,34 +1,32 @@
 <div class="flex flex-col space-y-3" *ngIf="true">
 
-    <div class="w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-2 rounded-lg items-center justify-between bg-white shadow-md pr-2">
+    <div class="w-full flex flex-row flex-wrap rounded-lg items-center justify-between bg-white shadow-xl pr-2">
         <button
-            tuiButton
+            tuiIconButton
             icon = 'tuiIconArrowLeftLarge'
-            appearance="textfield"
-            [routerLink]="'/client-card/pet/'+ petId"
-            class="md:w-52 w-full"
-        >
-            К питомцу
-        </button>
+            appearance="flat"
+            [routerLink]="'/client-card/pet/'+petId"
+            class="md:w-8 w-full flex-initial"
+        ></button>
 
-        <div tuiTextfieldSize="m" class="flex items-center justify-center h-full py-auto space-x-2 w-full">
+        <p class="text-xl text-black">{{currentAnalyze.name}}</p>
+
+        <div tuiTextfieldSize="m" class="flex items-center justify-center h-full py-auto space-x-2">
             <button-with-dropdown
                 class="mr-10"
                 [data]="printButtonData" 
                 [showLoader]="printButtonLoader"
                 (buttonAction)="printAnalyze()" 
                 (dropdownAction)="downloadAnalyze()"
-                *ngIf="currentAnalyze.typeName !== 'Files'"
+                *ngIf="!this.isFilesAnalyze"
             ></button-with-dropdown>
             <ng-container *ngIf="currentAnalyze && currentAnalyze.typeName === 'UZI_EKHO'">
                 <p>Выполняющий сотрудник: <br> <i>{{employee}}</i></p>
             </ng-container>
         </div>
-
-
-
+        
         <edit-delete-button
-            *disableForRole="['MANAGER']"
+            *disableForRole="['MANAGER', 'DOCTOR']"
             class="md:w-64 w-full justify-self-end"
             (deleteAction)="deleteAnalyze(template)"
             (editAction)="navigateToEdit()"
@@ -38,12 +36,12 @@
     <div class="w-full h-full rounded-lg bg-white shadow-md">
         <tui-loader [overlay]="true" [showLoader] = "loading" class="p-2 shadow-inner overflow-auto" [ngStyle]="{'max-height':'85vh'}">
             <app-advanced-dynamic-form
-                *ngIf="!loading && currentAnalyze.typeName !== 'Files'"
+                *ngIf="!loading && currentAnalyze.typeName !== 'Files' && currentAnalyze.typeName !== 'X-ray'"
                 [segmentForms] = "dynamicFormData$"
                 [twoColumns] = "true"
             ></app-advanced-dynamic-form>
             <file-view
-                *ngIf="!loading && currentAnalyze.typeName === 'Files'"
+                *ngIf="!loading && (currentAnalyze.typeName === 'Files' || currentAnalyze.typeName === 'X-ray')"
                 [inputFile]="analyzeFileData"
             ></file-view>
         </tui-loader> 

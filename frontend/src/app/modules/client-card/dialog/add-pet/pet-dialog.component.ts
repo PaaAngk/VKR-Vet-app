@@ -99,7 +99,11 @@ export class PetDialogComponent {
                             },
                             error: (error)  => 
                             {
-                                this.alertService.open("Питомец уже добавлен", {status: TuiNotification.Error}).subscribe()
+                                this.alertService.open("Либо питомец уже добавлен, либо нет связи с сервером. Перезагрузите страницу или обратитесь к администратору.", {
+                                    status: TuiNotification.Error,
+                                    autoClose: 10000,
+                                    label:"Не удалось добавить питомца"
+                                }).subscribe()
                                 console.log(error)
                             }
                         })

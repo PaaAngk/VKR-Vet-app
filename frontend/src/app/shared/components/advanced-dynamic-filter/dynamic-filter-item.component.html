@@ -84,6 +84,21 @@
 			></tui-data-list-wrapper>
 		</tui-combo-box>
 	
+		<!-- Multi select input -->
+		<tui-multi-select
+			*ngSwitchCase="'multiSelect'" 
+			tuiTextfield
+			[id]="input.key"
+			[formControlName]="input.key"
+			[readOnly]="input.readOnly"
+		>
+			<label [attr.for]="input.key">{{input.label}}</label>
+			<tui-data-list-wrapper
+				*tuiDataList
+				tuiMultiSelectGroup
+				[items]="input.options | tuiFilterByInput"
+			></tui-data-list-wrapper>
+		</tui-multi-select>
 
 		<!-- Dropdown input -->
 		<tui-select

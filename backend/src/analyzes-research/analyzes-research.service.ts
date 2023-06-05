@@ -3,6 +3,7 @@ import { MemoryStoredFile } from 'nestjs-form-data';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import { firstValueFrom, Subject } from 'rxjs';
 import { PrismaService } from 'nestjs-prisma/dist/prisma.service';
+import { AnalyzesResearch } from './models/analyzes-research.model';
 
 @Injectable()
 export class AnalyzesResearchService {
@@ -18,7 +19,7 @@ export class AnalyzesResearchService {
     const analyzeData = JSON.parse(data);
     const dirPath = `Researchs/${analyzeData.petId}`;
     await mkdir(dirPath, { recursive: true });
-    const savedFiles = this.saveFales(files, analyzeData.id, dirPath);
+    const savedFiles = await this.saveFales(files, analyzeData.id, dirPath);
     return await this.prisma.analyzesResearch.create({
       data: {
         petId: analyzeData.petId,
@@ -76,5 +77,18 @@ export class AnalyzesResearchService {
       });
     }
     return savedFiles;
+  }
+
+  async deleteFales(analyzesResearch: AnalyzesResearch) {
+    const savedFiles = JSON.parse(analyzesResearch.data);
+    for (const file of savedFiles) {
+      try {
+        const promise = unlink(file.path);
+        await promise;
+      } catch (err) {
+        console.error(err);
+        throw new Error('Can not delete!');
+      }
+    }
   }
 }

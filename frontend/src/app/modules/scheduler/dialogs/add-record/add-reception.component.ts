@@ -225,7 +225,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                 kindOfAnimal: this.addReceptionRecordForm.value.kindOfAnimal,
                 receptionPurposeId: this.addReceptionRecordForm.value.visitPurposeInput?.id || null,
             } 
-            if(dateTimeStart<=dateTimeEnd && dateTimeStart.getHours() > 10){
+            if(dateTimeStart<dateTimeEnd && dateTimeStart.getHours() >= 10){
                 if(this.context.data == 'add'){
                     this.schedulerService.createReceptionRecord(reqData as CreateReceptionRecordInput)
                     .subscribe({

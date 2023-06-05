@@ -17,7 +17,7 @@
         <button
             tuiButton
             (click)="showDialog()"
-            *disableForRole="['DOCTOR', 'MANAGER']"
+            *disableForRole="['DOCTOR']"
             icon="tuiIconAddRowLarge"
             size="l"
         >
@@ -72,7 +72,7 @@
                         >
                             Цена
                         </th>
-                        <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                        <ng-container *disableForRole="['DOCTOR']">
                             <th
                                 *tuiHead="'actions'"
                                 tuiTh
@@ -158,12 +158,12 @@
                                 {{ goods.price }} ₽
                             </p>
                         </td>
-                        <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                        <ng-container *disableForRole="['DOCTOR']">
                             <td
                                 *tuiCell="'actions'"
                                 tuiTd
                             >
-                                <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                                <ng-container *disableForRole="['DOCTOR']">
                                     <div 
                                         *ngIf="editedGoods.id !== goods.id" 
                                         class="space-x-2 flex flex-row"

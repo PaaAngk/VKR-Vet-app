@@ -73,7 +73,7 @@ export class GoodsComponent implements OnDestroy{
 
 		// hide last action column in table for manager and doctor
 		this.currentUserRole = this.userService.getCurrentUser().role
-		if( this.currentUserRole === "DOCTOR" || this.currentUserRole === "MANAGER") 
+		if( this.currentUserRole === "DOCTOR" ) 
 			this.columns = [`name`, `categoryName`, `quantity`, `price`]
 	}
 

@@ -282,6 +282,7 @@ type Query {
   analyzesResearch(analyzesResearchId: Int!): AnalyzesResearch!
   clientDetail(clientId: Int!): Client!
   clientsWithSearch(search: String): [Client!]!
+  getSurgeryList: [Service!]!
   getWorkScheduleById(workScheduleId: Int!): WorkSchedule!
   getWorkSchedulesBetweenDate(data: BetweenDateInput!): [WorkSchedule!]!
   hello(name: String!): String!

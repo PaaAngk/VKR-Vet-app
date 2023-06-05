@@ -10,7 +10,6 @@ import { ButtonWithDropdown } from 'src/app/shared/components/button-with-dropdo
 import { AnalyzeForm } from '../../models/analyzeType';
 import { AnalyzesList } from "../analyzeFormTemplates";
 import { DynamicFilterBase, DynamicFilterInput } from 'src/app/shared/components/advanced-dynamic-filter';
-import { translitRuEn } from 'src/app/shared/utils/translit';
 
 @Component({
 	selector: 'vet-crm-reception-new',
@@ -28,7 +27,6 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	// Edited analyze
 	analyzeData: AnalyzesResearch = {} as AnalyzesResearch;
 	analyzeFileData = [];
-
 	formData: any = {};
 	maySave = false;
 
@@ -39,6 +37,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	editMode = false;
 	petId = -1;
 	analyzeId = -1;
+	isFilesAnalyze = false;
 
 	enabledForm = false;
 
@@ -51,9 +50,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 			{name: "Скачать файл", event:"download"},
 		],
 	};
-
 	loading = false;
-
     constructor(
 		@Inject(TuiAlertService) private readonly alertService: TuiAlertService,
         @Inject(Injector) private readonly injector: Injector,
@@ -71,8 +68,8 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		this.clientCardService.getAllEmployees$.subscribe({
 			next:(employees: Employee[]) => this.employeesList = employees.map(d => d.fullName)
 		})
-
-		// Set edited analyze(and file) in form 
+		
+		// Set edited analyze(and file) in form
 		if (this.activateRoute.snapshot.url[4] && this.activateRoute.snapshot.url[4].path == 'edit'){
 			this.loading = true;
 			this.editMode = true;
@@ -88,9 +85,11 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 					this.analyzeData = data.analyzesResearch
 					const parcedData = JSON.parse(data.analyzesResearch.data || '');
 					this.currentAnalyzeType = structuredClone(AnalyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeForm;
-					
+					if (data.analyzesResearch.type?.id != 5 && data.analyzesResearch.type?.id != 7) 
+						this.isFilesAnalyze = false;
+					else this.isFilesAnalyze = true;
 					//if not file
-					if (data.analyzesResearch.type?.id != 5){
+					if (!this.isFilesAnalyze){
 						const form = this.currentAnalyzeType?.form?.dynamicFilterInputs
 							.map((item: DynamicFilterInput<any>) => {
 								item.value = parcedData[item.key] || null;
@@ -104,12 +103,11 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 							dynamicFilterInputs: form as DynamicFilterInput<any>[]
 						}
 						this.loading = loading;
-						console.log(parcedData)
 						this.employee = parcedData.employee
 						this.currentAnalyzeForm$.next(this.currentAnalyzeType.form)
 					}
 	
-					if (data.analyzesResearch.type?.id == 5){
+					if (this.isFilesAnalyze){
 						this.analyzeFileData = parcedData;
 						this.loading = loading;
 					}
@@ -140,7 +138,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	}
 
 	createAnalyzes(){
-		if(this.currentAnalyzeType.typeName !== 'Files'){
+		if(this.currentAnalyzeType.typeName !== 'Files' && this.currentAnalyzeType.typeName !== 'X-ray'){
 			this.clientCardService.createAnalyzesResearch(
 				{ 
 					data: JSON.stringify({...this.formData, employee: this.employee}), 
@@ -159,7 +157,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 				}
 			})
 		}
-		else if (this.currentAnalyzeType.typeName === 'Files'){
+		else {
 			this.clientCardService.uploadAnalyzeFile(
 				this.formData as File[],
 				{ 
@@ -178,7 +176,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	}
 
 	editAnalyzes(){
-		if(this.currentAnalyzeType.typeName !== 'Files'){
+		if(this.currentAnalyzeType.typeName !== 'Files' && this.currentAnalyzeType.typeName !== 'X-ray'){
 			this.clientCardService.updateAnalyzesResearch(
 				this.analyzeData.id,
 				{
@@ -190,7 +188,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 				error: (error)  => { this.errorEditAlert(), console.log(error) }
 			})
 		}
-		if(this.currentAnalyzeType.typeName === 'Files'){
+		else {
 			this.clientCardService.updateAnalyzeFile(
 				this.formData as File[],
 				{ 
@@ -200,7 +198,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 				}
 			)
 			.subscribe({
-				next: (data: any) => {this.successEditAlert(data.id || -1), console.log(data)},
+				next: (data: any) => {this.successEditAlert(data.id || -1)},
 				error: (error)  => { this.errorEditAlert(), console.log(error) }
 			})
 		}

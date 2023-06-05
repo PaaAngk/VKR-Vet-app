@@ -189,6 +189,16 @@ query GetAllServiceTypeWithServiceName{
   }
 }
 
+query GetSurgeryList{
+  getSurgeryList{
+    id
+    name
+    price
+    type{
+      typeName
+    }
+  }
+}
 
 # ---------------------------------- Goods ---------------------------------
 

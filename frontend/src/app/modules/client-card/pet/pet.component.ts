@@ -5,13 +5,13 @@ import { tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
 import { TableColumn } from 'src/app/core';
-import { AnalyzesResearch, Client, Employee, Pet, Reception } from 'src/graphql/generated';
+import { AnalyzesResearch, Client, Employee, Pet, Reception, Service } from 'src/graphql/generated';
 import { ClientCardService } from '../client-card.service';
 import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { PetDialogComponent } from '../dialog/add-pet/pet-dialog.component';
 import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
-import { ComboboxDynamicFilter, CountboxDynamicFilter, DateDynamicFilter, DateRangeDynamicFilter, DropdownDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
+import { ComboboxDynamicFilter, CountboxDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
 import { DocumentGenerateService, FileFormat } from '../document-generate.service';
 import { DocumentsToGenerate } from '../models/documentsToGenerate';
 
@@ -64,7 +64,6 @@ export class PetComponent implements OnDestroy, OnInit{
 	]
 
 	age = '';
-
 	pageLoader = false;
 
 	pet: Pet = {} as Pet;
@@ -72,6 +71,7 @@ export class PetComponent implements OnDestroy, OnInit{
 	receptions: Reception[] = [] as Reception[];
 	analyzesResearchs: AnalyzesResearch[] = [] as AnalyzesResearch[];
 	employeesList: string[] = [];
+	surgeryServicesList: string[] = [];
 	activeItemIndex = 1;
 	readonly receptionColumns = ['receptionPurpose', 'diagnosis', 'date', 'cost', 'actions'];
 	readonly analyzesColumns = ['type', 'date', 'actions']
@@ -119,7 +119,9 @@ export class PetComponent implements OnDestroy, OnInit{
 		this.clientCardService.getAllEmployees$.subscribe({
 			next:(employees: Employee[]) => this.employeesList = employees.map(d => d.fullName)
 		})
-		
+		this.clientCardService.getSurgeryServicesList$.subscribe({
+			next:(services: Service[]) => this.surgeryServicesList = services.map(d => d.name||'')
+		})
 	}
 
 	ngOnDestroy(): void
@@ -167,6 +169,7 @@ export class PetComponent implements OnDestroy, OnInit{
 			genderString: this.pet.gender ? "Мужской":"Женский", 
 			formatDate: this.dataPipe.transform(this.pet.DOB,  'dd.MM.yyyy')
 		}
+		this._changeDetectorRef.markForCheck();
 		if (docName === 'Raspiska_ip'){
 			this.documentForm$.next({
 				title: "Расписка ИП",
@@ -178,11 +181,12 @@ export class PetComponent implements OnDestroy, OnInit{
 						options: this.employeesList,
 						required: true,
 					}),
-					new TextboxDynamicFilter({
+					new ComboboxDynamicFilter({
 						key: 'procedure',
 						label: 'Наименование операции, процедуры',
-						placeholder:"Введите наименование операции",
+						placeholder:"Начните вводить наименование процедуры",
 						required: true,
+						options: this.surgeryServicesList,
 					}),
 					new CountboxDynamicFilter({
 						key: 'costFrom',
@@ -253,7 +257,7 @@ export class PetComponent implements OnDestroy, OnInit{
 				this.documentGenerateService.generateDocumentByData(docName, Object.assign(data, dialogData), FileFormat.pdf);
 				this.open = false;
 			}
-		})
+		});
 	}
 
 	// getting data from dialog box

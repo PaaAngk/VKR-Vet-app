@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   await prisma.user.deleteMany();
   console.log('Seeding...');
-
+  //https://www.toptal.com/developers/bcrypt/
   const user1 = await prisma.user.create({
     data: {
       login: 'manager',

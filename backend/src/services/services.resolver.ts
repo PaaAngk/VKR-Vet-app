@@ -61,6 +61,15 @@ export class ServiceResolver {
     return await this.prisma.service.findMany();
   }
 
+  @Query(() => [Service])
+  async getSurgeryList() {
+    return await this.prisma.service.findMany({
+      where: {
+        typeId: 1,
+      },
+    });
+  }
+
   @ResolveField('type', () => ServiceType)
   async serviceType(@Parent() service: Service) {
     return this.prisma.serviceType.findUnique({

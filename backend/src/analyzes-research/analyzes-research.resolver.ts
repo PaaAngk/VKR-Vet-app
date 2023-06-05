@@ -16,11 +16,15 @@ import { AnalyzesResearchIdArgs } from './args/analyzes-research-id.args';
 import { TypeAnalyzesResearch } from './models/type-analyzes-research.model';
 import { Pet } from 'src/pets/models/pet.model';
 import { UpdateAnalyzesResearchInput } from './dto/UpdateAnalyzesResearchInput.input copy';
+import { AnalyzesResearchService } from './analyzes-research.service';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => AnalyzesResearch)
 export class AnalyzesResearchResolver {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private analyzesResearchService: AnalyzesResearchService
+  ) {}
 
   @Mutation(() => AnalyzesResearch)
   async createAnalyzesResearch(
@@ -49,6 +53,14 @@ export class AnalyzesResearchResolver {
 
   @Mutation(() => AnalyzesResearch)
   async deleteResearch(@Args() { analyzesResearchId }: AnalyzesResearchIdArgs) {
+    const analyzesResearch = await this.prisma.analyzesResearch.findUnique({
+      where: {
+        id: analyzesResearchId,
+      },
+    });
+    if (analyzesResearch.typeId === 5 || analyzesResearch.typeId === 7) {
+      this.analyzesResearchService.deleteFales(analyzesResearch);
+    }
     return await this.prisma.analyzesResearch.delete({
       where: {
         id: analyzesResearchId,

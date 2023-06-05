@@ -32,7 +32,6 @@ export class AnalyzesResearchController {
     if (files) {
       const analyzeData = files.analyzeData;
       delete files.analyzeData;
-
       try {
         return await this.analyzesService.saveAnalyze(
           files as MemoryStoredFile[],
@@ -71,28 +70,6 @@ export class AnalyzesResearchController {
       }
     } else {
       throw new HttpException('don`t has files', HttpStatus.NOT_FOUND);
-    }
-  }
-
-  @Post('download-analyzes-file')
-  async downloadAnalyzesFile(
-    @Body() file: FileData,
-    @Res({ passthrough: true }) res
-  ) {
-    if (file) {
-      try {
-        const readedFile = await readFile(file.path, { encoding: 'binary' });
-        res.set({
-          'Content-Type': file.mimetype,
-          'Content-Disposition': `attachment; filename=${file.name}`,
-        });
-        res.json(readedFile);
-      } catch (err) {
-        console.error(err);
-        throw new HttpException('Can`t download', HttpStatus.NOT_ACCEPTABLE);
-      }
-    } else {
-      throw new HttpException('don`t has path', HttpStatus.NOT_FOUND);
     }
   }
 }

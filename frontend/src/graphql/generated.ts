@@ -464,6 +464,7 @@ export type Query = {
   analyzesResearch: AnalyzesResearch;
   clientDetail: Client;
   clientsWithSearch: Array<Client>;
+  getSurgeryList: Array<Service>;
   getWorkScheduleById: WorkSchedule;
   getWorkSchedulesBetweenDate: Array<WorkSchedule>;
   hello: Scalars['String'];
@@ -854,6 +855,11 @@ export type GetAllServiceTypeWithServiceNameQueryVariables = Exact<{ [key: strin
 
 
 export type GetAllServiceTypeWithServiceNameQuery = { __typename?: 'Query', allServiceType: Array<{ __typename?: 'ServiceType', id?: number | null, typeName?: string | null, service?: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null }> | null }> };
+
+export type GetSurgeryListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSurgeryListQuery = { __typename?: 'Query', getSurgeryList: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', typeName?: string | null } }> };
 
 export type GetAllGoodsCategoryWithGoodsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1490,6 +1496,29 @@ export const GetAllServiceTypeWithServiceNameDocument = gql`
   })
   export class GetAllServiceTypeWithServiceNameGQL extends Apollo.Query<GetAllServiceTypeWithServiceNameQuery, GetAllServiceTypeWithServiceNameQueryVariables> {
     override document = GetAllServiceTypeWithServiceNameDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetSurgeryListDocument = gql`
+    query GetSurgeryList {
+  getSurgeryList {
+    id
+    name
+    price
+    type {
+      typeName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetSurgeryListGQL extends Apollo.Query<GetSurgeryListQuery, GetSurgeryListQueryVariables> {
+    override document = GetSurgeryListDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

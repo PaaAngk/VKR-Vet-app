@@ -78,13 +78,13 @@
             [ngStyle]="{'max-height':'85vh'}"
         >
             <app-advanced-dynamic-form
-                *ngIf="currentAnalyzeType && currentAnalyzeType.typeName !== 'Files'"
+                *ngIf="currentAnalyzeType && (currentAnalyzeType.typeName !== 'Files' && currentAnalyzeType.typeName !== 'X-ray')"
                 [segmentForms] = "currentAnalyzeForm$"
                 (formValues) = "dataFromForm($event)"
                 [twoColumns] = "true"
             ></app-advanced-dynamic-form>
             <div
-                *ngIf="currentAnalyzeType && currentAnalyzeType.typeName === 'Files'"
+                *ngIf="currentAnalyzeType && (currentAnalyzeType.typeName === 'Files' || currentAnalyzeType.typeName === 'X-ray')"
             >
                 <file-input
                     [editFiles]="analyzeFileData"

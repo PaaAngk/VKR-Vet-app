@@ -14,7 +14,7 @@
                 Адрес: {{client.address}}</p>
             </div>
             <edit-delete-button
-                *disableForRole="['MANAGER']"
+                *disableForRole="['MANAGER', 'DOCTOR']"
                 class="md:w-64 w-full flex-initial justify-self-end"
                 (deleteAction)="deleteClient(template)"
                 (editAction)="showDialogEditClient()"
