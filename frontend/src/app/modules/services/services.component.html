@@ -36,157 +36,165 @@
             class="flex flex-auto overflow-auto" 
             [ngStyle]="{'max-height':'70vh'}"
         >
-            <table
-                class="w-full pb-2"
-                tuiTable
-                [columns]="columns"
+            <virtual-scroller 
+                #scroll 
+                [items]="filterServices"
                 *ngIf="filterServices.length !== 0"
+                class="w-full"
+                [ngStyle]="{'min-height':' 70vh'}"
             >
-                <thead>
-                    <tr tuiThGroup>
-                        <th
-                            *tuiHead="'name'"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Наименование
-                        </th>
-                        <th
-                            *tuiHead="'typeName'"
-                            tuiTh
-                            [sorter]="categorySorter"
-                        >
-                            Категория
-                        </th>
-                        <th
-                            *tuiHead="'price'"
-                            tuiTh
-                            class="lg:w-20"
-                        >
-                            Цена
-                        </th>
-                        <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+            <!-- *tuiLet="filterServices | tuiTableSort as sortedFilteredServices" -->
+                <table
+                    class="w-full h-full tui-table"
+                    tuiTable
+                    [columns]="columns"
+                    *ngIf="filterServices.length !== 0"
+                >
+                    <thead #header>
+                        <tr tuiThGroup>
                             <th
-                                *tuiHead="'actions'"
+                                *tuiHead="'name'"
                                 tuiTh
-                                class="lg:w-52"
                                 [sorter]="null"
                             >
-                                Действия
+                                Наименование
                             </th>
-                        </ng-container>
-                    </tr>
-                </thead>
-                <tbody
-                    *tuiLet="filterServices | tuiTableSort as sortedFilteredServices"
-                    tuiTbody
-                    [data]="sortedFilteredServices"
-                    
-                >
-                    <tr
-                        *ngFor="let service of sortedFilteredServices; let index = index"
-                        tuiTr
-                        [ngClass]="editedService.id === service.id ? 'service-table__edit-select' : ''"
-                    >
-                        <td
-                            *tuiCell="'name'"
-                            tuiTd
-                            class="edit"
-                        >
-                            <p *ngIf="editedService.id !== service.id">
-                                {{ service.name }}
-                            </p >
-                            <tui-input
-                                *ngIf="editedService.id === service.id"
-                                [ngModel] = "editedService.name"
-                                (ngModelChange)="onValueChange($event, 'name')"
+                            <th
+                                *tuiHead="'typeName'"
+                                tuiTh
+                                [sorter]="categorySorter"
+                                class="lg:w-64"
                             >
-                            </tui-input>
-                        </td>
-                        <td
-                            *tuiCell="'typeName'"
-                            tuiTd
+                                Категория
+                            </th>
+                            <th
+                                *tuiHead="'price'"
+                                tuiTh
+                                class="lg:w-20"
+                            >
+                                Цена
+                            </th>
+                            <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                                <th
+                                    *tuiHead="'actions'"
+                                    tuiTh
+                                    class="lg:w-52"
+                                    [sorter]="null"
+                                >
+                                    Действия
+                                </th>
+                            </ng-container>
+                        </tr>
+                    </thead>
+                    <tbody
+                        tuiTbody                        
+                    >
+                        <tr
+                            #container
+                            *ngFor="let service of scroll.viewPortItems; let index = index"
+                            tuiTr
+                            [ngClass]="editedService.id === service.id ? 'service-table__edit-select' : ''"
                         >
-                            {{ service.type.typeName }}
-                        </td>
-                        <td
-                            *tuiCell="'price'"
-                            tuiTd
-                            class="edit"
-                            [ngClass]="editedService.id === service.id ? 'shadow-inner' : ''"
-                        >
-                        <!-- <tui-error [error]="computedError"></tui-error> -->
-                            <tui-input-number
-                                [ngModel] = "editedService.price"
-                                (ngModelChange)="onValueChange($event, 'price')"
-                                [min]="1"
-                                [max]="99999"
-                                [precision]="1"
-                                [tuiTextfieldPostfix] = "'₽'"
-                                *ngIf="editedService.id === service.id"
-                            > 
-                            
-                            </tui-input-number>
-                            <p *ngIf="editedService.id !== service.id">
-                                {{ service.price }} ₽
-                            </p>
-                        </td>
-                        <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
                             <td
-                                *tuiCell="'actions'"
-                                class="space-x-2"
+                                *tuiCell="'name'"
+                                tuiTd
+                                class="edit"
+                            >
+                                <p *ngIf="editedService.id !== service.id">
+                                    {{ service.name }}
+                                </p >
+                                <tui-input
+                                    *ngIf="editedService.id === service.id"
+                                    [ngModel] = "editedService.name"
+                                    (ngModelChange)="onValueChange($event, 'name')"
+                                >
+                                </tui-input>
+                            </td>
+                            <td
+                                *tuiCell="'typeName'"
                                 tuiTd
                             >
-                            
-                                    <button
-                                        *ngIf="editedService.id !== service.id"
-                                        tuiButton
-                                        appearance="outline"
-                                        size="s"
-                                        (click)="setEditableService(service)"
-                                        
-                                    >
-                                        Изменить
-                                    </button>
-                                    <button
-                                        *ngIf="editedService.id === service.id"
-                                        tuiButton
-                                        appearance="accent"
-                                        size="s"
-                                        (click)="saveEditService()"
-                                    >
-                                        Сохранить
-                                    </button>
-                                    <button
-                                        *ngIf="editedService.id === service.id"
-                                        tuiButton
-                                        appearance="outline"
-                                        size="s"
-                                        (click)="deleteEditService()"
-                                    >
-                                        Отмена
-                                    </button>
-                                    <button
-                                        *ngIf="editedService.id !== service.id"
-                                        tuiButton
-                                        appearance="secondary-destructive"
-                                        size="s"
-                                        (click)="deleteService(service, deleteConfirmDialog)"
-                                    >
-                                        Удалить
-                                    </button>
-                                
+                                {{ service.type.typeName }}
                             </td>
-                        </ng-container>
-                    </tr>
-                </tbody>
-            </table>
+                            <td
+                                *tuiCell="'price'"
+                                tuiTd
+                                class="edit"
+                                [ngClass]="editedService.id === service.id ? 'shadow-inner' : ''"
+                            >
+                            <!-- <tui-error [error]="computedError"></tui-error> -->
+                                <tui-input-number
+                                    [ngModel] = "editedService.price"
+                                    (ngModelChange)="onValueChange($event, 'price')"
+                                    [min]="1"
+                                    [max]="99999"
+                                    [precision]="1"
+                                    [tuiTextfieldPostfix] = "'₽'"
+                                    *ngIf="editedService.id === service.id"
+                                > 
+                                
+                                </tui-input-number>
+                                <p *ngIf="editedService.id !== service.id">
+                                    {{ service.price }} ₽
+                                </p>
+                            </td>
+                            <ng-container *disableForRole="['DOCTOR', 'MANAGER']">
+                                <td
+                                    *tuiCell="'actions'"
+                                    class="space-x-2"
+                                    tuiTd
+                                >
+                                
+                                        <button
+                                            *ngIf="editedService.id !== service.id"
+                                            tuiButton
+                                            appearance="outline"
+                                            size="s"
+                                            (click)="setEditableService(service)"
+                                            
+                                        >
+                                            Изменить
+                                        </button>
+                                        <button
+                                            *ngIf="editedService.id === service.id"
+                                            tuiButton
+                                            appearance="accent"
+                                            size="s"
+                                            (click)="saveEditService()"
+                                        >
+                                            Сохранить
+                                        </button>
+                                        <button
+                                            *ngIf="editedService.id === service.id"
+                                            tuiButton
+                                            appearance="outline"
+                                            size="s"
+                                            (click)="deleteEditService()"
+                                        >
+                                            Отмена
+                                        </button>
+                                        <button
+                                            *ngIf="editedService.id !== service.id"
+                                            tuiButton
+                                            appearance="secondary-destructive"
+                                            size="s"
+                                            (click)="deleteService(service, deleteConfirmDialog)"
+                                        >
+                                            Удалить
+                                        </button>
+                                    
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </tbody>
+                </table>
+            </virtual-scroller>
             
             <h3 
-                *ngIf="filterServices.length === 0"
+                *ngIf="filterServices.length === 0 && !loading"
                 class="text-xl font-bold text-center text-red-600"
             >
-                Не удалось найти услугу!
+                Не удалось найти услугу
             </h3>
         </tui-loader>
         

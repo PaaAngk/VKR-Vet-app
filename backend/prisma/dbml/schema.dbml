@@ -155,7 +155,7 @@ Table ServiceList {
   receptionId Int [not null]
   Service Service [not null]
   serviceId Int [not null]
-  quantity Int [not null]
+  quantity Float [not null]
 
   indexes {
     (receptionId, serviceId) [pk]

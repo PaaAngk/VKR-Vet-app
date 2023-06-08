@@ -171,7 +171,7 @@ model ServiceList {
   Service     Service   @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   serviceId   Int
 
-  quantity Int
+  quantity Float
 
   @@id([receptionId, serviceId])
 }

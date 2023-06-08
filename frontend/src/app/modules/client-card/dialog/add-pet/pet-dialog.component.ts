@@ -25,7 +25,19 @@ export function fullNameValidator(field: AbstractControl): Validators | null {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PetDialogComponent {
-    petsKind = ["Кошка", "Собака", "Жираф"];
+    petsKind = [
+        "Кошка", 
+        "Собака",
+        'Коза',
+        'Кролик',
+        'Крыса',
+        'Лошадь',
+        'Птица',
+        'Свинья',
+        'Хомяк',
+        'Хорек',
+        'Экзотика'
+    ];
     petsNutrition = ["Промышленный корм", "Натуральный корм", "Смешанный корм"];
     petId: number = -1;
 

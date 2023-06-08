@@ -281,12 +281,185 @@ export const UZI_EKHOForm: DynamicFilterBase<string|string[]|number> =
     ]
 };
 
+export const MochaForm: DynamicFilterBase<string|string[]|number> = 
+{
+    title: "Анализ мочи",
+    dynamicFilterInputs: [
+        new CountboxDynamicFilter({
+            key: 'Lejkocity',
+            label: 'Лейкоциты',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Ketonovye',
+            label: 'Кетоновые',
+            inputRangeParameters: inputCountBoxParams,
+            options:["Отрицат.", "Положит."]
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Nitrit',
+            label: 'Нитрит',
+            inputRangeParameters: inputCountBoxParams,
+            options:["Отрицат.", "Положит."]
+        }),
+        new CountboxDynamicFilter({
+            key: 'Urobilinogen',
+            label: 'Уробилиноген',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'моль/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Bilirubin',
+            label: 'Билирубин',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new CountboxDynamicFilter({
+            key: 'Glyukoza',
+            label: 'Глюкоза',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'ммоль/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Protein',
+            label: 'Протеин',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'г/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Plotnost',
+            label: 'Плотность',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new CountboxDynamicFilter({
+            key: 'pH',
+            label: 'pH',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Krov',
+            label: 'Кровь',
+            inputRangeParameters: inputCountBoxParams,
+            options:["Отрицат.", "Положит."]
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Askorbin-kta',
+            label: 'Аскорбин к-та',
+            inputRangeParameters: inputCountBoxParams,
+            options:["Отрицат.", "Положит."]
+        }),
+        new CountboxDynamicFilter({
+            key: 'Mikroalbumin',
+            label: 'Микроальбумин',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мг/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Kreatinin',
+            label: 'Креатинин',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'ммоль/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Protein-kreatinin',
+            label: 'Протеин/креатинин',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мг/мг'
+        }),
+    ]
+};
+
+export const CoprogramForm: DynamicFilterBase<string|string[]|number> = 
+{
+    title: "Анализ кала",
+    dynamicFilterInputs: [
+        new CountboxDynamicFilter({
+            key: 'Lejkocity',
+            label: 'Лейкоциты',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Ketonovye',
+            label: 'Кетоновые',
+            inputRangeParameters: inputCountBoxParams,
+            options:["Отрицат.", "Положит."]
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Nitrit',
+            label: 'Нитрит',
+            inputRangeParameters: inputCountBoxParams,
+            options:["Отрицат.", "Положит."]
+        }),
+        new CountboxDynamicFilter({
+            key: 'Urobilinogen',
+            label: 'Уробилиноген',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'моль/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Bilirubin',
+            label: 'Билирубин',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new CountboxDynamicFilter({
+            key: 'Glyukoza',
+            label: 'Глюкоза',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'ммоль/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Protein',
+            label: 'Протеин',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'г/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Plotnost',
+            label: 'Плотность',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new CountboxDynamicFilter({
+            key: 'pH',
+            label: 'pH',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Krov',
+            label: 'Кровь',
+            inputRangeParameters: inputCountBoxParams,
+            options:["Отрицат.", "Положит."]
+        }),
+        new ComboboxDynamicFilter({
+            key: 'Askorbin-kta',
+            label: 'Аскорбин к-та',
+            inputRangeParameters: inputCountBoxParams,
+            options:["Отрицат.", "Положит."]
+        }),
+        new CountboxDynamicFilter({
+            key: 'Mikroalbumin',
+            label: 'Микроальбумин',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мг/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Kreatinin',
+            label: 'Креатинин',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'ммоль/л'
+        }),
+        new CountboxDynamicFilter({
+            key: 'Protein-kreatinin',
+            label: 'Протеин/креатинин',
+            inputRangeParameters: inputCountBoxParams,
+            postfix:'мг/мг'
+        }),
+    ]
+};
 
 export const AnalyzesList: AnalyzeForm[] = [
-    { name:'Биохимия', typeName: 'Biohimiya', form: Analiz_kroviForm },
     { name:'Общий анализ крови', typeName: 'Analiz_krovi', form: Analiz_kroviForm },
     { name:'Гистологическое заключение', typeName: 'Gistologicheskoe_zaklyuchenie', form: Analiz_kroviForm },
-    { name:'Анализ кала', typeName: 'Analiz_kala', form: Analiz_kroviForm },
+    { name:'Анализ кала', typeName: 'Coprogram', form: Analiz_kroviForm },
+    { name:'Анализ мочи', typeName: 'Mocha', form: MochaForm },
     { name:'Эхокардиография', typeName: 'UZI_EKHO', form: UZI_EKHOForm },
     { name:'Рентген', typeName: 'X-ray', form: null as unknown as DynamicFilterBase<any>},
     { name:'Файлы анализов', typeName: 'Files', form: null as unknown as DynamicFilterBase<any>},

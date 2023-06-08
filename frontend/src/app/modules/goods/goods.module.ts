@@ -11,6 +11,8 @@ import { TuiLetModule, TuiValidatorModule } from '@taiga-ui/cdk';
 import { AddGoodsComponent } from './add-good/add-good.component';
 import { GoodsService } from './goods.service';
 import { SharedModule } from 'src/app/shared';
+import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 
 @NgModule({
@@ -44,6 +46,9 @@ import { SharedModule } from 'src/app/shared';
     TuiGroupModule,
     TuiValidatorModule,
     TuiHintModule,
+
+    VirtualScrollerModule,
+    ScrollingModule,
   ],
   providers: [GoodsService]
 })

@@ -95,7 +95,8 @@ export class ClientComponent implements OnDestroy, OnInit{
 					.pipe(tuiWatch(this._changeDetectorRef), take(1))
 					.subscribe((clients: ClientConnection) => {
 						this.loadingPage = false;
-						this.endCursor = clients.nodes[clients.nodes.length - 1].id || null
+						if (clients.nodes.length > 0)
+							this.endCursor = clients.nodes[clients.nodes.length - 1].id || null;
 					});
 				this.router.navigate([], 
 				{

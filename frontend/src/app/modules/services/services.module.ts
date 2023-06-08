@@ -11,6 +11,7 @@ import { TuiLetModule } from '@taiga-ui/cdk';
 import { AddServiceComponent } from './add-service/add-service.component';
 import { DeleteConfirmComponent } from 'src/app/shared/components/dialog/delete-confirm/delete-confirm.component';
 import { SharedModule } from 'src/app/shared';
+import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
 
 
 @NgModule({
@@ -42,6 +43,8 @@ import { SharedModule } from 'src/app/shared';
     TuiComboBoxModule,
     TuiFilterByInputPipeModule,
     TuiStringifyContentPipeModule,
+
+    VirtualScrollerModule,
   ]
 })
 export class ServiceModule { }

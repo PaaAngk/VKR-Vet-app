@@ -243,14 +243,14 @@
                                         style="background-color: var(--tui-base-02) !important;"
                                     >
                                         <div>
-                                            <tui-input-count
+                                            <tui-input-number
                                                 [(ngModel)] = "service.quantity"
-                                                [step]="1"
-                                                [min]="1"
+                                                [min]="0"
                                                 [max]="50"
+                                                [precision]="1"
                                             >
                                                 Количество
-                                            </tui-input-count>
+                                            </tui-input-number>
                                         </div>
                                     </td>
                                     <td
@@ -361,10 +361,10 @@
                                         style="background-color: var(--tui-base-02) !important;"
                                     >
                                         <tui-input-number
-                                            [(ngModel)] = "goods.quantity"
-                                            [min]="0.1"
+                                            [(ngModel)] = "goods.allQuantity < 1? goods.allQuantity : goods.quantity"
+                                            [min]="0.01"
                                             [max]="goods.allQuantity"
-                                            [precision]="1"
+                                            [precision]="2"
                                             [tuiTextfieldPostfix] = "goods.measure"
                                         >
                                             Количество

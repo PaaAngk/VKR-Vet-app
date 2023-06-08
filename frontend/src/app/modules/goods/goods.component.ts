@@ -53,12 +53,15 @@ export class GoodsComponent implements OnDestroy{
     ) {
 		// Getting data 
 		this.loading = true;
+		this._changeDetectorRef.markForCheck()
 		this.goodsService.getGoods$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
-		.subscribe((goods: Goods[]) => {	
-			this.loading = false;
-			this.goods = goods;
-			this.filteredGoods = this.setFilteredGoods(this.searchForm.value['search']);
+		.subscribe((goods: Goods[]) => {
+			if(goods.length>0){
+				this.goods = goods;
+				this.filteredGoods = this.setFilteredGoods(this.searchForm.value['search']);
+				this.loading = false;
+			}
 		});
 
 		this.searchForm.valueChanges

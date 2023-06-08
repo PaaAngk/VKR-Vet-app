@@ -69,7 +69,7 @@
                     <thead >
                         <tr class="tui-table__tr " tuiThGroup>
                             <th
-                                class="tui-table__th tui-table__th_font-size_l"
+                                class="tui-table__th tui-table__th_font-size_l "
                                 *tuiHead="'fullName'"
                                 tuiTh
                                 [sorter]="null"
@@ -104,11 +104,11 @@
                         <tr
                             *ngFor="let client of scroll.viewPortItems; trackBy: trackByFunction"
                             tuiTr
-                            class="tui-table__tr h-10"
+                            class="tui-table__tr h-10 "
                         >
                             <td
                                 *tuiCell="'fullName'"
-                                class="tui-table__td tui-table__td_align_center w-80"
+                                class="tui-table__td tui-table__td_align_center "
                                 tuiTd
                             >
                                 {{ client.fullName }}
@@ -118,7 +118,7 @@
                                 class="tui-table__td tui-table__td_align_center w-36"
                                 tuiTd
                             >
-                                {{ client.telephoneNumber | tuiFormatPhone }}
+                                {{ client.telephoneNumber === 'Нет данных' ? client.telephoneNumber: client.telephoneNumber | tuiFormatPhone}}
                             </td>
                             <td
                                 *tuiCell="'pets'"

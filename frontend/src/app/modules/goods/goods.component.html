@@ -33,211 +33,221 @@
         <tui-loader 
             [showLoader]="loading"
             [overlay]="true"
-            class="flex flex-auto overflow-auto" 
-            [ngStyle]="{'max-height':'70vh'}"
+            class="h-full overflow-y-auto" 
+            [ngStyle]="{'max-height':'75vh','min-height':'10vh'}"
+            *tuiLet="filteredGoods  as sortedFilteredGoods" 
         >
-            <table
-                class="w-full pb-2"
-                tuiTable
-                [columns]="columns"
+        <!-- | tuiTableSort -->
+            <virtual-scroller 
+                #scroll 
+                [items]="sortedFilteredGoods"
                 *ngIf="filteredGoods.length !== 0"
+                class="w-full tuiScrollable"
+                [ngStyle]="{'min-height':' 70vh'}"
             >
-                <thead>
-                    <tr tuiThGroup>
-                        <th
-                            *tuiHead="'name'"
-                            tuiTh
-                            [sorter]="null"
-                        >
-                            Наименование
-                        </th>
-                        <th
-                            *tuiHead="'categoryName'"
-                            tuiTh
-                            [sorter]="categorySorter"
-                        >
-                            Группа
-                        </th>
-                        <th
-                            *tuiHead="'quantity'"
-                            tuiTh
-                            class="lg:w-20"
-                        >
-                            Остаток
-                        </th>       
-                        <th
-                            *tuiHead="'price'"
-                            tuiTh
-                            class="lg:w-20"
-                        >
-                            Цена
-                        </th>
-                        <ng-container *disableForRole="['DOCTOR']">
+                <table
+                    class="w-full h-full tui-table"
+                    tuiTable
+                    [columns]="columns"
+                    
+                >
+                    <thead #header>
+                        <tr tuiThGroup>
                             <th
-                                *tuiHead="'actions'"
+                                *tuiHead="'name'"
                                 tuiTh
-                                class="lg:w-64"
                                 [sorter]="null"
                             >
-                                Действия
+                                Наименование
                             </th>
-                        </ng-container>
-                    </tr>
-                </thead>
-                <tbody
-                    *tuiLet="filteredGoods | tuiTableSort as sortedFilteredGoods"
-                    tuiTbody
-                    [data]="sortedFilteredGoods"
-                >
-                    <tr
-                        *ngFor="let goods of sortedFilteredGoods; let index = index"
-                        tuiTr
-                        [ngClass]="editedGoods.id === goods.id ? 'service-table__edit-select' : ''"
-                    >
-                        <td
-                            *tuiCell="'name'"
-                            tuiTd
-                            class="edit"
-                        >
-                            <p *ngIf="editedGoods.id !== goods.id">
-                                {{ goods.name }}
-                            </p >
-                            <tui-input
-                                *ngIf="editedGoods.id === goods.id"
-                                [ngModel] = "editedGoods.name"
-                                (ngModelChange)="onValueChange($event, 'name')"
-                                [tuiValidator]="stringValue"
+                            <th
+                                *tuiHead="'categoryName'"
+                                tuiTh
+                                [sorter]="categorySorter"
+                                class="lg:w-56"
                             >
-                            </tui-input>
-                        </td>
-                        <td
-                            *tuiCell="'categoryName'"
-                            tuiTd
+                                Группа
+                            </th>
+                            <th
+                                *tuiHead="'quantity'"
+                                tuiTh
+                                class="lg:w-20"
+                            >
+                                Остаток
+                            </th>       
+                            <th
+                                *tuiHead="'price'"
+                                tuiTh
+                                class="lg:w-20"
+                            >
+                                Цена
+                            </th>
+                            <ng-container *disableForRole="['DOCTOR']">
+                                <th
+                                    *tuiHead="'actions'"
+                                    tuiTh
+                                    class="lg:w-64"
+                                    [sorter]="null"
+                                >
+                                    Действия
+                                </th>
+                            </ng-container>
+                        </tr>
+                    </thead>
+                    <tbody
+                        tuiTbody
+                        #container
+                    >
+                        <tr
+                            *ngFor="let goods of scroll.viewPortItems; let index = index"
+                            tuiTr
+                            [ngClass]="editedGoods.id === goods.id ? 'service-table__edit-select' : ''"
                         >
-                            {{ goods.category.categoryName }}
-                        </td>
-                        <td
-                            *tuiCell="'quantity'"
-                            tuiTd
-                            class="edit"
-                            [ngClass]="editedGoods.id === goods.id ? 'shadow-inner' : ''"
-                        >
-                            <tui-input-number
-                                [ngModel] = "editedGoods.quantity"
-                                (ngModelChange)="onValueChange($event, 'quantity')"
-                                [min]="0"
-                                [max]="99999"
-                                [precision]="1"
-                                [tuiTextfieldPostfix] = "goods.measure"
-                                *ngIf="editedGoods.id === goods.id"
-                                [tuiValidator]="notNullValidator"
-                            ></tui-input-number>
-
-                            <p *ngIf="editedGoods.id !== goods.id">
-                                {{ goods.quantity? goods.quantity : 0 }} {{goods.measure}}
-                            </p>
-                        </td>
-                        <td
-                            *tuiCell="'price'"
-                            tuiTd
-                            class="edit"
-                            [ngClass]="editedGoods.id === goods.id ? 'shadow-inner' : ''"
-                        >
-                            <tui-input-number
-                                [ngModel] = "editedGoods.price"
-                                (ngModelChange)="onValueChange($event, 'price')"
-                                [min]="0"
-                                [max]="99999"
-                                [precision]="1"
-                                [tuiTextfieldPostfix] = "'₽'"
-                                *ngIf="editedGoods.id === goods.id"
-                                [tuiValidator]="notNullValidator"
-                            > </tui-input-number>
-
-                            <p *ngIf="editedGoods.id !== goods.id">
-                                {{ goods.price }} ₽
-                            </p>
-                        </td>
-                        <ng-container *disableForRole="['DOCTOR']">
                             <td
-                                *tuiCell="'actions'"
+                                *tuiCell="'name'"
+                                tuiTd
+                                class="edit h-6 max-h-10"
+                            >
+                                <p *ngIf="editedGoods.id !== goods.id">
+                                    {{ goods.name }}
+                                </p >
+                                <tui-input
+                                    *ngIf="editedGoods.id === goods.id"
+                                    [ngModel] = "editedGoods.name"
+                                    (ngModelChange)="onValueChange($event, 'name')"
+                                    [tuiValidator]="stringValue"
+                                >
+                                </tui-input>
+                            </td>
+                            <td
+                                *tuiCell="'categoryName'"
                                 tuiTd
                             >
-                                <ng-container *disableForRole="['DOCTOR']">
-                                    <div 
-                                        *ngIf="editedGoods.id !== goods.id" 
-                                        class="space-x-2 flex flex-row"
-                                    >
-                                        <div
-                                            tuiGroup
-                                            class="group"
+                                {{ goods.category.categoryName }}
+                            </td>
+                            <td
+                                *tuiCell="'quantity'"
+                                tuiTd
+                                class="edit"
+                                [ngClass]="editedGoods.id === goods.id ? 'shadow-inner' : ''"
+                            >
+                                <tui-input-number
+                                    [ngModel] = "editedGoods.quantity"
+                                    (ngModelChange)="onValueChange($event, 'quantity')"
+                                    [min]="0"
+                                    [max]="99999"
+                                    [precision]="1"
+                                    [tuiTextfieldPostfix] = "goods.measure"
+                                    *ngIf="editedGoods.id === goods.id"
+                                    [tuiValidator]="notNullValidator"
+                                ></tui-input-number>
+
+                                <p *ngIf="editedGoods.id !== goods.id">
+                                    {{ goods.quantity? goods.quantity : 0 }} {{goods.measure}}
+                                </p>
+                            </td>
+                            <td
+                                *tuiCell="'price'"
+                                tuiTd
+                                class="edit"
+                                [ngClass]="editedGoods.id === goods.id ? 'shadow-inner' : ''"
+                            >
+                                <tui-input-number
+                                    [ngModel] = "editedGoods.price"
+                                    (ngModelChange)="onValueChange($event, 'price')"
+                                    [min]="0"
+                                    [max]="99999"
+                                    [precision]="1"
+                                    [tuiTextfieldPostfix] = "'₽'"
+                                    *ngIf="editedGoods.id === goods.id"
+                                    [tuiValidator]="notNullValidator"
+                                > </tui-input-number>
+
+                                <p *ngIf="editedGoods.id !== goods.id">
+                                    {{ goods.price }} ₽
+                                </p>
+                            </td>
+                            <ng-container *disableForRole="['DOCTOR']">
+                                <td
+                                    *tuiCell="'actions'"
+                                    tuiTd
+                                >
+                                    <ng-container *disableForRole="['DOCTOR']">
+                                        <div 
+                                            *ngIf="editedGoods.id !== goods.id" 
+                                            class="space-x-2 flex flex-row"
                                         >
-                                            <button
-                                                tuiButton
-                                                size="s"
-                                                (click)="editQuantity('Приход',editQuantityDialog,goods)"
+                                            <div
+                                                tuiGroup
+                                                class="group"
                                             >
-                                                Приход
+                                                <button
+                                                    tuiButton
+                                                    size="s"
+                                                    (click)="editQuantity('Приход',editQuantityDialog,goods)"
+                                                >
+                                                    Приход
+                                                </button>
+                                                <button
+                                                    tuiButton
+                                                    size="s"
+                                                    (click)="editQuantity('Списание',editQuantityDialog,goods)"
+                                                >
+                                                    Списание
+                                                </button>
+                                            </div>
+                                            <button
+                                                tuiIconButton
+                                                type="button"
+                                                appearance="outline"
+                                                size="s"
+                                                icon = "tuiIconEdit"
+                                                (click)="setEditableGoods(goods)"
+                                                [tuiHint]="'Изменить'"
+                                            >
                                             </button>
                                             <button
-                                                tuiButton
+                                                tuiIconButton
+                                                type="button"
+                                                appearance="secondary-destructive"
                                                 size="s"
-                                                (click)="editQuantity('Списание',editQuantityDialog,goods)"
+                                                icon="tuiIconTrash"
+                                                (click)="deleteGoods(goods, deleteConfirmDialog)"
+                                                [tuiHint]="'Удалить'"
                                             >
-                                                Списание
                                             </button>
                                         </div>
-                                        <button
-                                            tuiIconButton
-                                            type="button"
-                                            appearance="outline"
-                                            size="s"
-                                            icon = "tuiIconEdit"
-                                            (click)="setEditableGoods(goods)"
-                                            [tuiHint]="'Изменить'"
-                                        >
-                                        </button>
-                                        <button
-                                            tuiIconButton
-                                            type="button"
-                                            appearance="secondary-destructive"
-                                            size="s"
-                                            icon="tuiIconTrash"
-                                            (click)="deleteGoods(goods, deleteConfirmDialog)"
-                                            [tuiHint]="'Удалить'"
-                                        >
-                                        </button>
-                                    </div>
-                                    <div *ngIf="editedGoods.id === goods.id" class="space-x-2"> 
-                                        <button
-                                            tuiButton
-                                            appearance="accent"
-                                            size="s"
-                                            (click)="updateGood()"
-                                        >
-                                            Сохранить
-                                        </button>
+                                        <div *ngIf="editedGoods.id === goods.id" class="space-x-2"> 
+                                            <button
+                                                tuiButton
+                                                appearance="accent"
+                                                size="s"
+                                                (click)="updateGood()"
+                                            >
+                                                Сохранить
+                                            </button>
 
-                                        <button
-                                            tuiButton
-                                            appearance="outline"
-                                            size="s"
-                                            (click)="deleteEditableGoods()"
-                                        >
-                                            Отмена
-                                        </button>
-                                    </div>
-                                </ng-container>
-                            </td>
-                        </ng-container>
-                    </tr>
-                </tbody>
-            </table>
+                                            <button
+                                                tuiButton
+                                                appearance="outline"
+                                                size="s"
+                                                (click)="deleteEditableGoods()"
+                                            >
+                                                Отмена
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </tbody>
+                </table>
+            </virtual-scroller>
             <h3 
-                *ngIf="filteredGoods.length === 0"
+                *ngIf="filteredGoods.length === 0  && !loading"
                 class="text-xl font-bold text-center text-red-600"
             >
-                Не удалось найти товар!
+                Не удалось найти товар
             </h3>
         </tui-loader>    
     </div>

@@ -346,7 +346,7 @@ export class ClientCardService
 		.pipe(take(1))
 		.subscribe({
 			next : (data) => {
-                this._employeesList.next(data.data.allEmployees)
+                this._employeesList.next(data.data.allEmployees.filter(v => v.id != 0))
             },
 		});
     }

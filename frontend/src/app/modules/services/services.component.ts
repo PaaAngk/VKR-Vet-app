@@ -52,10 +52,12 @@ export class ServicesComponent implements OnDestroy{
 		this.loading = true;
 		this.servicesService.getServices$
 		.pipe(tuiWatch(this._changeDetectorRef), takeUntil(this._unsubscribeAll))
-		.subscribe((services: Service[]) => {	
-			this.loading = false;
-			this.services = services;
-			this.filterServices = this.setFilterServices(this.searchForm.value['search']);
+		.subscribe((services: Service[]) => {
+			if(services.length>0){
+				this.loading = false;
+				this.services = services;
+				this.filterServices = this.setFilterServices(this.searchForm.value['search']);
+			}
 		});
 
 		this.searchForm.valueChanges

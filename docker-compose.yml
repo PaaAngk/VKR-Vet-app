@@ -24,6 +24,15 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
 
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: "on-failure"
+    ports:
+      - 80:80
+
   # adminer:
   #   image: adminer
   #   restart: always

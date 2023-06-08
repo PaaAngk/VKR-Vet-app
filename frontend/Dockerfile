@@ -1,19 +1,12 @@
-FROM node:16-alpine AS builder
-
-WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
-
-RUN npm install --force
+FROM node:18.7.0-alpine as builder
+WORKDIR /app
+COPY ./package.json ./
+RUN npm i --force 
 COPY . .
 RUN npm run build
 
-### STAGE 2: Run ###
-FROM nginx:1.15.8-alpine
+FROM nginx:alpine
 
-COPY --from=builder /usr/src/app/dist/myapp/ /usr/share/nginx/html
-COPY --from=builder /usr/src/app/docker/nginx.conf /etc/nginx/conf.d/default.conf
-
+COPY --from=builder /app/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
-
-# EXPOSE 80
-# ENTRYPOINT ["nginx","-g","daemon off;"]

@@ -176,6 +176,9 @@ docker cp backup.sql postgres:/backups.sql
 
 # then 
 docker exec -i postgres /usr/bin/pg_restore -U postgres -d postgres /backups.sql
+
+# For exec all comand in docker debian:
+docker exec -it nest-api /bin/bash
 ```
 
 ## Schema Development
