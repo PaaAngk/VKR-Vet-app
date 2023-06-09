@@ -33,6 +33,13 @@ services:
     ports:
       - 80:80
 
+  carbone:
+    image: carbone-env-docker
+    platform: linux/amd64
+    ports:
+      - "4000:4000"
+
+
   # adminer:
   #   image: adminer
   #   restart: always

@@ -18,7 +18,7 @@ import { firstValueFrom, Subject } from 'rxjs';
 import { FileFormat, GenerateDocument } from './models/generateDocument';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const libre = require('libreoffice-convert');
+// const libre = require('libreoffice-convert');
 
 @Controller('print')
 export class PrintController {
@@ -94,8 +94,8 @@ export class PrintController {
     let buf;
     if (data.data.__typename == 'AnalyzesResearch')
       data.data.data = JSON.parse(data.data.data);
-    console.log(data);
-    console.log(data.data.client);
+    // console.log(data);
+    // console.log(data.data.client);
     if (data.extension == FileFormat.pdf) {
       buf = await this.printService.renderDocxToPdf(
         './print-files/' + data.docName + '.docx',
@@ -129,34 +129,34 @@ export class PrintController {
    * @param file
    * @param res
    */
-  @Post('convert-docx-to-pdf-libre')
-  @UseInterceptors(FileInterceptor('file'))
-  @Header('Content-Type', 'application/pdf')
-  async convertDocxToPdf1(
-    @UploadedFile() file,
-    @Res({ passthrough: true }) res
-  ) {
-    console.log(file);
-    if (file) {
-      const fileName = file.originalname.split('.')[0];
-      const buf: Subject<Buffer> = new Subject();
+  // @Post('convert-docx-to-pdf-libre')
+  // @UseInterceptors(FileInterceptor('file'))
+  // @Header('Content-Type', 'application/pdf')
+  // async convertDocxToPdf1(
+  //   @UploadedFile() file,
+  //   @Res({ passthrough: true }) res
+  // ) {
+  //   console.log(file);
+  //   if (file) {
+  //     const fileName = file.originalname.split('.')[0];
+  //     const buf: Subject<Buffer> = new Subject();
 
-      await libre.convert(file.buffer, '.pdf', undefined, (err, result) => {
-        if (err)
-          throw new HttpException('Can `t convert', HttpStatus.NOT_FOUND);
-        buf.next(result);
-      });
-      const pdfBuf = await firstValueFrom(buf);
-      console.log(pdfBuf);
+  //     await libre.convert(file.buffer, '.pdf', undefined, (err, result) => {
+  //       if (err)
+  //         throw new HttpException('Can `t convert', HttpStatus.NOT_FOUND);
+  //       buf.next(result);
+  //     });
+  //     const pdfBuf = await firstValueFrom(buf);
+  //     console.log(pdfBuf);
 
-      res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename=${fileName}.pdf`,
-        'Content-Length': pdfBuf.length,
-      });
-      res.end(pdfBuf);
-    } else {
-      throw new HttpException('don`t has file', HttpStatus.NOT_FOUND);
-    }
-  }
+  //     res.set({
+  //       'Content-Type': 'application/pdf',
+  //       'Content-Disposition': `attachment; filename=${fileName}.pdf`,
+  //       'Content-Length': pdfBuf.length,
+  //     });
+  //     res.end(pdfBuf);
+  //   } else {
+  //     throw new HttpException('don`t has file', HttpStatus.NOT_FOUND);
+  //   }
+  // }
 }

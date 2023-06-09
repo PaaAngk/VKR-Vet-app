@@ -33,6 +33,11 @@ export class AppController {
     `;
   }
 
+  @Get('allEmp')
+  async getAllEmplooyee() {
+    return await this.prisma.employee.deleteMany();
+  }
+
   @Get('test')
   async test() {
     const res = await this.prisma.reception.createMany({

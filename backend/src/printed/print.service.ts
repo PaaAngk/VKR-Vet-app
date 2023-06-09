@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 // import { writeFile, readFile } from 'fs/promises';
 import { firstValueFrom, Subject } from 'rxjs';
-// import carbone from 'carbone';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const carbone = require('carbone');

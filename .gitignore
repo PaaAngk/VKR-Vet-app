@@ -3,3 +3,4 @@ backend/node_modules
 backend/dist
 backend/back.sql
 u1188134_crm.json
+*.sql
