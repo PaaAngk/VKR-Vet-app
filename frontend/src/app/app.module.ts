@@ -25,6 +25,7 @@ import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
+import { environment } from 'src/environments/environment';
 
 import localeRu from '@angular/common/locales/ru';
 import { SharedModule } from './shared';
@@ -78,7 +79,7 @@ registerLocaleData(localeRu);
     {
       provide: APOLLO_OPTIONS,
       useFactory(httpLink: HttpLink) {
-        const http = httpLink.create({ uri: 'http://localhost:3000/graphql' });
+        const http = httpLink.create({ uri: `${environment.api_url}/graphql` });
         const middleware = new ApolloLink((operation, forward) => {
           operation.setContext({
             headers: new HttpHeaders().set(
@@ -100,7 +101,7 @@ registerLocaleData(localeRu);
         //   }
         // })
         const wsLink = new GraphQLWsLink(createClient({
-          url: 'ws://localhost:3000/graphql',
+          url: `${environment.api_url}/graphql`,
           connectionParams: () => {
             const token = localStorage.getItem('token') || null;
             if (!token) {

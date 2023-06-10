@@ -1,18 +1,5 @@
 version: '3.8'
 services:
-  nest-api:
-    container_name: nest-api
-    build:
-      context: /backend
-      dockerfile: Dockerfile
-    restart: "on-failure"
-    ports:
-      - 3000:3000
-    depends_on:
-      - postgres
-    env_file:
-      - /backend/.env
-
   postgres:
     image: postgres:15
     container_name: postgres
@@ -20,9 +7,22 @@ services:
     ports:
       - 5432:5432
     env_file:
-      - /backend/.env
+      - backend/.env
     volumes:
       - postgres:/var/lib/postgresql/data
+
+  nest-api:
+    container_name: nest-api
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    restart: "on-failure"
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    env_file:
+      - backend/.env
 
   frontend:
     container_name: frontend
@@ -33,12 +33,16 @@ services:
     ports:
       - 80:80
 
-  carbone:
-    image: carbone-env-docker
-    platform: linux/amd64
-    ports:
-      - "4000:4000"
-
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   networks:
+  #     - postgres
+  #   ports:
+  #     - "8000:80"
+  #   volumes:
+  #     - /data/pgadmin:/root/.pgadmin
+  #   env_file:
+  #     - backend/docker.env
 
   # adminer:
   #   image: adminer

@@ -1,4 +1,4 @@
-FROM node:16 AS builder
+FROM node:16.20-bullseye-slim AS builder
 
 
 # RUN cd /tmp && \
@@ -13,17 +13,6 @@ FROM node:16 AS builder
 #     apt-get clean && \
 #     rm -rf /var/lib/apt/lists/*
 
-
-WORKDIR /tmp
-
-RUN apt update && apt install -y libxinerama1 libfontconfig1 libdbus-glib-1-2 libcairo2 libcups2 libglu1-mesa libsm6 unzip && apt install ttf-mscorefonts-installer
-# Download LibreOffice
-RUN wget https://downloadarchive.documentfoundation.org/libreoffice/old/7.4.1.1/deb/x86_64/LibreOffice_7.4.1.1_Linux_x86-64_deb.tar.gz -O libo.tar.gz \
-    && tar -zxvf libo.tar.gz
-# Install LibreOffice
-WORKDIR /tmp/LibreOffice_7.4.1.1_Linux_x86-64_deb/DEBS
-RUN dpkg -i *.deb
-
 WORKDIR /app
 
 COPY package*.json ./
@@ -32,10 +21,10 @@ COPY prisma ./prisma/
 RUN npm install
 
 COPY . .
-
+# RUN npm ci --only=production && npm cache clean --force
 RUN npm run build
 
-FROM node:16
+FROM node:16.20-bullseye-slim
 
 WORKDIR /app
 
