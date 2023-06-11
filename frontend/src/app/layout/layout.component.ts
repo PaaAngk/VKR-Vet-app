@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/graphql/generated';
 import { UserService } from '../core';
 import { AuthService } from '../core/auth/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-layout',
@@ -18,8 +19,6 @@ export class LayoutComponent implements OnInit {
   today: number = Date.now();
 
   constructor(
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
     private userService: UserService,
     private cd: ChangeDetectorRef,
     private authService: AuthService,
@@ -42,5 +41,9 @@ export class LayoutComponent implements OnInit {
   logout() {
     this.authService.purgeAuth();
     location.reload();
+  }
+
+  getAdminPanel(){
+    location.replace(`${environment.api_url}/admin`)
   }
 }

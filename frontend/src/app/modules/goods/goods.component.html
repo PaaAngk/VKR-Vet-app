@@ -57,6 +57,7 @@
                                 *tuiHead="'name'"
                                 tuiTh
                                 [sorter]="null"
+                                [sorter]="categorySorter"
                             >
                                 Наименование
                             </th>
@@ -71,6 +72,7 @@
                             <th
                                 *tuiHead="'quantity'"
                                 tuiTh
+                                [sorter]="categorySorter"
                                 class="lg:w-20"
                             >
                                 Остаток
@@ -79,6 +81,7 @@
                                 *tuiHead="'price'"
                                 tuiTh
                                 class="lg:w-20"
+                                [sorter]="categorySorter"
                             >
                                 Цена
                             </th>

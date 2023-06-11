@@ -434,7 +434,7 @@ export class DocumentGenerateService
             this.paragraphWithText('ИНН 380103180995, ОГРНИП 321385000040130', textSize),
             
             new Paragraph({
-                text: "Лист назначений от " + TuiDay.currentLocal(),
+                text: "Выписной эпикриз от " + TuiDay.currentLocal(),
                 alignment:AlignmentType.CENTER,
                 heading: HeadingLevel.HEADING_1,
                 spacing:{before:200, after:200}
@@ -460,7 +460,7 @@ export class DocumentGenerateService
 
             new Paragraph({
                 spacing:{before:150},
-                text: "Выписной эпикриз:",
+                text: "Рекомендации:",
                 heading: HeadingLevel.HEADING_2,
             }),
 

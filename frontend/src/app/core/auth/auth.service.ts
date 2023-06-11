@@ -4,8 +4,8 @@ import { map, take } from 'rxjs/operators';
 import { JwtService } from 'src/app/core/services';
 import { AuthUser } from 'src/app/core/models/auth-user';
 import { UserService } from 'src/app/core/services/user/user.service';
-import { Apollo } from 'apollo-angular';
 import { CurrentUserProfileGQL, LoginGQL, LoginInput, User } from 'src/graphql/generated';
+import { Router } from '@angular/router';
 
 
 @Injectable()
@@ -17,11 +17,9 @@ export class AuthService
     constructor (
       private userService: UserService,
       private jwtService: JwtService,
-
-	  //Apollo
-	  private apollo: Apollo,
 	  private currentUserProfileGQL: CurrentUserProfileGQL,
 	  private loginGQL:LoginGQL,
+	  private router: Router,
     ) {}
   
     // Verify JWT in localstorage with server & load user's info.
@@ -53,6 +51,7 @@ export class AuthService
 				this.userService.currentUserSubject.next(userSub);
 				// Set isAuthenticated to true
 				this.isAuthenticatedSubject.next(true);
+				this.router.navigateByUrl('/scheduler')
 			}
 		});
       

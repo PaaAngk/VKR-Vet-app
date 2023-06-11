@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import {TuiAlertService, TuiDialogContext, TuiDialogService, TuiNotification} from '@taiga-ui/core';
 import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
@@ -53,6 +53,8 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
     loading = false;
 
     readonly search$ = new Subject<string | null>();
+
+    clientsSearch: any;
  
     // ClientView for stringyfy choisen value in dropdown.
     readonly items$: Observable<readonly ClientView[] | null> = this.search$.pipe(
@@ -104,6 +106,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         private workScheduleService: WorkScheduleService,
         private schedulerService: SchedulerService,
         private clientCardService: ClientCardService,
+        public _changeDetectorRef: ChangeDetectorRef,
     ) {
     }
 
@@ -162,6 +165,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         })
 
         this.getAvailableEmployees();
+        this.items$.subscribe(data => { console.log(data), this.clientsSearch = data})
     }
     
     ngOnDestroy(): void {

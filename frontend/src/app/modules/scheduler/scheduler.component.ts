@@ -50,9 +50,10 @@ export class SchedulerComponent implements OnDestroy{
 		  center: 'title',
 		  right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
 		},
+		dayMaxEvents: true,
 		views: {
 			timeGrid: {
-				eventMaxStack : 2,
+				eventMaxStack : 3,
 			},
 		},
 		navLinks: true,
@@ -63,7 +64,6 @@ export class SchedulerComponent implements OnDestroy{
 		selectMirror: true,
 		locale: ruLocale,
 		timeZone: 'local',
-		dayMaxEvents: true,
 		allDaySlot:false,
 		stickyHeaderDates:true,
 		slotEventOverlap: true,

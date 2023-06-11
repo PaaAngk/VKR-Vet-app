@@ -125,13 +125,14 @@
             Клиент
             <input
                 tuiTextfield
-                placeholder="Введите ФИО"
+                placeholder="Введите ФИО или номер"
                 (input)="onSearchChange(extractValueFromEvent($event))"
             />
             <tui-data-list-wrapper
                 *tuiDataList
-                [items]="items$ | async "
+                [items]="items$ | async"
                 [itemContent]="content"
+
             ></tui-data-list-wrapper>
         </tui-combo-box>
         <tui-error

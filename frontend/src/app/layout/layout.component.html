@@ -54,12 +54,23 @@
               </button>
           </nav>  
           <div>
+            <button
+              tuiButton
+              type="button"
+              class="ml-1 mb-2"
+              appearance="outline"
+              size="s"
+              (click)="getAdminPanel()"
+              *ngIf="currentUser.role === 'ADMIN'"
+            >
+                <p class="text-base">Админ-панель</p> 
+            </button>
             <div class="text-lg pl-1 text-black text-center" [ngSwitch]="currentUser.role" >
               <ng-template ngSwitchCase="DOCTOR">Доктор</ng-template>
               <ng-template ngSwitchCase="ADMIN">Администратор</ng-template>
               <ng-template ngSwitchCase="MANAGER">Регистратура</ng-template>
             </div>
-            <p class="text-lg text-black text-center">{{ today | date:'d MMMM, H:mm' }}</p>
+            <p class="text-base text-black text-center">{{ today | date:'d MMMM, H:mm' }}</p>
             <hr class="bg-black">
             <button
               tuiButton

@@ -27,53 +27,53 @@ export default AdminModule.createAdminAsync({
     adminJsOptions: {
       rootPath: '/admin',
       resources: [
-        {
-          resource: { model: dmmf.modelMap.Client, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.Pet, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.Employee, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.AnalyzesResearch, client: prisma },
-        },
-        {
-          resource: {
-            model: dmmf.modelMap.TypeAnalyzesResearch,
-            client: prisma,
-          },
-        },
-        {
-          resource: { model: dmmf.modelMap.Reception, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.ReceptionPurpose, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.Goods, client: prisma },
-        },
+        // {
+        //   resource: { model: dmmf.modelMap.Client, client: prisma },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.Pet, client: prisma },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.AnalyzesResearch, client: prisma },
+        // },
+        // {
+        //   resource: {
+        //     model: dmmf.modelMap.TypeAnalyzesResearch,
+        //     client: prisma,
+        //   },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.Reception, client: prisma },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.ServiceList, client: prisma },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.ReceptionRecord, client: prisma },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.Schedule, client: prisma },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.Goods, client: prisma },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.GoodsList, client: prisma },
+        // },
+        // {
+        //   resource: { model: dmmf.modelMap.Service, client: prisma },
+        // },
         {
           resource: { model: dmmf.modelMap.GoodsCategory, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.GoodsList, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.Service, client: prisma },
         },
         {
           resource: { model: dmmf.modelMap.ServiceType, client: prisma },
         },
         {
-          resource: { model: dmmf.modelMap.ServiceList, client: prisma },
+          resource: { model: dmmf.modelMap.Employee, client: prisma },
         },
         {
-          resource: { model: dmmf.modelMap.ReceptionRecord, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.Schedule, client: prisma },
+          resource: { model: dmmf.modelMap.ReceptionPurpose, client: prisma },
         },
       ],
       locale: {
@@ -81,22 +81,54 @@ export default AdminModule.createAdminAsync({
         translations: {
           labels: {
             Employee: 'Сотрудники',
+            GoodsCategory: 'Категории товаров',
+            ServiceType: 'Категории услуг',
+            ReceptionPurpose: 'Цели визитов',
+          },
+          messages: {
+            welcomeOnBoard_title: 'Добро пожаловать в административную панель!',
+          },
+          actions: {
+            new: 'Добавить',
+            edit: 'Редактировать',
+            show: 'Показать',
+            delete: 'Удалить',
+          },
+          buttons: {
+            save: 'Сохранить',
+            confirmRemovalMany_1: 'Удалить {{count}} запись',
+            confirmRemovalMany_2: 'Удалить {{count}} записей',
           },
           resources: {
             Employee: {
               properties: {
                 fullName: 'ФИО',
                 role: 'Роль',
-              }
-            }
-          }
-        }
+              },
+            },
+            GoodsCategory: {
+              properties: {
+                categoryName: 'Категория',
+              },
+            },
+            ServiceType: {
+              properties: {
+                typeName: 'Тип услуги',
+              },
+            },
+            ReceptionPurpose: {
+              properties: {
+                purposeName: 'Цель визита',
+              },
+            },
+          },
+        },
       },
     },
     auth: {
       authenticate,
       cookieName: 'adminjs',
-      cookiePassword: 'secret12345',
+      cookiePassword: 'asdd',
     },
     sessionOptions: {
       resave: true,

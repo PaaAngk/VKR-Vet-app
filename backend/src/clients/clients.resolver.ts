@@ -155,6 +155,7 @@ export class ClientsResolver {
           },
         ],
       },
+      take: 100,
     });
   }
 
