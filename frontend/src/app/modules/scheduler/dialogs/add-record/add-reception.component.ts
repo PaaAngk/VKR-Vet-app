@@ -13,6 +13,7 @@ import { Client, CreateReceptionRecordInput, Employee, ReceptionPurpose, Recepti
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import { DialogClientComponent } from 'src/app/modules/client-card/dialog/client-dialog/client-dialog.component';
 import { WorkScheduleService } from 'src/app/modules/work-schedule/work-schedule.service';
+import { petsKind } from 'src/app/modules/client-card/petsKind';
 
 class ClientView{
     constructor(
@@ -34,7 +35,7 @@ class ClientView{
 })
 export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-    petsKind = ["Кошка", "Собака", "Жираф"];
+    petsKind = petsKind;
     dateRange?: BetweenDateInput;
     workTimes = tuiCreateTimePeriods(10, 20);
     workTimesEnd = tuiCreateTimePeriods(10, 20);
@@ -58,7 +59,7 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         debounceTime(500),
         filter(value => value !== null),
         switchMap(search =>
-            this.clientCardService.searchClients(search).pipe(
+            this.clientCardService.searchClients(search?.trim()).pipe(
                 map(item => item?.map((i: Client) =>     
                     new ClientView(
                         i.fullName,
@@ -67,15 +68,15 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
                         i.address||"")
                 )),
                 startWith<ClientView[]>(null),
-                ),
+            ),
         ),
-        startWith(null),
+        startWith([]),
     );
 
     private readonly dialogAddClient = this.dialogService.open<Client>(
         new PolymorpheusComponent(DialogClientComponent, this.injector),
         {
-			data: "add",
+			data: "addSchedule",
             dismissible: false,
             label: `Добавление клиента`,
         },
@@ -113,7 +114,6 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         .subscribe((data) => {
             if (data){
                 this.dateRange = {dateEnd:data.dateTimeEnd,dateStart:data.dateTimeStart};
-                console.log(data)
                 if(this.context.data == 'add'){
                     this.addReceptionRecordForm.patchValue({
                         startTime: TuiTime.fromLocalNativeDate(data.dateTimeStart) || null,
@@ -156,7 +156,6 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
         this.addReceptionRecordForm.valueChanges
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe((data: any) => {
-            console.log(data)
             if (data.startTime){
                 this.updateWorkTimeEnd(data.startTime)
             }

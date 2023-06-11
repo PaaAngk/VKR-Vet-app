@@ -62,11 +62,12 @@ export class DialogClientComponent {
 
     submit(): void {
         if (this.searchForm.status == "VALID" ){
-            if(this.context.data == 'add'){
+            if(this.context.data === 'add' || this.context.data === 'addSchedule'){
                 this.clientCardService.createClient(this.searchForm.value as CreateClientInput).subscribe({
                     next: (data ) => {
                         this.alertService.open("", {status: TuiNotification.Success, label:"Клиент успешно добавлен!"}).subscribe();
-                        this.router.navigateByUrl(`/client-card/client/${data.id}`)
+                        if( this.context.data !== 'addSchedule')
+                            this.router.navigateByUrl(`/client-card/client/${data.id}`);
                         this.context.completeWith(data); 
                     },
                     error: (error) => {

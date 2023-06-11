@@ -73,7 +73,7 @@ export class AnalyzesViewComponent implements OnDestroy, OnInit {
 					const parcedData = JSON.parse(data.analyzesResearch.data || '');
 					this.currentAnalyze = structuredClone(this.analyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeForm;
 					this.petId = data.analyzesResearch.pet?.id || -1
-					if (data.analyzesResearch.type?.id != 5 && data.analyzesResearch.type?.id != 7) this.isFilesAnalyze = false;
+					if (data.analyzesResearch.type?.id != 5 && data.analyzesResearch.type?.id != 8) this.isFilesAnalyze = false;
 					else this.isFilesAnalyze = true;
 					
 					//if not file

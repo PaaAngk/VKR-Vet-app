@@ -152,7 +152,7 @@ export class ClientComponent implements OnDestroy, OnInit{
 			.pipe(tuiWatch(this._changeDetectorRef), take(1))
 			.subscribe({
 				next: (clients: ClientConnection) =>{
-					this.isEndFetch = clients.totalCount-1 === this.clients.length
+					this.isEndFetch = clients.totalCount === this.clients.length
 					if (!this.isEndFetch) {
 						this.endCursor = clients.nodes[clients.nodes.length - 1].id;
 					}

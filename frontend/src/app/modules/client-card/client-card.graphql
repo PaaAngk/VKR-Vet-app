@@ -1,14 +1,10 @@
 # ---------------------------------- Client ---------------------------------
 
-query GetClient($search:String!){
+query SearchClient($search:String!){
   clientsWithSearch(search:$search){
     id
     fullName
     telephoneNumber
-    pets{
-      id
-      alias
-    }
   }
 }
 

@@ -19,7 +19,8 @@ export class AnalyzesResearchService {
     const analyzeData = JSON.parse(data);
     const dirPath = `Researchs/${analyzeData.petId}`;
     await mkdir(dirPath, { recursive: true });
-    const savedFiles = await this.saveFales(files, analyzeData.id, dirPath);
+    console.log(analyzeData);
+    const savedFiles = await this.saveFales(files, analyzeData.typeId, dirPath);
     return await this.prisma.analyzesResearch.create({
       data: {
         petId: analyzeData.petId,

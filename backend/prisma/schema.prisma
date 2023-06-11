@@ -1,8 +1,9 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      =  "postgresql://postgres:admin@localhost:5432/postgres?schema=public"
 }
-
+//env("DATABASE_URL") psql -Atx postgresql://postgres:admin@localhost:5432/postgres?schema=public
+//psql -h localhost -p 5432 -d vet -U root  ALTER SEQUENCE public."Goods_id_seq" RESTART;
 generator client {
   provider = "prisma-client-js"
   // previewFeatures = []

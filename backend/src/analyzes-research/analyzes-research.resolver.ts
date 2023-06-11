@@ -30,6 +30,7 @@ export class AnalyzesResearchResolver {
   async createAnalyzesResearch(
     @Args('data') data: CreateAnalyzesResearchInput
   ) {
+    console.log(data);
     const newAnalyzesResearch = this.prisma.analyzesResearch.create({
       data: {
         petId: data.petId,
@@ -58,7 +59,7 @@ export class AnalyzesResearchResolver {
         id: analyzesResearchId,
       },
     });
-    if (analyzesResearch.typeId === 5 || analyzesResearch.typeId === 7) {
+    if (analyzesResearch.typeId === 5 || analyzesResearch.typeId === 8) {
       this.analyzesResearchService.deleteFales(analyzesResearch);
     }
     return await this.prisma.analyzesResearch.delete({

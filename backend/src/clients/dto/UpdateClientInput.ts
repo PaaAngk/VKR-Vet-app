@@ -12,6 +12,5 @@ export class UpdateClientInput {
   telephoneNumber?: string;
 
   @Field()
-  @IsNotEmpty()
   address?: string;
 }

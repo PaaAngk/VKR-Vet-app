@@ -19,8 +19,8 @@ export class AuthResolver {
   @Mutation(() => Auth)
   async login(@Args('data') { login, password }: LoginInput) {
     const { accessToken, refreshToken } = await this.auth.login(
-      login.toLowerCase(),
-      password
+      login.toLowerCase().trim(),
+      password.trim()
     );
 
     return {

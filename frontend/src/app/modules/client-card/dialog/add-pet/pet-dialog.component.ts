@@ -8,6 +8,7 @@ import { take } from 'rxjs';
 import { Router } from '@angular/router';
 import { TuiDay } from '@taiga-ui/cdk';
 import { DatePipe } from '@angular/common';
+import { petsKind } from '../../petsKind';
 
 const latinChars = /^[а-яА-Я ]+$/;
  
@@ -25,21 +26,9 @@ export function fullNameValidator(field: AbstractControl): Validators | null {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PetDialogComponent {
-    petsKind = [
-        "Кошка", 
-        "Собака",
-        'Коза',
-        'Кролик',
-        'Крыса',
-        'Лошадь',
-        'Птица',
-        'Свинья',
-        'Хомяк',
-        'Хорек',
-        'Экзотика'
-    ];
     petsNutrition = ["Промышленный корм", "Натуральный корм", "Смешанный корм"];
     petId: number = -1;
+    petsKind = petsKind;
 
 	readonly addPetForm = new FormGroup({
         DOB: new FormControl(),

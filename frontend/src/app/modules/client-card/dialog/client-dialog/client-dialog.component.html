@@ -33,7 +33,7 @@
         (click)="submit()"
     >
         <p *ngIf="data === 'edit'">Изменить</p>
-        <p *ngIf="data === 'add'">Добавить</p>
+        <p *ngIf="data === 'add' || data === 'addSchedule'">Добавить</p>
     </button>
 
 </form>

@@ -776,12 +776,12 @@ export type DeleteServiceMutationVariables = Exact<{
 
 export type DeleteServiceMutation = { __typename?: 'Mutation', deleteService: { __typename?: 'Service', id: number, name?: string | null } };
 
-export type GetClientQueryVariables = Exact<{
+export type SearchClientQueryVariables = Exact<{
   search: Scalars['String'];
 }>;
 
 
-export type GetClientQuery = { __typename?: 'Query', clientsWithSearch: Array<{ __typename?: 'Client', id: number, fullName: string, telephoneNumber: string, pets?: Array<{ __typename?: 'Pet', id: number, alias: string }> | null }> };
+export type SearchClientQuery = { __typename?: 'Query', clientsWithSearch: Array<{ __typename?: 'Client', id: number, fullName: string, telephoneNumber: string }> };
 
 export type GetClientWithPaginationQueryVariables = Exact<{
   search: Scalars['String'];
@@ -1184,16 +1184,12 @@ export const DeleteServiceDocument = gql`
       super(apollo);
     }
   }
-export const GetClientDocument = gql`
-    query GetClient($search: String!) {
+export const SearchClientDocument = gql`
+    query SearchClient($search: String!) {
   clientsWithSearch(search: $search) {
     id
     fullName
     telephoneNumber
-    pets {
-      id
-      alias
-    }
   }
 }
     `;
@@ -1201,8 +1197,8 @@ export const GetClientDocument = gql`
   @Injectable({
     providedIn: 'root'
   })
-  export class GetClientGQL extends Apollo.Query<GetClientQuery, GetClientQueryVariables> {
-    override document = GetClientDocument;
+  export class SearchClientGQL extends Apollo.Query<SearchClientQuery, SearchClientQueryVariables> {
+    override document = SearchClientDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

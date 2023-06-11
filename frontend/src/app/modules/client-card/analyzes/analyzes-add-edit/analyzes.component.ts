@@ -85,7 +85,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 					this.analyzeData = data.analyzesResearch
 					const parcedData = JSON.parse(data.analyzesResearch.data || '');
 					this.currentAnalyzeType = structuredClone(AnalyzesList.find(obj => obj.id == data.analyzesResearch.type?.id)) as AnalyzeForm;
-					if (data.analyzesResearch.type?.id != 5 && data.analyzesResearch.type?.id != 7) 
+					if (data.analyzesResearch.type?.id != 5 && data.analyzesResearch.type?.id != 8) 
 						this.isFilesAnalyze = false;
 					else this.isFilesAnalyze = true;
 					//if not file
@@ -138,6 +138,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	}
 
 	createAnalyzes(){
+		
 		if(this.currentAnalyzeType.typeName !== 'Files' && this.currentAnalyzeType.typeName !== 'X-ray'){
 			this.clientCardService.createAnalyzesResearch(
 				{ 
@@ -204,6 +205,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		}
 	}
 
+	//add employee input when need
 	dataFromForm(event: any){
 		this.formData = event;
 		if (this.currentAnalyzeType.typeName === 'UZI_EKHO'){

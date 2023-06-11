@@ -55,7 +55,7 @@
             <virtual-scroller 
                 #scroll 
                 [items]="clients" 
-                class="h-3/4 w-full tui-zero-scrollbar"
+                class="h-3/4 w-full overflow-y-auto"
                 (vsEnd)="fetchMore($event)"
                 [enableUnequalChildrenSizes]="true"
                 (vsUpdate)="_changeDetectorRef.detectChanges()"

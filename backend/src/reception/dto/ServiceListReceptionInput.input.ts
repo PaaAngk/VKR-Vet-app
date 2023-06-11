@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, Float } from '@nestjs/graphql';
 
 @InputType()
 export class ServiceListReceptionInput {
@@ -7,7 +7,7 @@ export class ServiceListReceptionInput {
   @IsNotEmpty()
   serviceId: number;
 
-  @Field()
+  @Field(() => Float)
   @IsNotEmpty()
   quantity: number;
 }

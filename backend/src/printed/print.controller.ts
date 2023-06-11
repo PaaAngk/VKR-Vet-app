@@ -95,7 +95,6 @@ export class PrintController {
     if (data.data.__typename == 'AnalyzesResearch')
       data.data.data = JSON.parse(data.data.data);
     // console.log(data);
-    // console.log(data.data.client);
     if (data.extension == FileFormat.pdf) {
       buf = await this.printService.renderDocxToPdf(
         './print-files/' + data.docName + '.docx',

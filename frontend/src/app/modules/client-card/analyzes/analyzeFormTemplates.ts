@@ -286,12 +286,12 @@ export const MochaForm: DynamicFilterBase<string|string[]|number> =
     title: "Анализ мочи",
     dynamicFilterInputs: [
         new CountboxDynamicFilter({
-            key: 'Lejkocity',
+            key: 'Lejkoc',
             label: 'Лейкоциты',
             inputRangeParameters: inputCountBoxParams,
         }),
         new ComboboxDynamicFilter({
-            key: 'Ketonovye',
+            key: 'Ketono',
             label: 'Кетоновые',
             inputRangeParameters: inputCountBoxParams,
             options:["Отрицат.", "Положит."]
@@ -303,13 +303,13 @@ export const MochaForm: DynamicFilterBase<string|string[]|number> =
             options:["Отрицат.", "Положит."]
         }),
         new CountboxDynamicFilter({
-            key: 'Urobilinogen',
+            key: 'Urobilin',
             label: 'Уробилиноген',
             inputRangeParameters: inputCountBoxParams,
             postfix:'моль/л'
         }),
         new CountboxDynamicFilter({
-            key: 'Bilirubin',
+            key: 'Bilirub',
             label: 'Билирубин',
             inputRangeParameters: inputCountBoxParams,
         }),
@@ -342,25 +342,25 @@ export const MochaForm: DynamicFilterBase<string|string[]|number> =
             options:["Отрицат.", "Положит."]
         }),
         new ComboboxDynamicFilter({
-            key: 'Askorbin-kta',
+            key: 'Askorbin',
             label: 'Аскорбин к-та',
             inputRangeParameters: inputCountBoxParams,
             options:["Отрицат.", "Положит."]
         }),
         new CountboxDynamicFilter({
-            key: 'Mikroalbumin',
+            key: 'Mikroalb',
             label: 'Микроальбумин',
             inputRangeParameters: inputCountBoxParams,
             postfix:'мг/л'
         }),
         new CountboxDynamicFilter({
-            key: 'Kreatinin',
+            key: 'Kreatin',
             label: 'Креатинин',
             inputRangeParameters: inputCountBoxParams,
             postfix:'ммоль/л'
         }),
         new CountboxDynamicFilter({
-            key: 'Protein-kreatinin',
+            key: 'Prot-kreat',
             label: 'Протеин/креатинин',
             inputRangeParameters: inputCountBoxParams,
             postfix:'мг/мг'
@@ -457,8 +457,8 @@ export const CoprogramForm: DynamicFilterBase<string|string[]|number> =
 
 export const AnalyzesList: AnalyzeForm[] = [
     { name:'Общий анализ крови', typeName: 'Analiz_krovi', form: Analiz_kroviForm },
-    { name:'Гистологическое заключение', typeName: 'Gistologicheskoe_zaklyuchenie', form: Analiz_kroviForm },
-    { name:'Анализ кала', typeName: 'Coprogram', form: Analiz_kroviForm },
+    // { name:'Гистологическое заключение', typeName: 'Gistologicheskoe_zaklyuchenie', form: Analiz_kroviForm },
+    { name:'Анализ кала', typeName: 'Coprogram', form: CoprogramForm },
     { name:'Анализ мочи', typeName: 'Mocha', form: MochaForm },
     { name:'Эхокардиография', typeName: 'UZI_EKHO', form: UZI_EKHOForm },
     { name:'Рентген', typeName: 'X-ray', form: null as unknown as DynamicFilterBase<any>},

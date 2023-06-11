@@ -11,7 +11,7 @@
             ></button>
             <div class="flex-1">
                 <p class="text-base"><b>{{client.fullName}}</b> | <b>{{client.telephoneNumber | tuiFormatPhone}}</b><br> 
-                Адрес: {{client.address}}</p>
+                Адрес: {{client.address ? client.address : "Нет данных"}}</p>
             </div>
             <edit-delete-button
                 *disableForRole="['MANAGER', 'DOCTOR']"
@@ -43,15 +43,6 @@
                     class="ml-4 mr-2"
                 ></tui-svg>
                 Питомцы
-            </button>
-            <button
-                tuiTab
-            >
-                <tui-svg
-                    src="tuiIconFileLarge"
-                    class="mr-2"
-                ></tui-svg>
-                Документы
             </button>
         </tui-tabs>
 

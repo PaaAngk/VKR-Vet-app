@@ -4,3 +4,4 @@ backend/dist
 backend/back.sql
 u1188134_crm.json
 *.sql
+*.ipynb

@@ -101,10 +101,10 @@ export class ClientsResolver {
           },
         ],
       },
-      orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : null,
+      // orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : null,
       cursor: after === null ? undefined : { id: after },
       take: first,
-      skip: 1,
+      skip: after === null ? 0 : 1,
     });
     const count = await this.prisma.client.count({
       where: {

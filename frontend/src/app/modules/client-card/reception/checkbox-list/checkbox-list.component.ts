@@ -34,6 +34,9 @@ export class CheckboxListComponent<T extends Goods> {
 
     readonly stringify = ( items: T ): string => items.name;
 
+    constructor(){
+        console.log(this.items)
+    }
 
     onArrowDown<T>(list: TuiDataListComponent<T>, event: Event): void {
         list.onFocus(event, true);

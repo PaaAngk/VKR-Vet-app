@@ -66,7 +66,6 @@ export class WorkScheduleComponent implements OnInit, OnDestroy{
     }
 
   ngOnInit(): void {
-    console.log("1");
     this.currentUserRole = this.userService.getCurrentUser().role
   }
 
