@@ -10,8 +10,9 @@
                 class="basis-8 justify-self-start flex-none"
             ></button>
             <div class="flex-1">
-                <p class="text-base"><b>{{client.fullName}}</b> | <b>{{client.telephoneNumber | tuiFormatPhone}}</b><br> 
-                Адрес: {{client.address ? client.address : "Нет данных"}}</p>
+                <p class="text-base"><b>{{client.fullName}}</b> | <b>{{ client.telephoneNumber === 'Нет данных' ? client.telephoneNumber: client.telephoneNumber | tuiFormatPhone}}</b><br> 
+                Адрес: {{client.address  ? client.address : "Нет данных"}}</p>
+
             </div>
             <edit-delete-button
                 *disableForRole="['MANAGER', 'DOCTOR']"

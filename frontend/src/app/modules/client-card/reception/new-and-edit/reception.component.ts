@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { defaultEditorExtensions, TuiEditorTool, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-editor';
 import { TuiContextWithImplicit, TuiIdentityMatcher, TuiStringHandler, tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { GoodsListReceptionInput, ServiceListReceptionInput, Employee, ReceptionPurpose, CreateReceptionInput, GetReceptionGQL, Reception, UpdateReceptionInput, Goods } from 'src/graphql/generated';
 import { ClientCardService } from '../../client-card.service';
 import {TuiHostedDropdownComponent} from '@taiga-ui/core';
@@ -55,6 +55,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	purposeList : Array<ReceptionPurpose> = [];
 
 	servicesList : Array<any> = []; // any for work with universal component by her interface
+	servicesList$: Observable<Array<any>> = this.clientCardService.getServices$.pipe(takeUntil(this._unsubscribeAll));
 	selectedServices : SelectedService[] = [];
 	selectServiceInput : SelectedService[] = [];
 	goodsList : Array<any> = []; // any for work with universal component by her interface
@@ -88,13 +89,13 @@ export class ReceptionComponent implements OnDestroy, OnInit {
     ) {}
 
 	ngOnInit(): void {
-		this.clientCardService.getServiceTypes$
+		this.clientCardService.getServices$
 		.pipe(takeUntil(this._unsubscribeAll))
 		.subscribe(data => {
 			this.servicesList = data;
 		});
 
-		this.clientCardService.getGoodsCategories$
+		this.clientCardService.getGoods$
 		.pipe(takeUntil(this._unsubscribeAll))
 		.subscribe(data => {
 			this.goodsList = data;
@@ -224,7 +225,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		this.selectedGoods = this.selectedGoods.filter(item => goods.some(s => s.id == item.id));
 		const added_item: any[] = goods.filter(item => !this.selectedGoods.some(s => s.id == item.id));
 		if(added_item.length > 0){
-			this.selectedGoods.push( {...added_item[0], quantity : 1, allQuantity:added_item[0].quantity} );
+			this.selectedGoods.push( {...added_item[0], quantity : added_item[0].quantity < 1? added_item[0].quantity : 1, allQuantity:added_item[0].quantity} );
 		}
 		this._changeDetectorRef.detectChanges();
 	}
@@ -282,7 +283,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 	}
 
 	createReception(goodsListReceptionInput: GoodsListReceptionInput[], serviceListReceptionInput: ServiceListReceptionInput[], objectToSend:any){
-		console.log({ ...objectToSend, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId })
+		// console.log({ ...objectToSend, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId })
 		this.clientCardService.createReception(
 			{ ...objectToSend, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId } as CreateReceptionInput
 		)
@@ -298,14 +299,16 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 			},
 			error: (error)  => 
 			{
+				console.log(error)
 				this.alertService.open(
-					"Проверьте правильность введенных данных или перезагрузите страницу.", 
+					`${error} Проверьте введенные данные или перезагрузите страницу.`, 
 					{
 						status: TuiNotification.Error, 
 						label: "Невозможно добавить прием!",
-						autoClose: 5000,
+						autoClose: 8000,
 					}).subscribe()
-				console.log(error)
+				// if(error.errors[0].message == "Error in update quantity of goods"){
+				// }	
 			}
 		})
 		this.loading = false;

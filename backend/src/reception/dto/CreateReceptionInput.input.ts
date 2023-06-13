@@ -2,6 +2,7 @@ import {
   IsArray,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Max,
   Min,
@@ -25,9 +26,11 @@ export class CreateReceptionInput {
   purposeId: number;
 
   @IsString()
+  @IsOptional(null)
   clinicalSigns?: string;
 
   @IsString()
+  @IsOptional(null)
   anamnesis?: string;
 
   @IsString()

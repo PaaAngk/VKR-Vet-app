@@ -371,7 +371,7 @@ type Service {
 type ServiceList {
   Reception: Reception
   Service: Service
-  quantity: Int
+  quantity: Float
   receptionId: String
   service: Service!
   serviceId: Int

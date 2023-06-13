@@ -8,7 +8,11 @@ import {
   Mutation,
   Int,
 } from '@nestjs/graphql';
-import { ConflictException, UseGuards } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  UseGuards,
+} from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { ReceptionIdArgs } from './args/reception-id.args';
 import { Reception } from './models/reception.model';
@@ -34,6 +38,19 @@ export class ReceptionResolver {
   @Mutation(() => Reception)
   async createReception(@Args('data') data: CreateReceptionInput) {
     let newReception;
+    // Check of available goods quantity in warehouse and write current quant for reduse in db
+    const currentQuantArr: number[] = [];
+    console.log(data.goodsListReceptionInput);
+    for (const goods of data.goodsListReceptionInput) {
+      const currentQuant = await this.prisma.goods.findUnique({
+        where: { id: goods.goodsId },
+      });
+      currentQuantArr.push(currentQuant.quantity);
+      console.log(currentQuantArr);
+      if (currentQuant.quantity - goods.quantity < 0) {
+        throw new ForbiddenException('Недостаточно товара для списания.');
+      }
+    }
     try {
       newReception = await this.prisma.reception.create({
         data: {
@@ -49,7 +66,7 @@ export class ReceptionResolver {
         },
       });
     } catch {
-      throw new ConflictException('Error in create reception');
+      throw new ConflictException('Ошибка добавления приема');
     }
 
     if (data.goodsListReceptionInput.length > 0) {
@@ -58,12 +75,26 @@ export class ReceptionResolver {
         receptionId: newReception.id,
       }));
 
+      // reduse quatnity in warehouse
+      try {
+        data.goodsListReceptionInput.forEach(async (goods, i) => {
+          await this.prisma.goods.update({
+            where: { id: goods.goodsId },
+            data: {
+              quantity: currentQuantArr[i] - goods.quantity,
+            },
+          });
+        });
+      } catch {
+        throw new ForbiddenException('Ошибка в обновлении остатка товара');
+      }
+
       try {
         await this.prisma.goodsList.createMany({
           data: addInGoodsListInput,
         });
       } catch {
-        throw new ConflictException('Error in create goods list');
+        throw new ConflictException('Ошибка добавления списка товаров');
       }
     }
 
@@ -80,7 +111,7 @@ export class ReceptionResolver {
           data: addInServiceListInput,
         });
       } catch {
-        throw new ConflictException('Error in create service list');
+        throw new ConflictException('Ошибка добавления списка услуг');
       }
     }
     return newReception;

@@ -35,7 +35,7 @@ export class SchedulerComponent implements OnDestroy{
 	eventsList$: Observable<EventInput[] | null>; 
 
 	calendarOptions: CalendarOptions = {
-		slotMinTime: '10:00',
+		slotMinTime: '9:00',
     	slotMaxTime: '20:00',
 		plugins: [
 		  interactionPlugin,

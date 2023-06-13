@@ -73,7 +73,7 @@ Table TypeAnalyzesResearch {
 }
 
 Table Reception {
-  id Int [pk, increment, unique]
+  id Int [pk, increment]
   pet Pet [not null]
   petId Int [not null]
   Employee Employee [not null]

@@ -6,7 +6,7 @@ import { DMMFClass } from '@prisma/client/runtime';
 
 const DEFAULT_ADMIN = {
   email: 'admin@example.com',
-  password: 'artedc126',
+  password: 'test123',
 };
 
 const authenticate = async (email: string, password: string) => {
@@ -28,53 +28,17 @@ export default AdminModule.createAdminAsync({
       rootPath: '/admin',
       resources: [
         // {
-        //   resource: { model: dmmf.modelMap.Client, client: prisma },
+        //   resource: { model: dmmf.modelMap.GoodsCategory, client: prisma },
         // },
         // {
-        //   resource: { model: dmmf.modelMap.Pet, client: prisma },
+        //   resource: { model: dmmf.modelMap.ServiceType, client: prisma },
         // },
         // {
-        //   resource: { model: dmmf.modelMap.AnalyzesResearch, client: prisma },
+        //   resource: { model: dmmf.modelMap.Employee, client: prisma },
         // },
         // {
-        //   resource: {
-        //     model: dmmf.modelMap.TypeAnalyzesResearch,
-        //     client: prisma,
-        //   },
+        //   resource: { model: dmmf.modelMap.ReceptionPurpose, client: prisma },
         // },
-        // {
-        //   resource: { model: dmmf.modelMap.Reception, client: prisma },
-        // },
-        // {
-        //   resource: { model: dmmf.modelMap.ServiceList, client: prisma },
-        // },
-        // {
-        //   resource: { model: dmmf.modelMap.ReceptionRecord, client: prisma },
-        // },
-        // {
-        //   resource: { model: dmmf.modelMap.Schedule, client: prisma },
-        // },
-        // {
-        //   resource: { model: dmmf.modelMap.Goods, client: prisma },
-        // },
-        // {
-        //   resource: { model: dmmf.modelMap.GoodsList, client: prisma },
-        // },
-        // {
-        //   resource: { model: dmmf.modelMap.Service, client: prisma },
-        // },
-        {
-          resource: { model: dmmf.modelMap.GoodsCategory, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.ServiceType, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.Employee, client: prisma },
-        },
-        {
-          resource: { model: dmmf.modelMap.ReceptionPurpose, client: prisma },
-        },
       ],
       locale: {
         language: 'ru',

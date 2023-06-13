@@ -610,14 +610,14 @@ export type ServiceList = {
   __typename?: 'ServiceList';
   Reception?: Maybe<Reception>;
   Service?: Maybe<Service>;
-  quantity?: Maybe<Scalars['Int']>;
+  quantity?: Maybe<Scalars['Float']>;
   receptionId?: Maybe<Scalars['String']>;
   service: Service;
   serviceId?: Maybe<Scalars['Int']>;
 };
 
 export type ServiceListReceptionInput = {
-  quantity: Scalars['Int'];
+  quantity: Scalars['Float'];
   serviceId: Scalars['Int'];
 };
 
@@ -851,20 +851,20 @@ export type DeletePetMutationVariables = Exact<{
 
 export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'Pet', id: number } };
 
-export type GetAllServiceTypeWithServiceNameQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllServicesWithNameQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllServiceTypeWithServiceNameQuery = { __typename?: 'Query', allServiceType: Array<{ __typename?: 'ServiceType', id?: number | null, typeName?: string | null, service?: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null }> | null }> };
+export type GetAllServicesWithNameQuery = { __typename?: 'Query', allServices: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null }> };
 
 export type GetSurgeryListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSurgeryListQuery = { __typename?: 'Query', getSurgeryList: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', typeName?: string | null } }> };
 
-export type GetAllGoodsCategoryWithGoodsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllGoodsWithNamesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllGoodsCategoryWithGoodsQuery = { __typename?: 'Query', allGoodsCategory: Array<{ __typename?: 'GoodsCategory', categoryName?: string | null, goods?: Array<{ __typename?: 'Goods', id: number, name: string, price?: number | null, measure?: string | null, quantity?: number | null }> | null }> };
+export type GetAllGoodsWithNamesQuery = { __typename?: 'Query', allGoods: Array<{ __typename?: 'Goods', id: number, name: string, measure?: string | null, quantity?: number | null, price?: number | null }> };
 
 export type GetAllEmployeesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1473,16 +1473,12 @@ export const DeletePetDocument = gql`
       super(apollo);
     }
   }
-export const GetAllServiceTypeWithServiceNameDocument = gql`
-    query GetAllServiceTypeWithServiceName {
-  allServiceType {
+export const GetAllServicesWithNameDocument = gql`
+    query GetAllServicesWithName {
+  allServices {
     id
-    typeName
-    service {
-      id
-      name
-      price
-    }
+    name
+    price
   }
 }
     `;
@@ -1490,8 +1486,8 @@ export const GetAllServiceTypeWithServiceNameDocument = gql`
   @Injectable({
     providedIn: 'root'
   })
-  export class GetAllServiceTypeWithServiceNameGQL extends Apollo.Query<GetAllServiceTypeWithServiceNameQuery, GetAllServiceTypeWithServiceNameQueryVariables> {
-    override document = GetAllServiceTypeWithServiceNameDocument;
+  export class GetAllServicesWithNameGQL extends Apollo.Query<GetAllServicesWithNameQuery, GetAllServicesWithNameQueryVariables> {
+    override document = GetAllServicesWithNameDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);
@@ -1520,17 +1516,14 @@ export const GetSurgeryListDocument = gql`
       super(apollo);
     }
   }
-export const GetAllGoodsCategoryWithGoodsDocument = gql`
-    query GetAllGoodsCategoryWithGoods {
-  allGoodsCategory {
-    categoryName
-    goods {
-      id
-      name
-      price
-      measure
-      quantity
-    }
+export const GetAllGoodsWithNamesDocument = gql`
+    query GetAllGoodsWithNames {
+  allGoods {
+    id
+    name
+    measure
+    quantity
+    price
   }
 }
     `;
@@ -1538,8 +1531,8 @@ export const GetAllGoodsCategoryWithGoodsDocument = gql`
   @Injectable({
     providedIn: 'root'
   })
-  export class GetAllGoodsCategoryWithGoodsGQL extends Apollo.Query<GetAllGoodsCategoryWithGoodsQuery, GetAllGoodsCategoryWithGoodsQueryVariables> {
-    override document = GetAllGoodsCategoryWithGoodsDocument;
+  export class GetAllGoodsWithNamesGQL extends Apollo.Query<GetAllGoodsWithNamesQuery, GetAllGoodsWithNamesQueryVariables> {
+    override document = GetAllGoodsWithNamesDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

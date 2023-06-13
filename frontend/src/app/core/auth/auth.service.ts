@@ -51,7 +51,6 @@ export class AuthService
 				this.userService.currentUserSubject.next(userSub);
 				// Set isAuthenticated to true
 				this.isAuthenticatedSubject.next(true);
-				this.router.navigateByUrl('/scheduler')
 			}
 		});
       
@@ -82,6 +81,7 @@ export class AuthService
 				}
 				else{
 					this.setAuth(data.data?.login.accessToken);
+					this.router.navigateByUrl('/scheduler');
 				}
 				return data.data?.login.user;
 			}),

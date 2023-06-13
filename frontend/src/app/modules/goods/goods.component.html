@@ -139,14 +139,14 @@
                                     (ngModelChange)="onValueChange($event, 'quantity')"
                                     [min]="0"
                                     [max]="99999"
-                                    [precision]="1"
+                                    [precision]="2"
                                     [tuiTextfieldPostfix] = "goods.measure"
                                     *ngIf="editedGoods.id === goods.id"
                                     [tuiValidator]="notNullValidator"
                                 ></tui-input-number>
 
                                 <p *ngIf="editedGoods.id !== goods.id">
-                                    {{ goods.quantity? goods.quantity : 0 }} {{goods.measure}}
+                                    {{ goods.quantity? (goods.quantity | number) : 0 }} {{goods.measure}}
                                 </p>
                             </td>
                             <td

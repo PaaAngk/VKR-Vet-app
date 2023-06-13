@@ -66,7 +66,7 @@ export class AuthService {
   private generateRefreshToken(payload: { userId: number }): string {
     const securityConfig = this.configService.get<SecurityConfig>('security');
     return this.jwtService.sign(payload, {
-      secret: 'X0EkKrsH7mpnBpo9cv', //this.configService.get('JWT_REFRESH_SECRET'),
+      secret: this.configService.get('JWT_REFRESH_SECRET'), //this.configService.get('JWT_REFRESH_SECRET'),
       expiresIn: securityConfig.refreshIn,
     });
   }
@@ -74,7 +74,7 @@ export class AuthService {
   refreshToken(token: string) {
     try {
       const { userId } = this.jwtService.verify(token, {
-        secret: 'X0EkKrsH7mpnBpo9cv', //this.configService.get('JWT_REFRESH_SECRET'),
+        secret: this.configService.get('JWT_REFRESH_SECRET'),//this.configService.get('JWT_REFRESH_SECRET'),
       });
 
       return this.generateTokens({

@@ -5,6 +5,7 @@
     [tuiTextfieldLabelOutside]="true"
     [(value)]="value"
     (keydown.arrowDown.prevent)="onArrowDown(list, $event)"
+    [tuiTextfieldCleaner]="true"
 >
     Поиск
 </tui-primitive-textfield>
@@ -13,24 +14,37 @@
     #list
     emptyContent="Нет данных"
     (keydown)="onKeyDown($event.key, input.nativeFocusableElement)"
+    tuiMultiSelectGroup
 >
-    <ng-container *ngFor="let item of items">
-        <tui-opt-group
-            *tuiLet="item.items | tuiFilter : matcher : value as filtered"
-            [label]="item.typeName"
+    <virtual-scroller #scroll [items]="items | tuiFilter : matcher : value"  class="h-80 overflow-hidden">
+        <button
+            *ngFor="let item of scroll.viewPortItems; trackBy: trackByFn"
+            tuiOption
+            [value]="item"
+            class="overflow-hidden"
         >
-            <tui-opt-group
-                *ngIf="filtered.length"
-                tuiMultiSelectGroup
-            >
-                <button
-                    *ngFor="let item of filtered"
-                    tuiOption
-                    [value]="item"
-                >
-                    {{ item.name}} - {{ item.price }} ₽
-                </button>
-            </tui-opt-group>
-        </tui-opt-group>
-    </ng-container>
+            {{ item.name}} - {{ item.price }} ₽
+        </button>
+    </virtual-scroller>
 </tui-data-list>
+
+<!-- <ng-container *ngFor="let item of items">
+    <tui-opt-group
+        *tuiLet="item.items | tuiFilter : matcher : value as filtered"
+        [label]="item.typeName"
+    >
+        <tui-opt-group
+            *ngIf="filtered.length"
+            tuiMultiSelectGroup
+        >
+            <button
+                *ngFor="let item of filtered; trackBy: trackByFn"
+                tuiOption
+                [value]="item"
+            >
+                {{ item.name}} - {{ item.price }} ₽
+            </button>
+        </tui-opt-group>
+    </tui-opt-group>
+</ng-container> -->
+<!-- <virtual-scroller #scroll [items]="filtered" class="h-64"> -->

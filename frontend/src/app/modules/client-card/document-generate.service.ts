@@ -49,7 +49,6 @@ export class DocumentGenerateService
         private dataPipe: DatePipe,
     ) {}
 
-    //Генерация расписки на манипуляции, договора на стационар по данным клиента и договора на оказание платных услуг
     checkGenerateWord(data: Reception){
         console.log(data)
         
@@ -359,13 +358,6 @@ export class DocumentGenerateService
             return arr
         }
 
-        let parcedAssignment=[]
-
-        if (data.assignment){
-            parcedAssignment = parserFunc(parse(data.assignment as string), []).map( (item: any[]) => (flatingArray(item)) )
-        }
-
-        
         const textRunFromHtmlTeg = (data: parcedHtml) =>{
             if (data.tag.includes('ul') && data.tag.includes('li')) 
                 return null;
@@ -397,36 +389,62 @@ export class DocumentGenerateService
             
             return new TextRun({ text: `${data.text}`, size:textSize});
         }
- 
-        // Создание списка параграфов с текстом соотвествующим тегам html
-        const readingAssigment: any[] =[];
-        parcedAssignment.forEach((row: any[]) => {
-            let flagBullet = false;
-            const cols = row.map((item: parcedHtml) => {
-                const isBulletParagraph = textRunFromHtmlTeg(item);
-                if (!isBulletParagraph) { 
-                    flagBullet = true,
-                    readingAssigment.push(
-                        new Paragraph({
-                            children: [new TextRun({ text: `${item.text}`, size:textSize })],
-                            bullet: {   
-                                level: 0
-                            }
-                        }),
-                    )
-                }
-                return isBulletParagraph
-            })
-
-            if(!flagBullet){
-                readingAssigment.push(
+        let parcedAssignment=[]
+        let readingAssigment: any[] =[];
+        if (data.assignment){
+            
+            // If assigment without html tags
+            if (data.assignment?.match("<[^>]*>") == null){
+                readingAssigment = 
+                [
                     new Paragraph({
-                        children: cols as readonly ParagraphChild[]
+                        children: [new TextRun({ 
+                            text: `${data.assignment}`, size:textSize,
+                        })]
                     })
-                )
+                ];
             }
-        })
+            else{
+                parcedAssignment = parserFunc(parse(data.assignment as string), []).map( (item: any[]) => (flatingArray(item)) )
+                // Создание списка параграфов с текстом соотвествующим тегам html
+                parcedAssignment.forEach((row: any[]) => {
+                    let flagBullet = false;
+                    const cols = row.map((item: parcedHtml) => {
+                        const isBulletParagraph = textRunFromHtmlTeg(item);
+                        if (!isBulletParagraph) { 
+                            flagBullet = true,
+                            readingAssigment.push(
+                                new Paragraph({
+                                    children: [new TextRun({ text: `${item.text}`, size:textSize })],
+                                    bullet: {   
+                                        level: 0
+                                    }
+                                }),
+                            )
+                        }
+                        return isBulletParagraph
+                    })
         
+                    if(!flagBullet){
+                        readingAssigment.push(
+                            new Paragraph({
+                                children: cols as readonly ParagraphChild[]
+                            })
+                        )
+                    }
+                })
+            }
+        }
+        else{
+            readingAssigment = 
+                [
+                    new Paragraph({
+                        children: [new TextRun({ 
+                            text: `Нет рекомендаций`, size:textSize,
+                        })]
+                    })
+                ];
+        }
 
         const sectionPart1 = [
             this.paragraphWithText('Индивидуальный предприниматель Тунгатарова Мария Канатбековна', textSize),
@@ -517,7 +535,6 @@ export class DocumentGenerateService
                 headers.append('Content-Type', 'multipart/form-data');
                 headers.append('Accept', 'application/pdf');
                 const options = { headers: headers };
-                
                 this.http.post(`${environment.api_url}/print/convert-docx-to-pdf`, formData, options)
                 .subscribe({
                     next: (buffer: any) => {

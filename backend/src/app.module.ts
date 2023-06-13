@@ -7,7 +7,6 @@ import { AppService } from './app.service';
 import { AppResolver } from './app.resolver';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
-// import { PostsModule } from 'src/posts/posts.module';
 import config from 'src/common/configs/config';
 import { loggingMiddleware } from 'src/common/middleware/logging.middleware';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -24,7 +23,6 @@ import { PrintModule } from './printed/print.module';
 import { ReceptionRecordModule } from './receptionRecord/receptionRecord.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { WorkScheduleModule } from './work-schedule/workSchedule.module';
-// import { AnalyzesResearchModule } from './analyzes-research/analyzes-research.module';
 
 @Module({
   imports: [

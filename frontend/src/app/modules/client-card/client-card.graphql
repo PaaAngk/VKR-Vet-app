@@ -173,17 +173,26 @@ mutation DeletePet($petId:Int!) {
 
 # ---------------------------------- Service ---------------------------------
 
-query GetAllServiceTypeWithServiceName{
-  allServiceType{
+# query GetAllServiceTypeWithServiceName{
+#   allServiceType{
+#     id
+#     typeName
+#     service{
+#       id
+#       name
+#       price
+#     }
+#   }
+# }
+
+query GetAllServicesWithName{
+  allServices{
     id
-    typeName
-    service{
-      id
-      name
-      price
-    }
+		name
+    price
   }
 }
+
 
 query GetSurgeryList{
   getSurgeryList{
@@ -198,16 +207,26 @@ query GetSurgeryList{
 
 # ---------------------------------- Goods ---------------------------------
 
-query GetAllGoodsCategoryWithGoods{
-  allGoodsCategory{
-    categoryName
-    goods{
-      id
-      name
-      price
-      measure
-      quantity
-    }
+# query GetAllGoodsCategoryWithGoods{
+#   allGoodsCategory{
+#     categoryName
+#     goods{
+#       id
+#       name
+#       price
+#       measure
+#       quantity
+#     }
+#   }
+# }
+
+query GetAllGoodsWithNames{
+  allGoods{
+    id
+    name
+    measure
+    quantity
+    price
   }
 }
 

@@ -61,6 +61,7 @@ export class DialogClientComponent {
     }
 
     submit(): void {
+        console.log(this.searchForm.value)
         if (this.searchForm.status == "VALID" ){
             if(this.context.data === 'add' || this.context.data === 'addSchedule'){
                 this.clientCardService.createClient(this.searchForm.value as CreateClientInput).subscribe({
@@ -86,7 +87,7 @@ export class DialogClientComponent {
                     error: (error)  => 
                     {
                         this.alertService.open("Клиент уже добавлен. Перезагрузите и попробуйте снова.", 
-                            {label:"Ошибка Обновления", status: TuiNotification.Error, autoClose: 5000}).subscribe()
+                            {label:"Ошибка обновления", status: TuiNotification.Error, autoClose: 5000}).subscribe()
                         console.log(error)
                     }
                 })

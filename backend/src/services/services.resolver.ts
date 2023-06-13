@@ -63,9 +63,10 @@ export class ServiceResolver {
 
   @Query(() => [Service])
   async getSurgeryList() {
+    const notList = [1, 0, 3, 37, 38];
     return await this.prisma.service.findMany({
       where: {
-        typeId: 1,
+        NOT: notList.map((i) => ({ typeId: i })),
       },
     });
   }
