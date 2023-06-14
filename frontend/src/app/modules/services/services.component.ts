@@ -87,7 +87,7 @@ export class ServicesComponent implements OnDestroy{
 	// -----------------------------------------------------------------------------------------------------
    
 	readonly categorySorter: TuiComparator<Service> = (a, b) =>
-        tuiDefaultSort(a.type.typeName, b.type.typeName);
+        tuiDefaultSort(a.type?.typeName, b.type?.typeName);
  
     showDialog(): void {
         this.dialogAddPet.subscribe();
@@ -96,7 +96,7 @@ export class ServicesComponent implements OnDestroy{
 	setFilterServices(filterValue: string | null | undefined) : Service[]{
 		return this.services.filter((service:Service) =>{
 			return service.name?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "") ||
-			service.type.typeName?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "")
+			service.type?.typeName?.toLowerCase().includes(filterValue?.trim().toLowerCase() || "")
 		});
 	}
 

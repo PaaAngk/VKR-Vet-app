@@ -264,7 +264,8 @@ export class ClientCardService
     {
         this.getPetDetailGQL.watch({
             petId:petId
-        })
+        },
+        {fetchPolicy: 'network-only'})
         .valueChanges.subscribe({
             next : (data) => {
                 this._currentPet.next(data.data.pet)

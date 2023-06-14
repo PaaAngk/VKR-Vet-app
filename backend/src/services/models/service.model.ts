@@ -10,7 +10,7 @@ export class Service {
   @Field(() => ServiceType, { nullable: true })
   type?: ServiceType;
 
-  @Field(() => [ServiceList])
+  @Field(() => [ServiceList], { nullable: true })
   ServiceList?: ServiceList[];
 
   @Field(() => Int, { nullable: true })

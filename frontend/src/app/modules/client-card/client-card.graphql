@@ -199,9 +199,6 @@ query GetSurgeryList{
     id
     name
     price
-    type{
-      typeName
-    }
   }
 }
 

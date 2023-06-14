@@ -27,10 +27,10 @@
 
                 <!-- Employee -->
                 <tui-combo-box
-                    [readOnly]="editMode"
                     class="b-form w-80"
                     [(ngModel)] = "employee"
                     *ngIf="currentAnalyzeType && currentAnalyzeType.typeName === 'UZI_EKHO'"
+                    (ngModelChange)="onEmployeeSelect()"
                 >
                     Выполняющий сотрудник
                     <input

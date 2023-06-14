@@ -364,7 +364,7 @@ type Service {
   id: Int!
   name: String
   price: Float
-  type: ServiceType!
+  type: ServiceType
   typeId: Int
 }
 

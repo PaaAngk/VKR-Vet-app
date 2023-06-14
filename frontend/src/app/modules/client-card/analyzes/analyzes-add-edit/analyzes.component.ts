@@ -205,13 +205,17 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 		}
 	}
 
+	onEmployeeSelect(){
+		this.maySave = Object.keys(this.formData).length == 0 ? false : true
+	}
+
 	//add employee input when need
 	dataFromForm(event: any){
 		this.formData = event;
 		if (this.currentAnalyzeType.typeName === 'UZI_EKHO'){
 			this.maySave = Object.keys(this.formData).length == 0 ? 
 			false 
-			: (this.employee == '' ? false : true)
+			: (this.employee === '' || !this.employee ? false : true)
 		} else{
 			this.maySave = Object.keys(this.formData).length == 0 ? false : true
 		}

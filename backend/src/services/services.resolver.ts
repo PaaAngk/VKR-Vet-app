@@ -72,7 +72,7 @@ export class ServiceResolver {
   }
 
   @ResolveField('type', () => ServiceType)
-  async serviceType(@Parent() service: Service) {
+  async type(@Parent() service: Service) {
     return this.prisma.serviceType.findUnique({
       where: { id: service.typeId },
     });

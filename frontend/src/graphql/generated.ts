@@ -602,7 +602,7 @@ export type Service = {
   id: Scalars['Int'];
   name?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
-  type: ServiceType;
+  type?: Maybe<ServiceType>;
   typeId?: Maybe<Scalars['Int']>;
 };
 
@@ -747,14 +747,14 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Au
 export type GetAllServiceQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllServiceQuery = { __typename?: 'Query', allServices: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } }> };
+export type GetAllServiceQuery = { __typename?: 'Query', allServices: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null, type?: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } | null }> };
 
 export type CreateServiceMutationVariables = Exact<{
   data: CreateServiceInput;
 }>;
 
 
-export type CreateServiceMutation = { __typename?: 'Mutation', createService: { __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } } };
+export type CreateServiceMutation = { __typename?: 'Mutation', createService: { __typename?: 'Service', id: number, name?: string | null, price?: number | null, type?: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } | null } };
 
 export type GetAllServiceTypeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -767,7 +767,7 @@ export type UpdateServiceMutationVariables = Exact<{
 }>;
 
 
-export type UpdateServiceMutation = { __typename?: 'Mutation', updateService: { __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } } };
+export type UpdateServiceMutation = { __typename?: 'Mutation', updateService: { __typename?: 'Service', id: number, name?: string | null, price?: number | null, type?: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } | null } };
 
 export type DeleteServiceMutationVariables = Exact<{
   serviceId: Scalars['Int'];
@@ -859,7 +859,7 @@ export type GetAllServicesWithNameQuery = { __typename?: 'Query', allServices: A
 export type GetSurgeryListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSurgeryListQuery = { __typename?: 'Query', getSurgeryList: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', typeName?: string | null } }> };
+export type GetSurgeryListQuery = { __typename?: 'Query', getSurgeryList: Array<{ __typename?: 'Service', id: number, name?: string | null, price?: number | null }> };
 
 export type GetAllGoodsWithNamesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -888,7 +888,7 @@ export type GetReceptionQueryVariables = Exact<{
 }>;
 
 
-export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: number, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, petId?: number | null, discount?: number | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: number, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, id: number, categoryId?: number | null, measure?: string | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null } } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', id: number, typeId?: number | null, name?: string | null, price?: number | null, type: { __typename?: 'ServiceType', id?: number | null } } } | null> | null } };
+export type GetReceptionQuery = { __typename?: 'Query', reception: { __typename?: 'Reception', id: number, anamnesis?: string | null, assignment?: string | null, clinicalSigns?: string | null, cost?: number | null, diagnosis?: string | null, petId?: number | null, discount?: number | null, pet?: { __typename?: 'Pet', alias: string, DOB?: string | null, kind?: string | null, gender?: boolean | null, id: number, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null, goods?: Array<{ __typename?: 'GoodsList', quantity: number, goods: { __typename?: 'Goods', name: string, id: number, categoryId?: number | null, measure?: string | null, price?: number | null, category: { __typename?: 'GoodsCategory', id?: number | null } } } | null> | null, services?: Array<{ __typename?: 'ServiceList', quantity?: number | null, service: { __typename?: 'Service', id: number, typeId?: number | null, name?: string | null, price?: number | null, type?: { __typename?: 'ServiceType', id?: number | null } | null } } | null> | null } };
 
 export type UpdateReceptionMutationVariables = Exact<{
   data: UpdateReceptionInput;
@@ -1499,9 +1499,6 @@ export const GetSurgeryListDocument = gql`
     id
     name
     price
-    type {
-      typeName
-    }
   }
 }
     `;
