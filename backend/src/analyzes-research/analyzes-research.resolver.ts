@@ -30,7 +30,7 @@ export class AnalyzesResearchResolver {
   async createAnalyzesResearch(
     @Args('data') data: CreateAnalyzesResearchInput
   ) {
-    console.log(data);
+    // console.log(data);
     const newAnalyzesResearch = this.prisma.analyzesResearch.create({
       data: {
         petId: data.petId,

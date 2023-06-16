@@ -45,7 +45,6 @@ export class PrintController {
       //Send document to converting
       const buf = await this.printService.convertDocxToPdf(file.file.buffer);
 
-      console.log(buf);
       // Waiting promice with generated document
       res.set({
         'Content-Type': 'application/pdf',

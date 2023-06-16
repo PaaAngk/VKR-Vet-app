@@ -285,10 +285,9 @@ export const MochaForm: DynamicFilterBase<string|string[]|number> =
 {
     title: "Анализ мочи",
     dynamicFilterInputs: [
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Lejkoc',
             label: 'Лейкоциты',
-            inputRangeParameters: inputCountBoxParams,
         }),
         new ComboboxDynamicFilter({
             key: 'Ketono',
@@ -300,38 +299,32 @@ export const MochaForm: DynamicFilterBase<string|string[]|number> =
             label: 'Нитрит',
             options:["Отрицат.", "Положит."]
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Urobilin',
             label: 'Уробилиноген',
-            inputRangeParameters: inputCountBoxParams,
             postfix:'моль/л'
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Bilirub',
             label: 'Билирубин',
-            inputRangeParameters: inputCountBoxParams,
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Glyukoza',
             label: 'Глюкоза',
-            inputRangeParameters: inputCountBoxParams,
             postfix:'ммоль/л'
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Protein',
             label: 'Протеин',
-            inputRangeParameters: inputCountBoxParams,
             postfix:'г/л'
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Plotnost',
             label: 'Плотность',
-            inputRangeParameters: inputCountBoxParams,
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'pH',
             label: 'pH',
-            inputRangeParameters: inputCountBoxParams,
         }),
         new ComboboxDynamicFilter({
             key: 'Krov',
@@ -343,23 +336,29 @@ export const MochaForm: DynamicFilterBase<string|string[]|number> =
             label: 'Аскорбин к-та',
             options:["Отрицат.", "Положит."]
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Mikroalb',
             label: 'Микроальбумин',
-            inputRangeParameters: inputCountBoxParams,
             postfix:'мг/л'
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Kreatin',
             label: 'Креатинин',
-            inputRangeParameters: inputCountBoxParams,
             postfix:'ммоль/л'
         }),
-        new CountboxDynamicFilter({
+        new TextboxDynamicFilter({
             key: 'Prot-kreat',
             label: 'Протеин/креатинин',
-            inputRangeParameters: inputCountBoxParams,
             postfix:'мг/мг'
+        }),
+        new TextboxDynamicFilter({
+            key: 'Calciy',
+            label: 'Кальций',
+            postfix:'мг/мг'
+        }),
+        new TextboxDynamicFilter({
+            key: 'Microscopya',
+            label: 'Микроскопия',
         }),
     ]
 };

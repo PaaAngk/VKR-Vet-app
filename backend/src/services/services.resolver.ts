@@ -7,6 +7,7 @@ import {
   ResolveField,
   Mutation,
   Int,
+  Subscription,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
@@ -14,7 +15,9 @@ import { Service } from './models/service.model';
 import { CreateServiceInput } from './dto/CreateServiceInput';
 import { ServiceType } from './models/service-type.model';
 import { UpdateServiceInput } from './dto/UpdateServiceInput';
+import { PubSub } from 'graphql-subscriptions';
 
+const pubSub = new PubSub();
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Service)
 export class ServiceResolver {
@@ -29,7 +32,13 @@ export class ServiceResolver {
         price: data.price,
       },
     });
+    pubSub.publish('serviceAdded', { serviceAdded: newService });
     return newService;
+  }
+
+  @Subscription(() => Service)
+  serviceAdded() {
+    return pubSub.asyncIterator('serviceAdded');
   }
 
   @Mutation(() => Service)
@@ -63,7 +72,7 @@ export class ServiceResolver {
 
   @Query(() => [Service])
   async getSurgeryList() {
-    const notList = [1, 0, 3, 37, 38];
+    const notList = [3, 37, 38];
     return await this.prisma.service.findMany({
       where: {
         NOT: notList.map((i) => ({ typeId: i })),
@@ -77,11 +86,4 @@ export class ServiceResolver {
       where: { id: service.typeId },
     });
   }
-
-  // @ResolveField('services', () => [ServiceList])
-  // async serviceLists(@Parent() service: Service) {
-  //   return this.prisma.serviceList.findMany({
-  //     where: { serviceId: service.id },
-  //   });
-  // }
 }

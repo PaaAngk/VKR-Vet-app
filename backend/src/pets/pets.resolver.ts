@@ -25,7 +25,6 @@ export class PetsResolver {
 
   @Mutation(() => Pet)
   async createPet(@Args('data') data: CreatePetInput) {
-    console.log(data);
     const newPet = this.prisma.pet.create({
       data: {
         clientId: data.clientId,

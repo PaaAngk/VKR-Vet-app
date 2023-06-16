@@ -34,7 +34,7 @@
             [showLoader]="loading"
             [overlay]="true"
             class="h-full overflow-y-auto" 
-            [ngStyle]="{'max-height':'75vh','min-height':'10vh'}"
+            [ngStyle]="{'max-height':'79vh','min-height':'10vh'}"
             *tuiLet="filteredGoods  as sortedFilteredGoods" 
         >
         <!-- | tuiTableSort -->
@@ -43,7 +43,7 @@
                 [items]="sortedFilteredGoods"
                 *ngIf="filteredGoods.length !== 0"
                 class="w-full tuiScrollable"
-                [ngStyle]="{'min-height':' 70vh'}"
+                [ngStyle]="{'min-height':' 73vh'}"
             >
                 <table
                     class="w-full h-full tui-table"
@@ -57,14 +57,13 @@
                                 *tuiHead="'name'"
                                 tuiTh
                                 [sorter]="null"
-                                [sorter]="categorySorter"
                             >
                                 Наименование
                             </th>
                             <th
                                 *tuiHead="'categoryName'"
                                 tuiTh
-                                [sorter]="categorySorter"
+                                [sorter]="null"
                                 class="lg:w-56"
                             >
                                 Группа
@@ -72,8 +71,8 @@
                             <th
                                 *tuiHead="'quantity'"
                                 tuiTh
-                                [sorter]="categorySorter"
-                                class="lg:w-20"
+                                [sorter]="null"
+                                class="lg:w-28"
                             >
                                 Остаток
                             </th>       
@@ -81,7 +80,7 @@
                                 *tuiHead="'price'"
                                 tuiTh
                                 class="lg:w-20"
-                                [sorter]="categorySorter"
+                                [sorter]="null"
                             >
                                 Цена
                             </th>

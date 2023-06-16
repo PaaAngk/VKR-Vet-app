@@ -44,8 +44,6 @@ export class WorkScheduleResolver {
         data.dateWorkStart.getDate() + data.workDays
       )
     );
-    // console.log(data.dateWorkStart);
-    // console.log(endDate);
     // Add row each 0-2 days, pass 3-5 days
     let daysCounter = 0;
     for (
@@ -71,8 +69,7 @@ export class WorkScheduleResolver {
         },
       });
     } catch {
-      // throw new NotFoundException(`Can not delete`);
-      console.log(`Can not delete`);
+      throw new NotFoundException(`Can not delete`);
     }
     try {
       await this.prisma.schedule.createMany({

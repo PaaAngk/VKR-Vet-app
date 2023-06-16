@@ -23,6 +23,7 @@ export class ServicesService
     ){
         this.getAllServices();
         this.getAllServiceTypes();
+        console.log("!!!!!!!!!!!!!!!!!!!!!")
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -92,7 +93,7 @@ export class ServicesService
         }).pipe(
             map(( data ) => {
                 if (data.data?.createService) {
-                    this._serviceList.next(this._serviceList.getValue().concat(data.data?.createService));
+                    this._serviceList.next([data.data?.createService].concat(this._serviceList.getValue()) );
                 }
             })
         )

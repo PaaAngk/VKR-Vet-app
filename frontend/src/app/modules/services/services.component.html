@@ -34,14 +34,14 @@
             [showLoader]="loading"
             [overlay]="true"
             class="flex flex-auto overflow-auto" 
-            [ngStyle]="{'max-height':'70vh'}"
+            [ngStyle]="{'max-height':'79vh'}"
         >
             <virtual-scroller 
                 #scroll 
                 [items]="filterServices"
                 *ngIf="filterServices.length !== 0"
                 class="w-full"
-                [ngStyle]="{'min-height':' 70vh'}"
+                [ngStyle]="{'min-height':' 73vh'}"
             >
             <!-- *tuiLet="filterServices | tuiTableSort as sortedFilteredServices" -->
                 <table
@@ -62,7 +62,7 @@
                             <th
                                 *tuiHead="'typeName'"
                                 tuiTh
-                                [sorter]="categorySorter"
+                                [sorter]="null"
                                 class="lg:w-64"
                             >
                                 Категория
@@ -70,6 +70,7 @@
                             <th
                                 *tuiHead="'price'"
                                 tuiTh
+                                [sorter]="null"
                                 class="lg:w-20"
                             >
                                 Цена

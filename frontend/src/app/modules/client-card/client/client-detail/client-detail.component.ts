@@ -147,8 +147,4 @@ export class ClientDetailComponent implements OnDestroy{
 		}
 	}
 
-	printDocument(event: any){
-		console.log(event)
-	}
-
 }

@@ -40,14 +40,14 @@ export class ReceptionResolver {
     let newReception;
     // Check of available goods quantity in warehouse and write current quant for reduse in db
     const currentQuantArr: number[] = [];
-    console.log(data.goodsListReceptionInput);
+    // console.log(data.goodsListReceptionInput);
     for (const goods of data.goodsListReceptionInput) {
       const currentQuant = await this.prisma.goods.findUnique({
         where: { id: goods.goodsId },
       });
       currentQuantArr.push(currentQuant.quantity);
-      console.log(currentQuantArr);
-      if (currentQuant.quantity - goods.quantity < 0) {
+      // console.log(currentQuantArr);
+      if (currentQuant.quantity - Math.abs(goods.quantity) < 0) {
         throw new ForbiddenException('Недостаточно товара для списания.');
       }
     }
@@ -113,6 +113,16 @@ export class ReceptionResolver {
       } catch {
         throw new ConflictException('Ошибка добавления списка услуг');
       }
+    }
+    try {
+      await this.prisma.pet.update({
+        data: { diagnosis: data.diagnosis?.trim() || null },
+        where: {
+          id: data.petId,
+        },
+      });
+    } catch {
+      throw new ConflictException('Ошибка добавления диагноза питомцу');
     }
     return newReception;
   }

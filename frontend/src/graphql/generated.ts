@@ -631,6 +631,7 @@ export type ServiceType = {
 export type Subscription = {
   __typename?: 'Subscription';
   clientCreated: Client;
+  serviceAdded: Service;
 };
 
 export type Token = {
@@ -1000,6 +1001,11 @@ export type UpdateDateReceptionRecordMutationVariables = Exact<{
 
 
 export type UpdateDateReceptionRecordMutation = { __typename?: 'Mutation', updateDateReceptionRecord: { __typename?: 'ReceptionRecord', id: number, dateTimeStart: any, dateTimeEnd: any, kindOfAnimal?: string | null, client?: { __typename?: 'Client', id: number, fullName: string, telephoneNumber: string } | null, employee?: { __typename?: 'Employee', id?: number | null, fullName: string } | null, purpose?: { __typename?: 'ReceptionPurpose', id?: number | null, purposeName: string } | null } };
+
+export type ServiceAddedSubscribeSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ServiceAddedSubscribeSubscription = { __typename?: 'Subscription', serviceAdded: { __typename?: 'Service', id: number, name?: string | null, price?: number | null, type?: { __typename?: 'ServiceType', id?: number | null, typeName?: string | null } | null } };
 
 export type GetWorkSchedulesBetweenDateQueryVariables = Exact<{
   data: BetweenDateInput;
@@ -2066,6 +2072,30 @@ export const UpdateDateReceptionRecordDocument = gql`
   })
   export class UpdateDateReceptionRecordGQL extends Apollo.Mutation<UpdateDateReceptionRecordMutation, UpdateDateReceptionRecordMutationVariables> {
     override document = UpdateDateReceptionRecordDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const ServiceAddedSubscribeDocument = gql`
+    subscription serviceAddedSubscribe {
+  serviceAdded {
+    id
+    name
+    price
+    type {
+      id
+      typeName
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class ServiceAddedSubscribeGQL extends Apollo.Subscription<ServiceAddedSubscribeSubscription, ServiceAddedSubscribeSubscriptionVariables> {
+    override document = ServiceAddedSubscribeDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

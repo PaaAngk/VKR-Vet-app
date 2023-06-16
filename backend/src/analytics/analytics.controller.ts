@@ -31,7 +31,7 @@ export class AnalyticsController {
         WHERE public."Reception"."createdAt"::date = '${date.toDateString()}'`)
       );
     }
-    console.log(result);
+    // console.log(result);
     res.json(result);
   }
 

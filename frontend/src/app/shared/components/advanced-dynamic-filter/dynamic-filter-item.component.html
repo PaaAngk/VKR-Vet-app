@@ -8,16 +8,45 @@
 		[collapsed]="true"
 	>
 		<!-- Textbox input -->
-		<tui-input *ngSwitchCase="'textbox'" [formControlName]="input.key" [readOnly]="input.readOnly">
+		<tui-input 
+			*ngSwitchCase="'textbox'" 
+			[formControlName]="input.key" 
+			[readOnly]="input.readOnly"
+			
+		>
 			<label [attr.for]="input.key">{{input.label}}</label>
 			<input
 				tuiTextfield
 				[id]="input.key"
 				[type]="input.type"
 				[placeholder]="input.placeholder"
+				role="presentation" 
+				autocomplete="off"
 			/>
 		</tui-input>
 
+		<!-- Textbox autocomplete input -->
+		<tui-input 
+			*ngSwitchCase="'textboxAutocomplete'" 
+			[formControlName]="input.key" 
+			[readOnly]="input.readOnly"
+			
+		>
+			<label [attr.for]="input.key">{{input.label}}</label>
+			<input
+				tuiTextfield
+				[id]="input.key"
+				[type]="input.type"
+				[placeholder]="input.placeholder"
+				role="presentation" 
+				autocomplete="off"
+			/>
+			<tui-data-list-wrapper
+				*tuiDataList
+				[items]="input.options | tuiFilterByInput"
+			></tui-data-list-wrapper>
+		</tui-input>
+		
 		<!-- Range count input -->
 		<tui-input-range
 			*ngSwitchCase="'inputRange'" 
@@ -65,7 +94,6 @@
 			<label [attr.for]="input.key">{{input.label}}</label>
 		</tui-input-date>
 
-
 		<!-- Combobox input -->
 		<tui-combo-box
 		*ngSwitchCase="'combobox'"
@@ -77,6 +105,8 @@
 			<input
 				tuiTextfield
 				[placeholder]="input.placeholder"
+				role="presentation" 
+				autocomplete="off"
 			/>
 			<tui-data-list-wrapper
 				*tuiDataList
@@ -112,7 +142,6 @@
 				[items]="input.options"
 			></tui-data-list-wrapper>
 		</tui-select>
-
 
 		<tui-checkbox-block
 			*ngIf="input.match === true"

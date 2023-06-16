@@ -50,7 +50,7 @@ export class DocumentGenerateService
     ) {}
 
     checkGenerateWord(data: Reception){
-        console.log(data)
+        // console.log(data)
         
         const firstRow = new TableRow({
             children: [

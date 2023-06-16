@@ -390,6 +390,7 @@ type ServiceType {
 
 type Subscription {
   clientCreated: Client!
+  serviceAdded: Service!
 }
 
 type Token {

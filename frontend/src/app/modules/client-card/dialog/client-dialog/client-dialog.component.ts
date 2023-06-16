@@ -61,7 +61,6 @@ export class DialogClientComponent {
     }
 
     submit(): void {
-        console.log(this.searchForm.value)
         if (this.searchForm.status == "VALID" ){
             if(this.context.data === 'add' || this.context.data === 'addSchedule'){
                 this.clientCardService.createClient(this.searchForm.value as CreateClientInput).subscribe({

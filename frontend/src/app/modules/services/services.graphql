@@ -51,3 +51,15 @@ mutation DeleteService(
     name
   }
 }
+
+subscription serviceAddedSubscribe{
+  serviceAdded{
+    id
+    name
+    price
+    type{
+      id
+      typeName
+    }
+  }
+}

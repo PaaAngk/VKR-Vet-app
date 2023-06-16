@@ -40,6 +40,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	isFilesAnalyze = false;
 
 	enabledForm = false;
+	loadingSubmit = false;
 
 	@ViewChild(TuiHostedDropdownComponent)
     component?: TuiHostedDropdownComponent;
@@ -138,7 +139,7 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 	}
 
 	createAnalyzes(){
-		
+		this.loadingSubmit = true;
 		if(this.currentAnalyzeType.typeName !== 'Files' && this.currentAnalyzeType.typeName !== 'X-ray'){
 			this.clientCardService.createAnalyzesResearch(
 				{ 
@@ -150,11 +151,13 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 			.subscribe({
 				next: (data) => {
 					this.successCreate(data?.createAnalyzesResearch.id);
+					this.loadingSubmit = true;
 				},
 				error: (error)  => 
 				{
-					this.errorCreate()
-					console.log(error)
+					this.errorCreate();
+					console.log(error);
+					this.loadingSubmit = true;
 				}
 			})
 		}
@@ -167,10 +170,11 @@ export class AnalyzesComponent implements OnDestroy, OnInit {
 					typeName: this.currentAnalyzeType.typeName
 				}
 			).subscribe({
-				next: (data: any) => this.successCreate(data.id),
+				next: (data: any) => {this.successCreate(data.id), this.loadingSubmit = true;},
 				error: (error)  => {
-					this.errorCreate()
-					console.log(error)
+					this.errorCreate();
+					console.log(error);
+					this.loadingSubmit = true;
 				}
 			})
 		}

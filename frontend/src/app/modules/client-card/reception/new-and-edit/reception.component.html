@@ -29,7 +29,7 @@
                 class="mr-2"
                 (click)="submitReception()"
                 [disabled]="!hasValue"
-                [showLoader]="loading"
+                [showLoader]="loadingSubmit"
             >
                 <p class="text-base" [tuiHint]="'Необходимо заполнить цель визита и врача'">
                     Закончить прием
@@ -42,7 +42,7 @@
                 class="mr-2"
                 (click)="submitReception()"
                 [disabled]="!hasValue"
-                [showLoader]="loading"
+                [showLoader]="loadingSubmit"
             >
                 <p class="text-base">
                     Изменить прием

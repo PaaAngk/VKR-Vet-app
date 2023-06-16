@@ -86,7 +86,6 @@ export class ClientComponent implements OnDestroy, OnInit{
 		)
 		.subscribe({
 			next: () => {
-				console.log(this.searchForm.value.search)
 				this.endCursor = null;
 				this.endIndexFromVirtScroll = 0;
 				this.isEndFetch = false;
@@ -157,8 +156,6 @@ export class ClientComponent implements OnDestroy, OnInit{
 						this.endCursor = clients.nodes[clients.nodes.length - 1].id;
 					}
 					this.loadingTable = false;
-					// console.log(clients.totalCount-1)
-					// console.log(this.clients.length)
 				},
 				error: (err) => {
 					console.log(err);

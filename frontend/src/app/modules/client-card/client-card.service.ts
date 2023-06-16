@@ -171,9 +171,9 @@ export class ClientCardService
             after:after,
             orderBy: orderBy
         },
-        {
-            fetchPolicy: 'network-only',
-        },
+        // {
+        //     fetchPolicy: 'network-only',
+        // },
         )
         .valueChanges.pipe(
             map((data) => {
@@ -216,7 +216,7 @@ export class ClientCardService
         })
         .pipe(
             map(( data ) => {
-                console.log(data)
+                // console.log(data)
                 if (data.data?.createClient) {
                     return data.data.createClient;
                 }

@@ -7,5 +7,6 @@ u1188134_crm.json
 *.ipynb
 portDB.ipynb
 backend/.VSCodeCounter/2023-06-14_16-37-09/details.md
-portDB.ipynb
+frontend/src/environments/environment.ts
+TypeAnalyzesResearch.csv
 portDB.ipynb

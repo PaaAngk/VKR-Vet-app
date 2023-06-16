@@ -11,7 +11,7 @@ import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorp
 import { PetDialogComponent } from '../dialog/add-pet/pet-dialog.component';
 import { TuiComparator, tuiDefaultSort } from '@taiga-ui/addon-table';
 import { DynamicFilterBase } from 'src/app/shared/components/advanced-dynamic-filter';
-import { ComboboxDynamicFilter, CountboxDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
+import { ComboboxDynamicFilter, CountboxDynamicFilter, TextboxAutocompleteDynamicFilter, TextboxDynamicFilter } from 'src/app/shared/components/advanced-dynamic-filter/inputs';
 import { DocumentGenerateService, FileFormat } from '../document-generate.service';
 import { DocumentsToGenerate } from '../models/documentsToGenerate';
 
@@ -97,9 +97,6 @@ export class PetComponent implements OnDestroy, OnInit{
 			next: (pet: Pet) => {
 				if (Object.keys(pet).length !== 0){
 					this.pageLoader = false;
-					// console.log( TuiDay.fromLocalNativeDate(new Date(Number(pet.DOB) as number)) )
-					// console.log(TuiDay.lengthBetween(TuiDay.fromLocalNativeDate(new Date(Number(pet.DOB) as number)), TuiDay.currentLocal()))
-					// console.log(this.dataPipe.transform(pet.DOB,  'dd MM yyyy'))
 				}
 				this.pet = {...pet, receptions: [], analyzesResearchs:[]}
 				this.receptions = pet.receptions || [] as Reception[];//.sort((a, b) => ( new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() ) )
@@ -108,7 +105,7 @@ export class PetComponent implements OnDestroy, OnInit{
 			error: () => {
 				this.alertService.open(
 					"Не удалось загрузить данные питомца.", 
-					{status: TuiNotification.Error, label:"Питомца не существует", autoClose:8000}
+					{status: TuiNotification.Error, label:"Питомца не существует", autoClose:5000}
 				).subscribe();
 				this.location.back();
 			}
@@ -181,12 +178,12 @@ export class PetComponent implements OnDestroy, OnInit{
 						options: this.employeesList,
 						required: true,
 					}),
-					new ComboboxDynamicFilter({
+					new TextboxAutocompleteDynamicFilter({
 						key: 'procedure',
 						label: 'Наименование операции, процедуры',
 						placeholder:"Начните вводить наименование процедуры",
-						required: true,
 						options: this.surgeryServicesList,
+						required: true,
 					}),
 					new CountboxDynamicFilter({
 						key: 'costFrom',

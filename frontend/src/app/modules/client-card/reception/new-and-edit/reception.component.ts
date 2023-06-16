@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common'
 import { defaultEditorExtensions, TuiEditorTool, TUI_EDITOR_EXTENSIONS } from '@taiga-ui/addon-editor';
 import { TuiContextWithImplicit, TuiIdentityMatcher, TuiStringHandler, tuiWatch } from '@taiga-ui/cdk';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
@@ -49,6 +50,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		],
 	};
 	loading = false;
+	loadingSubmit = false;
 	
 	readonly tablesColumns = ['name', 'price', 'quantity', 'actions'];
 	employeeList : Array<Employee> = [];
@@ -86,6 +88,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		@Inject(Router) private readonly router: Router,
 		@Inject(ActivatedRoute) private readonly activateRoute: ActivatedRoute,
 		private getReceptionGQL : GetReceptionGQL,
+		private location: Location,
     ) {}
 
 	ngOnInit(): void {
@@ -116,6 +119,9 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		// Getting id pet from url for now reception
 		// console.log(this.activateRoute.snapshot)
 		this.petId=Number(this.activateRoute.snapshot.url[1].path)
+		if (!this.petId){
+			this.location.back();
+		}
 		
 		// getting reception data for edit and fill current form
 		if (this.activateRoute.snapshot.url[4]){
@@ -184,10 +190,6 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 		return Math.round( discountResult * 100 ) / 100
 	}
 
-	getGoodsQuantity(id: any){
-		console.log(id)
-		return 50
-	}
 
 	readonly identityMatcher: TuiIdentityMatcher<readonly string[]> = (items1, items2) =>
 	items1.length === items2.length && items1.every(item => items2.includes(item));
@@ -246,12 +248,6 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 
 	readonly stringifyPurposeList = (item: ReceptionPurpose): string => `${item.purposeName}`;
 
-	assignmentPrint(){
-		console.log("data")
-	}
-	assignmentDownload($event : ButtonWithDropdownItem){
-		console.log($event)
-	}
 
 	get hasValue(): boolean {
         return this.addReceptionForm.status == "VALID" ? true : false;
@@ -259,7 +255,6 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 
 	submitReception(){
 		if (this.addReceptionForm.status == "VALID"){
-			this.loading = true;
 			this.addReceptionForm.value.cost = this.check;
 			
 			const goodsListReceptionInput : GoodsListReceptionInput[] = this.selectedGoods.map( (goods : SelectedGoods) => (
@@ -284,6 +279,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 
 	createReception(goodsListReceptionInput: GoodsListReceptionInput[], serviceListReceptionInput: ServiceListReceptionInput[], objectToSend:any){
 		// console.log({ ...objectToSend, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId })
+		this.loadingSubmit = true;
 		this.clientCardService.createReception(
 			{ ...objectToSend, goodsListReceptionInput, serviceListReceptionInput, petId: this.petId } as CreateReceptionInput
 		)
@@ -296,6 +292,7 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 				}).subscribe();
 				if (this.copyMode) this.router.navigate([`/client-card/pet/${this.petId}/reception/${data?.createReception.id}`], {relativeTo: this.activateRoute});
 				else this.router.navigate([`../${data?.createReception.id}`], {relativeTo: this.activateRoute});
+				this.loadingSubmit = false;
 			},
 			error: (error)  => 
 			{
@@ -307,14 +304,13 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 						label: "Невозможно добавить прием!",
 						autoClose: 8000,
 					}).subscribe()
-				// if(error.errors[0].message == "Error in update quantity of goods"){
-				// }	
+				this.loadingSubmit = false;
 			}
 		})
-		this.loading = false;
 	}
 
 	editReception(goodsListReceptionInput: GoodsListReceptionInput[], serviceListReceptionInput: ServiceListReceptionInput[], objectToSend:any){
+		this.loadingSubmit = true;
 		this.clientCardService.updateReception(
 			this.receptionId,
 			{ ...objectToSend, goodsListReceptionInput, serviceListReceptionInput } as UpdateReceptionInput
@@ -325,7 +321,8 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 					label:"Прием успешно изменен!",
 					autoClose: 10000,
 				}).subscribe();
-				this.router.navigate([`/client-card/pet/${this.petId}/reception/${this.receptionId}`], {relativeTo: this.activateRoute})
+				this.router.navigate([`/client-card/pet/${this.petId}/reception/${this.receptionId}`], {relativeTo: this.activateRoute});
+				this.loadingSubmit = false;
 			},
 			error: (error)  => 
 			{
@@ -336,7 +333,8 @@ export class ReceptionComponent implements OnDestroy, OnInit {
 						label: "Невозможно изменить прием!",
 						autoClose: 10000,
 					}).subscribe()
-				console.log(error)
+				console.log(error);
+				this.loadingSubmit = false;
 			}
 		})
 		this.loading = false;

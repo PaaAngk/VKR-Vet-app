@@ -37,8 +37,8 @@ export class AddReceptionRecordDialogComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     petsKind = petsKind;
     dateRange?: BetweenDateInput;
-    workTimes = tuiCreateTimePeriods(10, 20);
-    workTimesEnd = tuiCreateTimePeriods(10, 20);
+    workTimes = tuiCreateTimePeriods(9, 20);
+    workTimesEnd = tuiCreateTimePeriods(9, 20);
 
     //All employee
     employees!: Employee[];

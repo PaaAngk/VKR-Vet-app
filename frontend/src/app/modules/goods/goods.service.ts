@@ -60,8 +60,9 @@ export class GoodsService
         }).pipe(
             map(( data ) => {
                 if (data.data?.createGoods) {
-                    this._goodsList.next(this._goodsList.getValue().concat(data.data?.createGoods));
+                    this._goodsList.next([data.data.createGoods].concat(this._goodsList.getValue()) );
                 }
+                return data
             })
         )
     }
@@ -73,7 +74,6 @@ export class GoodsService
      * @returns Observable of updated g oods
      */
     updateGoods(id:number, newGoods : UpdateGoodsInput){
-        console.log(newGoods)
         return this.updateGoodsGQL.mutate({
             data: newGoods,
             goodsId: id
