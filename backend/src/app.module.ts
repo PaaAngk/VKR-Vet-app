@@ -1,7 +1,7 @@
 import { GraphQLModule } from '@nestjs/graphql';
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PrismaModule } from 'nestjs-prisma';
+import { PrismaModule, PrismaService } from 'nestjs-prisma';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppResolver } from './app.resolver';
@@ -23,6 +23,16 @@ import { PrintModule } from './printed/print.module';
 import { ReceptionRecordModule } from './receptionRecord/receptionRecord.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { WorkScheduleModule } from './work-schedule/workSchedule.module';
+
+import AdminJS from 'adminjs';
+import * as AdminJSPrisma from '@adminjs/prisma';
+// import AdminJS from 'adminjs';
+// import { PrismaService } from './prisma.service';
+import { DMMFClass } from '@prisma/client/runtime/library';
+AdminJS.registerAdapter({
+  Resource: AdminJSPrisma.Resource,
+  Database: AdminJSPrisma.Database,
+});
 
 @Module({
   imports: [

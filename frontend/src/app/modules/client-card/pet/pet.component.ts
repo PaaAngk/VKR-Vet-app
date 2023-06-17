@@ -226,7 +226,7 @@ export class PetComponent implements OnDestroy, OnInit{
 		}
 		if (docName === 'Karta_dlya_stacionara'){
 			this.documentForm$.next({
-				title: "Согласие на стационар",
+				title: "Карта для стационара",
 				dynamicFilterInputs: [
 					new ComboboxDynamicFilter({
 						key: 'employee',

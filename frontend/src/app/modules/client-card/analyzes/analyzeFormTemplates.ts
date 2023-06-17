@@ -468,6 +468,16 @@ export const BiohimiyaForm: DynamicFilterBase<string|string[]|number> =
             inputRangeParameters: inputCountBoxParams,
             postfix:'ед/л'
         }),
+        new CountboxDynamicFilter({
+            key: 'Calciy',
+            label: 'Кальций',
+            inputRangeParameters: inputCountBoxParams,
+        }),
+        new CountboxDynamicFilter({
+            key: 'Fosfor',
+            label: 'Фосфор',
+            inputRangeParameters: inputCountBoxParams,
+        }),
     ]
 };
 

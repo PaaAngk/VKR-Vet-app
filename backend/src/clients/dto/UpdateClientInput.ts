@@ -11,6 +11,6 @@ export class UpdateClientInput {
   @IsNotEmpty()
   telephoneNumber?: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   address?: string;
 }

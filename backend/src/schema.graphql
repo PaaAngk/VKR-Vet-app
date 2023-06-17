@@ -412,7 +412,7 @@ input UpdateAnalyzesResearchInput {
 }
 
 input UpdateClientInput {
-  address: String!
+  address: String
   fullName: String!
   telephoneNumber: String!
 }

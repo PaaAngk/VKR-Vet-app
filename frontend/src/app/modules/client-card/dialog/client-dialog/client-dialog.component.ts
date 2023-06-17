@@ -78,6 +78,7 @@ export class DialogClientComponent {
                 })
             }
             else if(this.context.data == 'edit'){
+                console.log(this.clientsId ,this.searchForm.value as UpdateClientInput)
                 this.clientCardService.updateClient(this.clientsId ,this.searchForm.value as UpdateClientInput).subscribe({
                     next: () => { 
                         this.alertService.open("", {status: TuiNotification.Success, label:"Данные успешно обновлены!"}).subscribe();

@@ -21,7 +21,7 @@ export class GqlConfigService implements GqlOptionsFactory {
       context: ({ req }) => ({ req }),
       // subscriptions: {
       //   'graphql-ws': true,
-      //   'subscriptions-transport-ws': true,
+      //   // 'subscriptions-transport-ws': true,
       // },
     };
   }

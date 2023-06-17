@@ -34,9 +34,11 @@ export class CreateReceptionInput {
   anamnesis?: string;
 
   @IsString()
+  @IsOptional(null)
   diagnosis?: string;
 
   @IsString()
+  @IsOptional(null)
   assignment?: string;
 
   @Field(() => Float)
