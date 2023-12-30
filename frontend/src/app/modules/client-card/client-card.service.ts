@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpEventType, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { BehaviorSubject, map, Observable, of, take } from "rxjs";
@@ -607,11 +607,14 @@ export class ClientCardService
     }
 
     downloadAnalyzeFile(file: FileData){
-        return this.http.post(`${environment.api_url}/analyzes/download-analyzes-file`, file)
+        return this.http.post(`${environment.api_url}/analyzes/download-analyzes-file`, file, {reportProgress: true, observe: "events"})
         .pipe(map(
-            (buffer: any) => {
-                const fileURL = URL.createObjectURL(new Blob([new Uint8Array(buffer.data).buffer], {type: file.mimetype}))
-                window.saveAs(fileURL, file.name);
+            (event: any) => {
+                if (event.type === 4){
+                    const fileURL = URL.createObjectURL(new Blob([new Uint8Array(event.body.data).buffer], {type: file.mimetype}))
+                    window.saveAs(fileURL, file.name);
+                }
+                return event
             }
         ))
     }

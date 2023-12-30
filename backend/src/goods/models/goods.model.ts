@@ -1,4 +1,5 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import { Department } from 'src/common/models/department.model';
 import { GoodsCategory } from './goods-category.model';
 import { GoodsList } from './goods-list.model';
 
@@ -27,4 +28,7 @@ export class Goods {
 
   @Field(() => Float)
   price?: number;
+
+  @Field(() => Department)
+  department?: Department;
 }

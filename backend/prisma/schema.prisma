@@ -25,6 +25,11 @@ enum Role {
   MANAGER
 }
 
+enum Department {
+  Angarsk @map("Ангарск")
+  Usolye @map("Усолье-Сибирское")
+}
+
 model Employee {
   id              Int               @id @default(autoincrement())
   Reception       Reception[]
@@ -126,6 +131,7 @@ model Goods {
   measure  String?
   quantity Float?
   price    Float?
+  department Department?
   
   @@unique([categoryId, name, measure])
 }
@@ -197,4 +203,5 @@ model ReceptionRecord {
   dateTimeStart      DateTime
   dateTimeEnd        DateTime
   kindOfAnimal       String?
+  department         Department?
 }

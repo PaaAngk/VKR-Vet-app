@@ -107,6 +107,7 @@ Table Goods {
   measure String
   quantity Float
   price Float
+  department Department
 
   indexes {
     (categoryId, name, measure) [unique]
@@ -184,12 +185,18 @@ Table ReceptionRecord {
   dateTimeStart DateTime [not null]
   dateTimeEnd DateTime [not null]
   kindOfAnimal String
+  department Department
 }
 
 Enum Role {
   ADMIN
   DOCTOR
   MANAGER
+}
+
+Enum Department {
+  Angarsk
+  Usolye
 }
 
 Ref: Pet.clientId > Client.id [delete: Cascade]

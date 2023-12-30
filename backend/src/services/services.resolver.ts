@@ -9,19 +9,29 @@ import {
   Int,
   Subscription,
 } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import {
+  CacheInterceptor,
+  CACHE_MANAGER,
+  Inject,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { Service } from './models/service.model';
 import { CreateServiceInput } from './dto/CreateServiceInput';
 import { ServiceType } from './models/service-type.model';
 import { UpdateServiceInput } from './dto/UpdateServiceInput';
 import { PubSub } from 'graphql-subscriptions';
+import { Cache } from 'cache-manager';
 
 const pubSub = new PubSub();
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Service)
 export class ServiceResolver {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) {}
 
   @Mutation(() => Service)
   async createService(@Args('data') data: CreateServiceInput) {
@@ -65,6 +75,8 @@ export class ServiceResolver {
     });
   }
 
+  // @CacheKey('services')
+  // @UseInterceptors(CacheInterceptor)
   @Query(() => [Service])
   async allServices() {
     return await this.prisma.service.findMany();

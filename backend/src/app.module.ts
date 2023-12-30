@@ -23,16 +23,8 @@ import { PrintModule } from './printed/print.module';
 import { ReceptionRecordModule } from './receptionRecord/receptionRecord.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { WorkScheduleModule } from './work-schedule/workSchedule.module';
-
-import AdminJS from 'adminjs';
-import * as AdminJSPrisma from '@adminjs/prisma';
-// import AdminJS from 'adminjs';
-// import { PrismaService } from './prisma.service';
-import { DMMFClass } from '@prisma/client/runtime/library';
-AdminJS.registerAdapter({
-  Resource: AdminJSPrisma.Resource,
-  Database: AdminJSPrisma.Database,
-});
+import { CacheModule } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -48,6 +40,10 @@ AdminJS.registerAdapter({
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useClass: GqlConfigService,
+    }),
+    CacheModule.register({
+      ttl: 10000, // seconds
+      isGlobal: true,
     }),
 
     AdminModule,
@@ -67,6 +63,13 @@ AdminJS.registerAdapter({
     WorkScheduleModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppResolver],
+  providers: [
+    AppService,
+    AppResolver,
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CacheInterceptor,
+    // },
+  ],
 })
 export class AppModule {}

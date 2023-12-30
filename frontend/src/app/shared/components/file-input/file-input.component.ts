@@ -10,15 +10,12 @@ import { TuiFileLike } from '@taiga-ui/kit';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileInputComponent implements OnInit {
-	constructor(
-		private _changeDetectorRef: ChangeDetectorRef,
-	){}
   	@Output() outputFile: EventEmitter<any> = new EventEmitter<any>();
 
     @Input() editFiles: never[] = [];
 
 	editMode = false;
-  	readonly control = new FormControl([], [maxFilesLength(5)]);
+  	readonly control = new FormControl([], [maxFilesLength(3)]);
     rejectedFiles: readonly TuiFileLike[] = [];
  
     ngOnInit(): void {
@@ -60,6 +57,6 @@ export class FileInputComponent implements OnInit {
 export function maxFilesLength(maxLength: number): ValidatorFn {
   return ({value}: AbstractControl) => {
       return value.length > maxLength
-		? { maxLength: new TuiValidationError( 'Ошибка: Максимальное количество - 5 файлов', ), } : null;
+		? { maxLength: new TuiValidationError( 'Ошибка: Максимальное количество - 3 файла', ), } : null;
   };
 }

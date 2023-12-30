@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Client } from 'src/clients/models/client.model';
 import { Employee } from 'src/common/models';
 import { ReceptionPurpose } from 'src/reception/models/reception-purpose.model';
+import { Department } from 'src/common/models/department.model';
 
 @ObjectType()
 export class ReceptionRecord {
@@ -40,4 +41,7 @@ export class ReceptionRecord {
 
   @Field(() => String, { nullable: true, description: 'Вид животного' })
   kindOfAnimal?: string;
+
+  // @Field(() => Department, { nullable: true })
+  // department?: Department;
 }

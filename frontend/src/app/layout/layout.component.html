@@ -2,9 +2,23 @@
     
     <!-- Content -->
     <main class="h-full w-full bg-gray-100 flex flex-row"> 
-        <div
-          class="bg-sky-300 bg-opacity-70 tui-text_body-xl flex flex-col justify-between"
-        >
+      <div
+        class="bg-sky-300 bg-opacity-70 tui-text_body-xl flex flex-col justify-between w-36 border-r border-black" 
+        style="border-color: #e5e7eb;"
+      >
+        <div class="text-center">
+          <button
+            tuiButton
+            type="button"
+            appearance="flat"
+            class="mx-1 my-0.5 text-black"
+            size="s" 
+            (click)="showDialogChoiceDepartment()"
+          >
+              <!-- <p class="text-lg text-orange-800">Ангарск</p>  -->
+              <p class="text-lg text-red-700 leading-4">{{currentDepartment}}</p> 
+          </button>
+          <hr class="bg-gray-700 mt-0.5">
           <nav
               tuiTabs
               vertical="left"
@@ -52,120 +66,75 @@
                 ></tui-svg>
                 График работы
               </button>
-          </nav>  
-          <div>
-            <button
-              tuiButton
-              type="button"
-              class="ml-1 mb-2"
-              appearance="outline"
-              size="s"
-              (click)="getAdminPanel()"
-              *ngIf="currentUser.role === 'ADMIN'"
-            >
-                <p class="text-base">Админ-панель</p> 
-            </button>
-            <div class="text-lg pl-1 text-black text-center" [ngSwitch]="currentUser.role" >
-              <ng-template ngSwitchCase="DOCTOR">Доктор</ng-template>
-              <ng-template ngSwitchCase="ADMIN">Администратор</ng-template>
-              <ng-template ngSwitchCase="MANAGER">Регистратура</ng-template>
-            </div>
-            <p class="text-base text-black text-center">{{ today | date:'d MMMM, H:mm' }}</p>
-            <hr class="bg-black">
-            <button
-              tuiButton
-                type="button"
-                class="pl-2 " 
-                appearance="custom"
-                icon="tuiIconLogOut"
-                size="s"
-                (click)="logout()"
-            >
-                <p class="text-base ml-2">Выход</p> 
-            </button>
+          </nav>
+        </div>
+        <div>
+          <!-- <button
+            tuiButton
+            type="button"
+            class="ml-1 mb-2"
+            appearance="outline"
+            size="s"
+            (click)="getAdminPanel()"
+            *ngIf="currentUser.role === 'ADMIN'"
+          >
+              <p class="text-base">Админ-панель</p> 
+          </button> icon="tuiIconHome"-->
+          
+          <div class="text-lg pl-1 text-black text-center" [ngSwitch]="currentUser.role" >
+            <ng-template ngSwitchCase="DOCTOR">Доктор</ng-template>
+            <ng-template ngSwitchCase="ADMIN">Администратор</ng-template>
+            <ng-template ngSwitchCase="MANAGER">Регистратура</ng-template>
           </div>
+          <p class="text-base text-black text-center">{{ today | date:'d MMMM, H:mm' }}</p>
+          <hr class="bg-black">
+          <button
+            tuiButton
+            type="button"
+            class="pl-2 " 
+            appearance="custom"
+            icon="tuiIconLogOut"
+            size="s"
+            (click)="logout()"
+          >
+            <p class="text-base ml-2">Выход</p> 
+          </button>
+        </div>
       </div>
-    <div class="p-4 w-full h-full">
-      <router-outlet *ngIf="true"></router-outlet> 
-    </div>
+      <div class="p-4 w-full h-full">
+        <router-outlet *ngIf="true"></router-outlet> 
+      </div>
     </main>
 </div>
 
-
-
-
-
-
-
-
-
-
-  
-
-<!-- absolute bottom-0 left-0 -->
-<!--   
-  <header class="flex flex-col w-full overflow-hidden z-49 shadow">
-    <div class="relative flex flex-auto justify-center w-full h-16 px-8 bg-gray-800">
-        <div class="flex flex-row container justify-between items-center w-full">     
-            <div class="">
-              <a class="tui-text_h6 text-white" href="/">LOGO</a>
-            </div>      
-            <div class="">
-                <search></search>
-                <tui-hosted-dropdown #dropdown [content]="topBarContent">
-                  <button
-                    tuiButton
-                    class="text-white ml-2"
-                    type="button">     
-                    {{ currentUser.full_name }} 
-                  </button>
-                </tui-hosted-dropdown>
-                <ng-template #topBarContent>
-                  <tui-data-list (click)="onClick()">
-                    <a tuiOption routerLink="/">
-                      <tui-svg src="tuiIconUser"></tui-svg> 
-                      <span>Профиль</span> 
-                    </a>
-                    <a tuiOption routerLink="/">
-                      <tui-svg src="tuiIconSettings"></tui-svg> 
-                      <span>Настройки</span>
-                    </a>              
-                    <a tuiOption routerLink="/sign-out">
-                      <tui-svg src="tuiIconLogoutLarge"></tui-svg> 
-                      <span>Выйти</span>
-                    </a>
-                  </tui-data-list>
-                </ng-template>
-            </div>
-        </div>
-    </div>
-
-    <div class="flex flex-auto justify-center px-8 bg-white shadow-inner">
-        <div class="relative container mx-auto flex items-center w-full max-w-360 ">
-            <nav tuiTabs class="tabs" [activeItemIndex]="activeMenuItemIndex">
-                <button routerLink="/" routerLinkActive="_active" tuiTab>Главная</button>
-                <tui-hosted-dropdown
-                    tuiDropdownHover
-                    [content]="content"
-                    [(open)]="open"
-                >
-                    <button routerLinkActive = '_active' tuiTab>Реестр</button>
-                    
-                    <ng-template #content>
-                        <tui-data-list>
-                            <a routerLink="registry/search" routerLinkActive="selected-navigation_subItem" tuiOption>Поиск</a>
-                            <a routerLink="registry/report" routerLinkActive="selected-navigation_subItem" tuiOption>Отчеты</a>
-                            <a routerLink="registry/download" routerLinkActive="selected-navigation_subItem" tuiOption>Загрузка</a>
-                            <a routerLink="registry/requests" routerLinkActive="selected-navigation_subItem" tuiOption>Заявки</a>
-                        </tui-data-list>
-                    </ng-template>
-                </tui-hosted-dropdown>
-
-                <button tuiTab>Сервис</button>
-                <button tuiTab>Другое 1</button>
-                <button tuiTab>Другое 2</button>
-                <button tuiTab>Другое 3</button>
-            </nav>
-        </div>
-    </div>      
-</header> -->
+<ng-template
+  let-observer
+  [tuiDialogOptions]="{label: 'Выбор подразделения', size: 's', closeable: false, dismissible: false}"
+  [(tuiDialog)]="openChoiceDepartment"
+>
+  <div 
+    class="grid gap-4 items-center mt-4"
+    [formGroup]="depCityForm"
+  >
+    <tui-select formControlName="city">
+      Подразделения
+      <input
+        placeholder="Выберите ваш город"
+        tuiTextfield
+      />
+      <tui-data-list-wrapper
+        *tuiDataList
+        [items]="departmentsList"
+      ></tui-data-list-wrapper>
+    </tui-select>
+    <p>
+      <button
+        tuiButton
+        type="submit"
+        (click)="submitDepartment(observer)"
+      >
+        Подтвердить
+      </button>
+    </p>
+  </div>
+</ng-template>

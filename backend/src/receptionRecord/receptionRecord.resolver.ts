@@ -18,6 +18,8 @@ import { UpdateReceptionRecordInput } from './dto/UpdateReceptionRecordInput.inp
 import { Client } from 'src/clients/models/client.model';
 import { BetweenDateInput } from './dto/BetweenDateInput.input';
 import { ReceptionPurpose } from 'src/reception/models/reception-purpose.model';
+import { Header } from 'src/common/decorators/header.decorator';
+import { Department } from '@prisma/client';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => ReceptionRecord)
@@ -30,8 +32,12 @@ export class ReceptionRecordResolver {
    * @returns new reception record
    */
   @Mutation(() => ReceptionRecord)
-  async createReceptionRecord(@Args('data') data: CreateReceptionRecordInput) {
-    const newReceptionRecord = await this.prisma.receptionRecord.create({
+  async createReceptionRecord(
+    @Args('data') data: CreateReceptionRecordInput,
+    @Header('department') department?: Department
+  ) {
+    console.log(data);
+    const newReceptionRecord = this.prisma.receptionRecord.create({
       data: {
         clientId: data.clientId || null,
         employeeId: data.employeeId || null,
@@ -39,8 +45,10 @@ export class ReceptionRecordResolver {
         dateTimeStart: data.dateTimeStart,
         dateTimeEnd: data.dateTimeEnd,
         kindOfAnimal: data.kindOfAnimal || null,
+        department: department,
       },
     });
+    console.log(newReceptionRecord);
     return newReceptionRecord;
   }
 
@@ -115,7 +123,11 @@ export class ReceptionRecordResolver {
   }
 
   @Query(() => [ReceptionRecord])
-  async receptionRecordBetweenDate(@Args('data') data: BetweenDateInput) {
+  async receptionRecordBetweenDate(
+    @Args('data') data: BetweenDateInput,
+    @Header('department') department?: string
+  ) {
+    console.log(department);
     return await this.prisma.receptionRecord.findMany({
       where: {
         OR: [
@@ -128,15 +140,13 @@ export class ReceptionRecordResolver {
             dateTimeEnd: { lte: data.dateEnd },
           },
         ],
+        department: department as Department,
       },
     });
   }
 
   @ResolveField('employee', () => Employee)
   async employee(@Parent() receptionRecord: ReceptionRecord) {
-    // return this.prisma.employee.findUnique({
-    //   where: { id: receptionRecord.employeeId },
-    // });
     return this.prisma.receptionRecord
       .findUnique({ where: { id: receptionRecord.id } })
       .Employee();
@@ -144,10 +154,6 @@ export class ReceptionRecordResolver {
 
   @ResolveField('client', () => Client)
   async client(@Parent() receptionRecord: ReceptionRecord) {
-    // const { clientId } = receptionRecord;
-    // return this.prisma.client.findUnique({
-    //   where: { id: clientId },
-    // });
     return this.prisma.receptionRecord
       .findUnique({ where: { id: receptionRecord.id } })
       .Client();
@@ -155,9 +161,6 @@ export class ReceptionRecordResolver {
 
   @ResolveField('purpose', () => ReceptionPurpose)
   async purpose(@Parent() receptionRecord: ReceptionRecord) {
-    // return this.prisma.receptionPurpose.findUnique({
-    //   where: { id: receptionRecord.receptionPurposeId },
-    // });
     return this.prisma.receptionRecord
       .findUnique({ where: { id: receptionRecord.id } })
       .ReceptionPurpose();

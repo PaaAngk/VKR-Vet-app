@@ -1,9 +1,7 @@
-import { AuthUser } from 'src/app/core/models/auth-user';
 import { Injectable } from '@angular/core';
-import { Observable ,  BehaviorSubject ,  ReplaySubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
-import { ApiService } from '../api.service';
-import { map ,  distinctUntilChanged, take } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { User } from 'src/graphql/generated';
 
 

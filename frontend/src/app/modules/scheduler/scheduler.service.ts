@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { EventInput } from "@fullcalendar/core";
-import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs";
 import { fullNameToShort } from "src/app/shared/utils/fullNameToShort";
 import { CreateReceptionRecordGQL, CreateReceptionRecordInput, DeleteReceptionRecordGQL, GetRecordsByDatesRangeGQL, ReceptionRecord, BetweenDateInput, UpdateDateReceptionRecordGQL, UpdateReceptionRecordGQL, UpdateReceptionRecordInput } from "src/graphql/generated";
 

@@ -1,5 +1,5 @@
 server {	
-	client_max_body_size 10m;
+	client_max_body_size 40m;
 
         gzip on;
 	gzip_vary on;

@@ -4,7 +4,7 @@ import { AuthModule } from './auth/auth.module';
 @NgModule({
     imports: [
         AuthModule
-    ]
+    ],
 })
 export class CoreModule
 {

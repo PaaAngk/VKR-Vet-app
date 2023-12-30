@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TuiButtonModule, TuiGroupModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiGroupModule, TuiLoaderModule } from '@taiga-ui/core';
 import { FileViewComponent } from './file-view.component';
+import { TuiProgressModule } from '@taiga-ui/kit';
 
 
 @NgModule({
@@ -17,6 +18,8 @@ import { FileViewComponent } from './file-view.component';
 
     TuiButtonModule,
     TuiGroupModule,
+    TuiLoaderModule,
+    TuiProgressModule,
   ],
   exports:[
     FileViewComponent,

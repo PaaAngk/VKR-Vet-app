@@ -170,6 +170,12 @@ export type CreateWorkScheduleInput = {
   workDays: Scalars['Int'];
 };
 
+/** Properties by which select need department for write warehouse and registry data. */
+export enum Department {
+  Angarsk = 'Angarsk',
+  Usolye = 'Usolye'
+}
+
 export type Employee = {
   __typename?: 'Employee';
   fullName: Scalars['String'];
@@ -183,6 +189,7 @@ export type Goods = {
   GoodsList?: Maybe<Array<GoodsList>>;
   category: GoodsCategory;
   categoryId?: Maybe<Scalars['Int']>;
+  department?: Maybe<Department>;
   id: Scalars['Int'];
   measure?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -654,7 +661,7 @@ export type UpdateAnalyzesResearchInput = {
 };
 
 export type UpdateClientInput = {
-  address: Scalars['String'];
+  address?: InputMaybe<Scalars['String']>;
   fullName: Scalars['String'];
   telephoneNumber: Scalars['String'];
 };

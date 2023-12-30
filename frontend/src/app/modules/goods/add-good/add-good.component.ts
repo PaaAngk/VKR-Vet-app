@@ -66,9 +66,9 @@ export class AddGoodsComponent implements OnDestroy {
     submit(): void {
         if (this.addGoodsForm.status == "VALID") {
             this.submitLoader = true;
-            this.addGoodsForm.value.categoryId = this.addGoodsForm.value.category?.id
+            
+            this.addGoodsForm.value.categoryId = this.addGoodsForm.value.category?.id;
             delete this.addGoodsForm.value.category
-
             this.goodsService.createGoods(this.addGoodsForm.value as CreateGoodsInput).subscribe({
                 next: () => {
                     this.alertService.open(

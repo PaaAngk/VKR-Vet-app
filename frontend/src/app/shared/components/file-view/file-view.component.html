@@ -1,14 +1,26 @@
-<div
-    tuiGroup
-    orientation="vertical"
-    class="group w-full"
-    [collapsed]="true"
->
+<tui-loader [showLoader]="loading" [overlay]="true">
     <div
-        class="p-1 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-row items-center" 
-        *ngFor="let file of inputFile"
+        tuiGroup
+        orientation="vertical"
+        class="group w-full"
+        [collapsed]="true"
     >
-        <button tuiButton size="s" (click)="downloadFile(file)">Скачать</button>
-        <p class="text-base ml-4">{{ file.name }}</p>        
+        <div
+            class="p-1 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 flex flex-row items-center" 
+            *ngFor="let file of inputFile"
+        >
+            <button tuiButton size="s" (click)="downloadFile(file)">Скачать</button>
+            <p class="text-base ml-4">{{ file.name }}</p>        
+        </div>
     </div>
+</tui-loader>
+<div class="w-full p-2">
+    <progress
+        *ngIf="loading"
+        tuiProgressBar
+        [max]="loadProgressTotal"
+        class="w-full "
+        color="linear-gradient(to right, var(--tui-support-02), var(--tui-support-14), var(--tui-support-12))"
+        [value]="loadProgress"
+    ></progress>
 </div>

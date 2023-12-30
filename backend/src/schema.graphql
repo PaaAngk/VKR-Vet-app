@@ -156,6 +156,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+"""
+Properties by which select need department for write warehouse and registry data.
+"""
+enum Department {
+  Angarsk
+  Usolye
+}
+
 type Employee {
   fullName: String!
   id: Int
@@ -167,6 +175,7 @@ type Goods {
   GoodsList: [GoodsList!]
   category: GoodsCategory!
   categoryId: Int
+  department: Department
   id: Int!
   measure: String
   name: String!
@@ -292,6 +301,7 @@ type Query {
   reception(receptionId: Int!): Reception!
   receptionRecord(receptionRecordId: Int!): ReceptionRecord!
   receptionRecordBetweenDate(data: BetweenDateInput!): [ReceptionRecord!]!
+  resetIndexes: String!
   searchClients(after: Int, before: Int, first: Int, last: Int, orderBy: ClientOrder, search: String, skip: Int): ClientConnection!
 }
 

@@ -4,14 +4,17 @@ import { CommonModule } from '@angular/common';
 import { LayoutComponent } from './layout.component';
 import { RouterModule } from '@angular/router';
 
-import {TuiTabsModule, TuiArrowModule} from '@taiga-ui/kit';
-import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
+import {TuiTabsModule, TuiArrowModule, TuiSelectModule, TuiDataListWrapperModule} from '@taiga-ui/kit';
+import { TuiButtonModule, TuiDialogModule, TuiSvgModule } from '@taiga-ui/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
     // SearchModule,
     
     //TUI
@@ -19,6 +22,9 @@ import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
     TuiArrowModule,
     TuiSvgModule,
     TuiButtonModule,
+    TuiSelectModule,
+    TuiDialogModule,
+    TuiDataListWrapperModule,
   ],
   declarations: [
     LayoutComponent,
